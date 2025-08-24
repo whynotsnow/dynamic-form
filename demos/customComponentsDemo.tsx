@@ -4,13 +4,13 @@ import type {
   FieldState,
   GroupedFormConfig,
   RenderFieldItemParams
-} from '../types';
-import DynamicForm from '../index';
-import { useInitHandlers } from '../exports';
+} from '@/types';
+import DynamicForm from '@/index';
+import { useInitHandlers } from '@/exports';
 import { exampleHandlers } from './customHandlers';
 import { customComponents } from './customComponents';
 import { Button, Form, message, Space, Spin } from 'antd';
-import { mockFetchFormData } from '../utils/utils';
+import { mockFetchFormData } from '../src/utils/utils';
 
 // 组件注册器配置
 const componentRegistryConfig: ComponentRegistryConfig = {
@@ -209,6 +209,7 @@ const CustomComponentsDemo: React.FC = () => {
 
   // 有数据才渲染
   if (!initialValues) return <Spin />;
+  console.log('render>>>>', viewMode);
   return (
     <div style={{ padding: 24, maxWidth: 1200, margin: '0 auto' }}>
       <Space style={{ marginBottom: 16 }}>

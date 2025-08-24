@@ -1,5 +1,5 @@
 import { isHandlersInitialized, getUnregisteredReservedKeys } from '../resultProcessor/handlers';
-import { getDefaultConfig } from '../config/defaultConfig';
+import { getDefaultConfig } from '../../config/defaultConfig';
 import { log, LogCategory } from './logger';
 /**
  * 初始化检测器

@@ -1,4 +1,4 @@
-import type { CustomEffectResultHandler } from '../resultProcessor';
+import type { CustomEffectResultHandler } from '@/resultProcessor';
 
 // 示例2: 条件显示处理器
 export const conditionalDisplayHandler: CustomEffectResultHandler = {

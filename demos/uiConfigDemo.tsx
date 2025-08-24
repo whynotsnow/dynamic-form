@@ -1,15 +1,15 @@
 import React from 'react';
-import DynamicForm from '../index';
-import { ComponentRegistryConfig, FieldComponentProps, FormConfig, UIConfig } from '../types';
+import DynamicForm from '@/index';
+import { ComponentRegistryConfig, FieldComponentProps, FormConfig, UIConfig } from '@/types';
 import { Tag, Space, Form, Select } from 'antd';
 import { CheckCircleOutlined, StarOutlined } from '@ant-design/icons';
-import { useInitHandlers } from '../hooks';
+import { useInitHandlers } from '@/hooks';
 
 const PriorityField: React.FC<FieldComponentProps> = ({ field, form }) => {
   // 在自定义组件内部处理 label 的动态展示
-  const values = form.getFieldValue('priority') || {};
+  const value = form.getFieldValue('priority');
   const renderLabel = () => {
-    if (values?.priority === 'high') {
+    if (value === 'high') {
       return (
         <Space>
           <span>🔥 高优先级</span>
@@ -17,7 +17,7 @@ const PriorityField: React.FC<FieldComponentProps> = ({ field, form }) => {
         </Space>
       );
     }
-    if (values?.priority === 'low') {
+    if (value === 'low') {
       return (
         <Space>
           <span>🧊 低优先级</span>

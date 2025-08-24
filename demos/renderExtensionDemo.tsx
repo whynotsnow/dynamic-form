@@ -6,7 +6,7 @@ import {
   FireOutlined,
   FolderOpenOutlined
 } from '@ant-design/icons';
-import DynamicForm from '../index';
+import DynamicForm from '@/index';
 import type {
   RenderFieldItemParams,
   RenderFormParams,
@@ -15,8 +15,8 @@ import type {
   GroupedFormConfig,
   RenderGroupsParams,
   RenderFieldsParams
-} from '../types';
-import { useInitHandlers } from '../exports';
+} from '@/types';
+import { useInitHandlers } from '@/exports';
 
 const { Text } = Typography;
 

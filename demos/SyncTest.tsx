@@ -1,14 +1,14 @@
 import React from 'react';
-import { Card, Space, Button, Alert, Form } from 'antd';
+import { Card, Space, Form } from 'antd';
 import { supplierFormConfig } from '../tests/testData';
-import { useInitHandlers } from '../hooks';
-import { DynamicForm } from '../exports';
+import { useInitHandlers } from '@/hooks';
+import { DynamicForm } from '@/exports';
 const SyncTest: React.FC = () => {
   const handleSubmit = (values: any) => {
     console.log('[SyncTest] 表单提交:', values);
   };
 
-  // // 初始化处理器系统，确保所有演示组件都能正常工作
+  // 初始化处理器系统，确保所有演示组件都能正常工作
   useInitHandlers({
     enabled: true,
     handlers: [], // 使用默认处理器

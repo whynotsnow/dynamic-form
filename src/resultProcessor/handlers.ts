@@ -1,5 +1,5 @@
 import type { CustomEffectResultHandler, HandlerRegistrationOptions } from './types';
-import { getDefaultConfig } from '../config/defaultConfig';
+import { getDefaultConfig } from '../../config/defaultConfig';
 
 /**
  * 处理器注册表

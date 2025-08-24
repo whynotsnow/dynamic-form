@@ -1,4 +1,4 @@
-import { produce, current } from 'immer';
+import { produce, current, castDraft } from 'immer';
 import type { FormState, FormAction, FieldMeta, UIConfig, FieldState } from './types';
 import { mergeFieldMetaPatch, mergeIntoDraft } from './utils';
 import { log, LogCategory } from './utils/logger';
@@ -17,9 +17,9 @@ const formReducer = produce<FormState, [FormAction]>((draft, action) => {
         ...configProcessInfo.initialValues,
         ...draft.fieldValues
       };
-      draft.fields = configProcessInfo.initializedFields;
-      draft.groupFields = configProcessInfo.initializedGroupFields;
-      draft.configProcessInfo = configProcessInfo;
+      draft.fields = castDraft(configProcessInfo.initializedFields);
+      draft.groupFields = castDraft(configProcessInfo.initializedGroupFields);
+      draft.configProcessInfo = castDraft(configProcessInfo);
       draft.initialized = true;
 
       break;
@@ -152,12 +152,12 @@ const formReducer = produce<FormState, [FormAction]>((draft, action) => {
 
         if (typeof value === 'object' && value !== null) {
           // 赋对象时确保类型正确断言
-          draft.dynamicUIConfig[key] = {
+          draft.dynamicUIConfig[key] = castDraft({
             ...((draft.dynamicUIConfig[key] as object) || {}),
             ...value
-          } as UIConfig[typeof key];
+          });
         } else {
-          draft.dynamicUIConfig[key] = value as UIConfig[typeof key];
+          draft.dynamicUIConfig[key] = value;
         }
       });
       break;

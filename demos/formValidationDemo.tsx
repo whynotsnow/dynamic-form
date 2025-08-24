@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Typography, Space, Button, message, Form, Spin } from 'antd';
-import DynamicForm from '../index';
+import DynamicForm from '@/index';
 import { customComponents } from './customComponents';
-import { FormConfig } from '../types';
-import { useInitHandlers } from '../exports';
+import { FormConfig } from '@/types';
+import { useInitHandlers } from '@/exports';
 import { exampleHandlers } from './customHandlers';
-import { mockFetchFormData } from '../utils';
+import { mockFetchFormData } from '../src/utils';
 
 const { Title, Paragraph } = Typography;
 

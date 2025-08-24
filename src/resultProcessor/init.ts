@@ -1,6 +1,6 @@
 import type { InitConfig, InitResult } from './types';
 import { registerCustomEffectResultHandlers, getAllEffectResultHandlers } from './handlers';
-import { getDefaultConfig } from '../config/defaultConfig';
+import { getDefaultConfig } from '../../config/defaultConfig';
 import { log, LogCategory } from '../utils/logger';
 import { markHandlersInitialized } from './handlers';
 

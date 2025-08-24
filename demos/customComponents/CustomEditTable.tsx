@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { FieldComponentProps } from './DynamicForm/types';
+import { FieldComponentProps } from '@/types';
 import { Button, message, Input, Select, Popconfirm } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { EditableProTable } from '@ant-design/pro-components';
@@ -161,23 +161,23 @@ const CustomEditTable: React.FC<FieldComponentProps> = ({ field, value, onChange
         const isEditing = editableKeys.includes(record.key);
         return isEditing
           ? [
-              <a key="save" onClick={() => action?.save?.(record.key)}>
+              <Button key="save" type="link" onClick={() => action?.save?.(record.key)}>
                 保存
-              </a>,
-              <a key="cancel" onClick={() => action?.cancel?.(record.key)}>
+              </Button>,
+              <Button key="cancel" type="link" onClick={() => action?.cancel?.(record.key)}>
                 取消
-              </a>
+              </Button>
             ]
           : [
-              <a key="edit" onClick={() => action?.startEditable?.(record.key)}>
+              <Button key="edit" type="link" onClick={() => action?.startEditable?.(record.key)}>
                 编辑
-              </a>,
+              </Button>,
               <Popconfirm
                 key="delete"
                 title="确认删除？"
                 onConfirm={() => handleDelete(record.key)}
               >
-                <a>删除</a>
+                <Button type="link">删除</Button>
               </Popconfirm>
             ];
       }
@@ -194,7 +194,7 @@ const CustomEditTable: React.FC<FieldComponentProps> = ({ field, value, onChange
       >
         添加行
       </Button>
-      <EditableProTable<any>
+      <EditableProTable
         columns={columns}
         value={dataSource}
         onChange={handleValueChange}

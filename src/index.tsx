@@ -5,11 +5,12 @@ import FormChainEffectEngineWrapper from './components/FormChainEffectEngineWrap
 
 // EngineProps
 function pickEngineProps(props: DynamicFormProps): EngineProps {
-  const { formConfig, form, values, enableInitializationCheck, checkDelay } = props;
+  const { formConfig, form, values, enableInitializationCheck, checkDelay, uiConfig } = props;
   return {
     formConfig,
     form,
     values,
+    uiConfig,
     enableInitializationCheck,
     checkDelay
   };

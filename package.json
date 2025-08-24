@@ -8,8 +8,7 @@
   "exports": {
     ".": {
       "import": "./dist/exports.js",
-      "require": "./dist/exports.cjs",
-      "types": "./dist/exports.d.ts"
+      "require": "./dist/exports.cjs"
     }
   },
   "directories": {
@@ -48,6 +47,7 @@
   },
   "homepage": "https://github.com/whynotsnow/dynamic-form#readme",
   "devDependencies": {
+    "@ant-design/pro-components": "^2.8.10",
     "@types/node": "^24.3.0",
     "@types/react": "^19.1.11",
     "@types/react-dom": "^19.1.7",
@@ -74,6 +74,7 @@
     "react-dom": ">=17"
   },
   "dependencies": {
-    "form-chain-effect-engine": "^2.0.4"
+    "form-chain-effect-engine": "^2.0.4",
+    "immer": "^10.1.1"
   }
 }

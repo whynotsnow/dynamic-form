@@ -1,5 +1,5 @@
-import { CustomEffectResultHandler } from '../resultProcessor';
-import { log, LogCategory } from '../utils/logger';
+import { CustomEffectResultHandler } from '@/resultProcessor';
+import { log, LogCategory } from '../src/utils/logger';
 
 /**
  * DynamicForm 默认配置接口
