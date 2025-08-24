@@ -25,5 +25,6 @@ module.exports = {
       { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }
     ] // 未使用变量改为警告
   },
-  settings: { react: { version: 'detect' } }
+  settings: { react: { version: 'detect' } },
+  ignorePatterns: ['dist/', 'node_modules/']
 };
