@@ -1,12 +1,18 @@
-import React from "react";
-import type { DynamicFormProps, EngineProps, FormContentProps } from "./types";
-import FormContent from "./components/FormContent";
-import FormChainEffectEngineWrapper from "./components/FormChainEffectEngineWrapper";
+import React from 'react';
+import type { DynamicFormProps, EngineProps, FormContentProps } from './types';
+import FormContent from './components/FormContent';
+import FormChainEffectEngineWrapper from './components/FormChainEffectEngineWrapper';
 
 // EngineProps
 function pickEngineProps(props: DynamicFormProps): EngineProps {
   const { formConfig, form, values, enableInitializationCheck, checkDelay } = props;
-  return { formConfig, form, values, enableInitializationCheck, checkDelay };
+  return {
+    formConfig,
+    form,
+    values,
+    enableInitializationCheck,
+    checkDelay
+  };
 }
 
 // FormContentProps
@@ -20,7 +26,7 @@ function pickUIProps(props: DynamicFormProps): FormContentProps {
     renderFields,
     renderGroupItem,
     renderGroups,
-    form,
+    form
   } = props;
   return {
     onSubmit,
@@ -31,7 +37,7 @@ function pickUIProps(props: DynamicFormProps): FormContentProps {
     renderFields,
     renderGroupItem,
     renderGroups,
-    form,
+    form
   };
 }
 

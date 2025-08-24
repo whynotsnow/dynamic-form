@@ -1,4 +1,23 @@
 {
+  "files.eol": "\n", // 换行符使用 LF
+  "editor.formatOnSave": true, // 只在保存时格式化
+  "editor.formatOnPaste": false, // 禁止粘贴时自动格式化
+  "editor.formatOnType": false, // 禁止输入时自动格式化
+  // 使用项目里的 Prettier 和 ESLint
+  "prettier.enable": true,
+  "prettier.configPath": ".prettierrc",
+  "eslint.run": "onSave",
+  "eslint.enable": true,
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+
+  // 保存时执行 ESLint 自动修复
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "always",
+    "source.fixAll.eslint": "always"
+  },
+  // 默认格式化工具使用 Prettier
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
   // 使用项目里安装的 TypeScript
   "typescript.tsdk": "node_modules/typescript/lib",
 
@@ -7,5 +26,11 @@
   "typescript.preferences.importModuleSpecifier": "non-relative",
 
   // 启用路径别名自动补全
-  "typescript.enablePromptUseWorkspaceTsdk": true
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+
+  // 开启编辑器引用建议
+  "typescript.suggest.autoImports": true,
+  "typescript.suggest.enabled": true,
+  "javascript.suggest.enabled": true,
+  "javascript.suggest.autoImports": true
 }

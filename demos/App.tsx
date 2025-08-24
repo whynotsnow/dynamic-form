@@ -1,5 +1,5 @@
-import React from "react";
-import DemoSelector from "./DemoSelector";
+import React from 'react';
+import DemoSelector from './DemoSelector';
 
 export default function App() {
   return (

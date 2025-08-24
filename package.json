@@ -17,16 +17,31 @@
     "test": "tests"
   },
   "scripts": {
+    "prepare": "husky install",
     "start": "vite",
     "build": "tsup",
     "preview": "vite preview",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint 'src/**/*.{ts,tsx,js,jsx}' 'demos/**/*.{ts,tsx,js,jsx}' --fix",
+    "lint:check": "eslint 'src/**/*.{ts,tsx,js,jsx}' 'demos/**/*.{ts,tsx,js,jsx}' --max-warnings=0",
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write 'src/**/*.{ts,tsx,js,jsx}' 'demos/**/*.{ts,tsx,js,jsx}'"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/whynotsnow/dynamic-form.git"
   },
-  "author": "whynotsnow <whynotsnow@163.com>",
+  "author": {
+    "name": "whynotsnow",
+    "email": "whynotsnow@163.com",
+    "url": "https://github.com/whynotsnow"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/whynotsnow/dynamic-form/issues"
@@ -36,7 +51,19 @@
     "@types/node": "^24.3.0",
     "@types/react": "^19.1.11",
     "@types/react-dom": "^19.1.7",
+    "@typescript-eslint/eslint-plugin": "^8.40.0",
+    "@typescript-eslint/parser": "^8.40.0",
     "@vitejs/plugin-react": "^5.0.1",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^16.1.5",
+    "prettier": "^3.6.2",
     "tsup": "^8.5.0",
     "typescript": "^5.9.2",
     "vite": "^7.1.3"
@@ -45,5 +72,8 @@
     "antd": ">=5",
     "react": ">=17",
     "react-dom": ">=17"
+  },
+  "dependencies": {
+    "form-chain-effect-engine": "^2.0.4"
   }
 }
