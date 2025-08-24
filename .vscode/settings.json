@@ -1,0 +1,11 @@
+{
+  // 使用项目里安装的 TypeScript
+  "typescript.tsdk": "node_modules/typescript/lib",
+
+  // 自动导入使用路径别名
+  "javascript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+
+  // 启用路径别名自动补全
+  "typescript.enablePromptUseWorkspaceTsdk": true
+}
