@@ -209,7 +209,6 @@ const CustomComponentsDemo: React.FC = () => {
 
   // 有数据才渲染
   if (!initialValues) return <Spin />;
-  console.log('render>>>>', viewMode);
   return (
     <div style={{ padding: 24, maxWidth: 1200, margin: '0 auto' }}>
       <Space style={{ marginBottom: 16 }}>

@@ -15,6 +15,11 @@
     "doc": "docs",
     "test": "tests"
   },
+  "files": [
+    "dist",
+    "docs",
+    "package.json"
+  ],
   "scripts": {
     "prepare": "husky install",
     "start": "vite",

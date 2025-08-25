@@ -1,5 +1,5 @@
 import { Chain } from 'form-chain-effect-engine';
-import { GroupedFormConfig, FlatFormConfig } from '../types';
+import { GroupedFormConfig, FlatFormConfig } from '@/types';
 export const supplierFormConfig: GroupedFormConfig = {
   groups: [
     {
