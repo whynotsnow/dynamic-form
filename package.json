@@ -1,5 +1,5 @@
 {
-  "name": "dynamic-form",
+  "name": "@whynotsnow/dynamic-form",
   "version": "1.0.0",
   "description": "DynamicForm 是一个基于 React 和 Ant Design 的动态表单组件，支持复杂的表单联动、自定义处理器、状态管理和性能优化。",
   "main": "./dist/exports.cjs",
@@ -18,14 +18,14 @@
   "files": [
     "dist",
     "docs",
-    "package.json"
+    "LICENSE"
   ],
   "scripts": {
     "prepare": "husky install",
     "start": "vite",
     "build": "tsup",
     "preview": "vite preview",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"No tests specified\"",
     "lint": "eslint 'src/**/*.{ts,tsx,js,jsx}' 'demos/**/*.{ts,tsx,js,jsx}' --fix",
     "lint:check": "eslint 'src/**/*.{ts,tsx,js,jsx}' 'demos/**/*.{ts,tsx,js,jsx}' --max-warnings=0",
     "type-check": "tsc --noEmit",
