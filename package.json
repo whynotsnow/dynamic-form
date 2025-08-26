@@ -20,6 +20,22 @@
     "docs",
     "LICENSE"
   ],
+  "keywords": [
+    "react",
+    "antd",
+    "form",
+    "dynamic-form",
+    "react-form",
+    "ant-design",
+    "form-engine",
+    "dynamic",
+    "dependency",
+    "form-component",
+    "动态表单",
+    "表单引擎",
+    "表单联动",
+    "表单组件"
+  ],
   "scripts": {
     "prepare": "husky install",
     "start": "vite",

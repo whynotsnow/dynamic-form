@@ -61,19 +61,19 @@ const CustomHandlersDemo: React.FC = () => {
 
 ## ⚙️ 4. DynamicForm Props 总览
 
-| 属性              | 说明             | 类型                                    | 必填 | 默认值 |
-| ----------------- | ---------------- | --------------------------------------- | ---- | ------ |
-| formConfig        | 表单配置入口     | `FormConfig`                            | ✅   | -      |
-| form              | Antd Form 实例   | `FormInstance`                          | ❌   | -      |
-| onSubmit          | 提交回调         | `(values: Record<string, any>) => void` | ✅   | -      |
-| submitButtonText  | 提交按钮文案     | `string`                                | ❌   | -      |
-| componentRegistry | 自定义组件注册表 | `ComponentRegistry`                     | ❌   | -      |
-| values            | 初始值           | `Record<string, any>`                   | ❌   | -      |
-| renderFormInner   | 自定义表单结构   | `(params) => ReactNode`                 | ❌   | -      |
-| renderGroups      | 自定义分组容器   | `(params) => ReactNode`                 | ❌   | -      |
-| renderGroupItem   | 自定义分组项     | `(params) => ReactNode`                 | ❌   | -      |
-| renderFields      | 自定义字段集合   | `(params) => ReactNode`                 | ❌   | -      |
-| renderFieldItem   | 自定义单字段项   | `(params) => ReactNode`                 | ❌   | -      |
+| 属性              | 说明             | 类型                                          | 必填 | 默认值 |
+| ----------------- | ---------------- | --------------------------------------------- | ---- | ------ |
+| formConfig        | 表单配置入口     | `FormConfig`                                  | ✅   | -      |
+| form              | Antd Form 实例   | `FormInstance`                                | ✅   | -      |
+| onSubmit          | 提交回调         | `(values: Record<string, any>) => void`       | ✅   | -      |
+| submitButtonText  | 提交按钮文案     | `string`                                      | ❌   | -      |
+| componentRegistry | 自定义组件注册表 | `ComponentRegistry`                           | ❌   | -      |
+| values            | 初始值           | `Record<string, any>`                         | ❌   | -      |
+| renderFormInner   | 自定义表单结构   | `(params:RenderFormParams) => ReactNode`      | ❌   | -      |
+| renderGroups      | 自定义分组容器   | `(params: RenderGroupsParams) => ReactNode`   | ❌   | -      |
+| renderGroupItem   | 自定义分组项     | `(params:RenderGroupItemParams) => ReactNode` | ❌   | -      |
+| renderFields      | 自定义字段集合   | `(params:RenderFieldsParams) => ReactNode`    | ❌   | -      |
+| renderFieldItem   | 自定义单字段项   | `(params:RenderFieldItemParams) => ReactNode` | ❌   | -      |
 
 ---
 
