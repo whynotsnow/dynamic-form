@@ -5,7 +5,7 @@ import { defaultRegistryManager } from './fieldComponentRegistry';
 import { shallowEqual } from './utils/utils';
 import { log, LogCategory } from './utils/logger';
 
-const FieldRenderer: React.FC<FieldRendererProps> = React.memo(
+const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
   function FieldRenderer({ field, form, componentRegistry, dynamicUIConfig }) {
     const baseFormItemProps = useMemo(
       () => ({
@@ -87,4 +87,4 @@ const FieldRenderer: React.FC<FieldRendererProps> = React.memo(
   }
 );
 
-export default FieldRenderer;
+export default FieldComponentRenderer;

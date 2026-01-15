@@ -1,5 +1,5 @@
 import React from 'react';
-import { FieldComponentProps } from './DynamicForm/types';
+import { FieldComponentProps } from '@/types';
 import {
   Form,
   Input,
