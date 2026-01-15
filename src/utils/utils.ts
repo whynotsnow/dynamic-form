@@ -26,17 +26,28 @@ export function isGroupedConfig(config: FormConfig) {
   return config && typeof config === 'object' && 'groups' in config;
 }
 
+/**
+ * mergeIntoDraft 设计约定：
+ * - object：deep merge
+ * - array：整体 replace（不做 index merge）
+ *
+ * 如需支持结构级数组 diff，必须使用 keyed array
+ */
 export function mergeIntoDraft(draft: any, source: any) {
   if (Array.isArray(source)) {
-    source.forEach((item, index) => {
+    draft.length = 0;
+    source.forEach((item) => {
       if (typeof item === 'object' && item !== null) {
-        if (!draft[index]) draft[index] = Array.isArray(item) ? [] : {};
-        mergeIntoDraft(draft[index], item);
+        const next = Array.isArray(item) ? [] : {};
+        mergeIntoDraft(next, item);
+        draft.push(next);
       } else {
-        draft[index] = item;
+        draft.push(item);
       }
     });
-  } else if (typeof source === 'object' && source !== null) {
+    return;
+  }
+  if (typeof source === 'object' && source !== null) {
     Object.entries(source).forEach(([key, value]) => {
       if (typeof value === 'object' && value !== null) {
         if (!draft[key]) draft[key] = Array.isArray(value) ? [] : {};
