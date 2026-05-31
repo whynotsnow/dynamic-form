@@ -1,14 +1,17 @@
 import type { FormInstance, Rule } from 'antd/es/form';
 import type { EffectFn } from 'form-chain-effect-engine';
-import type { Dispatch, ReactNode } from 'react';
+import type { Dispatch } from 'react';
 import type { CustomEffectResultHandler, HandlerRegistrationOptions } from './resultProcessor';
-import { DefaultRegistryFieldComponents } from './fieldComponentRegistry';
 import { ButtonProps, CardProps, ColProps, FormItemProps, FormProps, RowProps } from 'antd/lib';
+
+export type FieldValue = any;
+export type FormValues = Record<string, FieldValue>;
+export type FieldComponentRuntimeProps = Record<string, any>;
 
 export interface FieldMeta {
   visible?: boolean;
   formItemProps?: FormItemProps;
-  componentProps?: Record<string, any>;
+  componentProps?: FieldComponentRuntimeProps;
 }
 
 export interface GroupMeta {
@@ -19,8 +22,8 @@ export interface GroupMeta {
 export interface BaseFieldConfig {
   id: string;
   initialValue?:
-    | any
-    | ((allValues: Record<string, any>) => any | { value: any; [key: string]: any });
+    | FieldValue
+    | ((allValues: FormValues) => FieldValue | { value: FieldValue; [key: string]: any });
   initialVisible?: boolean;
   initialDisabled?: boolean;
 
@@ -33,7 +36,7 @@ export interface BaseFieldConfig {
   style?: React.CSSProperties;
   rules?: Rule[];
   span?: number; // 栅格列数（如 span: 8）
-  componentProps?: Record<string, any>;
+  componentProps?: FieldComponentRuntimeProps;
 
   component: FieldComponentType;
 }
@@ -160,7 +163,7 @@ export interface FormChainEffectEngineWrapperProps extends EngineProps {
 export interface EngineProps {
   formConfig: FormConfig;
   form: FormInstance;
-  values?: Record<string, any>;
+  values?: FormValues;
   uiConfig?: UIConfig;
   enableInitializationCheck?: boolean;
   checkDelay?: number;
@@ -170,7 +173,7 @@ export interface EngineProps {
 export interface RenderFieldItemParams {
   field: FieldState;
   form: FormInstance;
-  fieldValue: any;
+  fieldValue: FieldValue;
   renderField: (targetField: FieldState) => React.ReactNode;
   defaultRender: React.ReactNode;
 }
@@ -222,7 +225,7 @@ export interface RenderFormParams {
 // ---- 组件 Props：保持 renderFormInner 名称 ----
 export interface FormContentProps {
   form: FormInstance;
-  onSubmit?: (data: Record<string, any>) => void;
+  onSubmit?: (data: FormValues) => void;
   submitButtonText?: string;
   componentRegistry?: ComponentRegistryConfig;
   // uiConfig?: UIConfig;
@@ -238,17 +241,17 @@ export interface FormContentProps {
 export interface FieldRendererProps {
   field: FieldState;
   form: FormInstance;
-  fieldValue?: any;
+  fieldValue?: FieldValue;
   // 新增：组件注册器
-  componentRegistry?: any;
+  componentRegistry?: ComponentRegistryResolver | null;
   // 新增：Form.Item组件配置 - 支持函数化值
   dynamicUIConfig?: UIConfig;
 }
 
 export interface FieldComponentProps {
   field: FieldState;
-  value?: any;
-  onChange?: (value: any) => void;
+  value?: FieldValue;
+  onChange?: (value: FieldValue) => void;
   form: FormInstance;
 }
 
@@ -266,15 +269,19 @@ export interface FieldRegistry {
 export interface ConfigProcessInfo {
   effectMap: Record<string, Fieldchain>;
   fieldRegistry: Record<string, FieldRegistry>;
-  initialValues: Record<string, any>;
+  initialValues: FormValues;
   initializedFields: Record<string, FieldState>;
   initializedGroupFields: Record<string, GroupFieldState>;
+}
+
+export interface ComponentRegistryResolver {
+  getComponent: (componentType: string) => FieldComponent | undefined;
 }
 
 export interface FormChainContextType {
   form: FormInstance;
   state: FormState;
   dispatch: Dispatch<FormAction>;
-  onValuesChange: (changed: Record<string, any>) => void;
-  manualTrigger: (field: string, value?: any) => void;
+  onValuesChange: (changed: FormValues) => void;
+  manualTrigger: (field: string, value?: FieldValue) => void;
 }

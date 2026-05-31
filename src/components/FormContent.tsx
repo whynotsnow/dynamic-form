@@ -1,6 +1,6 @@
 import React, { useMemo, useReducer } from 'react';
 import { Form, Button, Card, Row, Col } from 'antd';
-import type { FormContentProps, FieldState, GroupFieldState } from '../types';
+import type { FormContentProps, FieldState, FormValues, GroupFieldState } from '../types';
 import { useFormChainContext } from '../hooks';
 import { log, LogCategory } from '../utils/logger';
 import { ComponentRegistryManager } from '../fieldComponentRegistry';
@@ -43,7 +43,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
     onSubmit?.(submitValues);
   };
 
-  const handleFinishValuesChange = (changedValues: Record<string, any>) => {
+  const handleFinishValuesChange = (changedValues: FormValues) => {
     forceRender();
     onValuesChange?.(changedValues);
   };

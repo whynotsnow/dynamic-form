@@ -1,6 +1,6 @@
 import { FormInstance } from 'antd';
 import { Dispatch } from 'react';
-import { ConfigProcessInfo, FieldMeta, FormAction, UIConfig } from '../types';
+import { ConfigProcessInfo, FieldMeta, FieldValue, FormAction, UIConfig } from '../types';
 import type { EffectResultContext, InitContextParams } from './types';
 
 /**
@@ -32,8 +32,8 @@ export function createBatchUpdateContext(params: InitContextParams): EffectResul
   };
 
   return {
-    form: {} as any, // 初始化阶段无需 form API
-    dispatch: (() => {}) as any, // 初始化阶段无需 dispatch
+    form: {} as FormInstance, // 初始化阶段无需 form API
+    dispatch: (() => undefined) as Dispatch<FormAction>, // 初始化阶段无需 dispatch
     fieldName: fieldId,
     configProcessInfo: {
       effectMap: {},
@@ -42,10 +42,10 @@ export function createBatchUpdateContext(params: InitContextParams): EffectResul
       initializedFields,
       initializedGroupFields
     },
-    setFieldValue: (value: any) => {
+    setFieldValue: (value: FieldValue) => {
       initialValues[fieldId] = value;
     },
-    setFieldValueBatch: (value: any) => {
+    setFieldValueBatch: (value: FieldValue) => {
       initialValues[fieldId] = value;
     },
     updateFieldMeta: (meta: Partial<FieldMeta>) => {
@@ -96,11 +96,11 @@ export function createEffectContext(params: {
   const getFieldMeta = () => getFieldState()?.meta;
 
   // 语义化 API 函数定义
-  const setFieldValue = (value: any) => {
+  const setFieldValue = (value: FieldValue) => {
     form.setFieldsValue({ [fieldName]: value });
   };
 
-  const setFieldValueBatch = (value: any) => {
+  const setFieldValueBatch = (value: FieldValue) => {
     form.setFieldsValue({ [fieldName]: value });
   };
 

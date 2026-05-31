@@ -5,6 +5,8 @@ import type {
   ConfigProcessInfo,
   FieldMeta,
   FieldState,
+  FieldValue,
+  FormValues,
   GroupFieldState,
   BaseFieldConfig,
   GroupField,
@@ -18,7 +20,7 @@ import type {
  * 定义 effect 和 initialValue 函数可以返回的结果格式
  */
 export interface EffectResult {
-  value?: any;
+  value?: FieldValue;
   visible?: boolean;
   disabled?: boolean;
   [key: string]: any;
@@ -56,8 +58,8 @@ export interface EffectResultContext {
   groupId?: string;
 
   // 语义化 API
-  setFieldValue: (value: any, options?: { immediate?: boolean }) => void;
-  setFieldValueBatch: (value: any) => void;
+  setFieldValue: (value: FieldValue, options?: { immediate?: boolean }) => void;
+  setFieldValueBatch: (value: FieldValue) => void;
   updateFieldMeta: (meta: Partial<FieldMeta>) => void;
   updateFieldMetaBatch: (meta: Partial<FieldMeta>) => void;
   setGroupVisible: (groupKey: string, visible: boolean) => void;
@@ -79,10 +81,10 @@ export interface ExportEffectContext {
   getField: () => BaseFieldConfig | GroupField | undefined;
 
   /** 设置字段值（立即更新或批量更新） */
-  setFieldValue: (value: any, options?: { immediate?: boolean }) => void;
+  setFieldValue: (value: FieldValue, options?: { immediate?: boolean }) => void;
 
   /** 批量设置字段值 */
-  setFieldValueBatch: (value: any) => void;
+  setFieldValueBatch: (value: FieldValue) => void;
 
   /** 更新字段元数据 */
   updateFieldMeta: (meta: FieldMeta) => void;
@@ -181,7 +183,7 @@ export interface InitResult {
 
 export interface InitContextParams {
   fieldId: string;
-  initialValues: Record<string, any>;
+  initialValues: FormValues;
   initializedFields: Record<string, FieldState>;
   initializedGroupFields: Record<string, GroupFieldState>;
   fieldRegistry: Record<string, FieldRegistry>;

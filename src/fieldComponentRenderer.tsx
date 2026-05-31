@@ -49,8 +49,11 @@ const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
     const registry = componentRegistry || defaultRegistryManager;
     //OPTIMIZE  错误提示优化
     const Component = registry.getComponent(field.component);
+    if (!Component) return null;
+
     // 默认包裹了 Form.Item
-    const wrapFormItem = Component?.wrapWithFormItem !== false;
+    const wrapFormItem =
+      (Component as typeof Component & { wrapWithFormItem?: boolean }).wrapWithFormItem !== false;
 
     log.fieldRender(LogCategory.RENDER, field.id, field.component);
 
