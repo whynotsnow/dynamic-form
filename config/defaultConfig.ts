@@ -43,7 +43,7 @@ const baseHandlers: CustomEffectResultHandler[] = [
     canHandle: (key) => key === 'visible',
     handle: (context, visible) => {
       // 使用语义化的 API
-      context.updateFieldMeta({ visible });
+      context.updateFieldMeta({ behavior: { visible } });
     }
   },
   {
@@ -52,7 +52,15 @@ const baseHandlers: CustomEffectResultHandler[] = [
     canHandle: (key) => key === 'disabled',
     handle: (context, disabled) => {
       // 使用语义化的 API
-      context.updateFieldMeta({ componentProps: { disabled } });
+      context.updateFieldMeta({ behavior: { disabled } });
+    }
+  },
+  {
+    name: 'readonly',
+    description: '处理字段只读状态',
+    canHandle: (key) => key === 'readonly',
+    handle: (context, readonly) => {
+      context.updateFieldMeta({ behavior: { readonly } });
     }
   },
   {

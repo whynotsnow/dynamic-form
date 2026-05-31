@@ -9,18 +9,33 @@ export type FieldValue = any;
 export type FormValues = Record<string, FieldValue>;
 export type FieldComponentRuntimeProps = Record<string, any>;
 
-export interface FieldMeta {
+export interface FieldBehaviorMeta {
   visible?: boolean;
-
   disabled?: boolean;
+  readonly?: boolean;
+}
 
+export interface FieldMeta {
+  behavior?: FieldBehaviorMeta;
+
+  /** @deprecated Use behavior.visible instead. Kept for backward-compatible effect results. */
+  visible?: boolean;
+  /** @deprecated Use behavior.disabled instead. Kept for backward-compatible effect results. */
+  disabled?: boolean;
+  /** @deprecated Use behavior.readonly instead. Kept for backward-compatible effect results. */
   readonly?: boolean;
 
   formItemProps?: FormItemProps;
   componentProps?: FieldComponentRuntimeProps;
 }
 
+export interface GroupBehaviorMeta {
+  visible?: boolean;
+}
+
 export interface GroupMeta {
+  behavior?: GroupBehaviorMeta;
+  /** @deprecated Use behavior.visible instead. */
   visible?: boolean;
   [key: string]: any;
 }
@@ -102,7 +117,7 @@ export type FormAction =
       type: 'UPDATE_META';
       payload: { fieldId: string; meta: FieldMeta };
     }
-  | { type: 'SET_GROUP_META'; payload: { groupId: string; meta: FieldMeta } }
+  | { type: 'SET_GROUP_META'; payload: { groupId: string; meta: GroupMeta } }
   | { type: 'BATCH_META_UPDATE'; payload: { meta: Record<string, FieldMeta> } }
   | { type: 'UPDATE_DYNAMIC_UICONFIG'; payload: { config: Partial<UIConfig> & object } };
 

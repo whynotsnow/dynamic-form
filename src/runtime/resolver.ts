@@ -1,5 +1,6 @@
 import type { FormState } from '../types';
 import type { FieldCapability, GroupCapability } from './types';
+import { getFieldBehaviorMeta, getGroupBehaviorMeta } from '../utils';
 
 import { getAllFieldIds, getFieldById, getFieldGroup, getGroupById } from './selectors';
 
@@ -35,8 +36,11 @@ export function resolveFieldCapability(fieldId: string, state: FormState): Field
   /**
    * Visible
    */
-  const fieldVisible = field.meta?.visible !== false;
-  const groupVisible = group?.meta?.visible !== false;
+  const fieldBehavior = getFieldBehaviorMeta(field.meta);
+  const groupBehavior = getGroupBehaviorMeta(group?.meta);
+
+  const fieldVisible = fieldBehavior.visible !== false;
+  const groupVisible = groupBehavior.visible !== false;
 
   const rendered = fieldVisible && groupVisible;
 
@@ -53,14 +57,14 @@ export function resolveFieldCapability(fieldId: string, state: FormState): Field
    *
    * 预留 Runtime 能力扩展
    */
-  const disabled = field.meta.disabled === true;
+  const disabled = fieldBehavior.disabled === true;
 
   /**
    * Readonly
    *
    * 预留 Runtime 能力扩展
    */
-  const readonly = field.meta.readonly === true;
+  const readonly = fieldBehavior.readonly === true;
 
   /**
    * Editable
@@ -99,7 +103,8 @@ export function resolveGroupCapability(groupId: string, state: FormState): Group
     };
   }
 
-  const groupVisible = group.meta?.visible !== false;
+  const groupBehavior = getGroupBehaviorMeta(group.meta);
+  const groupVisible = groupBehavior.visible !== false;
 
   return {
     rendered: groupVisible

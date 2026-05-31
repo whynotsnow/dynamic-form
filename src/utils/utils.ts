@@ -1,4 +1,10 @@
-import { FieldMeta, FormConfig } from '../types';
+import type {
+  FieldBehaviorMeta,
+  FieldMeta,
+  FormConfig,
+  GroupBehaviorMeta,
+  GroupMeta
+} from '../types';
 
 // 浅比较
 export function shallowEqual(objA: any, objB: any) {
@@ -167,7 +173,18 @@ export function mergeFieldMetaPatch(
   };
 
   (Object.keys(patch) as (keyof FieldMeta)[]).forEach((key) => {
-    if (key === 'formItemProps' || key === 'componentProps') {
+    if (key === 'visible' || key === 'disabled' || key === 'readonly') {
+      result.behavior = {
+        ...(result.behavior || {}),
+        [key]: patch[key]
+      };
+      delete result[key];
+    } else if (key === 'behavior') {
+      result.behavior = {
+        ...(result.behavior || {}),
+        ...(patch.behavior || {})
+      };
+    } else if (key === 'formItemProps' || key === 'componentProps') {
       result[key] = {
         ...(result[key] || {}),
         ...(patch[key] || {})
@@ -178,4 +195,46 @@ export function mergeFieldMetaPatch(
   });
 
   return result;
+}
+
+export function mergeGroupMetaPatch(
+  targetMeta: GroupMeta | undefined,
+  patch: Partial<GroupMeta>
+): GroupMeta {
+  const result: GroupMeta = {
+    ...(targetMeta || {})
+  };
+
+  (Object.keys(patch) as (keyof GroupMeta)[]).forEach((key) => {
+    if (key === 'visible') {
+      result.behavior = {
+        ...(result.behavior || {}),
+        visible: patch.visible
+      };
+      delete result.visible;
+    } else if (key === 'behavior') {
+      result.behavior = {
+        ...(result.behavior || {}),
+        ...(patch.behavior || {})
+      };
+    } else {
+      result[key] = patch[key]!;
+    }
+  });
+
+  return result;
+}
+
+export function getFieldBehaviorMeta(meta?: FieldMeta): FieldBehaviorMeta {
+  return {
+    visible: meta?.behavior?.visible ?? meta?.visible,
+    disabled: meta?.behavior?.disabled ?? meta?.disabled,
+    readonly: meta?.behavior?.readonly ?? meta?.readonly
+  };
+}
+
+export function getGroupBehaviorMeta(meta?: GroupMeta): GroupBehaviorMeta {
+  return {
+    visible: meta?.behavior?.visible ?? meta?.visible
+  };
 }

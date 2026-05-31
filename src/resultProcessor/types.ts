@@ -23,6 +23,7 @@ export interface EffectResult {
   value?: FieldValue;
   visible?: boolean;
   disabled?: boolean;
+  readonly?: boolean;
   [key: string]: any;
 }
 

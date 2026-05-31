@@ -1,6 +1,6 @@
 import { produce, current, castDraft } from 'immer';
 import type { FormState, FormAction, FieldMeta, UIConfig, FieldState } from './types';
-import { mergeFieldMetaPatch } from './utils';
+import { mergeFieldMetaPatch, mergeGroupMetaPatch } from './utils';
 import { log, LogCategory } from './utils/logger';
 
 const formReducer = produce<FormState, [FormAction]>((draft, action) => {
@@ -57,10 +57,7 @@ const formReducer = produce<FormState, [FormAction]>((draft, action) => {
         return;
       }
 
-      draft.groupFields[groupId].meta = {
-        ...draft.groupFields[groupId].meta,
-        ...meta
-      };
+      draft.groupFields[groupId].meta = mergeGroupMetaPatch(draft.groupFields[groupId].meta, meta);
 
       log.info(LogCategory.BATCH_UPDATE, 'SET_GROUP_META action 结果:', {
         groupId,

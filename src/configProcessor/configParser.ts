@@ -106,7 +106,7 @@ export function hydrateFormConfig(analysisConfig: ConfigAnalysisResult): Hydrate
     // 初始化字段状态
     const fieldState: FieldState = {
       ...field,
-      meta: { visible: field.initialVisible !== false }
+      meta: { behavior: { visible: field.initialVisible !== false } }
     };
 
     if (groupId) {
@@ -147,7 +147,7 @@ export function hydrateFormConfig(analysisConfig: ConfigAnalysisResult): Hydrate
       const group = fieldConfig as GroupField;
       initializedGroupFields[group.id] = {
         ...group,
-        meta: { visible: group.initialVisible !== false },
+        meta: { behavior: { visible: group.initialVisible !== false } },
         fields: {}
       };
       group.fields.forEach((f) => processField(f, group.id));

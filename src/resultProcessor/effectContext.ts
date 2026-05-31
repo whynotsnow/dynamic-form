@@ -2,6 +2,7 @@ import { FormInstance } from 'antd';
 import { Dispatch } from 'react';
 import { ConfigProcessInfo, FieldMeta, FieldValue, FormAction, UIConfig } from '../types';
 import type { EffectResultContext, InitContextParams } from './types';
+import { mergeFieldMetaPatch, mergeGroupMetaPatch } from '../utils';
 
 export function createInitialEffectContext(params: InitContextParams): EffectResultContext {
   const { fieldId, initialValues, initializedFields, initializedGroupFields, fieldRegistry } =
@@ -38,19 +39,22 @@ export function createInitialEffectContext(params: InitContextParams): EffectRes
     },
     updateFieldMeta: (meta: Partial<FieldMeta>) => {
       const fieldState = findFieldState(fieldId);
-      if (fieldState) Object.assign(fieldState.meta, meta);
+      if (fieldState) fieldState.meta = mergeFieldMetaPatch(fieldState.meta, meta);
     },
     updateFieldMetaBatch: (meta: Partial<FieldMeta>) => {
       const fieldState = findFieldState(fieldId);
-      if (fieldState) Object.assign(fieldState.meta, meta);
+      if (fieldState) fieldState.meta = mergeFieldMetaPatch(fieldState.meta, meta);
     },
     updateFieldMetaById: (targetFieldId: string, meta: Partial<FieldMeta>) => {
       const fieldState = findFieldState(targetFieldId);
-      if (fieldState) Object.assign(fieldState.meta, meta);
+      if (fieldState) fieldState.meta = mergeFieldMetaPatch(fieldState.meta, meta);
     },
     setGroupVisible: (groupKey: string, visible: boolean) => {
       if (initializedGroupFields[groupKey]?.meta) {
-        initializedGroupFields[groupKey].meta.visible = visible;
+        initializedGroupFields[groupKey].meta = mergeGroupMetaPatch(
+          initializedGroupFields[groupKey].meta,
+          { visible }
+        );
       }
     },
     updateDynamicUIConfig: () => {
