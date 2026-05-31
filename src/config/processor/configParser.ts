@@ -8,12 +8,12 @@ import type {
   FieldRegistry,
   GroupedFormConfig,
   FlatFormConfig
-} from '../types';
+} from '../../shared/types';
 import type { ConfigAnalysisResult, ConfigProcessInfo, HydratedConfigResult } from './types';
-import { isGroupedConfig } from '../utils/utils';
-import { log, LogCategory } from '../utils/logger';
-import { handleEffectResult } from '../resultProcessor';
-import { createInitialEffectContext } from '../resultProcessor/effectContext';
+import { isGroupedConfig } from '../../shared/utils/utils';
+import { log, LogCategory } from '../../shared/utils/logger';
+import { handleEffectResult } from '../../consumer/effect/resultProcessor';
+import { createInitialEffectContext } from '../../consumer/effect/resultProcessor/effectContext';
 
 /**
  * 分析表单配置，生成 effectMap 和 fieldRegistry

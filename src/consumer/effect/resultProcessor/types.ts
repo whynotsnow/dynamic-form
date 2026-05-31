@@ -12,7 +12,7 @@ import type {
   GroupField,
   UIConfig,
   FieldRegistry
-} from '../types';
+} from '../../../shared/types';
 
 /**
  * 效果结果接口

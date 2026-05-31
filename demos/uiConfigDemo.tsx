@@ -1,9 +1,9 @@
 import React from 'react';
 import DynamicForm from '@/index';
-import { ComponentRegistryConfig, FieldComponentProps, FormConfig, UIConfig } from '@/types';
+import { ComponentRegistryConfig, FieldComponentProps, FormConfig, UIConfig } from '@/exports';
 import { Tag, Space, Form, Select } from 'antd';
 import { CheckCircleOutlined, StarOutlined } from '@ant-design/icons';
-import { useInitHandlers } from '@/hooks';
+import { useInitHandlers } from '@/consumer';
 
 const PriorityField: React.FC<FieldComponentProps> = ({ field, form }) => {
   // 在自定义组件内部处理 label 的动态展示

@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Card, Space, Typography, Alert, Spin, SelectProps, Form } from 'antd';
-import { useInitHandlers } from '@/hooks';
+import { useInitHandlers } from '@/consumer';
 import { exampleHandlers } from './customHandlers';
-import { FlatFormConfig } from '@/types';
+import { FlatFormConfig } from '@/exports';
 import { DynamicForm } from '@/exports';
 
 const { Title, Paragraph } = Typography;

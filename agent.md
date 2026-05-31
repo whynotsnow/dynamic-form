@@ -43,29 +43,32 @@ Do not run dependency installation or global tool installation without explainin
 
 ## Directory Map
 
-- `src/`: library source
+- `src/`: library source, organized by Config / State / Runtime / Consumer / Shared layers
 - `src/exports.ts`: package public export surface; tsup entry point
 - `src/index.tsx`: `DynamicForm` component that composes engine layer and UI layer
-- `src/types.ts`: core public and internal types
-- `src/components/FormChainEffectEngineWrapper.tsx`: logic layer; initializes store, effect engine,
+- `src/shared/types.ts`: core public and internal types
+- `src/consumer/effect/FormChainEffectEngineWrapper.tsx`: logic layer; initializes store, effect engine,
   context, initialization warning, and effect result handling
-- `src/components/FormContent.tsx`: rendering layer; owns Ant Design `Form`, value change handling,
+- `src/consumer/render/FormContent.tsx`: rendering layer; owns Ant Design `Form`, value change handling,
   submit handling, default rendering, and render extension hooks
 - `src/runtime/`: Runtime Layer. It resolves `FormState` into `RuntimeState` via
   `resolveRuntimeState()` and exposes selectors/resolvers for field and group capabilities.
-- `src/reducer.ts`: Immer reducer for field values, field/group meta, batched updates, and dynamic UI config
-- `src/configProcessor/`: converts user config into `effectMap`, `fieldRegistry`, initial values,
+- `src/state/reducer.ts`: Immer reducer for field values, field/group meta, batched updates, and dynamic UI config
+- `src/state/useStoreInit.ts`: initializes reducer state and synchronizes initial values into AntD Form
+- `src/config/processor/`: converts user config into `effectMap`, `fieldRegistry`, initial values,
   initialized fields, and initialized groups
-- `src/resultProcessor/`: handles effect/initialValue return objects through registered handlers and
+- `src/config/defaultConfig.ts`: exported default config helper
+- `src/consumer/effect/resultProcessor/`: handles effect/initialValue return objects through registered handlers and
   supports batched updates
-- `src/hooks/`: context access, store initialization, form/store synchronization, handler initialization
-- `src/fieldComponentRegistry.tsx`: built-in Ant Design field components and component registry manager
-- `src/fieldComponentRenderer.tsx`: renders a configured field via the registry
-- `src/utils/`: logger, path/deep utilities, initialization checks
+- `src/consumer/events/`: submit/change event handling filtered by Runtime capabilities
+- `src/consumer/participation/`: field participation and value clear/restore behavior
+- `src/consumer/render/fieldComponentRegistry.tsx`: built-in Ant Design field components and component registry manager
+- `src/consumer/render/FieldComponentRenderer.tsx`: renders a configured field via the registry
+- `src/shared/context/`: form chain React context access
+- `src/shared/utils/`: logger, path/deep utilities, initialization checks
 - `demos/`: Vite demos for usage, custom handlers, custom components, UI config, sync tests, and render extensions
 - `tests/`: script-style test/demo data, not a conventional test runner setup
 - `docs/`: architecture, data flow, field types, config, effects, batch updates, and quick reference docs
-- `config/defaultConfig.ts`: exported default config helper
 - `dist/`: generated build output; reproducible artifact
 
 ## Public API Shape
@@ -186,7 +189,7 @@ Grouped config supports group-level `id`, `title`, `initialVisible`, `dependents
 ## Effect Result Handling
 
 Effects and function-style `initialValue` can return objects. `handleEffectResult` routes each returned key
-to registered handlers from `src/resultProcessor/handlers.ts`.
+to registered handlers from `src/consumer/effect/resultProcessor/handlers.ts`.
 
 Known update categories include:
 
@@ -197,7 +200,7 @@ Known update categories include:
 - dynamic UI config
 - custom handler-specific result keys
 
-For effect-related changes, inspect `src/resultProcessor/types.ts`, `handlers.ts`, `batchUpdate.ts`, and
+For effect-related changes, inspect `src/consumer/effect/resultProcessor/types.ts`, `handlers.ts`, `batchUpdate.ts`, and
 `core.ts` together. Avoid adding one-off handling in components if it belongs in result processors.
 
 ## Rendering Model
@@ -226,7 +229,7 @@ Default UI config comes from `useStoreInit`:
 
 ## Built-In Field Components
 
-Defined in `src/fieldComponentRegistry.tsx`:
+Defined in `src/consumer/render/fieldComponentRegistry.tsx`:
 
 - `Password`
 - `ConfirmPassword`

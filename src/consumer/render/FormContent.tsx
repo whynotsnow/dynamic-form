@@ -1,12 +1,14 @@
 import React, { useMemo } from 'react';
 import { Form, Button, Card, Row, Col } from 'antd';
-import type { FormContentProps, FieldState, GroupFieldState } from '../types';
-import { useFormRuntimeEvents, useFieldParticipation, useFormChainContext } from '../hooks';
-import { log, LogCategory } from '../utils/logger';
-import { ComponentRegistryManager } from '../fieldComponentRegistry';
-import FieldComponentRenderer from '../fieldComponentRenderer';
+import type { FormContentProps, FieldState, GroupFieldState } from '../../shared/types';
+import { useFormRuntimeEvents } from '../events/useFormRuntimeEvents';
+import { useFieldParticipation } from '../participation/useFieldParticipation';
+import { useFormChainContext } from '../../shared/context/FormChainContext';
+import { log, LogCategory } from '../../shared/utils/logger';
+import { ComponentRegistryManager } from './fieldComponentRegistry';
+import FieldComponentRenderer from './FieldComponentRenderer';
 
-import { useRuntimeState } from '../hooks';
+import { useRuntimeState } from '../../runtime';
 
 const FormContent: React.FC<FormContentProps> = (props) => {
   const {

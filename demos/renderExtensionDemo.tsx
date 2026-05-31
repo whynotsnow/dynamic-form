@@ -15,7 +15,7 @@ import type {
   GroupedFormConfig,
   RenderGroupsParams,
   RenderFieldsParams
-} from '@/types';
+} from '@/exports';
 import { useInitHandlers } from '@/exports';
 
 const { Text } = Typography;

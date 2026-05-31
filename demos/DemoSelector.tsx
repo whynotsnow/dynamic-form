@@ -6,7 +6,7 @@ import CustomComponentsDemo from './customComponentsDemo';
 import UIConfigDemo from './uiConfigDemo';
 import RenderExtensionDemo from './renderExtensionDemo';
 import { DEMO_COMPONENTS, DemoType, FormValidationDemo } from './index';
-import { LogCategory, logger } from '@/utils/logger';
+import { LogCategory, logger } from '@/shared/utils/logger';
 
 const { Title, Paragraph } = Typography;
 const { Option } = Select;

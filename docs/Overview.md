@@ -87,45 +87,36 @@ const groupedConfig = {
 
 ```
 dynamic-form/
-├── docs/                         # 文档
-│   ├── ARCHITECTURE.md
-│   ├── BATCH_UPDATE.md
-│   ├── DATA_FLOW.md
-│   ├── EFFECTS.md
-│   ├── FIELD_TYPES.md
-│   ├── FORM_CONFIG.md
-│   ├── QUICK_REFERENCE.md
-│   ├── Store层级模型与设计架构.md
-│   └── UI解耦.md
+├── docs/
 ├── src/
-│   ├── components/               # 组件
-│   │   ├── FormChainEffectEngineWrapper.tsx
-│   │   ├── FormContent.tsx
-│   │   ├── fieldComponentRegistry.tsx
-│   │   ├── fieldComponentRenderer.tsx
-│   │   └── index.tsx             # DynamicForm 主组件
-│   ├── configProcessor/          # 配置处理器
-│   │   ├── configParser.ts
-│   │   ├── index.ts
-│   │   └── types.ts
-│   ├── hooks/                    # 自定义 hooks
-│   │   ├── useFormChainContext.ts
-│   │   ├── useInitHandlers.ts
-│   │   ├── useStateSync.ts
-│   │   ├── useStoreInit.ts
-│   │   └── index.ts
-│   ├── resultProcessor/          # 结果处理器
-│   │   ├── batchUpdate.ts
-│   │   ├── core.ts
-│   │   ├── handlers.ts
-│   │   ├── init.ts
-│   │   ├── index.ts
-│   │   └── types.ts
-│   ├── utils/                    # 工具函数
-│   ├── reducer.ts                # reducer
-│   ├── exports.ts                # 对外导出
-│   └── types.ts                  # 类型定义
-├── demos/                        # 演示示例
+│   ├── config/
+│   │   ├── defaultConfig.ts
+│   │   └── processor/
+│   ├── state/
+│   │   ├── reducer.ts
+│   │   └── useStoreInit.ts
+│   ├── runtime/
+│   │   ├── resolver.ts
+│   │   ├── runtimeState.ts
+│   │   ├── selectors.ts
+│   │   ├── types.ts
+│   │   └── useRuntimeState.ts
+│   ├── consumer/
+│   │   ├── effect/
+│   │   │   ├── FormChainEffectEngineWrapper.tsx
+│   │   │   ├── useInitHandlers.ts
+│   │   │   └── resultProcessor/
+│   │   ├── events/
+│   │   ├── participation/
+│   │   └── render/
+│   ├── shared/
+│   │   ├── context/
+│   │   ├── types.ts
+│   │   └── utils/
+│   ├── exports.ts
+│   └── index.tsx
+├── demos/
+├── tests/
 └── package.json
 ```
 

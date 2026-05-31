@@ -1,9 +1,9 @@
 import { useReducer } from 'react';
 import type { FormInstance } from 'antd';
-import type { FormValues } from '../types';
-import type { RuntimeState } from '../runtime';
-import { log, LogCategory } from '../utils/logger';
-import { useFormChainContext } from './useFormChainContext';
+import type { FormValues } from '../../shared/types';
+import type { RuntimeState } from '../../runtime';
+import { log, LogCategory } from '../../shared/utils/logger';
+import { useFormChainContext } from '../../shared/context/FormChainContext';
 
 interface UseFormRuntimeEventsParams {
   form: FormInstance;

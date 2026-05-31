@@ -1,6 +1,6 @@
-import type { FormState } from '../types';
+import type { FormState } from '../shared/types';
 import type { FieldCapability, GroupCapability } from './types';
-import { getFieldBehaviorMeta, getGroupBehaviorMeta } from '../utils';
+import { getFieldBehaviorMeta, getGroupBehaviorMeta } from '../shared/utils';
 
 import { getAllFieldIds, getFieldById, getFieldGroup, getGroupById } from './selectors';
 

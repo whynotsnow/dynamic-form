@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { init, InitConfig, InitResult } from '../resultProcessor';
+import { init, InitConfig, InitResult } from './resultProcessor';
 
 /**
  * 处理器初始化 Hook

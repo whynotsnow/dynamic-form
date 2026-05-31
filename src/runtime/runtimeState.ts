@@ -1,7 +1,7 @@
-import { getAllFieldIds } from '@/runtime/selectors';
-import type { FormState } from '../types';
+import { getAllFieldIds } from './selectors';
+import type { FormState } from '../shared/types';
 import type { FieldCapability, GroupCapability } from './types';
-import { resolveFieldCapability, resolveGroupCapability } from '@/runtime/resolver';
+import { resolveFieldCapability, resolveGroupCapability } from './resolver';
 
 export interface RuntimeState {
   fields: Record<string, FieldCapability>;

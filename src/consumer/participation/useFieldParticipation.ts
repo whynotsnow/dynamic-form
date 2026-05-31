@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import type { FormInstance } from 'antd';
-import type { FieldValue, FormState } from '../types';
-import type { RuntimeState } from '../runtime';
-import { getAllFields } from '@/runtime/selectors';
+import type { FieldValue, FormState } from '../../shared/types';
+import type { RuntimeState } from '../../runtime';
+import { getAllFields } from '../../runtime/selectors';
 
 export function useFieldParticipation(
   form: FormInstance,

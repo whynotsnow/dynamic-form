@@ -1,6 +1,10 @@
 import React from 'react';
 import { Input, InputNumber, Select, DatePicker, Switch, Rate, Typography, Checkbox } from 'antd';
-import type { FieldComponentProps, ComponentRegistry, ComponentRegistryConfig } from './types';
+import type {
+  FieldComponentProps,
+  ComponentRegistry,
+  ComponentRegistryConfig
+} from '../../shared/types';
 
 const { Text } = Typography;
 

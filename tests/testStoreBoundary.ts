@@ -1,4 +1,4 @@
-import type { FieldMeta } from '../src/types';
+import type { FieldMeta } from '../src/shared/types';
 
 export interface RuntimeFormStoreSnapshot {
   values: Record<string, unknown>;

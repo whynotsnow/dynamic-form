@@ -1,5 +1,5 @@
 import React from 'react';
-import { FieldComponentProps } from '@/types';
+import { FieldComponentProps } from '@/exports';
 import {
   Form,
   Input,

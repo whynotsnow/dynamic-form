@@ -1,4 +1,4 @@
-import type { FieldState, GroupFieldState, FieldRegistry, Fieldchain } from '../types';
+import type { FieldState, GroupFieldState, FieldRegistry, Fieldchain } from '../../shared/types';
 
 /** --------------------- 配置分析结果 --------------------- */
 export interface ConfigAnalysisResult {

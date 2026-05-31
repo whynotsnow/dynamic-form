@@ -1,7 +1,7 @@
 import React from 'react';
-import type { DynamicFormProps, EngineProps, FormContentProps } from './types';
-import FormContent from './components/FormContent';
-import FormChainEffectEngineWrapper from './components/FormChainEffectEngineWrapper';
+import type { DynamicFormProps, EngineProps, FormContentProps } from './shared/types';
+import FormContent from './consumer/render/FormContent';
+import FormChainEffectEngineWrapper from './consumer/effect/FormChainEffectEngineWrapper';
 
 // EngineProps
 function pickEngineProps(props: DynamicFormProps): EngineProps {

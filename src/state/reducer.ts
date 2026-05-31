@@ -1,7 +1,7 @@
 import { produce, current, castDraft } from 'immer';
-import type { FormState, FormAction, FieldMeta, UIConfig, FieldState } from './types';
-import { mergeFieldMetaPatch, mergeGroupMetaPatch } from './utils';
-import { log, LogCategory } from './utils/logger';
+import type { FormState, FormAction, FieldMeta, UIConfig, FieldState } from '../shared/types';
+import { mergeFieldMetaPatch, mergeGroupMetaPatch } from '../shared/utils';
+import { log, LogCategory } from '../shared/utils/logger';
 
 const formReducer = produce<FormState, [FormAction]>((draft, action) => {
   log.info(LogCategory.BATCH_UPDATE, `Reducer 收到 action: ${action.type}`, {

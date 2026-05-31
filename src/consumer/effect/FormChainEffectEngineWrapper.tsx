@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import { useFormChainEffectEngine } from 'form-chain-effect-engine';
-import { FormChainEffectEngineWrapperProps } from '../types';
-import { useStoreInit } from '../hooks';
-import { handleEffectResult } from '../resultProcessor';
-import { FormChainContext } from '../hooks/useFormChainContext';
+import { FormChainEffectEngineWrapperProps } from '../../shared/types';
+import { useStoreInit } from '../../state';
+import { handleEffectResult } from './resultProcessor';
+import { FormChainContext } from '../../shared/context/FormChainContext';
 import {
   checkInitializationSilent,
   getInitializationSummary
-} from '../utils/initializationChecker';
-import { createRuntimeEffectContext } from '../resultProcessor/effectContext';
+} from '../../shared/utils/initializationChecker';
+import { createRuntimeEffectContext } from './resultProcessor/effectContext';
 
 const FormChainEffectEngineWrapper: React.FC<FormChainEffectEngineWrapperProps> = ({
   formConfig,

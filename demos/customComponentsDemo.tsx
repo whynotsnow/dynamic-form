@@ -4,13 +4,13 @@ import type {
   FieldState,
   GroupedFormConfig,
   RenderFieldItemParams
-} from '@/types';
+} from '@/exports';
 import DynamicForm from '@/index';
 import { useInitHandlers } from '@/exports';
 import { exampleHandlers } from './customHandlers';
 import { customComponents } from './customComponents';
 import { Button, Form, message, Space, Spin } from 'antd';
-import { mockFetchFormData } from '../src/utils/utils';
+import { mockFetchFormData } from '../src/shared/utils/utils';
 
 // 组件注册器配置
 const componentRegistryConfig: ComponentRegistryConfig = {

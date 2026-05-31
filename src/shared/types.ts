@@ -1,8 +1,11 @@
 import type { FormInstance, Rule } from 'antd/es/form';
 import type { EffectFn } from 'form-chain-effect-engine';
 import type { Dispatch } from 'react';
-import type { CustomEffectResultHandler, HandlerRegistrationOptions } from './resultProcessor';
-import type { FieldCapability } from './runtime';
+import type {
+  CustomEffectResultHandler,
+  HandlerRegistrationOptions
+} from '../consumer/effect/resultProcessor';
+import type { FieldCapability } from '../runtime';
 import { ButtonProps, CardProps, ColProps, FormItemProps, FormProps, RowProps } from 'antd/lib';
 
 export type FieldValue = any;

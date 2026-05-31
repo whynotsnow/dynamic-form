@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Space, Form } from 'antd';
 import { supplierFormConfig } from '../tests/testData';
-import { useInitHandlers } from '@/hooks';
+import { useInitHandlers } from '@/consumer';
 import { DynamicForm } from '@/exports';
 const SyncTest: React.FC = () => {
   const handleSubmit = (values: any) => {

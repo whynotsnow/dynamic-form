@@ -1,8 +1,8 @@
 import { useReducer, useMemo, useLayoutEffect } from 'react';
 import type { FormInstance } from 'antd';
-import type { FormConfig, UIConfig } from '../types';
-import { processFormConfig } from '../configProcessor';
-import formReducer from '../reducer';
+import type { FormConfig, UIConfig } from '../shared/types';
+import { processFormConfig } from '../config/processor';
+import formReducer from './reducer';
 
 interface useStoreInitParams {
   formConfig: FormConfig;

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { FieldComponentProps } from '@/types';
+import { FieldComponentProps } from '@/exports';
 import { Button, message, Input, Select, Popconfirm } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { EditableProTable } from '@ant-design/pro-components';

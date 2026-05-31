@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
-import type { FormState } from '../types';
+import type { FormState } from '../shared/types';
 
-import { resolveRuntimeState } from '../runtime';
+import { resolveRuntimeState } from './runtimeState';
 
 export function useRuntimeState(state: FormState) {
   return useMemo(() => resolveRuntimeState(state), [state]);

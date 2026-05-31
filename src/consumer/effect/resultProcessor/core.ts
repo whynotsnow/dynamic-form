@@ -1,5 +1,5 @@
 import type { EffectResult, EffectResultContext, CustomEffectResultHandler } from './types';
-import { log, LogCategory } from '../utils/logger';
+import { log, LogCategory } from '../../../shared/utils/logger';
 import { getHandlers } from './handlers';
 
 /**

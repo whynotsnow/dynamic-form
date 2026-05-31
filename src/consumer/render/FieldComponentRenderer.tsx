@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import { Form } from 'antd';
-import type { FieldRendererProps } from './types';
+import type { FieldRendererProps } from '../../shared/types';
 import { defaultRegistryManager } from './fieldComponentRegistry';
-import { shallowEqual } from './utils/utils';
-import { log, LogCategory } from './utils/logger';
+import { shallowEqual } from '../../shared/utils/utils';
+import { log, LogCategory } from '../../shared/utils/logger';
 
 const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
   function FieldRenderer({ field, form, componentRegistry, dynamicUIConfig, runtimeCapability }) {

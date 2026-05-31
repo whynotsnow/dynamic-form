@@ -1,4 +1,4 @@
-import type { FormState, FieldState, GroupFieldState } from '../types';
+import type { FormState, FieldState, GroupFieldState } from '../shared/types';
 
 /**
  * 根据 fieldId 获取字段
