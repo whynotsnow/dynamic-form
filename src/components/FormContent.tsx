@@ -1,10 +1,12 @@
 import React, { useMemo } from 'react';
 import { Form, Button, Card, Row, Col } from 'antd';
 import type { FormContentProps, FieldState, GroupFieldState } from '../types';
-import { useFormRuntimeEvents, useHiddenFieldValues } from '../hooks';
+import { useFormRuntimeEvents, useFieldParticipation, useFormChainContext } from '../hooks';
 import { log, LogCategory } from '../utils/logger';
 import { ComponentRegistryManager } from '../fieldComponentRegistry';
 import FieldComponentRenderer from '../fieldComponentRenderer';
+
+import { useRuntimeState } from '../hooks';
 
 const FormContent: React.FC<FormContentProps> = (props) => {
   const {
@@ -23,9 +25,16 @@ const FormContent: React.FC<FormContentProps> = (props) => {
   // 合并用户配置和默认配置
   const finalSubmitButtonText = submitButtonText ?? '提交';
 
-  const { state, handleFinish, handleValuesChange } = useFormRuntimeEvents({ form, onSubmit });
+  const { state } = useFormChainContext();
+  const runtimeState = useRuntimeState(state);
+  const { handleFinish, handleValuesChange } = useFormRuntimeEvents({
+    form,
+    onSubmit,
+    runtimeState
+  });
   const { dynamicUIConfig, initialized, fields, groupFields, configProcessInfo } = state;
-  useHiddenFieldValues(form, state);
+
+  useFieldParticipation(form, state, runtimeState);
 
   // 创建组件注册器实例
   const registryManager = useMemo(() => {
@@ -37,7 +46,11 @@ const FormContent: React.FC<FormContentProps> = (props) => {
 
   /** 单字段渲染（最小单元，必须兜底） */
   const internalRenderFieldItem = (field: FieldState) => {
-    if (!initialized || field.meta?.visible === false) return null;
+    const capability = runtimeState.fields[field.id];
+
+    if (!initialized || !capability?.rendered) {
+      return null;
+    }
 
     const defaultRender = (
       <FieldComponentRenderer
@@ -46,6 +59,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
         form={form}
         componentRegistry={registryManager}
         dynamicUIConfig={dynamicUIConfig}
+        runtimeCapability={capability}
       />
     );
 
@@ -54,7 +68,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
         field,
         form,
         fieldValue: form.getFieldValue(field.id),
-        renderField: internalRenderFieldItem, // 递归给自己
+        renderField: internalRenderFieldItem,
         defaultRender
       });
     }
@@ -67,7 +81,11 @@ const FormContent: React.FC<FormContentProps> = (props) => {
     const defaultRender = (
       <Row {...dynamicUIConfig.rowProps}>
         {fieldsArr.map((field) => {
-          if (!initialized || field.meta?.visible === false) return null;
+          const capability = runtimeState.fields[field.id];
+
+          if (!capability?.rendered) {
+            return null;
+          }
           return (
             <Col
               key={field.id}
@@ -92,7 +110,10 @@ const FormContent: React.FC<FormContentProps> = (props) => {
 
   /** 单个分组渲染（提供 renderFields / renderFieldItem 能力） */
   const internalRenderGroupItem = (group: GroupFieldState) => {
-    if (group.meta?.visible === false) return null;
+    const capability = runtimeState.groups[group.id];
+    if (!capability?.rendered) {
+      return null;
+    }
 
     const defaultRender = (
       <Card key={group.id} title={group.title ?? group.id} {...dynamicUIConfig.cardProps}>

@@ -6,15 +6,18 @@ import { shallowEqual } from './utils/utils';
 import { log, LogCategory } from './utils/logger';
 
 const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
-  function FieldRenderer({ field, form, componentRegistry, dynamicUIConfig }) {
+  function FieldRenderer({ field, form, componentRegistry, dynamicUIConfig, runtimeCapability }) {
     const baseFormItemProps = useMemo(
       () => ({
         label: field.label,
         name: field.id,
-        rules: field.rules ?? [],
-        required: (field?.rules || [])?.some((r) => 'required' in r && r.required === true) ?? false
+        rules: runtimeCapability?.validatable === false ? [] : (field.rules ?? []),
+        required:
+          runtimeCapability?.validatable === false
+            ? false
+            : ((field?.rules || [])?.some((r) => 'required' in r && r.required === true) ?? false)
       }),
-      [field.label, field.id, field.rules]
+      [field.label, field.id, field.rules, runtimeCapability?.validatable]
     );
     // 解析字段级别配置
     const resolvedConfigs = useMemo(() => {
@@ -29,7 +32,9 @@ const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
       // 合并 componentProps（内层）
       const mergedComponentProps = {
         ...(field.componentProps || {}),
-        ...(field.meta?.componentProps || {})
+        ...(field.meta?.componentProps || {}),
+        ...(runtimeCapability?.disabled ? { disabled: true } : {}),
+        ...(runtimeCapability?.readonly ? { readOnly: true } : {})
       };
 
       return {
@@ -42,6 +47,8 @@ const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
       field.meta?.formItemProps,
       field.meta?.componentProps,
       field.componentProps,
+      runtimeCapability?.disabled,
+      runtimeCapability?.readonly,
       dynamicUIConfig?.formItemProps
     ]);
 
@@ -75,6 +82,11 @@ const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
     // meta 属性深度比较 - 检测所有 meta 属性的变化
     if (!shallowEqual(prevField.meta, nextField.meta)) {
       log.info(LogCategory.PERFORMANCE_MONITOR, `字段 ${fieldId}: meta 属性变化，需要渲染`);
+      return false;
+    }
+
+    if (!shallowEqual(prevProps.runtimeCapability, nextProps.runtimeCapability)) {
+      log.info(LogCategory.PERFORMANCE_MONITOR, `字段 ${fieldId}: runtime 能力变化，需要渲染`);
       return false;
     }
 

@@ -2,6 +2,7 @@ import type { FormInstance, Rule } from 'antd/es/form';
 import type { EffectFn } from 'form-chain-effect-engine';
 import type { Dispatch } from 'react';
 import type { CustomEffectResultHandler, HandlerRegistrationOptions } from './resultProcessor';
+import type { FieldCapability } from './runtime';
 import { ButtonProps, CardProps, ColProps, FormItemProps, FormProps, RowProps } from 'antd/lib';
 
 export type FieldValue = any;
@@ -10,6 +11,11 @@ export type FieldComponentRuntimeProps = Record<string, any>;
 
 export interface FieldMeta {
   visible?: boolean;
+
+  disabled?: boolean;
+
+  readonly?: boolean;
+
   formItemProps?: FormItemProps;
   componentProps?: FieldComponentRuntimeProps;
 }
@@ -248,6 +254,7 @@ export interface FieldRendererProps {
   componentRegistry?: ComponentRegistryResolver | null;
   // 新增：Form.Item组件配置 - 支持函数化值
   dynamicUIConfig?: UIConfig;
+  runtimeCapability?: FieldCapability;
 }
 
 export interface FieldComponentProps {
