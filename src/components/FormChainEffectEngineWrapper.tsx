@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useFormChainEffectEngine } from 'form-chain-effect-engine';
 import { FormChainEffectEngineWrapperProps } from '../types';
-import { useStoreInit, useStateSync } from '../hooks';
+import { useStoreInit } from '../hooks';
 import { handleEffectResult } from '../resultProcessor';
 import { FormChainContext } from '../hooks/useFormChainContext';
 import {
@@ -19,16 +19,12 @@ const FormChainEffectEngineWrapper: React.FC<FormChainEffectEngineWrapperProps> 
   uiConfig,
   form
 }) => {
-  const { state, dispatch, configProcessInfo } = useStoreInit({ formConfig, values, uiConfig });
-
-  // 使用form store ←→ reduce store双同步机制
-  const { syncFormStateToStore, batchDispatch, addToUpdateQueue, hasPendingUpdates } = useStateSync(
-    {
-      form,
-      state,
-      dispatch
-    }
-  );
+  const { state, dispatch, configProcessInfo } = useStoreInit({
+    formConfig,
+    form,
+    values,
+    uiConfig
+  });
 
   // 初始化检测逻辑
   useEffect(() => {
@@ -61,10 +57,7 @@ const FormChainEffectEngineWrapper: React.FC<FormChainEffectEngineWrapperProps> 
         fieldName,
         form,
         dispatch,
-        configProcessInfo,
-        batchDispatch,
-        addToUpdateQueue,
-        hasPendingUpdates
+        configProcessInfo
       });
 
       // 使用统一的处理器处理 effect 结果
@@ -79,8 +72,7 @@ const FormChainEffectEngineWrapper: React.FC<FormChainEffectEngineWrapperProps> 
         state,
         dispatch,
         onValuesChange,
-        manualTrigger,
-        syncFormStateToStore
+        manualTrigger
       }}
     >
       {children}

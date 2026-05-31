@@ -18,7 +18,7 @@ export type {
 export { ComponentRegistryManager, DefaultRegistryFieldComponents } from './fieldComponentRegistry';
 
 // Hook导出
-export { useFormChainContext, useStateSync, useStoreInit, useInitHandlers } from './hooks';
+export { useFormChainContext, useStoreInit, useInitHandlers } from './hooks';
 
 // 配置导出
 export { getDefaultConfig } from '../config/defaultConfig';

@@ -39,7 +39,6 @@ export function handleEffectResult(result: EffectResult | undefined, context: Ef
     return;
   }
 
-  let hasValueUpdates = false;
   const handlers = getHandlers();
   // 收集未处理的键值对，用于调试和日志记录
   const unhandledEntries: [string, any][] = [];
@@ -90,11 +89,6 @@ export function handleEffectResult(result: EffectResult | undefined, context: Ef
 
       // 统一处理所有处理器
       handler.handle(exportContext, value);
-
-      // 检查是否有批量更新需要执行
-      if (context.hasPendingUpdates && context.hasPendingUpdates()) {
-        hasValueUpdates = true;
-      }
     } else {
       // 记录未处理的键值对，用于调试
       unhandledEntries.push([key, value]);
@@ -117,10 +111,5 @@ export function handleEffectResult(result: EffectResult | undefined, context: Ef
         )
       }
     );
-  }
-
-  if (hasValueUpdates && context.batchDispatch) {
-    log.info(LogCategory.EFFECT_RESULT, '执行 Effect 导致的批量更新');
-    context.batchDispatch();
   }
 }

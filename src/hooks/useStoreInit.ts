@@ -1,10 +1,12 @@
 import { useReducer, useMemo, useLayoutEffect } from 'react';
+import type { FormInstance } from 'antd';
 import type { FormConfig, UIConfig } from '../types';
 import { processFormConfig } from '../configProcessor';
 import formReducer from '../reducer';
 
 interface useStoreInitParams {
   formConfig: FormConfig;
+  form: FormInstance;
   values?: unknown;
   uiConfig?: UIConfig;
 }
@@ -15,7 +17,7 @@ interface useStoreInitParams {
  *
  * 处理器注册现在由 useInitHandlers 负责
  */
-export const useStoreInit = ({ formConfig, values, uiConfig }: useStoreInitParams) => {
+export const useStoreInit = ({ formConfig, form, values, uiConfig }: useStoreInitParams) => {
   // 1. 预计算配置
   const configProcessInfo = useMemo(() => processFormConfig(formConfig), [formConfig]);
 
@@ -50,7 +52,6 @@ export const useStoreInit = ({ formConfig, values, uiConfig }: useStoreInitParam
   // 2. 静态数据初始化 reducer 状态 ，动态数据初始化 reducer 交给 INIT 处理
   const [state, dispatch] = useReducer(formReducer, {
     fields: configProcessInfo.initializedFields,
-    fieldValues: mergedInitialValues,
     groupFields: configProcessInfo.initializedGroupFields,
     configProcessInfo,
     initialized: false,
@@ -66,6 +67,10 @@ export const useStoreInit = ({ formConfig, values, uiConfig }: useStoreInitParam
       });
     }
   }, [configProcessInfo, state.initialized]);
+
+  useLayoutEffect(() => {
+    form.setFieldsValue(mergedInitialValues);
+  }, [form, mergedInitialValues]);
 
   return {
     state, // reducer 管理的状态

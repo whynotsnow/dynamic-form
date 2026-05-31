@@ -74,7 +74,6 @@ export type GroupFieldState = Omit<GroupField, 'fields'> & {
 };
 export interface FormState {
   fields: Record<string, FieldState>;
-  fieldValues: Record<string, any>;
   groupFields: Record<string, GroupFieldState>;
   initialized: boolean;
   configProcessInfo: ConfigProcessInfo;
@@ -93,9 +92,7 @@ export type FormAction =
       payload: { fieldId: string; meta: FieldMeta };
     }
   | { type: 'SET_GROUP_META'; payload: { groupId: string; meta: FieldMeta } }
-  | { type: 'SET_FIELD_VALUE'; payload: { fieldId: string; value: any } }
-  | { type: 'SET_FIELD_VALUES'; payload: { values: Record<string, any> } }
-  | { type: 'BATCH_UPDATE'; payload: { values: Record<string, any>; meta: FieldMeta } }
+  | { type: 'BATCH_META_UPDATE'; payload: { meta: Record<string, FieldMeta> } }
   | { type: 'UPDATE_DYNAMIC_UICONFIG'; payload: { config: Partial<UIConfig> & object } };
 
 /** 非分组模式下的表单配置 */
@@ -280,8 +277,4 @@ export interface FormChainContextType {
   dispatch: Dispatch<FormAction>;
   onValuesChange: (changed: Record<string, any>) => void;
   manualTrigger: (field: string, value?: any) => void;
-  syncFormStateToStore: (
-    changedValues: Record<string, any>,
-    allValues: Record<string, any>
-  ) => void;
 }

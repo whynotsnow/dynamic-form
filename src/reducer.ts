@@ -1,22 +1,17 @@
 import { produce, current, castDraft } from 'immer';
 import type { FormState, FormAction, FieldMeta, UIConfig, FieldState } from './types';
-import { mergeFieldMetaPatch, mergeIntoDraft } from './utils';
+import { mergeFieldMetaPatch } from './utils';
 import { log, LogCategory } from './utils/logger';
 
 const formReducer = produce<FormState, [FormAction]>((draft, action) => {
   log.info(LogCategory.BATCH_UPDATE, `Reducer 收到 action: ${action.type}`, {
-    action,
-    currentState: current(draft.fieldValues) // 快照
+    action
   });
 
   switch (action.type) {
     case 'INIT': {
       const { configProcessInfo } = action.payload;
 
-      draft.fieldValues = {
-        ...configProcessInfo.initialValues,
-        ...draft.fieldValues
-      };
       draft.fields = castDraft(configProcessInfo.initializedFields);
       draft.groupFields = castDraft(configProcessInfo.initializedGroupFields);
       draft.configProcessInfo = castDraft(configProcessInfo);
@@ -76,43 +71,8 @@ const formReducer = produce<FormState, [FormAction]>((draft, action) => {
       break;
     }
 
-    case 'SET_FIELD_VALUE': {
-      const { fieldId, value } = action.payload;
-      const oldSnapshot = current(draft.fieldValues);
-
-      draft.fieldValues[fieldId] = value;
-
-      log.info(LogCategory.BATCH_UPDATE, 'SET_FIELD_VALUE action 结果:', {
-        fieldId,
-        value,
-        oldFieldValues: oldSnapshot
-        // newFieldValues: current(draft.fieldValues)
-      });
-      break;
-    }
-
-    case 'SET_FIELD_VALUES': {
-      const { values } = action.payload;
-      const oldSnapshot = current(draft.fieldValues);
-
-      Object.assign(draft.fieldValues, values);
-
-      log.info(LogCategory.BATCH_UPDATE, 'SET_FIELD_VALUES action 结果:', {
-        values,
-        oldFieldValues: oldSnapshot
-        // newFieldValues: current(draft.fieldValues)
-      });
-      break;
-    }
-
-    case 'BATCH_UPDATE': {
-      const { values, meta } = action.payload;
-      const oldSnapshot = current(draft.fieldValues);
-
-      // 更新字段值
-      mergeIntoDraft(draft.fieldValues, values);
-
-      // 更新 meta
+    case 'BATCH_META_UPDATE': {
+      const { meta } = action.payload;
       Object.entries(meta).forEach(([fieldId, metaPatch]) => {
         const registryEntry = draft.configProcessInfo.fieldRegistry[fieldId];
         if (!registryEntry) return;
@@ -127,19 +87,13 @@ const formReducer = produce<FormState, [FormAction]>((draft, action) => {
         }
 
         if (!target) {
-          log.warn(LogCategory.BATCH_UPDATE, `BATCH_UPDATE: 字段状态未初始化 ${fieldId}`);
+          log.warn(LogCategory.BATCH_UPDATE, `BATCH_META_UPDATE: 字段状态未初始化 ${fieldId}`);
           return;
         }
 
         target.meta = mergeFieldMetaPatch(target.meta || ({} as FieldMeta), metaPatch);
       });
-      log.info(LogCategory.BATCH_UPDATE, 'BATCH_UPDATE action 结果:', {
-        values,
-        meta,
-        // updatedFields: current(draft.fields),
-        oldFieldValues: oldSnapshot
-        // newFieldValues: current(draft.fieldValues)
-      });
+      log.info(LogCategory.BATCH_UPDATE, 'BATCH_META_UPDATE action 结果:', { meta });
       break;
     }
 

@@ -77,19 +77,8 @@ export function createEffectContext(params: {
   form: FormInstance;
   dispatch: Dispatch<FormAction>;
   configProcessInfo: ConfigProcessInfo;
-  batchDispatch?: () => void;
-  addToUpdateQueue?: (type: 'values' | 'meta', payload: Record<string, any>) => void;
-  hasPendingUpdates?: () => boolean;
 }): EffectResultContext {
-  const {
-    fieldName,
-    form,
-    dispatch,
-    configProcessInfo,
-    batchDispatch,
-    addToUpdateQueue,
-    hasPendingUpdates
-  } = params;
+  const { fieldName, form, dispatch, configProcessInfo } = params;
 
   const registryEntry = configProcessInfo.fieldRegistry[fieldName];
 
@@ -107,23 +96,12 @@ export function createEffectContext(params: {
   const getFieldMeta = () => getFieldState()?.meta;
 
   // 语义化 API 函数定义
-  const setFieldValue = (value: any, options?: { immediate?: boolean }) => {
-    if (addToUpdateQueue) {
-      addToUpdateQueue('values', { [fieldName]: value });
-      if (options?.immediate !== false && batchDispatch) {
-        batchDispatch();
-      }
-    } else {
-      dispatch({ type: 'SET_FIELD_VALUE', payload: { fieldId: fieldName, value } });
-    }
+  const setFieldValue = (value: any) => {
+    form.setFieldsValue({ [fieldName]: value });
   };
 
   const setFieldValueBatch = (value: any) => {
-    if (addToUpdateQueue) {
-      addToUpdateQueue('values', { [fieldName]: value });
-    } else {
-      dispatch({ type: 'SET_FIELD_VALUE', payload: { fieldId: fieldName, value } });
-    }
+    form.setFieldsValue({ [fieldName]: value });
   };
 
   const updateFieldMeta = (meta: Partial<FieldMeta>) => {
@@ -131,11 +109,7 @@ export function createEffectContext(params: {
   };
 
   const updateFieldMetaBatch = (meta: Partial<FieldMeta>) => {
-    if (addToUpdateQueue) {
-      addToUpdateQueue('meta', { [fieldName]: meta });
-    } else {
-      dispatch({ type: 'UPDATE_META', payload: { fieldId: fieldName, meta } });
-    }
+    dispatch({ type: 'BATCH_META_UPDATE', payload: { meta: { [fieldName]: meta } } });
   };
 
   const setGroupVisible = (targetGroupId: string, visible: boolean) => {
@@ -165,9 +139,6 @@ export function createEffectContext(params: {
     updateFieldMetaBatch,
     setGroupVisible,
     updateDynamicUIConfig,
-    batchDispatch,
-    addToUpdateQueue,
-    hasPendingUpdates,
     getFieldState,
     getFieldMeta
   };

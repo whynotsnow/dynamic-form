@@ -30,28 +30,20 @@ export interface EffectResult {
  * 提供语义化的 API 来处理字段和分组的更新操作
  * 支持运行时 effect 和初始值 initialValue 的统一处理
  *
- * ## 批量更新机制说明
+ * ## 运行时更新机制说明
  *
- * ### 为什么需要批量更新？
- * 1. **性能优化**: 避免多次 dispatch 调用，减少 React 重渲染
- * 2. **原子性**: 确保多个字段更新在同一批次中完成
- * 3. **一致性**: 避免中间状态导致的不一致问题
+ * 字段值、校验结果、touched、validating 等表单运行时状态全部归 Ant Design Form 管理。
+ * DynamicForm Store 只保存字段 meta、分组 meta、动态 UI 配置和依赖图信息。
  *
- * ### 批量更新机制的工作原理：
- * 1. `addToUpdateQueue`: 将字段更新添加到待更新队列
- * 2. `batchDispatch`: 批量执行所有待更新的字段
- * 3. 优先使用批量更新，如果没有则回退到单个更新
+ * ### 值更新：
+ * 1. `setFieldValue`: 调用 `form.setFieldsValue`
+ * 2. `setFieldValueBatch`: 调用 `form.setFieldsValue`
+ * 3. 禁止将字段值写入 reducer store
  *
- * ### 没有批量更新的情况：
- * 1. **直接调用处理器**: 当处理器被直接调用时，可能没有 `addToUpdateQueue` 函数
- * 2. **外部调用**: 当从外部直接调用 `handleEffectResult` 时
- * 3. **测试环境**: 在单元测试中可能没有完整的上下文
- * 4. **自定义处理器**: 用户自定义的处理器可能没有批量更新支持
- *
- * ### 使用建议：
+ * ### 使用约束：
  * - 优先使用语义化的 API（`setFieldValue`, `updateFieldMeta`, `setGroupVisible`）
- * - 避免直接使用 `dispatch` 和 `addToUpdateQueue`
- * - 在自定义处理器中，系统会自动处理批量更新的回退逻辑
+ * - 避免直接使用 `dispatch`
+ * - 不要在自定义处理器中维护 value/error/touched/validating 副本
  */
 export interface EffectResultContext {
   form: FormInstance;
@@ -70,11 +62,6 @@ export interface EffectResultContext {
   updateFieldMetaBatch: (meta: Partial<FieldMeta>) => void;
   setGroupVisible: (groupKey: string, visible: boolean) => void;
   updateDynamicUIConfig: (dynamicUIConfig: UIConfig) => void;
-
-  // 内部 API（可选暴露）
-  batchDispatch?: () => void;
-  addToUpdateQueue?: (type: 'values' | 'meta', payload: Record<string, any>) => void;
-  hasPendingUpdates?: () => boolean;
 
   // 获取运行时字段状态
   getFieldState?: () => FieldState | GroupFieldState | undefined;

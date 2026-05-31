@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useReducer } from 'react';
 import { Form, Button, Card, Row, Col } from 'antd';
-import type { FormContentProps, FieldState, GroupField, GroupFieldState } from '../types';
+import type { FormContentProps, FieldState, GroupFieldState } from '../types';
 import { useFormChainContext } from '../hooks';
 import { log, LogCategory } from '../utils/logger';
 import { ComponentRegistryManager } from '../fieldComponentRegistry';
@@ -23,8 +23,9 @@ const FormContent: React.FC<FormContentProps> = (props) => {
   // 合并用户配置和默认配置
   const finalSubmitButtonText = submitButtonText ?? '提交';
 
-  const { state, onValuesChange, syncFormStateToStore } = useFormChainContext();
-  const { dynamicUIConfig, fieldValues, initialized, fields, groupFields } = state;
+  const [, forceRender] = useReducer((version: number) => version + 1, 0);
+  const { state, onValuesChange } = useFormChainContext();
+  const { dynamicUIConfig, initialized, fields, groupFields, configProcessInfo } = state;
 
   // 创建组件注册器实例
   const registryManager = useMemo(() => {
@@ -34,19 +35,16 @@ const FormContent: React.FC<FormContentProps> = (props) => {
     return null;
   }, [componentRegistry]);
 
-  const handleFinish = (values: Record<string, any>) => {
-    log.info(LogCategory.FORM, '表单提交:', values, form.getFieldsValue());
-    onSubmit?.(values);
+  const handleFinish = async () => {
+    const values = await form.validateFields();
+    const submitValues = form.getFieldsValue(true);
+
+    log.info(LogCategory.FORM, '表单提交:', values, submitValues);
+    onSubmit?.(submitValues);
   };
 
-  const handleFinishValuesChange = (
-    changedValues: Record<string, any>,
-    allValues: Record<string, any>
-  ) => {
-    syncFormStateToStore(changedValues, allValues);
-
-    form.validateFields(Object.keys(changedValues));
-    // effect chain Run
+  const handleFinishValuesChange = (changedValues: Record<string, any>) => {
+    forceRender();
     onValuesChange?.(changedValues);
   };
 
@@ -59,7 +57,6 @@ const FormContent: React.FC<FormContentProps> = (props) => {
         key={field.id}
         field={field}
         form={form}
-        fieldValue={fieldValues[field.id]}
         componentRegistry={registryManager}
         dynamicUIConfig={dynamicUIConfig}
       />
@@ -69,7 +66,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
       return renderFieldItem({
         field,
         form,
-        fieldValue: fieldValues[field.id],
+        fieldValue: form.getFieldValue(field.id),
         renderField: internalRenderFieldItem, // 递归给自己
         defaultRender
       });
@@ -185,7 +182,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
       form={form}
       onFinish={handleFinish}
       onValuesChange={handleFinishValuesChange}
-      initialValues={fieldValues}
+      initialValues={configProcessInfo.initialValues}
       style={{ marginTop: 24 }}
       scrollToFirstError
       {...dynamicUIConfig.formProps}

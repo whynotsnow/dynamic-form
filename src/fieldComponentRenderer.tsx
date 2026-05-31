@@ -75,12 +75,6 @@ const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
       return false;
     }
 
-    // 字段值比较
-    if (!shallowEqual(prevProps.fieldValue, nextProps.fieldValue)) {
-      log.info(LogCategory.PERFORMANCE_MONITOR, `字段 ${fieldId}: 字段值变化，需要渲染`);
-      return false;
-    }
-
     // 所有检查都通过，可以跳过渲染
     log.info(LogCategory.PERFORMANCE_MONITOR, `字段 ${fieldId}: 跳过渲染`);
     return true;
