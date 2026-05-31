@@ -26,8 +26,9 @@ const SyncTest: React.FC = () => {
             <h3>测试说明：</h3>
             <ul>
               <li>修改&quot;员工数量&quot;字段，观察控制台日志</li>
-              <li>检查 State 和 Form 的值是否同步</li>
-              <li>观察 effect 返回值是否正确处理</li>
+              <li>检查字段值是否始终以 Ant Design Form 为唯一来源</li>
+              <li>观察 effect 返回的 value 是否直接写入 Form</li>
+              <li>观察 effect 返回的 visible/disabled 等 meta 是否写入 DynamicForm Store</li>
               <li>验证分组显示/隐藏功能</li>
             </ul>
           </div>
