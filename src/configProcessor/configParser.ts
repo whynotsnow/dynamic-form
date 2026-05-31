@@ -13,7 +13,7 @@ import type { ConfigAnalysisResult, ConfigProcessInfo, HydratedConfigResult } fr
 import { isGroupedConfig } from '../utils/utils';
 import { log, LogCategory } from '../utils/logger';
 import { handleEffectResult } from '../resultProcessor';
-import { createBatchUpdateContext } from '../resultProcessor/batchUpdate';
+import { createInitialEffectContext } from '../resultProcessor/effectContext';
 
 /**
  * 分析表单配置，生成 effectMap 和 fieldRegistry
@@ -91,7 +91,7 @@ export function hydrateFormConfig(analysisConfig: ConfigAnalysisResult): Hydrate
       return;
     }
 
-    const context = createBatchUpdateContext({
+    const context = createInitialEffectContext({
       fieldId: field.id,
       initialValues,
       initializedFields,

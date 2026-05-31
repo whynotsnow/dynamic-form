@@ -1,7 +1,7 @@
-import React, { useMemo, useReducer } from 'react';
+import React, { useMemo } from 'react';
 import { Form, Button, Card, Row, Col } from 'antd';
-import type { FormContentProps, FieldState, FormValues, GroupFieldState } from '../types';
-import { useFormChainContext } from '../hooks';
+import type { FormContentProps, FieldState, GroupFieldState } from '../types';
+import { useFormRuntimeEvents } from '../hooks';
 import { log, LogCategory } from '../utils/logger';
 import { ComponentRegistryManager } from '../fieldComponentRegistry';
 import FieldComponentRenderer from '../fieldComponentRenderer';
@@ -23,8 +23,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
   // 合并用户配置和默认配置
   const finalSubmitButtonText = submitButtonText ?? '提交';
 
-  const [, forceRender] = useReducer((version: number) => version + 1, 0);
-  const { state, onValuesChange } = useFormChainContext();
+  const { state, handleFinish, handleValuesChange } = useFormRuntimeEvents({ form, onSubmit });
   const { dynamicUIConfig, initialized, fields, groupFields, configProcessInfo } = state;
 
   // 创建组件注册器实例
@@ -34,19 +33,6 @@ const FormContent: React.FC<FormContentProps> = (props) => {
     }
     return null;
   }, [componentRegistry]);
-
-  const handleFinish = async () => {
-    const values = await form.validateFields();
-    const submitValues = form.getFieldsValue(true);
-
-    log.info(LogCategory.FORM, '表单提交:', values, submitValues);
-    onSubmit?.(submitValues);
-  };
-
-  const handleFinishValuesChange = (changedValues: FormValues) => {
-    forceRender();
-    onValuesChange?.(changedValues);
-  };
 
   /** 单字段渲染（最小单元，必须兜底） */
   const internalRenderFieldItem = (field: FieldState) => {
@@ -181,7 +167,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
     <Form
       form={form}
       onFinish={handleFinish}
-      onValuesChange={handleFinishValuesChange}
+      onValuesChange={handleValuesChange}
       initialValues={configProcessInfo.initialValues}
       style={{ marginTop: 24 }}
       scrollToFirstError

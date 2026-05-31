@@ -8,7 +8,7 @@ import {
   checkInitializationSilent,
   getInitializationSummary
 } from '../utils/initializationChecker';
-import { createEffectContext } from '../resultProcessor/batchUpdate';
+import { createRuntimeEffectContext } from '../resultProcessor/effectContext';
 
 const FormChainEffectEngineWrapper: React.FC<FormChainEffectEngineWrapperProps> = ({
   formConfig,
@@ -53,7 +53,7 @@ const FormChainEffectEngineWrapper: React.FC<FormChainEffectEngineWrapperProps> 
       debugLog: false
     },
     onEffectResult({ fieldName, result }) {
-      const context = createEffectContext({
+      const context = createRuntimeEffectContext({
         fieldName,
         form,
         dispatch,

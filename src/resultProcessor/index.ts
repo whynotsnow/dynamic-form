@@ -2,7 +2,7 @@
  * 结果处理器系统
  *
  * 统一处理 effect 和 initialValue 函数的返回值
- * 提供语义化的 API 和批量更新机制
+ * 提供语义化的 effect 结果处理 API
  */
 
 // 核心处理函数
@@ -21,8 +21,13 @@ export {
 // 初始化系统
 export { init } from './init';
 
-// 批量更新
-export { createBatchUpdateContext } from './batchUpdate';
+// Effect context
+export {
+  createInitialEffectContext,
+  createRuntimeEffectContext,
+  createBatchUpdateContext,
+  createEffectContext
+} from './effectContext';
 
 // 类型定义
 export type {
