@@ -41,7 +41,7 @@
     "start": "vite",
     "build": "tsup",
     "preview": "vite preview",
-    "test": "echo \"No tests specified\"",
+    "test": "node --test \"tests/**/*.test.mjs\"",
     "lint": "eslint 'src/**/*.{ts,tsx,js,jsx}' 'demos/**/*.{ts,tsx,js,jsx}' --fix",
     "lint:check": "eslint 'src/**/*.{ts,tsx,js,jsx}' 'demos/**/*.{ts,tsx,js,jsx}' --max-warnings=0",
     "type-check": "tsc --noEmit",
