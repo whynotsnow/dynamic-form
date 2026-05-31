@@ -7,5 +7,6 @@
 // 导出所有 hooks
 export { useStoreInit } from './useStoreInit';
 export { useFormChainContext } from './useFormChainContext';
+export { useHiddenFieldValues } from './useHiddenFieldValues';
 export { useFormRuntimeEvents } from './useFormRuntimeEvents';
 export { useInitHandlers } from './useInitHandlers';

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Form, Button, Card, Row, Col } from 'antd';
 import type { FormContentProps, FieldState, GroupFieldState } from '../types';
-import { useFormRuntimeEvents } from '../hooks';
+import { useFormRuntimeEvents, useHiddenFieldValues } from '../hooks';
 import { log, LogCategory } from '../utils/logger';
 import { ComponentRegistryManager } from '../fieldComponentRegistry';
 import FieldComponentRenderer from '../fieldComponentRenderer';
@@ -25,6 +25,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
 
   const { state, handleFinish, handleValuesChange } = useFormRuntimeEvents({ form, onSubmit });
   const { dynamicUIConfig, initialized, fields, groupFields, configProcessInfo } = state;
+  useHiddenFieldValues(form, state);
 
   // 创建组件注册器实例
   const registryManager = useMemo(() => {

@@ -17,14 +17,14 @@ export interface DemoComponentProps {
 export const DEMO_COMPONENTS = {
   syncTest: {
     name: 'SyncTest',
-    title: '表单同步功能测试',
-    description: '测试表单状态同步和依赖链效果',
+    title: 'Form Store 联动测试',
+    description: '验证字段值由 Ant Design Form 管理，effect 只更新字段值或 DynamicForm meta。',
     component: 'SyncTest'
   },
   customHandlers: {
     name: 'CustomHandlersDemo',
     title: '自定义处理器演示',
-    description: '演示如何使用自定义的 EffectResultHandler',
+    description: '演示自定义 EffectResultHandler 如何更新 value、field meta 和动态样式。',
     component: 'CustomHandlersDemo'
   },
   customComponents: {
@@ -36,13 +36,13 @@ export const DEMO_COMPONENTS = {
   formValidation: {
     name: 'FormValidationDemo',
     title: 'Form.Item 校验集成演示',
-    description: '演示如何在 DynamicForm 中为自定义组件配置 Form.Item 校验规则，支持复杂校验。',
+    description: '演示标准字段和 Form.List 复杂组件如何统一接入 Ant Design Form 校验。',
     component: 'FormValidationDemo'
   },
   uiConfig: {
     name: 'UIConfigDemo',
     title: 'UI配置演示',
-    description: '演示如何通过uiConfig来配置antd组件的各种属性',
+    description: '演示静态 uiConfig 与 effect 返回的动态 UI 配置如何合并。',
     component: 'UIConfigDemo'
   },
   renderExtension: {

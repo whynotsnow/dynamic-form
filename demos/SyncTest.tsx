@@ -20,7 +20,7 @@ const SyncTest: React.FC = () => {
 
   return (
     <div style={{ padding: '20px' }}>
-      <Card title="表单同步功能测试" style={{ marginBottom: '20px' }}>
+      <Card title="Form Store 联动测试" style={{ marginBottom: '20px' }}>
         <Space direction="vertical">
           <div>
             <h3>测试说明：</h3>

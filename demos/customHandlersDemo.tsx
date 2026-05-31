@@ -66,15 +66,20 @@ const getConfig = (initialValues: Record<string, any>): FlatFormConfig => {
         label: '邮箱',
         component: 'TextInput',
         span: 24,
-        effect: (changedValue: any, allValues: any) => {
-          // 使用条件显示处理器
-          return {
-            conditionalDisplay: {
-              condition: !changedValue || changedValue.includes('@'), // 有效邮箱时显示
-              message: '请输入有效的邮箱地址'
-            }
-          };
-        }
+        dependents: ['emailNote']
+      },
+      {
+        id: 'emailNote',
+        label: '邮箱备注',
+        component: 'TextInput',
+        span: 24,
+        initialValue: '邮箱有效时显示；隐藏时不会提交旧值，再显示时会恢复。',
+        effect: (_changedValue: any, allValues: any) => ({
+          conditionalDisplay: {
+            condition: !allValues.email || allValues.email.includes('@'),
+            message: '请输入有效的邮箱地址'
+          }
+        })
       },
       {
         id: 'status',
@@ -230,13 +235,15 @@ const CustomHandlersDemo: React.FC = () => {
           <ol>
             <li>在&quot;姓名&quot;字段输入 &quot;admin&quot; 会触发红色背景样式</li>
             <li>在&quot;年龄&quot;字段输入数字会自动乘以2（如输入10显示20）</li>
-            <li>在&quot;邮箱&quot;字段输入无效邮箱会隐藏字段</li>
+            <li>
+              在&quot;邮箱&quot;字段输入无效邮箱会隐藏&quot;邮箱备注&quot;字段，隐藏时清理提交值，重新显示时恢复原值
+            </li>
             <li>在&quot;状态&quot;字段选择不同状态会应用不同样式和数据转换</li>
           </ol>
         </Space>
       </Card>
 
-      <div style={{ padding: 24, maxWidth: 500, margin: '0 auto' }}>
+      <div style={{ padding: 24, maxWidth: 720, margin: '0 auto', width: '100%' }}>
         <DynamicForm
           formConfig={memoConfig as FlatFormConfig}
           values={initialValues}

@@ -44,6 +44,10 @@ export function createInitialEffectContext(params: InitContextParams): EffectRes
       const fieldState = findFieldState(fieldId);
       if (fieldState) Object.assign(fieldState.meta, meta);
     },
+    updateFieldMetaById: (targetFieldId: string, meta: Partial<FieldMeta>) => {
+      const fieldState = findFieldState(targetFieldId);
+      if (fieldState) Object.assign(fieldState.meta, meta);
+    },
     setGroupVisible: (groupKey: string, visible: boolean) => {
       if (initializedGroupFields[groupKey]?.meta) {
         initializedGroupFields[groupKey].meta.visible = visible;
@@ -96,6 +100,10 @@ export function createRuntimeEffectContext(params: {
     dispatch({ type: 'BATCH_META_UPDATE', payload: { meta: { [fieldName]: meta } } });
   };
 
+  const updateFieldMetaById = (targetFieldId: string, meta: Partial<FieldMeta>) => {
+    dispatch({ type: 'UPDATE_META', payload: { fieldId: targetFieldId, meta } });
+  };
+
   const setGroupVisible = (targetGroupId: string, visible: boolean) => {
     if (targetGroupId) {
       dispatch({
@@ -120,6 +128,7 @@ export function createRuntimeEffectContext(params: {
     setFieldValueBatch,
     updateFieldMeta,
     updateFieldMetaBatch,
+    updateFieldMetaById,
     setGroupVisible,
     updateDynamicUIConfig,
     getFieldState,

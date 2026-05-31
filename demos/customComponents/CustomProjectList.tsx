@@ -103,7 +103,9 @@ const TaskForm: React.FC<{ name: string | number; remove: () => void }> = ({ nam
   </Card>
 );
 
-const CustomProjectList: React.FC<FieldComponentProps> = ({ field, form }) => {
+const CustomProjectList: React.FC<FieldComponentProps> & { wrapWithFormItem?: boolean } = ({
+  field
+}) => {
   const options: SelectProps['options'] = [];
 
   for (let i = 10; i < 36; i++) {
@@ -125,9 +127,14 @@ const CustomProjectList: React.FC<FieldComponentProps> = ({ field, form }) => {
         }
       ]}
     >
-      {(projectFields, { add: addProject, remove: removeProject }) => {
+      {(projectFields, { add: addProject, remove: removeProject }, { errors }) => {
         return (
-          <div>
+          <Form.Item
+            label={field.label}
+            required={field.rules?.some((rule) => 'required' in rule && rule.required)}
+            validateStatus={errors.length > 0 ? 'error' : undefined}
+            help={errors.length > 0 ? <Form.ErrorList errors={errors} /> : undefined}
+          >
             <Button
               type="dashed"
               onClick={() => addProject({ name: '', description: '', members: [], tasks: [] })}
@@ -182,7 +189,7 @@ const CustomProjectList: React.FC<FieldComponentProps> = ({ field, form }) => {
                   rules={[{ required: true, message: '水果不能为空' }]}
                 >
                   <Checkbox.Group
-                    style={{ width: 800 }}
+                    style={{ width: '100%' }}
                     options={[
                       { label: 'Apple', value: 'Apple', className: 'label-1' },
                       { label: 'Pear', value: 'Pear', className: 'label-2' },
@@ -195,7 +202,7 @@ const CustomProjectList: React.FC<FieldComponentProps> = ({ field, form }) => {
                   name={[projectField.name, 'multipleSelect']}
                   rules={[{ required: true, message: '多选不能为空' }]}
                 >
-                  <Select mode="multiple" style={{ width: 800 }} options={options}></Select>
+                  <Select mode="multiple" style={{ width: '100%' }} options={options}></Select>
                 </Form.Item>
 
                 {/* 成员列表 */}
@@ -211,7 +218,7 @@ const CustomProjectList: React.FC<FieldComponentProps> = ({ field, form }) => {
                     }
                   ]}
                 >
-                  {(memberFields, { add: addMember, remove: removeMember }) => (
+                  {(memberFields, { add: addMember, remove: removeMember }, { errors }) => (
                     <div style={{ marginBottom: 8 }}>
                       <div
                         style={{
@@ -238,6 +245,7 @@ const CustomProjectList: React.FC<FieldComponentProps> = ({ field, form }) => {
                           remove={() => removeMember(memberField.name)}
                         />
                       ))}
+                      <Form.ErrorList errors={errors} />
                     </div>
                   )}
                 </Form.List>
@@ -255,7 +263,7 @@ const CustomProjectList: React.FC<FieldComponentProps> = ({ field, form }) => {
                     }
                   ]}
                 >
-                  {(taskFields, { add: addTask, remove: removeTask }) => (
+                  {(taskFields, { add: addTask, remove: removeTask }, { errors }) => (
                     <div>
                       <div
                         style={{
@@ -290,16 +298,19 @@ const CustomProjectList: React.FC<FieldComponentProps> = ({ field, form }) => {
                           remove={() => removeTask(taskField.name)}
                         />
                       ))}
+                      <Form.ErrorList errors={errors} />
                     </div>
                   )}
                 </Form.List>
               </Card>
             ))}
-          </div>
+          </Form.Item>
         );
       }}
     </Form.List>
   );
 };
+
+CustomProjectList.wrapWithFormItem = false;
 
 export default CustomProjectList;

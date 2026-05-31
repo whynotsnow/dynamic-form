@@ -26,6 +26,8 @@ export interface BaseFieldConfig {
     | ((allValues: FormValues) => FieldValue | { value: FieldValue; [key: string]: any });
   initialVisible?: boolean;
   initialDisabled?: boolean;
+  preserveValueOnHide?: boolean;
+  restoreValueOnShow?: boolean;
 
   dependents?: string[];
   effect?: EffectFn;

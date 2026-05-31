@@ -7,13 +7,17 @@ export const conditionalDisplayHandler: CustomEffectResultHandler = {
   canHandle: (key) => key === 'conditionalDisplay',
   validate: (value) => typeof value === 'object' && 'condition' in value,
   handle: (context, value) => {
-    const { condition } = value;
+    const { condition, fieldId } = value;
     const shouldShow = typeof condition === 'function' ? condition() : condition;
 
-    // 使用批量更新 API
-    context.updateFieldMetaBatch({
-      visible: shouldShow
-    });
+    const meta = { visible: shouldShow };
+
+    if (fieldId) {
+      context.updateFieldMetaById(fieldId, meta);
+      return;
+    }
+
+    context.updateFieldMetaBatch(meta);
   }
 };
 

@@ -62,6 +62,7 @@ export interface EffectResultContext {
   setFieldValueBatch: (value: FieldValue) => void;
   updateFieldMeta: (meta: Partial<FieldMeta>) => void;
   updateFieldMetaBatch: (meta: Partial<FieldMeta>) => void;
+  updateFieldMetaById: (fieldId: string, meta: Partial<FieldMeta>) => void;
   setGroupVisible: (groupKey: string, visible: boolean) => void;
   updateDynamicUIConfig: (dynamicUIConfig: UIConfig) => void;
 
@@ -91,6 +92,9 @@ export interface ExportEffectContext {
 
   /** 批量更新字段元数据 */
   updateFieldMetaBatch: (meta: FieldMeta) => void;
+
+  /** 更新指定字段元数据 */
+  updateFieldMetaById: (fieldId: string, meta: FieldMeta) => void;
 
   /** 设置分组可见性 */
   setGroupVisible: (groupKey: string, visible: boolean) => void;

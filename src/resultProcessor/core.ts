@@ -78,6 +78,7 @@ export function handleEffectResult(result: EffectResult | undefined, context: Ef
         setFieldValueBatch: context.setFieldValueBatch,
         updateFieldMeta: context.updateFieldMeta,
         updateFieldMetaBatch: context.updateFieldMetaBatch,
+        updateFieldMetaById: context.updateFieldMetaById,
         setGroupVisible: context.setGroupVisible,
         updateDynamicUIConfig: context.updateDynamicUIConfig,
         getField: () => {
