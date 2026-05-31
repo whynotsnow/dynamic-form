@@ -15,7 +15,7 @@ interface DemoSelectorProps {
   defaultDemo?: DemoType;
 }
 
-const DemoSelector: React.FC<DemoSelectorProps> = ({ defaultDemo = 'uiConfig' }) => {
+const DemoSelector: React.FC<DemoSelectorProps> = ({ defaultDemo = 'syncTest' }) => {
   const [currentDemo, setCurrentDemo] = useState<DemoType>(defaultDemo);
 
   logger.enableCategories([LogCategory.RENDER]);

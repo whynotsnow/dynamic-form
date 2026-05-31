@@ -36,12 +36,7 @@ export const supplierFormConfig: GroupedFormConfig = {
           component: 'NumberInput',
           span: 8,
           initialValue: 50,
-          dependents: ['companySize'],
-          effect: (val: any, all: Record<string, any>, chain: Chain) => {
-            return {
-              value: val * 2
-            };
-          }
+          dependents: ['companySize']
         },
         {
           id: 'companySize',
@@ -123,10 +118,12 @@ export const supplierFormConfig: GroupedFormConfig = {
               value: 3000
             };
           },
-          effect: (_changedValue: any, allValues: Record<string, any>, _chain: Chain) => {
+          effect: (val: any, allValues: Record<string, any>, _chain: Chain) => {
             const { profitRate } = allValues;
+            const newValue = (profitRate * 3000) / 100;
             return {
-              value: (profitRate * 3000) / 100
+              value: newValue,
+              disabled: newValue > 5000
             };
           }
         },
