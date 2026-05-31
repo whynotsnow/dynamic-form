@@ -123,8 +123,8 @@ Runtime capabilities are the intended source of truth for UI participation decis
 
 - `rendered`: field/group should be rendered. Field rendering also respects group visibility.
 - `submitable`: field participates in submitted form data. Current policy follows `rendered`.
-- `disabled`: derived from `field.meta.disabled === true`.
-- `readonly`: derived from `field.meta.readonly === true`.
+- `disabled`: derived from field behavior meta.
+- `readonly`: derived from field behavior meta.
 - `editable`: `rendered && !disabled && !readonly`.
 - `validatable`: current policy is `rendered && !disabled`; readonly fields still validate.
 
@@ -133,10 +133,35 @@ Important implementation constraints:
 - Compute Runtime once per state snapshot in `FormContent` with `useRuntimeState(state)`.
 - Pass the same `runtimeState` into consumers instead of calling `resolveFieldCapability()` repeatedly.
 - `useFieldParticipation` must not independently resolve capabilities; it should consume Runtime.
+- Runtime resolvers should read field/group behavior through helpers such as `getFieldBehaviorMeta`
+  and `getGroupBehaviorMeta`, not by directly reading legacy flat meta keys.
 - Validation must not call `form.validateFields(Object.keys(changedValues))` directly, because that
   ignores hidden fields, disabled fields, readonly policy, and group-hidden fields.
 - Default field rendering passes `runtimeCapability` into `FieldComponentRenderer`, which suppresses
   Form.Item rules when `validatable` is false and maps runtime `disabled`/`readonly` to component props.
+
+## Meta Boundaries
+
+`FieldMeta` is split by responsibility:
+
+- `meta.behavior`: behavior state consumed by Runtime, currently `visible`, `disabled`, and `readonly`.
+- `meta.formItemProps`: render-layer dynamic props for Ant Design `Form.Item`.
+- `meta.componentProps`: render-layer dynamic props for the inner field component.
+
+Legacy flat keys are still accepted for compatibility:
+
+```ts
+{ visible: false, disabled: true, readonly: true }
+```
+
+Reducers and initialization helpers normalize those flat keys into:
+
+```ts
+{ behavior: { visible: false, disabled: true, readonly: true } }
+```
+
+Default effect handlers should write behavior updates as `meta.behavior`. Do not put render-only
+configuration into Runtime; `formItemProps` and `componentProps` remain render-layer metadata.
 
 ## Configuration Model
 
@@ -166,8 +191,9 @@ to registered handlers from `src/resultProcessor/handlers.ts`.
 Known update categories include:
 
 - field values
-- field meta such as visibility and component/form item props
-- group visibility/meta
+- field behavior meta such as visibility/disabled/readonly
+- field render meta such as component/form item props
+- group behavior/meta
 - dynamic UI config
 - custom handler-specific result keys
 
@@ -236,7 +262,9 @@ By default, custom components do not override built-ins unless `allowOverride` i
   `initialized`, and `dynamicUIConfig`.
 - Field lookup must respect `configProcessInfo.fieldRegistry`, because fields may be flat or inside groups.
 - `UPDATE_META` and `BATCH_UPDATE` need to update either `fields` or `groupFields[groupId].fields`
-  depending on registry metadata.
+  depending on registry metadata, and should use `mergeFieldMetaPatch` so legacy flat behavior keys
+  are normalized.
+- `SET_GROUP_META` should use `mergeGroupMetaPatch` for the same compatibility reason.
 - Runtime validation currently lives in `useFormRuntimeEvents`; keep it filtered by runtime capability.
 - Runtime is taking over validation and participation. Avoid reintroducing direct changed-key validation
   without filtering through `runtimeState.fields[fieldId].validatable`.
@@ -255,5 +283,5 @@ For source changes, prefer:
 3. `npm run build`
 4. For UI/render behavior, run `npm run start` and inspect demos at `http://localhost:3000`
 
-The `test` script currently only prints `No tests specified`; do not claim automated tests passed unless
+The `test` script runs Node tests under `tests/**/*.test.mjs`; do not claim automated tests passed unless
 the relevant command was actually run.
