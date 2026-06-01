@@ -257,12 +257,50 @@ componentRegistry={{
 
 By default, custom components do not override built-ins unless `allowOverride` is true.
 
+## Documentation System
+
+The documentation was rebuilt on 2026-06-01. The current docs are intentionally smaller and topic-based:
+
+- `README.md`: public project overview, feature summary, install/basic usage, design principles, and doc index.
+- `docs/README.md`: documentation entry point and reading order.
+- `docs/ARCHITECTURE.md`: Config / State / Runtime / Consumer / Shared architecture and data flow.
+- `docs/configuration.md`: flat/grouped config, field/group options, UI config, built-in components.
+- `docs/effects-and-handlers.md`: dependency effects, default result keys, initialization contract, custom handlers.
+- `docs/rendering-and-ui.md`: default rendering, component registry, render hooks, UI extension guidance.
+- `docs/runtime-layer.md`: runtime capability model and validation/participation policy.
+- `docs/development.md`: component usage guide with scenario-based config examples, demo links, custom components, and custom effect handlers.
+- `docs/maintenance.md`: commands, demos, verification, build notes, implementation guardrails, and documentation maintenance rules.
+
+Older overlapping docs were removed from `docs/` after backing them up to `docs_backup_20260601_1818`.
+Do not recreate the old document set unless the user explicitly asks. When project behavior changes, update the
+nearest topic doc and then update the root `README.md` only if public-facing summaries or links change.
+
+Documentation language structure:
+
+- Project docs should be bilingual with the complete Chinese document first and the English translation below it.
+- Do not use a short explanatory note as a substitute for the full Chinese document.
+- Keep API names, package names, file paths, and established technical terms in English when clearer.
+- A small amount of emoji is acceptable in headings or summary bullets when it improves scanning.
+
+## Current Demo Coverage
+
+The active demo selector in `demos/DemoSelector.tsx` exposes:
+
+- `syncTest`
+- `customHandlers`
+- `customComponents`
+- `formValidation`
+- `uiConfig`
+- `renderExtension`
+
+Do not rely on older demo names from stale docs unless the files actually exist.
+
 ## Implementation Notes and Risks
 
 - Keep changes small and aligned with existing architecture.
 - Do not rewrite the whole form pipeline for a narrow behavior fix.
-- The internal state is split into `fields`, `groupFields`, `fieldValues`, `configProcessInfo`,
-  `initialized`, and `dynamicUIConfig`.
+- The internal reducer state is split into `fields`, `groupFields`, `configProcessInfo`, `initialized`,
+  and `dynamicUIConfig`. Ant Design Form owns runtime values, errors, touched state, warnings, and validating state.
 - Field lookup must respect `configProcessInfo.fieldRegistry`, because fields may be flat or inside groups.
 - `UPDATE_META` needs to update either `fields` or `groupFields[groupId].fields`
   depending on registry metadata, and should use `mergeFieldMetaPatch` so legacy flat behavior keys
