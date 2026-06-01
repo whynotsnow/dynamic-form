@@ -1,10 +1,7 @@
 import type { FormInstance, Rule } from 'antd/es/form';
 import type { EffectFn } from 'form-chain-effect-engine';
 import type { Dispatch } from 'react';
-import type {
-  CustomEffectResultHandler,
-  HandlerRegistrationOptions
-} from '../consumer/effects/resultProcessor';
+import type { CustomEffectResultHandler, HandlerRegistrationOptions } from '../consumer/effects';
 import type { FieldCapability } from '../runtime';
 import { ButtonProps, CardProps, ColProps, FormItemProps, FormProps, RowProps } from 'antd/lib';
 
@@ -121,7 +118,6 @@ export type FormAction =
       payload: { fieldId: string; meta: FieldMeta };
     }
   | { type: 'SET_GROUP_META'; payload: { groupId: string; meta: GroupMeta } }
-  | { type: 'BATCH_META_UPDATE'; payload: { meta: Record<string, FieldMeta> } }
   | { type: 'UPDATE_DYNAMIC_UICONFIG'; payload: { config: Partial<UIConfig> & object } };
 
 /** 非分组模式下的表单配置 */

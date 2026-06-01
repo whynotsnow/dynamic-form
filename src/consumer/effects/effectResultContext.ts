@@ -1,16 +1,10 @@
 import { FormInstance } from 'antd';
 import { Dispatch } from 'react';
-import {
-  ConfigProcessInfo,
-  FieldMeta,
-  FieldValue,
-  FormAction,
-  UIConfig
-} from '../../../shared/types';
+import { ConfigProcessInfo, FieldMeta, FieldValue, FormAction, UIConfig } from '../../shared/types';
 import type { EffectResultContext, InitContextParams } from './types';
-import { mergeFieldMetaPatch, mergeGroupMetaPatch } from '../../../shared/utils';
+import { mergeFieldMetaPatch, mergeGroupMetaPatch } from '../../shared/utils';
 
-export function createInitialEffectContext(params: InitContextParams): EffectResultContext {
+export function createInitialEffectResultContext(params: InitContextParams): EffectResultContext {
   const { fieldId, initialValues, initializedFields, initializedGroupFields, fieldRegistry } =
     params;
 
@@ -40,14 +34,7 @@ export function createInitialEffectContext(params: InitContextParams): EffectRes
     setFieldValue: (value: FieldValue) => {
       initialValues[fieldId] = value;
     },
-    setFieldValueBatch: (value: FieldValue) => {
-      initialValues[fieldId] = value;
-    },
     updateFieldMeta: (meta: Partial<FieldMeta>) => {
-      const fieldState = findFieldState(fieldId);
-      if (fieldState) fieldState.meta = mergeFieldMetaPatch(fieldState.meta, meta);
-    },
-    updateFieldMetaBatch: (meta: Partial<FieldMeta>) => {
       const fieldState = findFieldState(fieldId);
       if (fieldState) fieldState.meta = mergeFieldMetaPatch(fieldState.meta, meta);
     },
@@ -71,7 +58,7 @@ export function createInitialEffectContext(params: InitContextParams): EffectRes
   };
 }
 
-export function createRuntimeEffectContext(params: {
+export function createRuntimeEffectResultContext(params: {
   fieldName: string;
   form: FormInstance;
   dispatch: Dispatch<FormAction>;
@@ -98,16 +85,8 @@ export function createRuntimeEffectContext(params: {
     form.setFieldsValue({ [fieldName]: value });
   };
 
-  const setFieldValueBatch = (value: FieldValue) => {
-    form.setFieldsValue({ [fieldName]: value });
-  };
-
   const updateFieldMeta = (meta: Partial<FieldMeta>) => {
     dispatch({ type: 'UPDATE_META', payload: { fieldId: fieldName, meta } });
-  };
-
-  const updateFieldMetaBatch = (meta: Partial<FieldMeta>) => {
-    dispatch({ type: 'BATCH_META_UPDATE', payload: { meta: { [fieldName]: meta } } });
   };
 
   const updateFieldMetaById = (targetFieldId: string, meta: Partial<FieldMeta>) => {
@@ -135,9 +114,7 @@ export function createRuntimeEffectContext(params: {
     isGroupField,
     groupId,
     setFieldValue,
-    setFieldValueBatch,
     updateFieldMeta,
-    updateFieldMetaBatch,
     updateFieldMetaById,
     setGroupVisible,
     updateDynamicUIConfig,
@@ -145,6 +122,3 @@ export function createRuntimeEffectContext(params: {
     getFieldMeta
   };
 }
-
-export const createBatchUpdateContext = createInitialEffectContext;
-export const createEffectContext = createRuntimeEffectContext;

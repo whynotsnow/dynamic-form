@@ -35,7 +35,7 @@ export enum LogCategory {
 
   // 性能相关
   PERFORMANCE = 'PERFORMANCE',
-  BATCH_UPDATE = 'BATCH_UPDATE',
+  STORE_UPDATE = 'STORE_UPDATE',
   PERFORMANCE_MONITOR = 'PERFORMANCE_MONITOR',
 
   // 调试相关
@@ -168,7 +168,7 @@ class Logger {
       [LogCategory.HANDLER_EXECUTION]: '⚙️',
       [LogCategory.HANDLER_VALIDATION]: '🔍',
       [LogCategory.PERFORMANCE]: '⚡',
-      [LogCategory.BATCH_UPDATE]: '📦',
+      [LogCategory.STORE_UPDATE]: '🧭',
       [LogCategory.PERFORMANCE_MONITOR]: '📊',
       [LogCategory.DEBUG]: '🐛',
       [LogCategory.STATE]: '💾',
@@ -264,11 +264,6 @@ class Logger {
   // 性能日志
   performance(category: LogCategory, operation: string, duration: number) {
     this.info(category, `⚡ ${operation}: ${duration.toFixed(2)}ms`);
-  }
-
-  // 批量更新日志
-  batchUpdate(category: LogCategory, updates: Record<string, any>) {
-    this.info(category, `📦 批量更新:`, updates);
   }
 
   // Effect 日志
@@ -560,7 +555,7 @@ export const LogPresets = {
   PERFORMANCE_FOCUS: () => {
     logger.enableCategories([
       LogCategory.PERFORMANCE,
-      LogCategory.BATCH_UPDATE,
+      LogCategory.STORE_UPDATE,
       LogCategory.PERFORMANCE_MONITOR
     ]);
   },
@@ -608,9 +603,6 @@ export const log = {
 
   performance: (category: LogCategory, operation: string, duration: number) =>
     logger.performance(category, operation, duration),
-
-  batchUpdate: (category: LogCategory, updates: Record<string, any>) =>
-    logger.batchUpdate(category, updates),
 
   effect: (category: LogCategory, fieldName: string, value: any, result?: any) =>
     logger.effect(category, fieldName, value, result),

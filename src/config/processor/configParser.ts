@@ -12,8 +12,7 @@ import type {
 import type { ConfigAnalysisResult, ConfigProcessInfo, HydratedConfigResult } from './types';
 import { isGroupedConfig } from '../../shared/utils/utils';
 import { log, LogCategory } from '../../shared/utils/logger';
-import { handleEffectResult } from '../../consumer/effects/resultProcessor';
-import { createInitialEffectContext } from '../../consumer/effects/resultProcessor/effectContext';
+import { applyEffectResult, createInitialEffectResultContext } from '../../consumer/effects';
 
 /**
  * 分析表单配置，生成 effectMap 和 fieldRegistry
@@ -91,7 +90,7 @@ export function hydrateFormConfig(analysisConfig: ConfigAnalysisResult): Hydrate
       return;
     }
 
-    const context = createInitialEffectContext({
+    const context = createInitialEffectResultContext({
       fieldId: field.id,
       initialValues,
       initializedFields,
@@ -99,7 +98,7 @@ export function hydrateFormConfig(analysisConfig: ConfigAnalysisResult): Hydrate
       fieldRegistry
     });
 
-    handleEffectResult(result, context);
+    applyEffectResult(result, context);
   };
 
   const processField = (field: BaseFieldConfig, groupId?: string) => {

@@ -1,4 +1,4 @@
-import { CustomEffectResultHandler } from '../consumer/effects/resultProcessor';
+import { CustomEffectResultHandler } from '../consumer/effects';
 import { log, LogCategory } from '../shared/utils/logger';
 
 /**
@@ -33,8 +33,7 @@ const baseHandlers: CustomEffectResultHandler[] = [
     handle: (context, value) => {
       log.effect(LogCategory.EFFECT_RESULT, 'valueHandle', context.fieldName, value);
 
-      // 使用批量更新 API，不立即执行，让 handleEffectResult 统一处理
-      context.setFieldValueBatch(value);
+      context.setFieldValue(value);
     }
   },
   {
@@ -82,7 +81,7 @@ const baseHandlers: CustomEffectResultHandler[] = [
     handle: (context, value) => {
       log.effect(LogCategory.EFFECT_RESULT, 'formItemPropsHandle ', context.fieldName, value);
 
-      context.updateFieldMetaBatch({ formItemProps: value });
+      context.updateFieldMeta({ formItemProps: value });
     }
   },
   // componentProps 承载内部组件属性，存储到 meta.componentProps
@@ -92,7 +91,7 @@ const baseHandlers: CustomEffectResultHandler[] = [
     canHandle: (key) => key === 'componentProps',
     handle: (context, value) => {
       log.effect(LogCategory.EFFECT_RESULT, 'componentProps', context.fieldName, value);
-      context.updateFieldMetaBatch({
+      context.updateFieldMeta({
         componentProps: value
       });
     }

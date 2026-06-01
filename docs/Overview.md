@@ -75,7 +75,7 @@ const groupedConfig = {
 
 ### 🔧 功能文档
 
-- [BATCH_UPDATE.md](./docs/BATCH_UPDATE.md) - 批量更新机制
+- [BATCH_UPDATE.md](./docs/BATCH_UPDATE.md) - historical notes about the removed batch-update layer
 - [EFFECTS.md](./docs/EFFECTS.md) - 字段联动效果
 - [FIELD_TYPES.md](./docs/FIELD_TYPES.md) - 内置字段类型
 - [FORM_CONFIG.md](./docs/FORM_CONFIG.md) - 表单配置
@@ -106,7 +106,10 @@ dynamic-form/
 │   │   │   └── DynamicFormProvider.tsx
 │   │   ├── hooks/
 │   │   ├── effects/
-│   │   │   └── resultProcessor/
+│   │   │   ├── applyEffectResult.ts
+│   │   │   ├── effectResultContext.ts
+│   │   │   ├── handlerRegistry.ts
+│   │   │   └── initializeEffectResultHandlers.ts
 │   │   └── render/
 │   │       ├── FormContent.tsx
 │   │       ├── FieldComponentRenderer.tsx

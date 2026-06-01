@@ -1,5 +1,5 @@
 import type { CustomEffectResultHandler, HandlerRegistrationOptions } from './types';
-import { getDefaultConfig } from '../../../config/defaultConfig';
+import { getDefaultConfig } from '../../config/defaultConfig';
 
 /**
  * 处理器注册表
@@ -19,7 +19,7 @@ const initializationWarnings = new Set<string>();
  * 获取处理器注册表
  * @returns 处理器注册表
  */
-export function getHandlers(): Map<string, CustomEffectResultHandler> {
+export function getEffectResultHandlerRegistry(): Map<string, CustomEffectResultHandler> {
   return handlers;
 }
 

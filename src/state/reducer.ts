@@ -4,7 +4,7 @@ import { mergeFieldMetaPatch, mergeGroupMetaPatch } from '../shared/utils';
 import { log, LogCategory } from '../shared/utils/logger';
 
 const formReducer = produce<FormState, [FormAction]>((draft, action) => {
-  log.info(LogCategory.BATCH_UPDATE, `Reducer 收到 action: ${action.type}`, {
+  log.info(LogCategory.STORE_UPDATE, `Reducer 收到 action: ${action.type}`, {
     action
   });
 
@@ -26,7 +26,7 @@ const formReducer = produce<FormState, [FormAction]>((draft, action) => {
 
       const registryEntry = draft.configProcessInfo.fieldRegistry[fieldId];
       if (!registryEntry) {
-        log.warn(LogCategory.BATCH_UPDATE, `UPDATE_META: 未找到字段 ${fieldId}`);
+        log.warn(LogCategory.STORE_UPDATE, `UPDATE_META: 未找到字段 ${fieldId}`);
         return;
       }
 
@@ -40,7 +40,7 @@ const formReducer = produce<FormState, [FormAction]>((draft, action) => {
       }
 
       if (!target) {
-        log.warn(LogCategory.BATCH_UPDATE, `UPDATE_META: 字段状态未初始化 ${fieldId}`);
+        log.warn(LogCategory.STORE_UPDATE, `UPDATE_META: 字段状态未初始化 ${fieldId}`);
         return;
       }
 
@@ -53,44 +53,18 @@ const formReducer = produce<FormState, [FormAction]>((draft, action) => {
       const group = draft.groupFields[groupId];
 
       if (!group) {
-        log.error(LogCategory.BATCH_UPDATE, `SET_GROUP_META: 未找到分组 ${groupId}`);
+        log.error(LogCategory.STORE_UPDATE, `SET_GROUP_META: 未找到分组 ${groupId}`);
         return;
       }
 
       draft.groupFields[groupId].meta = mergeGroupMetaPatch(draft.groupFields[groupId].meta, meta);
 
-      log.info(LogCategory.BATCH_UPDATE, 'SET_GROUP_META action 结果:', {
+      log.info(LogCategory.STORE_UPDATE, 'SET_GROUP_META action 结果:', {
         groupId,
         meta,
         oldMeta: oldSnapshot
         // newMeta: current(draft.groupFields[groupKey].meta)
       });
-      break;
-    }
-
-    case 'BATCH_META_UPDATE': {
-      const { meta } = action.payload;
-      Object.entries(meta).forEach(([fieldId, metaPatch]) => {
-        const registryEntry = draft.configProcessInfo.fieldRegistry[fieldId];
-        if (!registryEntry) return;
-
-        const { isGroupField, groupId } = registryEntry;
-        let target: FieldState | undefined;
-
-        if (isGroupField) {
-          target = draft.groupFields[groupId!]?.fields[fieldId];
-        } else {
-          target = draft.fields[fieldId];
-        }
-
-        if (!target) {
-          log.warn(LogCategory.BATCH_UPDATE, `BATCH_META_UPDATE: 字段状态未初始化 ${fieldId}`);
-          return;
-        }
-
-        target.meta = mergeFieldMetaPatch(target.meta || ({} as FieldMeta), metaPatch);
-      });
-      log.info(LogCategory.BATCH_UPDATE, 'BATCH_META_UPDATE action 结果:', { meta });
       break;
     }
 

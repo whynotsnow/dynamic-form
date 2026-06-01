@@ -58,8 +58,7 @@ Do not run dependency installation or global tool installation without explainin
 - `src/config/processor/`: converts user config into `effectMap`, `fieldRegistry`, initial values,
   initialized fields, and initialized groups
 - `src/config/defaultConfig.ts`: exported default config helper
-- `src/consumer/effects/resultProcessor/`: handles effect/initialValue return objects through registered handlers and
-  supports batched updates
+- `src/consumer/effects/`: applies effect/initialValue return objects through registered handlers
 - `src/consumer/hooks/`: consumer hooks for submit/change events, field participation, and handler initialization
 - `src/consumer/render/componentRegistry.tsx`: built-in Ant Design field components and component registry manager
 - `src/consumer/render/FieldComponentRenderer.tsx`: renders a configured field via the registry
@@ -106,7 +105,7 @@ Public exports are defined in `src/exports.ts`:
 8. `useFieldParticipation` consumes the same `runtimeState` and clears/restores values based on
    `submitable`, so hidden/group-hidden fields do not need to recalculate capability independently.
 9. `form-chain-effect-engine` executes dependent field effects from `effectMap`.
-10. `handleEffectResult` dispatches value/meta/UI updates through built-in or custom handlers.
+10. `applyEffectResult` applies value/meta/UI updates through built-in or custom handlers.
 
 ## Runtime Layer
 
@@ -188,8 +187,8 @@ Grouped config supports group-level `id`, `title`, `initialVisible`, `dependents
 
 ## Effect Result Handling
 
-Effects and function-style `initialValue` can return objects. `handleEffectResult` routes each returned key
-to registered handlers from `src/consumer/effects/resultProcessor/handlers.ts`.
+Effects and function-style `initialValue` can return objects. `applyEffectResult` routes each returned key
+to registered handlers from `src/consumer/effects/handlerRegistry.ts`.
 
 Known update categories include:
 
@@ -200,8 +199,9 @@ Known update categories include:
 - dynamic UI config
 - custom handler-specific result keys
 
-For effect-related changes, inspect `src/consumer/effects/resultProcessor/types.ts`, `handlers.ts`, `batchUpdate.ts`, and
-`core.ts` together. Avoid adding one-off handling in components if it belongs in result processors.
+For effect-related changes, inspect `src/consumer/effects/types.ts`, `handlerRegistry.ts`,
+`applyEffectResult.ts`, and `effectResultContext.ts` together. Avoid adding one-off handling in components
+if it belongs in effect result handling.
 
 ## Rendering Model
 
@@ -264,7 +264,7 @@ By default, custom components do not override built-ins unless `allowOverride` i
 - The internal state is split into `fields`, `groupFields`, `fieldValues`, `configProcessInfo`,
   `initialized`, and `dynamicUIConfig`.
 - Field lookup must respect `configProcessInfo.fieldRegistry`, because fields may be flat or inside groups.
-- `UPDATE_META` and `BATCH_UPDATE` need to update either `fields` or `groupFields[groupId].fields`
+- `UPDATE_META` needs to update either `fields` or `groupFields[groupId].fields`
   depending on registry metadata, and should use `mergeFieldMetaPatch` so legacy flat behavior keys
   are normalized.
 - `SET_GROUP_META` should use `mergeGroupMetaPatch` for the same compatibility reason.

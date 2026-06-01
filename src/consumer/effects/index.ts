@@ -5,31 +5,25 @@
  * 提供语义化的 effect 结果处理 API
  */
 
-// 核心处理函数
-export { handleEffectResult } from './core';
+export { applyEffectResult } from './applyEffectResult';
 
-// 处理器管理
 export {
+  getEffectResultHandlerRegistry,
   registerCustomEffectResultHandler,
   registerCustomEffectResultHandlers,
   unregisterEffectResultHandler,
   getAllEffectResultHandlers,
   getEffectResultHandlerInfo,
   hasEffectResultHandler
-} from './handlers';
+} from './handlerRegistry';
 
-// 初始化系统
-export { init } from './init';
+export { initializeEffectResultHandlers } from './initializeEffectResultHandlers';
 
-// Effect context
 export {
-  createInitialEffectContext,
-  createRuntimeEffectContext,
-  createBatchUpdateContext,
-  createEffectContext
-} from './effectContext';
+  createInitialEffectResultContext,
+  createRuntimeEffectResultContext
+} from './effectResultContext';
 
-// 类型定义
 export type {
   EffectResult,
   EffectResultContext,

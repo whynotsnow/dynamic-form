@@ -1,7 +1,7 @@
 import {
   isHandlersInitialized,
   getUnregisteredReservedKeys
-} from '../../consumer/effects/resultProcessor/handlers';
+} from '../../consumer/effects/handlerRegistry';
 import { getDefaultConfig } from '../../config/defaultConfig';
 import { log, LogCategory } from './logger';
 /**

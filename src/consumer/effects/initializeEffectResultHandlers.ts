@@ -1,8 +1,11 @@
 import type { InitConfig, InitResult } from './types';
-import { registerCustomEffectResultHandlers, getAllEffectResultHandlers } from './handlers';
-import { getDefaultConfig } from '../../../config/defaultConfig';
-import { log, LogCategory } from '../../../shared/utils/logger';
-import { markHandlersInitialized } from './handlers';
+import {
+  registerCustomEffectResultHandlers,
+  getAllEffectResultHandlers,
+  markHandlersInitialized
+} from './handlerRegistry';
+import { getDefaultConfig } from '../../config/defaultConfig';
+import { log, LogCategory } from '../../shared/utils/logger';
 
 /**
  * 初始化结果处理器系统
@@ -32,7 +35,7 @@ import { markHandlersInitialized } from './handlers';
  * }
  * ```
  */
-export function init(config: InitConfig): InitResult {
+export function initializeEffectResultHandlers(config: InitConfig): InitResult {
   try {
     log.group(LogCategory.HANDLER_REGISTRATION, '初始化结果处理器系统', () => {
       log.info(LogCategory.HANDLER_REGISTRATION, '初始化配置:', config);

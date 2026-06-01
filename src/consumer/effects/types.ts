@@ -12,7 +12,7 @@ import type {
   GroupField,
   UIConfig,
   FieldRegistry
-} from '../../../shared/types';
+} from '../../shared/types';
 
 /**
  * 效果结果接口
@@ -40,8 +40,7 @@ export interface EffectResult {
  *
  * ### 值更新：
  * 1. `setFieldValue`: 调用 `form.setFieldsValue`
- * 2. `setFieldValueBatch`: 调用 `form.setFieldsValue`
- * 3. 禁止将字段值写入 reducer store
+ * 2. 禁止将字段值写入 reducer store
  *
  * ### 使用约束：
  * - 优先使用语义化的 API（`setFieldValue`, `updateFieldMeta`, `setGroupVisible`）
@@ -60,9 +59,7 @@ export interface EffectResultContext {
 
   // 语义化 API
   setFieldValue: (value: FieldValue, options?: { immediate?: boolean }) => void;
-  setFieldValueBatch: (value: FieldValue) => void;
   updateFieldMeta: (meta: Partial<FieldMeta>) => void;
-  updateFieldMetaBatch: (meta: Partial<FieldMeta>) => void;
   updateFieldMetaById: (fieldId: string, meta: Partial<FieldMeta>) => void;
   setGroupVisible: (groupKey: string, visible: boolean) => void;
   updateDynamicUIConfig: (dynamicUIConfig: UIConfig) => void;
@@ -85,14 +82,8 @@ export interface ExportEffectContext {
   /** 设置字段值（立即更新或批量更新） */
   setFieldValue: (value: FieldValue, options?: { immediate?: boolean }) => void;
 
-  /** 批量设置字段值 */
-  setFieldValueBatch: (value: FieldValue) => void;
-
   /** 更新字段元数据 */
   updateFieldMeta: (meta: FieldMeta) => void;
-
-  /** 批量更新字段元数据 */
-  updateFieldMetaBatch: (meta: FieldMeta) => void;
 
   /** 更新指定字段元数据 */
   updateFieldMetaById: (fieldId: string, meta: FieldMeta) => void;

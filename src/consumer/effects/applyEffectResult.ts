@@ -1,6 +1,6 @@
 import type { EffectResult, EffectResultContext, CustomEffectResultHandler } from './types';
-import { log, LogCategory } from '../../../shared/utils/logger';
-import { getHandlers } from './handlers';
+import { log, LogCategory } from '../../shared/utils/logger';
+import { getEffectResultHandlerRegistry } from './handlerRegistry';
 
 /**
  * 处理结果的核心函数
@@ -17,21 +17,21 @@ import { getHandlers } from './handlers';
  * @example
  * ```typescript
  * // 处理单个字段的效果结果
- * handleEffectResult(
+ * applyEffectResult(
  *   { value: 'new value', visible: false },
  *   context
  * );
  *
  * // 处理自定义处理器的结果
- * handleEffectResult(
+ * applyEffectResult(
  *   { customStyle: { bg: '#ff0000', textColor: 'white' } },
  *   context
  * );
  * ```
  */
-export function handleEffectResult(result: EffectResult | undefined, context: EffectResultContext) {
-  log.group(LogCategory.EFFECT_RESULT, 'handleEffectResult Run', () => {
-    log.info(LogCategory.EFFECT_RESULT, 'handleEffectResult执行参数:', { result, context });
+export function applyEffectResult(result: EffectResult | undefined, context: EffectResultContext) {
+  log.group(LogCategory.EFFECT_RESULT, 'applyEffectResult Run', () => {
+    log.info(LogCategory.EFFECT_RESULT, 'applyEffectResult执行参数:', { result, context });
   });
 
   if (!result || typeof result !== 'object') {
@@ -39,7 +39,7 @@ export function handleEffectResult(result: EffectResult | undefined, context: Ef
     return;
   }
 
-  const handlers = getHandlers();
+  const handlers = getEffectResultHandlerRegistry();
   // 收集未处理的键值对，用于调试和日志记录
   const unhandledEntries: [string, any][] = [];
 
@@ -75,9 +75,7 @@ export function handleEffectResult(result: EffectResult | undefined, context: Ef
         fieldName: context.fieldName,
         form: context.form,
         setFieldValue: context.setFieldValue,
-        setFieldValueBatch: context.setFieldValueBatch,
         updateFieldMeta: context.updateFieldMeta,
-        updateFieldMetaBatch: context.updateFieldMetaBatch,
         updateFieldMetaById: context.updateFieldMetaById,
         setGroupVisible: context.setGroupVisible,
         updateDynamicUIConfig: context.updateDynamicUIConfig,

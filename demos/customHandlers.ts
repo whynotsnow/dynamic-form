@@ -1,4 +1,4 @@
-import type { CustomEffectResultHandler } from '@/consumer/effects/resultProcessor';
+import type { CustomEffectResultHandler } from '@/consumer/effects';
 
 // 示例2: 条件显示处理器
 export const conditionalDisplayHandler: CustomEffectResultHandler = {
@@ -17,7 +17,7 @@ export const conditionalDisplayHandler: CustomEffectResultHandler = {
       return;
     }
 
-    context.updateFieldMetaBatch(meta);
+    context.updateFieldMeta(meta);
   }
 };
 
@@ -52,7 +52,7 @@ export const dataTransformHandler: CustomEffectResultHandler = {
     // );
 
     // 使用新的批量更新 API，确保更新立即生效
-    context.setFieldValueBatch(transformedValue);
+    context.setFieldValue(transformedValue);
 
     // log.info(LogCategory.EFFECT_RESULT, `数据转换完成: ${context.fieldName}`, {
     //   original: value,
@@ -81,7 +81,7 @@ export const asyncHandler: CustomEffectResultHandler = {
     };
 
     // 使用语义化的 API 更新字段值
-    context.setFieldValueBatch(mockResult);
+    context.setFieldValue(mockResult);
 
     // log.info(LogCategory.EFFECT_RESULT, `异步处理完成: ${context.fieldName}`, mockResult);
   }
@@ -105,7 +105,7 @@ export const chainedHandler: CustomEffectResultHandler = {
           }
         });
       } else if (item.type === 'transform') {
-        context.setFieldValueBatch(item.value);
+        context.setFieldValue(item.value);
       }
     });
   }

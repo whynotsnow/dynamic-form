@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { init, InitConfig, InitResult } from '../effects/resultProcessor';
+import { initializeEffectResultHandlers, InitConfig, InitResult } from '../effects';
 
 /**
  * 处理器初始化 Hook
@@ -47,7 +47,7 @@ export function useInitHandlers(config: InitConfig) {
   if (!initResultRef.current && !isInitializingRef.current) {
     isInitializingRef.current = true;
     try {
-      initResultRef.current = init(config);
+      initResultRef.current = initializeEffectResultHandlers(config);
     } finally {
       isInitializingRef.current = false;
     }
@@ -61,7 +61,7 @@ export function useInitHandlers(config: InitConfig) {
       : 'uninitialized';
 
   const reinitialize = () => {
-    const result = init(config);
+    const result = initializeEffectResultHandlers(config);
     initResultRef.current = result;
     triggerRender({});
     return result;

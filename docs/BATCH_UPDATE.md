@@ -85,7 +85,7 @@ export function useStateSync({ form, state, dispatch }: UseFormSyncProps) {
 #### EffectResultHandler 批量更新
 
 ```typescript
-export function handleEffectResult(result, context) {
+export function applyEffectResult(result, context) {
   let hasValueUpdates = false;
 
   Object.entries(result).forEach(([key, value]) => {
@@ -169,7 +169,7 @@ syncFormStateToStore(changedValues, allValues) {
 }
 
 // EffectResultHandler: Effect 执行后立即执行
-handleEffectResult(result, context) {
+applyEffectResult(result, context) {
   // 收集 Effect 更新
   if (handler.name === 'value') {
     context.addToUpdateQueue(context.fieldName, value);
@@ -333,3 +333,8 @@ testDuplicateCalls();
 5. **数据一致性**: 通过值覆盖机制确保数据正确性
 
 这种优化特别适合复杂表单和频繁字段更新的场景，能够显著改善用户体验。
+# Batch Update Status
+
+This document is historical. The current implementation does not include a dedicated batch-update
+runtime or flush queue. Effect results are applied immediately through `applyEffectResult`, and
+field meta updates go through `UPDATE_META`.

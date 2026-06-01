@@ -2,13 +2,13 @@ import React, { useEffect } from 'react';
 import { useFormChainEffectEngine } from 'form-chain-effect-engine';
 import { DynamicFormProviderProps } from '../../shared/types';
 import { useStoreInit } from '../../state';
-import { handleEffectResult } from '../effects/resultProcessor';
+import { applyEffectResult } from '../effects';
 import { FormChainContext } from '../../shared/context/FormChainContext';
 import {
   checkInitializationSilent,
   getInitializationSummary
 } from '../../shared/utils/initializationChecker';
-import { createRuntimeEffectContext } from '../effects/resultProcessor/effectContext';
+import { createRuntimeEffectResultContext } from '../effects';
 
 const DynamicFormProvider: React.FC<DynamicFormProviderProps> = ({
   formConfig,
@@ -53,7 +53,7 @@ const DynamicFormProvider: React.FC<DynamicFormProviderProps> = ({
       debugLog: false
     },
     onEffectResult({ fieldName, result }) {
-      const context = createRuntimeEffectContext({
+      const context = createRuntimeEffectResultContext({
         fieldName,
         form,
         dispatch,
@@ -61,7 +61,7 @@ const DynamicFormProvider: React.FC<DynamicFormProviderProps> = ({
       });
 
       // 使用统一的处理器处理 effect 结果
-      handleEffectResult(result, context);
+      applyEffectResult(result, context);
     }
   });
 

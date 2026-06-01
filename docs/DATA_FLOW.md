@@ -198,7 +198,7 @@ const { onValuesChange } = useFormChainEffectEngine({
 ```typescript
 onEffectResult({ fieldName, result, chain }) {
   try {
-    handleEffectResult(result, context);
+    applyEffectResult(result, context);
   } catch (error) {
     console.error(`Effect 执行错误: ${fieldName}`, error);
     // 优雅降级处理
