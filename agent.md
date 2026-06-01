@@ -185,6 +185,28 @@ Field essentials:
 
 Grouped config supports group-level `id`, `title`, `initialVisible`, `dependents`, `effect`, and `fields`.
 
+## Future Upgrade Direction
+
+The next larger architecture direction is a field module layer above the current `FormConfig`.
+The goal is for reusable business fields to package their component, default config, dependency
+declarations, and effect logic together. A future `ConfigCompiler` should expand those field
+modules into the existing config shape before `processFormConfig()` runs, preserving backward
+compatibility with the current `dependents` + `effect` model.
+
+The intended layering is:
+
+- `FieldModuleRegistry`: stores reusable field modules and their capabilities.
+- `ConfigCompiler`: merges module defaults, registers components, and converts module dependencies
+  into the existing effect map shape.
+- Existing processor/effect engine/runtime store: continue to execute effects and store dynamic
+  meta.
+- Future rule-driven layer: may generate field modules or effects from a constrained rule schema.
+
+Keep the store boundary unchanged during this upgrade: Ant Design Form owns values and validation
+runtime state; DynamicForm owns field meta, group meta, dynamic UI config, and dependency metadata.
+Do not move rule execution into components. Components should render from props, while effects and
+handlers update meta through the existing pipeline.
+
 ## Effect Result Handling
 
 Effects and function-style `initialValue` can return objects. `applyEffectResult` routes each returned key

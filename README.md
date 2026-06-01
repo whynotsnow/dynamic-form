@@ -124,6 +124,10 @@ export function Example() {
 - 扩展优先于分叉：通过自定义组件、effect 结果处理器和 render hooks 覆盖业务差异。
 - 默认渲染保持简单：默认使用 Ant Design `Form`、`Row`、`Col`、`Card` 和 `Button`。
 
+### 未来升级方向
+
+后续较大的升级方向是引入字段模块模型。可复用业务字段可以把 component、默认配置、依赖声明和 effect 逻辑打包在一起，再由配置编译层在现有 `processFormConfig()` 之前展开为当前 `FormConfig` 结构。这样既保持现有配置兼容，也为未来基于 rule 自动生成 component 和 effect 留出空间。Ant Design Form 仍然负责 values 和校验运行时状态；DynamicForm 继续负责字段 meta、分组 meta、动态 UI 配置和依赖元数据。
+
 ### 项目结构
 
 ```text
@@ -229,6 +233,16 @@ Primary exports are defined in `src/exports.ts`:
 - Make Runtime the policy boundary for rendering, submission, editing, and validation.
 - Prefer extension points over forks.
 - Keep default rendering simple with Ant Design `Form`, `Row`, `Col`, `Card`, and `Button`.
+
+### Future Direction
+
+The planned upgrade direction is to move reusable business fields toward a field module model.
+A field module should be able to bundle its component, default config, dependencies, and effect
+logic, while a config compiler injects those capabilities into `FormConfig` before the existing
+processor runs. This keeps current configs compatible while allowing future rule-driven generation
+of components and effects. Ant Design Form should remain the owner of values and validation runtime
+state; DynamicForm should continue to own field meta, group meta, dynamic UI config, and dependency
+metadata.
 
 ### Development
 
