@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
 import { Form, Button, Card, Row, Col } from 'antd';
 import type { FormContentProps, FieldState, GroupFieldState } from '../../shared/types';
-import { useFormRuntimeEvents } from '../events/useFormRuntimeEvents';
-import { useFieldParticipation } from '../participation/useFieldParticipation';
+import { useFormRuntimeEvents } from '../hooks/useFormRuntimeEvents';
+import { useFieldParticipation } from '../hooks/useFieldParticipation';
 import { useFormChainContext } from '../../shared/context/FormChainContext';
 import { log, LogCategory } from '../../shared/utils/logger';
-import { ComponentRegistryManager } from './fieldComponentRegistry';
+import { ComponentRegistryManager } from './componentRegistry';
 import FieldComponentRenderer from './FieldComponentRenderer';
 
 import { useRuntimeState } from '../../runtime';

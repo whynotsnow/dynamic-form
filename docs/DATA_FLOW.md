@@ -235,7 +235,7 @@ const syncFormStateToStore = (changedValues, allValues) => {
 1. **用户输入**: `[DynamicForm] 表单值变化`
 2. **Form → State**: `[useStateSync] Form → State 同步`
 3. **State → Form**: `[useStateSync] 字段 ${fieldId}: Form(${formValue}) → State(${value})`
-4. **Effect 执行**: `[formChainEffectEngineWrapper] effect 执行完成`
+4. **Effect 执行**: `[DynamicFormProvider] effect 执行完成`
 5. **结果处理**: `[effectResultHandler] 处理 effect 返回值`
 6. **组件渲染**: `[FieldRegistry] ${componentType} 组件渲染`
 

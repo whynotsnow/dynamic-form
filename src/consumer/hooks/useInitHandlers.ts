@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { init, InitConfig, InitResult } from './resultProcessor';
+import { init, InitConfig, InitResult } from '../effects/resultProcessor';
 
 /**
  * 处理器初始化 Hook
@@ -31,9 +31,9 @@ import { init, InitConfig, InitResult } from './resultProcessor';
  *   }
  *
  *   return (
- *     <FormChainEffectEngineWrapper formConfig={formConfig}>
+ *     <DynamicFormProvider formConfig={formConfig}>
  *       <DynamicForm formConfig={formConfig} onSubmit={handleSubmit} />
- *     </FormChainEffectEngineWrapper>
+ *     </DynamicFormProvider>
  *   );
  * };
  * ```

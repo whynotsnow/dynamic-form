@@ -78,7 +78,7 @@ form.setFieldsValue
 
 | 组件                         | 文件                               | 职责                         |
 | ---------------------------- | ---------------------------------- | ---------------------------- |
-| FormChainEffectEngineWrapper | `formChainEffectEngineWrapper.tsx` | 状态管理、Effect Engine 集成 |
+| DynamicFormProvider | `src/consumer/provider/DynamicFormProvider.tsx` | 状态管理、Effect Engine 集成 |
 | useStateSync                 | `useStateSync.ts`                  | 双向数据同步                 |
 | EffectResultHandler          | `effectResultHandler.ts`           | Effect 结果处理              |
 | FieldComponentRenderer       | `FieldComponentRenderer.tsx`       | 字段渲染                     |

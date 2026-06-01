@@ -102,13 +102,15 @@ dynamic-form/
 │   │   ├── types.ts
 │   │   └── useRuntimeState.ts
 │   ├── consumer/
-│   │   ├── effect/
-│   │   │   ├── FormChainEffectEngineWrapper.tsx
-│   │   │   ├── useInitHandlers.ts
+│   │   ├── provider/
+│   │   │   └── DynamicFormProvider.tsx
+│   │   ├── hooks/
+│   │   ├── effects/
 │   │   │   └── resultProcessor/
-│   │   ├── events/
-│   │   ├── participation/
 │   │   └── render/
+│   │       ├── FormContent.tsx
+│   │       ├── FieldComponentRenderer.tsx
+│   │       └── componentRegistry.tsx
 │   ├── shared/
 │   │   ├── context/
 │   │   ├── types.ts

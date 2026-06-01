@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
 import { useFormChainEffectEngine } from 'form-chain-effect-engine';
-import { FormChainEffectEngineWrapperProps } from '../../shared/types';
+import { DynamicFormProviderProps } from '../../shared/types';
 import { useStoreInit } from '../../state';
-import { handleEffectResult } from './resultProcessor';
+import { handleEffectResult } from '../effects/resultProcessor';
 import { FormChainContext } from '../../shared/context/FormChainContext';
 import {
   checkInitializationSilent,
   getInitializationSummary
 } from '../../shared/utils/initializationChecker';
-import { createRuntimeEffectContext } from './resultProcessor/effectContext';
+import { createRuntimeEffectContext } from '../effects/resultProcessor/effectContext';
 
-const FormChainEffectEngineWrapper: React.FC<FormChainEffectEngineWrapperProps> = ({
+const DynamicFormProvider: React.FC<DynamicFormProviderProps> = ({
   formConfig,
   children,
   enableInitializationCheck = true,
@@ -80,4 +80,4 @@ const FormChainEffectEngineWrapper: React.FC<FormChainEffectEngineWrapperProps> 
   );
 };
 
-export default FormChainEffectEngineWrapper;
+export default DynamicFormProvider;

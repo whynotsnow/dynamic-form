@@ -35,7 +35,7 @@
 1. 自动初始化（只执行一次）
 2. 初始化状态与错误管理
 3. 调试模式（日志输出）
-4. 与 **FormChainEffectEngineWrapper** 协作完成表单初始化
+4. 与 **DynamicFormProvider** 协作完成表单初始化
 
 **示例：**
 

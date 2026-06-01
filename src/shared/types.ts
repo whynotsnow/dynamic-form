@@ -4,7 +4,7 @@ import type { Dispatch } from 'react';
 import type {
   CustomEffectResultHandler,
   HandlerRegistrationOptions
-} from '../consumer/effect/resultProcessor';
+} from '../consumer/effects/resultProcessor';
 import type { FieldCapability } from '../runtime';
 import { ButtonProps, CardProps, ColProps, FormItemProps, FormProps, RowProps } from 'antd/lib';
 
@@ -182,9 +182,10 @@ export interface UIConfig {
 
 export interface DynamicFormProps extends EngineProps, FormContentProps {}
 
-export interface FormChainEffectEngineWrapperProps extends EngineProps {
+export interface DynamicFormProviderProps extends EngineProps {
   children: React.ReactNode;
 }
+export type FormChainEffectEngineWrapperProps = DynamicFormProviderProps;
 // 引擎层（逻辑层） Props
 export interface EngineProps {
   formConfig: FormConfig;

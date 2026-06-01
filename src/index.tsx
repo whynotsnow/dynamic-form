@@ -1,7 +1,7 @@
 import React from 'react';
 import type { DynamicFormProps, EngineProps, FormContentProps } from './shared/types';
 import FormContent from './consumer/render/FormContent';
-import FormChainEffectEngineWrapper from './consumer/effect/FormChainEffectEngineWrapper';
+import DynamicFormProvider from './consumer/provider/DynamicFormProvider';
 
 // EngineProps
 function pickEngineProps(props: DynamicFormProps): EngineProps {
@@ -46,9 +46,9 @@ const DynamicForm: React.FC<DynamicFormProps> = (props) => {
   const engineProps = pickEngineProps(props);
   const uiProps = pickUIProps(props);
   return (
-    <FormChainEffectEngineWrapper {...engineProps}>
+    <DynamicFormProvider {...engineProps}>
       <FormContent {...uiProps} />
-    </FormChainEffectEngineWrapper>
+    </DynamicFormProvider>
   );
 };
 

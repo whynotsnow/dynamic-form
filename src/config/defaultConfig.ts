@@ -1,4 +1,4 @@
-import { CustomEffectResultHandler } from '../consumer/effect/resultProcessor';
+import { CustomEffectResultHandler } from '../consumer/effects/resultProcessor';
 import { log, LogCategory } from '../shared/utils/logger';
 
 /**

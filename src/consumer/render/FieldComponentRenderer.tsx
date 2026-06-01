@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Form } from 'antd';
 import type { FieldRendererProps } from '../../shared/types';
-import { defaultRegistryManager } from './fieldComponentRegistry';
+import { defaultRegistryManager } from './componentRegistry';
 import { shallowEqual } from '../../shared/utils/utils';
 import { log, LogCategory } from '../../shared/utils/logger';
 

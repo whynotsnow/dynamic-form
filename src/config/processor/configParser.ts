@@ -12,8 +12,8 @@ import type {
 import type { ConfigAnalysisResult, ConfigProcessInfo, HydratedConfigResult } from './types';
 import { isGroupedConfig } from '../../shared/utils/utils';
 import { log, LogCategory } from '../../shared/utils/logger';
-import { handleEffectResult } from '../../consumer/effect/resultProcessor';
-import { createInitialEffectContext } from '../../consumer/effect/resultProcessor/effectContext';
+import { handleEffectResult } from '../../consumer/effects/resultProcessor';
+import { createInitialEffectContext } from '../../consumer/effects/resultProcessor/effectContext';
 
 /**
  * 分析表单配置，生成 effectMap 和 fieldRegistry
