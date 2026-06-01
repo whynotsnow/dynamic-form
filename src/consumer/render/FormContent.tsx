@@ -4,7 +4,6 @@ import type { FormContentProps, FieldState, GroupFieldState } from '../../shared
 import { useFormRuntimeEvents } from '../hooks/useFormRuntimeEvents';
 import { useFieldParticipation } from '../hooks/useFieldParticipation';
 import { useFormChainContext } from '../../shared/context/FormChainContext';
-import { log, LogCategory } from '../../shared/utils/logger';
 import { ComponentRegistryManager } from './componentRegistry';
 import FieldComponentRenderer from './FieldComponentRenderer';
 
@@ -185,7 +184,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
       {formBlocks.submitArea}
     </>
   );
-  log.info(LogCategory.RENDER, 'render FormContent', state, form.getFieldsValue(true));
+  console.log('render FormContent', state, form.getFieldsValue(true));
 
   return (
     <Form

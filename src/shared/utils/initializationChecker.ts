@@ -3,7 +3,6 @@ import {
   getUnregisteredReservedKeys
 } from '../../consumer/effects/handlerRegistry';
 import { getDefaultConfig } from '../../config/defaultConfig';
-import { log, LogCategory } from './logger';
 /**
  * 初始化检测器
  * 用于在组件渲染前检测初始化状态和潜在问题
@@ -65,14 +64,14 @@ export class InitializationChecker {
     };
 
     // 记录检测结果
-    log.group(LogCategory.HANDLER_REGISTRATION, '初始化状态检测', () => {
-      log.info(LogCategory.HANDLER_REGISTRATION, '检测结果:', result);
+    console.group('初始化状态检测');
+    console.log('检测结果:', result);
 
-      if (warnings.length > 0) {
-        log.warn(LogCategory.HANDLER_REGISTRATION, '发现的问题:', warnings);
-        log.info(LogCategory.HANDLER_REGISTRATION, '建议:', recommendations);
-      }
-    });
+    if (warnings.length > 0) {
+      console.warn('发现的问题:', warnings);
+      console.log('建议:', recommendations);
+    }
+    console.groupEnd();
 
     return result;
   }

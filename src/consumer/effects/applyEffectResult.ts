@@ -1,5 +1,4 @@
 import type { EffectResult, EffectResultContext, CustomEffectResultHandler } from './types';
-import { log, LogCategory } from '../../shared/utils/logger';
 import { getEffectResultHandlerRegistry } from './handlerRegistry';
 
 /**
@@ -30,12 +29,12 @@ import { getEffectResultHandlerRegistry } from './handlerRegistry';
  * ```
  */
 export function applyEffectResult(result: EffectResult | undefined, context: EffectResultContext) {
-  log.group(LogCategory.EFFECT_RESULT, 'applyEffectResult Run', () => {
-    log.info(LogCategory.EFFECT_RESULT, 'applyEffectResult执行参数:', { result, context });
-  });
+  console.group('applyEffectResult Run');
+  console.log('applyEffectResult执行参数:', { result, context });
+  console.groupEnd();
 
   if (!result || typeof result !== 'object') {
-    log.info(LogCategory.EFFECT_RESULT, '无有效返回值，跳过处理');
+    console.log('无有效返回值，跳过处理');
     return;
   }
 
@@ -45,29 +44,23 @@ export function applyEffectResult(result: EffectResult | undefined, context: Eff
 
   Object.entries(result).forEach(([key, value]) => {
     if (value === undefined) {
-      log.info(LogCategory.EFFECT_RESULT, `跳过 undefined 值: ${key}`);
+      console.log(`跳过 undefined 值: ${key}`);
       return;
     }
 
     const handler = handlers.get(key) as CustomEffectResultHandler | undefined;
     if (handler && handler.canHandle(key, value)) {
-      log.handlerExecution(
-        LogCategory.HANDLER_EXECUTION,
-        handler.name,
-        'start',
-        context.fieldName,
-        value
-      );
+      console.log(`开始执行处理器: ${handler.name}`, {
+        fieldName: context.fieldName,
+        data: value
+      });
 
       // 执行验证（如果存在）
       if (handler.validate && !handler.validate(value)) {
-        log.handlerValidation(
-          LogCategory.HANDLER_VALIDATION,
-          handler.name,
-          'fail',
-          '验证失败',
-          value
-        );
+        console.warn(`验证失败处理器: ${handler.name}`, {
+          reason: '验证失败',
+          data: value
+        });
         return;
       }
 
@@ -97,8 +90,7 @@ export function applyEffectResult(result: EffectResult | undefined, context: Eff
   // 记录未处理的条目（仅在开发环境且启用调试时）
   if (unhandledEntries.length > 0) {
     const unhandledKeys = unhandledEntries.map(([key]) => key);
-    log.warn(
-      LogCategory.EFFECT_RESULT,
+    console.warn(
       `发现 ${unhandledEntries.length} 个没有匹配的handle处理器属性: ${unhandledKeys.join(', ')}`,
       {
         values: unhandledEntries.reduce(

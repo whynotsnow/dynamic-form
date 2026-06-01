@@ -11,7 +11,6 @@ import type {
 } from '../../shared/types';
 import type { ConfigAnalysisResult, ConfigProcessInfo, HydratedConfigResult } from './types';
 import { isGroupedConfig } from '../../shared/utils/utils';
-import { log, LogCategory } from '../../shared/utils/logger';
 import { applyEffectResult, createInitialEffectResultContext } from '../../consumer/effects';
 
 /**
@@ -86,7 +85,7 @@ export function hydrateFormConfig(analysisConfig: ConfigAnalysisResult): Hydrate
   const processInitialValueResult = (field: BaseFieldConfig, result: any, groupId?: string) => {
     if (!result || typeof result !== 'object') {
       initialValues[field.id] = result;
-      log.initialValue(LogCategory.INITIAL_VALUE, field.id, result, 'function');
+      console.log(`字段 ${field.id} 函数计算初始值:`, result);
       return;
     }
 
@@ -111,7 +110,7 @@ export function hydrateFormConfig(analysisConfig: ConfigAnalysisResult): Hydrate
     if (groupId) {
       // 分组字段
       if (!initializedGroupFields[groupId]) {
-        log.error(LogCategory.INITIAL_VALUE, `hydrateFormConfig: 找不到分组 ${groupId}`);
+        console.error(`hydrateFormConfig: 找不到分组 ${groupId}`);
         return;
       }
       initializedGroupFields[groupId].fields = initializedGroupFields[groupId].fields || {};
@@ -123,17 +122,17 @@ export function hydrateFormConfig(analysisConfig: ConfigAnalysisResult): Hydrate
     // 处理静态初始值
     if (field.initialValue !== undefined && typeof field.initialValue !== 'function') {
       initialValues[field.id] = field.initialValue;
-      log.initialValue(LogCategory.INITIAL_VALUE, field.id, field.initialValue, 'static');
+      console.log(`字段 ${field.id} 静态初始值:`, field.initialValue);
     }
 
     // 处理函数初始值
     if (typeof field.initialValue === 'function') {
       try {
-        log.initialValueProcess(LogCategory.INITIAL_VALUE, field.id, initialValues);
+        console.log(`计算字段 ${field.id} 的初始值`, initialValues);
         const result = field.initialValue(initialValues);
         processInitialValueResult(field, result, groupId);
       } catch (error) {
-        log.error(LogCategory.INITIAL_VALUE, `计算字段 ${field.id} 的函数初始值时出错:`, error);
+        console.error(`计算字段 ${field.id} 的函数初始值时出错:`, error);
       }
     }
   };
@@ -153,9 +152,9 @@ export function hydrateFormConfig(analysisConfig: ConfigAnalysisResult): Hydrate
     }
   });
 
-  log.group(LogCategory.INITIAL_VALUE, '初始值计算完成', () => {
-    log.info(LogCategory.INITIAL_VALUE, 'initialValues:', initialValues);
-  });
+  console.group('初始值计算完成');
+  console.log('initialValues:', initialValues);
+  console.groupEnd();
 
   return {
     initialValues,

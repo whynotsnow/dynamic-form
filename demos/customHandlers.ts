@@ -45,16 +45,10 @@ export const dataTransformHandler: CustomEffectResultHandler = {
       }
     }
 
-    // 使用语义化的 API 应用数据转换
-    // log.info(
-    //   LogCategory.EFFECT_RESULT,
-    //   `准备设置字段值: ${context.fieldName} = ${transformedValue}`
-    // );
-
     // 使用新的批量更新 API，确保更新立即生效
     context.setFieldValue(transformedValue);
 
-    // log.info(LogCategory.EFFECT_RESULT, `数据转换完成: ${context.fieldName}`, {
+    // console.log(`数据转换完成: ${context.fieldName}`, {
     //   original: value,
     //   transformed: transformedValue,
     //   operation: 'multiply by 2'
@@ -83,7 +77,7 @@ export const asyncHandler: CustomEffectResultHandler = {
     // 使用语义化的 API 更新字段值
     context.setFieldValue(mockResult);
 
-    // log.info(LogCategory.EFFECT_RESULT, `异步处理完成: ${context.fieldName}`, mockResult);
+    // console.log(`异步处理完成: ${context.fieldName}`, mockResult);
   }
 };
 

@@ -63,7 +63,7 @@ Do not run dependency installation or global tool installation without explainin
 - `src/consumer/render/componentRegistry.tsx`: built-in Ant Design field components and component registry manager
 - `src/consumer/render/FieldComponentRenderer.tsx`: renders a configured field via the registry
 - `src/shared/context/`: form chain React context access
-- `src/shared/utils/`: logger, path/deep utilities, initialization checks
+- `src/shared/utils/`: path/deep utilities and initialization checks
 - `demos/`: Vite demos for usage, custom handlers, custom components, UI config, sync tests, and render extensions
 - `tests/`: script-style test/demo data, not a conventional test runner setup
 - `docs/`: architecture, data flow, field types, config, effects, batch updates, and quick reference docs

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Select, Space, Typography } from 'antd';
 import { DEMO_COMPONENTS, DemoType } from './demoRegistry';
-import { LogCategory, logger } from '@/shared/utils/logger';
 
 const { Title, Paragraph } = Typography;
 const { Option } = Select;
@@ -12,8 +11,6 @@ interface DemoSelectorProps {
 
 const DemoSelector: React.FC<DemoSelectorProps> = ({ defaultDemo = 'storeBoundary' }) => {
   const [currentDemo, setCurrentDemo] = useState<DemoType>(defaultDemo);
-
-  logger.enableCategories([LogCategory.RENDER]);
 
   const getCurrentDemoInfo = () => {
     return DEMO_COMPONENTS[currentDemo];

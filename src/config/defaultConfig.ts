@@ -1,5 +1,4 @@
 import { CustomEffectResultHandler } from '../consumer/effects';
-import { log, LogCategory } from '../shared/utils/logger';
 
 /**
  * DynamicForm 默认配置接口
@@ -31,7 +30,7 @@ const baseHandlers: CustomEffectResultHandler[] = [
     description: '处理字段值的更新，支持批量更新机制',
     canHandle: (key) => key === 'value',
     handle: (context, value) => {
-      log.effect(LogCategory.EFFECT_RESULT, 'valueHandle', context.fieldName, value);
+      console.log('[EffectResult] valueHandle', { fieldName: context.fieldName, value });
 
       context.setFieldValue(value);
     }
@@ -79,7 +78,10 @@ const baseHandlers: CustomEffectResultHandler[] = [
     description: '处理Form.Item组件配置，存储到字段meta.formItemProps',
     canHandle: (key) => key === 'formItemProps',
     handle: (context, value) => {
-      log.effect(LogCategory.EFFECT_RESULT, 'formItemPropsHandle ', context.fieldName, value);
+      console.log('[EffectResult] formItemPropsHandle', {
+        fieldName: context.fieldName,
+        value
+      });
 
       context.updateFieldMeta({ formItemProps: value });
     }
@@ -90,7 +92,7 @@ const baseHandlers: CustomEffectResultHandler[] = [
     description: '处理组件属性配置，合并存储到 meta.componentProps',
     canHandle: (key) => key === 'componentProps',
     handle: (context, value) => {
-      log.effect(LogCategory.EFFECT_RESULT, 'componentProps', context.fieldName, value);
+      console.log('[EffectResult] componentProps', { fieldName: context.fieldName, value });
       context.updateFieldMeta({
         componentProps: value
       });
@@ -103,7 +105,7 @@ const baseHandlers: CustomEffectResultHandler[] = [
     description: '处理Form组件配置，存储到全局dynamicUIConfig',
     canHandle: (key) => key === 'formProps',
     handle: (context, value) => {
-      log.effect(LogCategory.EFFECT_RESULT, 'formProps handle Run ', context.fieldName, value);
+      console.log('[EffectResult] formProps handle Run', { fieldName: context.fieldName, value });
       // 直接dispatch到store，更新全局配置
       context.updateDynamicUIConfig({ formProps: value });
     }
@@ -113,7 +115,10 @@ const baseHandlers: CustomEffectResultHandler[] = [
     description: '处理Button组件配置，存储到全局dynamicUIConfig',
     canHandle: (key) => key === 'buttonProps',
     handle: (context, value) => {
-      log.effect(LogCategory.EFFECT_RESULT, 'buttonProps handle Run ', context.fieldName, value);
+      console.log('[EffectResult] buttonProps handle Run', {
+        fieldName: context.fieldName,
+        value
+      });
       context.updateDynamicUIConfig({ buttonProps: value });
     }
   },
@@ -122,7 +127,7 @@ const baseHandlers: CustomEffectResultHandler[] = [
     description: '处理Card组件配置，存储到全局dynamicUIConfig',
     canHandle: (key) => key === 'cardProps',
     handle: (context, value) => {
-      log.effect(LogCategory.EFFECT_RESULT, 'cardProps handle Run ', context.fieldName, value);
+      console.log('[EffectResult] cardProps handle Run', { fieldName: context.fieldName, value });
       context.updateDynamicUIConfig({ cardProps: value });
     }
   },
@@ -131,7 +136,7 @@ const baseHandlers: CustomEffectResultHandler[] = [
     description: '处理Row组件配置，存储到全局dynamicUIConfig',
     canHandle: (key) => key === 'rowProps',
     handle: (context, value) => {
-      log.effect(LogCategory.EFFECT_RESULT, 'rowProps handle Run ', context.fieldName, value);
+      console.log('[EffectResult] rowProps handle Run', { fieldName: context.fieldName, value });
       context.updateDynamicUIConfig({ rowProps: value });
     }
   },
@@ -140,7 +145,7 @@ const baseHandlers: CustomEffectResultHandler[] = [
     description: '处理Col组件配置，存储到全局dynamicUIConfig',
     canHandle: (key) => key === 'colProps',
     handle: (context, value) => {
-      log.effect(LogCategory.EFFECT_RESULT, 'colProps handle Run ', context.fieldName, value);
+      console.log('[EffectResult] colProps handle Run', { fieldName: context.fieldName, value });
       context.updateDynamicUIConfig({ colProps: value });
     }
   },
@@ -149,12 +154,10 @@ const baseHandlers: CustomEffectResultHandler[] = [
     description: '处理提交区域配置，存储到全局dynamicUIConfig',
     canHandle: (key) => key === 'submitAreaProps',
     handle: (context, value) => {
-      log.effect(
-        LogCategory.EFFECT_RESULT,
-        'submitAreaProps handle Run ',
-        context.fieldName,
+      console.log('[EffectResult] submitAreaProps handle Run', {
+        fieldName: context.fieldName,
         value
-      );
+      });
       context.updateDynamicUIConfig({ submitAreaProps: value });
     }
   }

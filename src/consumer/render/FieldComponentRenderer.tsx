@@ -3,7 +3,6 @@ import { Form } from 'antd';
 import type { FieldRendererProps } from '../../shared/types';
 import { defaultRegistryManager } from './componentRegistry';
 import { shallowEqual } from '../../shared/utils/utils';
-import { log, LogCategory } from '../../shared/utils/logger';
 
 const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
   function FieldRenderer({ field, form, componentRegistry, dynamicUIConfig, runtimeCapability }) {
@@ -62,7 +61,7 @@ const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
     const wrapFormItem =
       (Component as typeof Component & { wrapWithFormItem?: boolean }).wrapWithFormItem !== false;
 
-    log.fieldRender(LogCategory.RENDER, field.id, field.component);
+    console.log(`渲染字段 ${field.id} - 组件类型: ${field.component}`);
 
     if (wrapFormItem) {
       return (
@@ -81,17 +80,17 @@ const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
 
     // meta 属性深度比较 - 检测所有 meta 属性的变化
     if (!shallowEqual(prevField.meta, nextField.meta)) {
-      log.info(LogCategory.PERFORMANCE_MONITOR, `字段 ${fieldId}: meta 属性变化，需要渲染`);
+      console.log(`字段 ${fieldId}: meta 属性变化，需要渲染`);
       return false;
     }
 
     if (!shallowEqual(prevProps.runtimeCapability, nextProps.runtimeCapability)) {
-      log.info(LogCategory.PERFORMANCE_MONITOR, `字段 ${fieldId}: runtime 能力变化，需要渲染`);
+      console.log(`字段 ${fieldId}: runtime 能力变化，需要渲染`);
       return false;
     }
 
     // 所有检查都通过，可以跳过渲染
-    log.info(LogCategory.PERFORMANCE_MONITOR, `字段 ${fieldId}: 跳过渲染`);
+    console.log(`字段 ${fieldId}: 跳过渲染`);
     return true;
   }
 );

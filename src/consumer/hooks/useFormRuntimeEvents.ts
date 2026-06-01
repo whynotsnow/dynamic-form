@@ -2,7 +2,6 @@ import { useReducer } from 'react';
 import type { FormInstance } from 'antd';
 import type { FormValues } from '../../shared/types';
 import type { RuntimeState } from '../../runtime';
-import { log, LogCategory } from '../../shared/utils/logger';
 import { useFormChainContext } from '../../shared/context/FormChainContext';
 
 interface UseFormRuntimeEventsParams {
@@ -24,7 +23,7 @@ export function useFormRuntimeEvents({ form, onSubmit, runtimeState }: UseFormRu
     );
     const submitValues = form.getFieldsValue(true);
 
-    log.info(LogCategory.FORM, '表单提交:', values, submitValues);
+    console.log('表单提交:', values, submitValues);
     onSubmit?.(submitValues);
   };
 

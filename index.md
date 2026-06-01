@@ -64,7 +64,6 @@
 ### 工具函数
 
 - `../utils/utils.ts` - 通用工具函数
-- `../utils/logger.ts` - 日志工具
 - `../utils/initializationChecker.ts` - 初始化检查工具
 
 ### 演示组件

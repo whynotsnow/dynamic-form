@@ -1,10 +1,9 @@
 import { produce, current, castDraft } from 'immer';
 import type { FormState, FormAction, FieldMeta, UIConfig, FieldState } from '../shared/types';
 import { mergeFieldMetaPatch, mergeGroupMetaPatch } from '../shared/utils';
-import { log, LogCategory } from '../shared/utils/logger';
 
 const formReducer = produce<FormState, [FormAction]>((draft, action) => {
-  log.info(LogCategory.STORE_UPDATE, `Reducer 收到 action: ${action.type}`, {
+  console.log(`Reducer 收到 action: ${action.type}`, {
     action
   });
 
@@ -26,7 +25,7 @@ const formReducer = produce<FormState, [FormAction]>((draft, action) => {
 
       const registryEntry = draft.configProcessInfo.fieldRegistry[fieldId];
       if (!registryEntry) {
-        log.warn(LogCategory.STORE_UPDATE, `UPDATE_META: 未找到字段 ${fieldId}`);
+        console.warn(`UPDATE_META: 未找到字段 ${fieldId}`);
         return;
       }
 
@@ -40,7 +39,7 @@ const formReducer = produce<FormState, [FormAction]>((draft, action) => {
       }
 
       if (!target) {
-        log.warn(LogCategory.STORE_UPDATE, `UPDATE_META: 字段状态未初始化 ${fieldId}`);
+        console.warn(`UPDATE_META: 字段状态未初始化 ${fieldId}`);
         return;
       }
 
@@ -53,13 +52,13 @@ const formReducer = produce<FormState, [FormAction]>((draft, action) => {
       const group = draft.groupFields[groupId];
 
       if (!group) {
-        log.error(LogCategory.STORE_UPDATE, `SET_GROUP_META: 未找到分组 ${groupId}`);
+        console.error(`SET_GROUP_META: 未找到分组 ${groupId}`);
         return;
       }
 
       draft.groupFields[groupId].meta = mergeGroupMetaPatch(draft.groupFields[groupId].meta, meta);
 
-      log.info(LogCategory.STORE_UPDATE, 'SET_GROUP_META action 结果:', {
+      console.log('SET_GROUP_META action 结果:', {
         groupId,
         meta,
         oldMeta: oldSnapshot

@@ -112,7 +112,7 @@ export function registerCustomEffectResultHandler(
   // 注册处理器
   handlers.set(handler.name, handler);
 
-  // log.handlerRegistration(LogCategory.HANDLER_REGISTRATION, handler.name, handler.description);
+  // console.log('注册处理器:', handler.name, handler.description);
 }
 
 /**
