@@ -1,5 +1,6 @@
 import { Chain } from 'form-chain-effect-engine';
 import { GroupedFormConfig, FlatFormConfig } from '@/exports';
+import { operatingAreaEffect } from '../demos/customComponents/OperatingAreaField';
 export const supplierFormConfig: GroupedFormConfig = {
   groups: [
     {
@@ -155,11 +156,12 @@ export const supplierFormConfig: GroupedFormConfig = {
         {
           id: 'operatingArea',
           label: '经营地区',
-          component: 'SelectField',
+          component: 'OperatingAreaField',
+          effect: operatingAreaEffect,
           span: 12,
           componentProps: {
             options: [
-              { value: 'guagnzhou', label: '广州' },
+              { value: 'guangzhou', label: '广州' },
               { value: 'shenzhen', label: '深圳' },
               { value: 'shanghai', label: '上海' },
               { value: 'beijing', label: '北京' }
@@ -170,7 +172,7 @@ export const supplierFormConfig: GroupedFormConfig = {
             const { categories } = allValues;
             let value = undefined;
             if (categories === 'fruitsAndVegetables') {
-              value = 'guagnzhou';
+              value = 'guangzhou';
             }
             return {
               value

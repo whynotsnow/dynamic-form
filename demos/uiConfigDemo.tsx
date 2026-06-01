@@ -4,38 +4,7 @@ import { ComponentRegistryConfig, FieldComponentProps, FormConfig, UIConfig } fr
 import { Tag, Space, Form, Select } from 'antd';
 import { CheckCircleOutlined, StarOutlined } from '@ant-design/icons';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
-
-const PriorityField: React.FC<FieldComponentProps> = ({ field, form }) => {
-  // 在自定义组件内部处理 label 的动态展示
-  const value = form.getFieldValue('priority');
-  const renderLabel = () => {
-    if (value === 'high') {
-      return (
-        <Space>
-          <span>🔥 高优先级</span>
-          <Tag color="red">重要</Tag>
-        </Space>
-      );
-    }
-    if (value === 'low') {
-      return (
-        <Space>
-          <span>🧊 低优先级</span>
-          <Tag color="blue">次要</Tag>
-        </Space>
-      );
-    }
-    return field?.formItemProps?.label || '优先级';
-  };
-
-  return (
-    <Form.Item label={renderLabel()} name={field.id}>
-      <Select options={field.componentProps?.options} />
-    </Form.Item>
-  );
-};
-
-(PriorityField as any).wrapWithFormItem = false;
+import { PriorityField, priorityEffect } from '../demos/customComponents/PriorityField';
 
 const UIConfigDemo: React.FC = () => {
   const [dynamicForm] = Form.useForm();
@@ -92,7 +61,7 @@ const UIConfigDemo: React.FC = () => {
             <Space>
               <CheckCircleOutlined style={{ color: '#52c41a' }} />
               <span style={{ fontWeight: 'bold' }}>当前状态</span>
-              <Tag color="orange">动态</Tag>
+              <Tag color="orange">动态样式</Tag>
             </Space>
           ),
           style: { borderLeft: '4px solid #52c41a', paddingLeft: '12px' }
@@ -159,13 +128,13 @@ const UIConfigDemo: React.FC = () => {
         formItemProps: {
           label: (
             <Space>
-              <StarOutlined style={{ color: '#faad14' }} />
-              <span style={{ fontWeight: 'bold' }}>优先级设置</span>
-              <Tag color="red">重要1</Tag>
+              <span>😋 默认优先级</span>
+              <Tag color="blue">默认</Tag>
             </Space>
           ),
           style: { borderLeft: '4px solid #faad14', paddingLeft: '12px' }
-        }
+        },
+        effect: priorityEffect
       },
       {
         id: 'description',

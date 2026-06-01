@@ -4,6 +4,7 @@ import { Input, Slider, Upload, Button, message, InputNumber, Select, Switch } f
 import { UploadOutlined } from '@ant-design/icons';
 import CustomProjectList from '../../demos/customComponents/CustomProjectList';
 import CustomEditTable from '../../demos/customComponents/CustomEditTable';
+import OperatingAreaField from './OperatingAreaField';
 
 // 自定义受控组件用于测试
 
@@ -161,6 +162,7 @@ export const customComponents: ComponentRegistry = {
   CustomTextArea,
   CustomProjectList,
   CustomEditTable,
+  OperatingAreaField,
   EnhancedTextInput,
   EmailInput,
   DynamicSelect,

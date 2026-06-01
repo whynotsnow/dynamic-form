@@ -3,6 +3,7 @@ import { Card, Space, Form } from 'antd';
 import { supplierFormConfig } from '../tests/testData';
 import { DynamicForm } from '@/exports';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
+import OperatingAreaField from '../demos/customComponents/OperatingAreaField';
 const StoreBoundaryDemo: React.FC = () => {
   const handleSubmit = (values: any) => {
     console.log('[StoreBoundaryDemo] 表单提交:', values);
@@ -34,6 +35,7 @@ const StoreBoundaryDemo: React.FC = () => {
         form={form}
         submitButtonText="提交表单"
         formConfig={supplierFormConfig}
+        componentRegistry={{ customComponents: { OperatingAreaField } }}
       />
     </div>
   );
