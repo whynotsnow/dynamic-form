@@ -286,7 +286,7 @@ Documentation language structure:
 
 The active demo selector in `demos/DemoSelector.tsx` exposes:
 
-- `syncTest`
+- `storeBoundary`
 - `customHandlers`
 - `customComponents`
 - `formValidation`

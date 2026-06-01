@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Select, Space, Typography } from 'antd';
-import SyncTest from './SyncTest';
+import StoreBoundaryDemo from './storeBoundaryDemo';
 import CustomHandlersDemo from './customHandlersDemo';
 import CustomComponentsDemo from './customComponentsDemo';
 import UIConfigDemo from './uiConfigDemo';
@@ -15,15 +15,15 @@ interface DemoSelectorProps {
   defaultDemo?: DemoType;
 }
 
-const DemoSelector: React.FC<DemoSelectorProps> = ({ defaultDemo = 'syncTest' }) => {
+const DemoSelector: React.FC<DemoSelectorProps> = ({ defaultDemo = 'storeBoundary' }) => {
   const [currentDemo, setCurrentDemo] = useState<DemoType>(defaultDemo);
 
   logger.enableCategories([LogCategory.RENDER]);
 
   const renderDemo = () => {
     switch (currentDemo) {
-      case 'syncTest':
-        return <SyncTest />;
+      case 'storeBoundary':
+        return <StoreBoundaryDemo />;
       case 'customHandlers':
         return <CustomHandlersDemo />;
       case 'customComponents':
@@ -35,7 +35,7 @@ const DemoSelector: React.FC<DemoSelectorProps> = ({ defaultDemo = 'syncTest' })
       case 'renderExtension':
         return <RenderExtensionDemo />;
       default:
-        return <SyncTest />;
+        return <StoreBoundaryDemo />;
     }
   };
 

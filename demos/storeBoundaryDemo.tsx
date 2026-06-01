@@ -3,9 +3,9 @@ import { Card, Space, Form } from 'antd';
 import { supplierFormConfig } from '../tests/testData';
 import { useInitHandlers } from '@/consumer';
 import { DynamicForm } from '@/exports';
-const SyncTest: React.FC = () => {
+const StoreBoundaryDemo: React.FC = () => {
   const handleSubmit = (values: any) => {
-    console.log('[SyncTest] 表单提交:', values);
+    console.log('[StoreBoundaryDemo] 表单提交:', values);
   };
 
   // 初始化处理器系统，确保所有演示组件都能正常工作
@@ -20,7 +20,7 @@ const SyncTest: React.FC = () => {
 
   return (
     <div style={{ padding: '20px' }}>
-      <Card title="Form Store 联动测试" style={{ marginBottom: '20px' }}>
+      <Card title="Store 边界验证" style={{ marginBottom: '20px' }}>
         <Space direction="vertical">
           <div>
             <h3>测试说明：</h3>
@@ -44,4 +44,4 @@ const SyncTest: React.FC = () => {
   );
 };
 
-export default SyncTest;
+export default StoreBoundaryDemo;

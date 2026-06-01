@@ -26,10 +26,10 @@
   - 条件性使用处理器
   - 使用内置示例处理器
 
-### 3. 表单同步功能测试 (SyncTest)
+### 3. Store 边界验证演示 (StoreBoundaryDemo)
 
-- **文件**: `SyncTest.tsx`
-- **描述**: 测试表单状态同步和依赖链效果
+- **文件**: `storeBoundaryDemo.tsx`
+- **描述**: 验证字段值归 Ant Design Form 管理，字段 meta 和动态 UI 状态归 DynamicForm Store 管理
 
 ### 4. 渲染优化配置演示 (RenderOptimizationDemo)
 
@@ -269,7 +269,7 @@ demos/
 ├── DemoSelector.tsx              # 演示组件选择器
 ├── UsageExamplesDemo.tsx         # 使用示例演示
 ├── CustomHandlersUsageDemo.tsx   # 自定义处理器使用示例
-├── SyncTest.tsx                  # 表单同步功能测试
+├── storeBoundaryDemo.tsx         # Store 边界验证演示
 ├── RenderOptimizationDemo.tsx    # 渲染优化配置演示
 ├── PerformanceComparisonDemo.tsx # 性能对比演示
 ├── testLoggerStyle.tsx           # 日志样式测试

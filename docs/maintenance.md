@@ -22,7 +22,7 @@ npm run test        # Node test runner
 
 Vite demos 位于 `demos/`，用于人工验证组件行为。当前 `DemoSelector` 暴露：
 
-- `syncTest`
+- `storeBoundary`
 - `customHandlers`
 - `customComponents`
 - `formValidation`
@@ -100,7 +100,7 @@ The repository has `package-lock.json`, so npm is the default package manager.
 
 ### Demos and Verification
 
-Vite demos live in `demos/` and are used for manual behavior checks. The current `DemoSelector` exposes `syncTest`, `customHandlers`, `customComponents`, `formValidation`, `uiConfig`, and `renderExtension`.
+Vite demos live in `demos/` and are used for manual behavior checks. The current `DemoSelector` exposes `storeBoundary`, `customHandlers`, `customComponents`, `formValidation`, `uiConfig`, and `renderExtension`.
 
 Run demos with:
 

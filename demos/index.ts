@@ -1,5 +1,5 @@
 // 演示组件统一导出
-export { default as SyncTest } from './SyncTest';
+export { default as StoreBoundaryDemo } from './storeBoundaryDemo';
 export { default as DemoSelector } from './DemoSelector';
 export { default as CustomHandlersDemo } from './customHandlersDemo';
 export { default as CustomComponentsDemo } from './customComponentsDemo';
@@ -15,11 +15,11 @@ export interface DemoComponentProps {
 
 // 演示组件配置
 export const DEMO_COMPONENTS = {
-  syncTest: {
-    name: 'SyncTest',
-    title: 'Form Store 联动测试',
+  storeBoundary: {
+    name: 'StoreBoundaryDemo',
+    title: 'Store 边界验证',
     description: '验证字段值由 Ant Design Form 管理，effect 只更新字段值或 DynamicForm meta。',
-    component: 'SyncTest'
+    component: 'StoreBoundaryDemo'
   },
   customHandlers: {
     name: 'CustomHandlersDemo',

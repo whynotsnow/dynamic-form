@@ -16,7 +16,7 @@ npm run start
 
 | 场景 | Demo |
 | --- | --- |
-| 表单值同步和 effect 更新边界 | [`demos/SyncTest.tsx`](../demos/SyncTest.tsx) |
+| 表单值同步和 effect 更新边界 | [`demos/storeBoundaryDemo.tsx`](../demos/storeBoundaryDemo.tsx) |
 | 自定义 effect result handlers | [`demos/customHandlersDemo.tsx`](../demos/customHandlersDemo.tsx)、[`demos/customHandlers.ts`](../demos/customHandlers.ts) |
 | 自定义组件注册 | [`demos/customComponentsDemo.tsx`](../demos/customComponentsDemo.tsx) |
 | Ant Design Form 校验集成 | [`demos/formValidationDemo.tsx`](../demos/formValidationDemo.tsx) |
@@ -316,7 +316,7 @@ The demo selector is [`demos/DemoSelector.tsx`](../demos/DemoSelector.tsx), and 
 
 | Scenario | Demo |
 | --- | --- |
-| Form value sync and effect update boundary | [`demos/SyncTest.tsx`](../demos/SyncTest.tsx) |
+| Form value sync and effect update boundary | [`demos/storeBoundaryDemo.tsx`](../demos/storeBoundaryDemo.tsx) |
 | Custom effect result handlers | [`demos/customHandlersDemo.tsx`](../demos/customHandlersDemo.tsx), [`demos/customHandlers.ts`](../demos/customHandlers.ts) |
 | Custom component registry | [`demos/customComponentsDemo.tsx`](../demos/customComponentsDemo.tsx) |
 | Ant Design Form validation integration | [`demos/formValidationDemo.tsx`](../demos/formValidationDemo.tsx) |
