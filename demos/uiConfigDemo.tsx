@@ -3,7 +3,7 @@ import DynamicForm from '@/index';
 import { ComponentRegistryConfig, FieldComponentProps, FormConfig, UIConfig } from '@/exports';
 import { Tag, Space, Form, Select } from 'antd';
 import { CheckCircleOutlined, StarOutlined } from '@ant-design/icons';
-import { useInitHandlers } from '@/consumer';
+import { useDemoInitHandlers } from './useDemoInitHandlers';
 
 const PriorityField: React.FC<FieldComponentProps> = ({ field, form }) => {
   // 在自定义组件内部处理 label 的动态展示
@@ -213,12 +213,7 @@ const UIConfigDemo: React.FC = () => {
   };
 
   // 使用useInitHandlers处理effect函数返回值
-  useInitHandlers({
-    enabled: true,
-    handlers: [],
-    options: { override: false },
-    debug: true
-  });
+  useDemoInitHandlers();
 
   const componentRegistryConfig: ComponentRegistryConfig = {
     customComponents: { PriorityField }

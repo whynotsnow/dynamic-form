@@ -1,20 +1,15 @@
 import React from 'react';
 import { Card, Space, Form } from 'antd';
 import { supplierFormConfig } from '../tests/testData';
-import { useInitHandlers } from '@/consumer';
 import { DynamicForm } from '@/exports';
+import { useDemoInitHandlers } from './useDemoInitHandlers';
 const StoreBoundaryDemo: React.FC = () => {
   const handleSubmit = (values: any) => {
     console.log('[StoreBoundaryDemo] 表单提交:', values);
   };
 
   // 初始化处理器系统，确保所有演示组件都能正常工作
-  useInitHandlers({
-    enabled: true,
-    handlers: [], // 使用默认处理器
-    options: { override: false },
-    debug: true
-  });
+  useDemoInitHandlers();
 
   const [form] = Form.useForm();
 

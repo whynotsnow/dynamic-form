@@ -3,9 +3,9 @@ import { Card, Typography, Space, Button, message, Form, Spin } from 'antd';
 import DynamicForm from '@/index';
 import { customComponents } from './customComponents';
 import { FormConfig } from '@/exports';
-import { useInitHandlers } from '@/exports';
 import { exampleHandlers } from './customHandlers';
 import { mockFetchFormData } from '../src/shared/utils';
+import { useDemoInitHandlers } from './useDemoInitHandlers';
 
 const { Title, Paragraph } = Typography;
 
@@ -91,12 +91,7 @@ const FormValidationDemo: React.FC = () => {
     allowOverride: false
   };
 
-  useInitHandlers({
-    enabled: true,
-    handlers: exampleHandlers,
-    options: { override: false },
-    debug: true
-  });
+  useDemoInitHandlers({ handlers: exampleHandlers });
 
   const handleSubmit = (values: any) => {
     console.log('表单数据:', values);

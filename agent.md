@@ -271,13 +271,13 @@ The documentation was rebuilt on 2026-06-01. The current docs are intentionally 
 - `docs/development.md`: component usage guide with scenario-based config examples, demo links, custom components, and custom effect handlers.
 - `docs/maintenance.md`: commands, demos, verification, build notes, implementation guardrails, and documentation maintenance rules.
 
-Older overlapping docs were removed from `docs/` after backing them up to `docs_backup_20260601_1818`.
 Do not recreate the old document set unless the user explicitly asks. When project behavior changes, update the
 nearest topic doc and then update the root `README.md` only if public-facing summaries or links change.
 
 Documentation language structure:
 
 - Project docs should be bilingual with the complete Chinese document first and the English translation below it.
+- This bilingual rule applies to all project documentation files, including directory-level README files such as `demos/README.md`.
 - Do not use a short explanatory note as a substitute for the full Chinese document.
 - Keep API names, package names, file paths, and established technical terms in English when clearer.
 - A small amount of emoji is acceptable in headings or summary bullets when it improves scanning.

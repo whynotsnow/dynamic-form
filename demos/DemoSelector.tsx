@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Select, Space, Typography } from 'antd';
-import StoreBoundaryDemo from './storeBoundaryDemo';
-import CustomHandlersDemo from './customHandlersDemo';
-import CustomComponentsDemo from './customComponentsDemo';
-import UIConfigDemo from './uiConfigDemo';
-import RenderExtensionDemo from './renderExtensionDemo';
-import { DEMO_COMPONENTS, DemoType, FormValidationDemo } from './index';
+import { DEMO_COMPONENTS, DemoType } from './demoRegistry';
 import { LogCategory, logger } from '@/shared/utils/logger';
 
 const { Title, Paragraph } = Typography;
@@ -20,28 +15,11 @@ const DemoSelector: React.FC<DemoSelectorProps> = ({ defaultDemo = 'storeBoundar
 
   logger.enableCategories([LogCategory.RENDER]);
 
-  const renderDemo = () => {
-    switch (currentDemo) {
-      case 'storeBoundary':
-        return <StoreBoundaryDemo />;
-      case 'customHandlers':
-        return <CustomHandlersDemo />;
-      case 'customComponents':
-        return <CustomComponentsDemo />;
-      case 'formValidation':
-        return <FormValidationDemo />;
-      case 'uiConfig':
-        return <UIConfigDemo />;
-      case 'renderExtension':
-        return <RenderExtensionDemo />;
-      default:
-        return <StoreBoundaryDemo />;
-    }
-  };
-
   const getCurrentDemoInfo = () => {
     return DEMO_COMPONENTS[currentDemo];
   };
+
+  const CurrentDemo = getCurrentDemoInfo().component;
 
   return (
     <div className="dynamic-form-demo-page" style={{ padding: 20 }}>
@@ -91,7 +69,7 @@ const DemoSelector: React.FC<DemoSelectorProps> = ({ defaultDemo = 'storeBoundar
             <Title level={5}>{getCurrentDemoInfo().title}</Title>
             <Paragraph type="secondary">{getCurrentDemoInfo().description}</Paragraph>
 
-            {renderDemo()}
+            <CurrentDemo />
           </div>
         </Space>
       </Card>

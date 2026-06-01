@@ -16,7 +16,7 @@ import type {
   RenderGroupsParams,
   RenderFieldsParams
 } from '@/exports';
-import { useInitHandlers } from '@/exports';
+import { useDemoInitHandlers } from './useDemoInitHandlers';
 
 const { Text } = Typography;
 
@@ -133,12 +133,7 @@ const RenderExtensionDemo: React.FC = () => {
     }
   };
   // 初始化处理器
-  useInitHandlers({
-    enabled: true,
-    handlers: [], // 使用默认处理器
-    options: { override: false },
-    debug: true
-  });
+  useDemoInitHandlers();
 
   const handleSubmit = (values: Record<string, any>) => {
     console.log('表单提交值:', JSON.stringify(values, null, 2), form.getFieldsValue(true));

@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Card, Space, Typography, Alert, Spin, SelectProps, Form } from 'antd';
-import { useInitHandlers } from '@/consumer';
 import { exampleHandlers } from './customHandlers';
 import { FlatFormConfig } from '@/exports';
 import { DynamicForm } from '@/exports';
+import { useDemoInitHandlers } from './useDemoInitHandlers';
 
 const { Title, Paragraph } = Typography;
 
@@ -168,12 +168,7 @@ const mockFetchFormData = (): Promise<Record<string, any>> => {
 };
 
 const CustomHandlersDemo: React.FC = () => {
-  const { registeredCount } = useInitHandlers({
-    enabled: true,
-    handlers: exampleHandlers,
-    options: { override: false },
-    debug: true
-  });
+  const { registeredCount } = useDemoInitHandlers({ handlers: exampleHandlers });
 
   const handleSubmit = (values: any) => {
     console.log('表单提交:', values);
