@@ -1,13 +1,11 @@
 name: 📦 Publish Dynamic Form
 
 on:
-  push:
-    tags:
-      - 'v*'
   workflow_dispatch:
 
 jobs:
   publish:
+    if: ${{ false }}
     runs-on: ubuntu-latest
 
     steps:
