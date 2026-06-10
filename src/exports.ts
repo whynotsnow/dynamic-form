@@ -42,7 +42,10 @@ export type { FieldModule, ModuleRegistryRegisterOptions } from './modules';
 
 export {
   AdapterRegistryManager,
+  JsonSchemaAdapter,
+  MetadataAdapter,
   ModuleConfigPassthroughAdapter,
+  OpenApiAdapter,
   adaptModuleConfigs,
   compileAdaptedFormConfig,
   defaultAdapterRegistry
@@ -53,7 +56,14 @@ export type {
   AdapterRegistryRegisterOptions,
   AdapterResolveOptions,
   CompileAdaptedFormConfigOptions,
-  ModuleConfigAdapter
+  JsonSchemaAdapterInput,
+  JsonSchemaProperty,
+  MetadataAdapterField,
+  MetadataAdapterInput,
+  ModuleConfigAdapter,
+  OpenApiAdapterInput,
+  SchemaAdapterFieldMetadata,
+  SchemaAdapterOptions
 } from './adapters';
 
 export { RuleEngine, createRuleEngine, compileRulesToEffect, evaluateRule } from './rules';

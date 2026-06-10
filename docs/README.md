@@ -93,6 +93,8 @@ DynamicForm is organized around five responsibilities:
 DynamicForm 3.0 在现有 `FormConfig` 管线前新增可选编译层。
 
 - [Compiler Foundation](./compiler-foundation.md)：字段模块、模块注册器、配置编译器和编译 hooks。
+- [Adapter Foundation](./adapter-foundation.md)：adapter 注册器、输入归一化管线和 `ModuleConfig[]` adapter 边界。
+- [Schema Adapters](./schema-adapters.md)：基于 Adapter Foundation 的 JsonSchema、OpenAPI 和 metadata adapters。
 - 新增公共 API 包括 `compileFormConfig`、`ModuleRegistryManager`、`defaultModuleRegistry` 和 `processFormConfig`。
 - 现有 `FormConfig` 和 `DynamicForm` 用法保持兼容。
 
@@ -100,5 +102,6 @@ DynamicForm 3.0 adds an optional compiler layer before the existing `FormConfig`
 
 - [Compiler Foundation](./compiler-foundation.md): field modules, module registry, config compiler, and compiler hooks.
 - [Adapter Foundation](./adapter-foundation.md): adapter registry, input normalization pipeline, and the `ModuleConfig[]` adapter boundary.
+- [Schema Adapters](./schema-adapters.md): JsonSchema, OpenAPI, and metadata adapters built on Adapter Foundation.
 - New public APIs include `compileFormConfig`, `ModuleRegistryManager`, `defaultModuleRegistry`, and `processFormConfig`.
 - Existing `FormConfig` and `DynamicForm` usage remains compatible.

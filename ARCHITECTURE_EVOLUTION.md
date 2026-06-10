@@ -1,14 +1,50 @@
-# DynamicForm 3.2 Architecture Evolution
+# DynamicForm 3.3 Architecture Evolution
 
 ## 中文文档
 
-版本：3.2 执行稿
+版本：3.3 执行稿
 
 作者：Snow
 
-状态：Adapter Foundation 已实现
+状态：Schema Adapter 已实现
 
 ---
+
+### DynamicForm 3.3：Schema Adapter
+
+DynamicForm 3.3 在 3.2 Adapter Foundation 之上新增具体 schema adapters：`JsonSchemaAdapter`、`OpenApiAdapter` 和 `MetadataAdapter`。
+
+3.3 管线如下：
+
+```text
+JsonSchema / OpenAPI / Metadata
+  -> Schema Adapter
+  -> ModuleConfig[]
+  -> Rule Engine / Rule Effect Adapter
+  -> Config Compiler
+  -> FormConfig
+  -> processFormConfig
+  -> FormChainEffectEngine
+  -> Runtime Layer
+  -> DynamicForm Renderer
+```
+
+Schema adapters 只负责把输入转换为 flat `ModuleConfig[]`。字段模块展开、规则编译、依赖推导、组件注册、runtime 和 renderer 行为保持不变。
+
+3.3 范围：
+
+- 新增 `JsonSchemaAdapter`，支持顶层 object schema。
+- 新增 `OpenApiAdapter`，支持 OpenAPI `components.schemas` 或单个 schema object。
+- 新增 `MetadataAdapter`，支持 `{ fields: [...] }` 项目元数据输入。
+- 新增 schema adapter 公共类型，并通过根入口导出。
+
+3.3 非目标：
+
+- 不展开 nested object schema 或 object array item schema。
+- 不实现 validation rule engine。
+- 不实现异步/API 规则。
+- 不根据 schema primitive type 猜测 UI 或 module type。
+- 不修改 compiler/runtime/renderer 主流程。
 
 ### DynamicForm 3.2：Adapter Foundation
 
@@ -84,13 +120,49 @@ Field Modules
 
 ## English Documentation
 
-Version: 3.2 Execution Draft
+Version: 3.3 Execution Draft
 
 Author: Snow
 
-Status: Adapter Foundation implemented
+Status: Schema Adapter implemented
 
 ---
+
+### DynamicForm 3.3: Schema Adapter
+
+DynamicForm 3.3 adds concrete schema adapters on top of the 3.2 Adapter Foundation: `JsonSchemaAdapter`, `OpenApiAdapter`, and `MetadataAdapter`.
+
+The 3.3 pipeline is:
+
+```text
+JsonSchema / OpenAPI / Metadata
+  -> Schema Adapter
+  -> ModuleConfig[]
+  -> Rule Engine / Rule Effect Adapter
+  -> Config Compiler
+  -> FormConfig
+  -> processFormConfig
+  -> FormChainEffectEngine
+  -> Runtime Layer
+  -> DynamicForm Renderer
+```
+
+Schema adapters only convert input into flat `ModuleConfig[]`. Module expansion, rule compilation, dependency inference, component registration, runtime, and renderer behavior stay unchanged.
+
+3.3 scope:
+
+- Add `JsonSchemaAdapter` for top-level object schemas.
+- Add `OpenApiAdapter` for OpenAPI `components.schemas` or a single schema object.
+- Add `MetadataAdapter` for project metadata input shaped as `{ fields: [...] }`.
+- Add schema adapter public types and export them from the package root.
+
+3.3 non-goals:
+
+- No nested object schema or object array item schema expansion.
+- No validation rule engine.
+- No async/API rules.
+- No UI or module type inference from schema primitive types.
+- No changes to the compiler/runtime/renderer main pipeline.
 
 ### DynamicForm 3.2: Adapter Foundation
 
@@ -356,7 +428,9 @@ const compiled = compileFormConfig([
 
 3.2 已实现方向：新增 Adapter Foundation，把外部或类模块输入归一化为 `ModuleConfig[]`，再复用现有 compiler。
 
-3.3+ / 4.0 方向：在 Adapter Foundation、Rule Engine 和 compiler foundation 稳定后，再考虑 JsonSchema/OpenAPI/Metadata adapter、validation rules、异步规则、拆包、领域模块包、visual builder 和 AI generator。
+3.3 已实现方向：新增 JsonSchema/OpenAPI/Metadata adapters，基于 Adapter Foundation 输出 flat `ModuleConfig[]`。
+
+4.0 方向：在 Schema Adapter、Adapter Foundation、Rule Engine 和 compiler foundation 稳定后，再考虑 validation rules、异步规则、拆包、领域模块包、visual builder 和 AI generator。
 
 ---
 
@@ -552,4 +626,6 @@ This keeps module compilation outside the runtime renderer and preserves the cur
 
 3.2 implemented direction: add Adapter Foundation to normalize external or module-like input into `ModuleConfig[]` before reusing the existing compiler.
 
-3.3+ / 4.0 direction: consider JsonSchema/OpenAPI/Metadata adapters, validation rules, async rules, package split, domain module packages, visual builder, and AI generator after Adapter Foundation, Rule Engine, and compiler foundation are stable.
+3.3 implemented direction: add JsonSchema/OpenAPI/Metadata adapters that output flat `ModuleConfig[]` through Adapter Foundation.
+
+4.0 direction: consider validation rules, async rules, package split, domain module packages, visual builder, and AI generator after Schema Adapter, Adapter Foundation, Rule Engine, and compiler foundation are stable.

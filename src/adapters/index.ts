@@ -8,6 +8,7 @@ export {
   assertModuleConfigList
 } from './ModuleConfigPassthroughAdapter';
 export { adaptModuleConfigs, compileAdaptedFormConfig } from './adaptModuleConfigs';
+export { JsonSchemaAdapter, MetadataAdapter, OpenApiAdapter } from './schema';
 export type {
   AdaptModuleConfigsOptions,
   AdapterContext,
@@ -16,3 +17,12 @@ export type {
   CompileAdaptedFormConfigOptions,
   ModuleConfigAdapter
 } from './types';
+export type {
+  JsonSchemaAdapterInput,
+  JsonSchemaProperty,
+  MetadataAdapterField,
+  MetadataAdapterInput,
+  OpenApiAdapterInput,
+  SchemaAdapterFieldMetadata,
+  SchemaAdapterOptions
+} from './schema';

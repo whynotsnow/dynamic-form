@@ -171,7 +171,7 @@ const compiled = compileFormConfig(
 
 ### 当前升级方向
 
-当前 3.1 升级方向是在字段模块模型之上引入 Rule Engine。可复用业务字段可以把 component、默认配置、依赖声明、effect 逻辑和声明式规则打包在一起，再由配置编译层在现有 `processFormConfig()` 之前展开为当前 `FormConfig` 结构。Ant Design Form 仍然负责 values 和校验运行时状态；DynamicForm 继续负责字段 meta、分组 meta、动态 UI 配置和依赖元数据。
+当前 3.3 升级方向是在 Adapter Foundation 之上新增具体 Schema Adapters。JsonSchema、OpenAPI 和 metadata 输入会先归一化为 `ModuleConfig[]`，再由配置编译层在现有 `processFormConfig()` 之前展开为当前 `FormConfig` 结构。Ant Design Form 仍然负责 values 和校验运行时状态；DynamicForm 继续负责字段 meta、分组 meta、动态 UI 配置和依赖元数据。
 
 ### 项目结构
 
@@ -203,6 +203,29 @@ npm run build       # 构建库产物
 ### 当前说明
 
 项目当前面向基于 Ant Design 的 React 应用。内置字段组件包括 `TextInput`、`Password`、`NumberInput`、`Select`、`SelectField`、`DatePicker`、`Switch`、`Rate`、`TextDisplay`、`CheckboxGroup` 和 `TextArea`。
+
+### Schema Adapters
+
+DynamicForm 3.3 在 Adapter Foundation 之上新增具体 `JsonSchemaAdapter`、`OpenApiAdapter` 和 `MetadataAdapter`。
+
+```tsx
+import { adaptModuleConfigs } from '@whynotsnow/dynamic-form';
+
+const moduleConfigs = adaptModuleConfigs(
+  {
+    type: 'object',
+    properties: {
+      name: {
+        type: 'string',
+        metadata: { module: 'TextInputModule' }
+      }
+    }
+  },
+  { adapterType: 'json-schema' }
+);
+```
+
+Schema adapters 要求字段显式声明 module metadata，不会根据 schema primitive type 自动猜测 UI。输出保持为 flat `ModuleConfig[]`，后续仍交给现有 compiler/runtime 管线处理。
 
 ---
 
@@ -312,6 +335,29 @@ const compiled = compileAdaptedFormConfig([
 
 The adapter layer only converts input. Rule merging, dependency inference, component registration, runtime, and rendering behavior remain owned by the existing compiler/runtime pipeline. 3.2 does not include concrete JsonSchema, OpenAPI, or Metadata adapters; those belong to 3.3.
 
+### Schema Adapters
+
+DynamicForm 3.3 adds concrete `JsonSchemaAdapter`, `OpenApiAdapter`, and `MetadataAdapter` implementations on top of Adapter Foundation.
+
+```tsx
+import { adaptModuleConfigs } from '@whynotsnow/dynamic-form';
+
+const moduleConfigs = adaptModuleConfigs(
+  {
+    type: 'object',
+    properties: {
+      name: {
+        type: 'string',
+        metadata: { module: 'TextInputModule' }
+      }
+    }
+  },
+  { adapterType: 'json-schema' }
+);
+```
+
+Schema adapters require explicit module metadata and do not infer UI from schema primitive types. Output stays flat `ModuleConfig[]`.
+
 `DynamicForm` props combine:
 
 - Engine props: `formConfig`, `form`, optional `values`, `uiConfig`, `enableInitializationCheck`, `checkDelay`.
@@ -338,9 +384,9 @@ The adapter layer only converts input. Rule merging, dependency inference, compo
 
 ### Current Direction
 
-The current 3.2 direction adds Adapter Foundation before the Rule Engine and compiler foundation.
-External input is normalized into `ModuleConfig[]`, while the config compiler continues to inject
-module capabilities into `FormConfig` before the existing processor runs.
+The current 3.3 direction adds concrete schema adapters on top of Adapter Foundation. JsonSchema,
+OpenAPI, and metadata input are normalized into `ModuleConfig[]`, while the config compiler
+continues to inject module capabilities into `FormConfig` before the existing processor runs.
 Ant Design Form remains the owner of values and validation runtime state; DynamicForm continues to
 own field meta, group meta, dynamic UI config, and dependency metadata.
 

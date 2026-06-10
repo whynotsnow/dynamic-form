@@ -6,6 +6,7 @@ import type {
   ModuleConfigAdapter
 } from './types';
 import { ModuleConfigPassthroughAdapter } from './ModuleConfigPassthroughAdapter';
+import { JsonSchemaAdapter, MetadataAdapter, OpenApiAdapter } from './schema';
 
 function describeInput(input: unknown) {
   if (Array.isArray(input)) {
@@ -91,7 +92,13 @@ export class AdapterRegistryManager {
   }
 }
 
-export const defaultAdapterRegistry = new AdapterRegistryManager([ModuleConfigPassthroughAdapter]);
+export const defaultAdapterRegistry = new AdapterRegistryManager([
+  ModuleConfigPassthroughAdapter,
+  // Schema adapters 放在 passthrough 之后，保持现有 ModuleConfig[] 优先兼容。
+  JsonSchemaAdapter,
+  OpenApiAdapter,
+  MetadataAdapter
+]);
 
 export function adaptWithRegistry(
   input: unknown,

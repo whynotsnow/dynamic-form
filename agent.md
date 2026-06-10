@@ -309,6 +309,13 @@ Documentation language structure:
 - Keep API names, package names, file paths, and established technical terms in English when clearer.
 - A small amount of emoji is acceptable in headings or summary bullets when it improves scanning.
 
+Code comment language:
+
+- Add short Chinese comments at key non-obvious implementation points, especially adapters, compiler
+  boundaries, schema mappings, runtime policies, and compatibility decisions.
+- Keep comments concise and explain intent or boundary decisions instead of restating the code.
+- Do not add noisy comments for self-explanatory assignments, imports, or simple control flow.
+
 ## Current Demo Coverage
 
 The active demo selector in `demos/DemoSelector.tsx` exposes:
