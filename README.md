@@ -159,8 +159,6 @@ npm run build       # 构建库产物
 
 项目当前面向基于 Ant Design 的 React 应用。内置字段组件包括 `TextInput`、`Password`、`NumberInput`、`Select`、`SelectField`、`DatePicker`、`Switch`、`Rate`、`TextDisplay`、`CheckboxGroup` 和 `TextArea`。
 
-旧的重复文档已被替换。删除前的旧 `docs` 目录备份位于 `docs_backup_20260601_1818`。
-
 ---
 
 ## English Documentation

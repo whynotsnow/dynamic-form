@@ -149,12 +149,6 @@ async function main() {
 
     const rl = createInterface({ input, output });
     const confirmation = await rl.question('Type PUBLISH to continue: ');
-    let otp = '';
-
-    if (confirmation === 'PUBLISH') {
-      otp = await rl.question('Optional npm OTP code, or press Enter to skip: ');
-    }
-
     rl.close();
 
     if (confirmation !== 'PUBLISH') {
@@ -165,12 +159,7 @@ async function main() {
 
     console.log('');
     console.log('Publishing to npm...');
-    const publishArgs = ['publish', '--access', 'public'];
-    if (otp.trim()) {
-      publishArgs.push('--otp', otp.trim());
-    }
-
-    requireSuccess(npm, publishArgs, {
+    requireSuccess(npm, ['publish', '--access', 'public'], {
       env: {
         HUSKY: '0'
       }
