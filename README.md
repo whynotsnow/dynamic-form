@@ -298,6 +298,20 @@ const compiled = compileFormConfig(
 
 The first 3.1 rule set supports synchronous linkage actions: `show`, `hide`, `enable`, `disable`, `readonly`, `editable`, `setValue`, and `clearValue`.
 
+### Adapter Foundation
+
+DynamicForm 3.2 adds Adapter Foundation to normalize external or module-like input into `ModuleConfig[]` before handing it to the existing `compileFormConfig()`.
+
+```tsx
+import { compileAdaptedFormConfig } from '@whynotsnow/dynamic-form';
+
+const compiled = compileAdaptedFormConfig([
+  { type: 'UserSelector', id: 'ownerId', options: { label: 'Owner' } }
+]);
+```
+
+The adapter layer only converts input. Rule merging, dependency inference, component registration, runtime, and rendering behavior remain owned by the existing compiler/runtime pipeline. 3.2 does not include concrete JsonSchema, OpenAPI, or Metadata adapters; those belong to 3.3.
+
 `DynamicForm` props combine:
 
 - Engine props: `formConfig`, `form`, optional `values`, `uiConfig`, `enableInitializationCheck`, `checkDelay`.
@@ -324,9 +338,9 @@ The first 3.1 rule set supports synchronous linkage actions: `show`, `hide`, `en
 
 ### Current Direction
 
-The current 3.1 direction adds the Rule Engine on top of the field module model. A field module can
-bundle its component, default config, dependencies, effect logic, and declarative rules, while the
-config compiler injects those capabilities into `FormConfig` before the existing processor runs.
+The current 3.2 direction adds Adapter Foundation before the Rule Engine and compiler foundation.
+External input is normalized into `ModuleConfig[]`, while the config compiler continues to inject
+module capabilities into `FormConfig` before the existing processor runs.
 Ant Design Form remains the owner of values and validation runtime state; DynamicForm continues to
 own field meta, group meta, dynamic UI config, and dependency metadata.
 

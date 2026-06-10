@@ -99,5 +99,6 @@ DynamicForm 3.0 在现有 `FormConfig` 管线前新增可选编译层。
 DynamicForm 3.0 adds an optional compiler layer before the existing `FormConfig` pipeline.
 
 - [Compiler Foundation](./compiler-foundation.md): field modules, module registry, config compiler, and compiler hooks.
+- [Adapter Foundation](./adapter-foundation.md): adapter registry, input normalization pipeline, and the `ModuleConfig[]` adapter boundary.
 - New public APIs include `compileFormConfig`, `ModuleRegistryManager`, `defaultModuleRegistry`, and `processFormConfig`.
 - Existing `FormConfig` and `DynamicForm` usage remains compatible.

@@ -40,6 +40,22 @@ export type {
 export { ModuleRegistryManager, defaultModuleRegistry } from './modules';
 export type { FieldModule, ModuleRegistryRegisterOptions } from './modules';
 
+export {
+  AdapterRegistryManager,
+  ModuleConfigPassthroughAdapter,
+  adaptModuleConfigs,
+  compileAdaptedFormConfig,
+  defaultAdapterRegistry
+} from './adapters';
+export type {
+  AdaptModuleConfigsOptions,
+  AdapterContext,
+  AdapterRegistryRegisterOptions,
+  AdapterResolveOptions,
+  CompileAdaptedFormConfigOptions,
+  ModuleConfigAdapter
+} from './adapters';
+
 export { RuleEngine, createRuleEngine, compileRulesToEffect, evaluateRule } from './rules';
 export type {
   DeclarativeRule,

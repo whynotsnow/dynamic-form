@@ -1,14 +1,50 @@
-# DynamicForm 3.1 Architecture Evolution
+# DynamicForm 3.2 Architecture Evolution
 
 ## 中文文档
 
-版本：3.1 执行稿
+版本：3.2 执行稿
 
 作者：Snow
 
-状态：Rule Engine 已实现
+状态：Adapter Foundation 已实现
 
 ---
+
+### DynamicForm 3.2：Adapter Foundation
+
+DynamicForm 3.2 在 Rule Engine 和 Config Compiler 之前新增独立 Adapter Foundation，用于把外部或类模块输入归一化为 `ModuleConfig[]`。
+
+3.2 管线如下：
+
+```text
+External / Module-like Input
+  -> Adapter Registry
+  -> Adapter Pipeline
+  -> ModuleConfig[]
+  -> Rule Engine / Rule Effect Adapter
+  -> Config Compiler
+  -> FormConfig
+  -> processFormConfig
+  -> FormChainEffectEngine
+  -> Runtime Layer
+  -> DynamicForm Renderer
+```
+
+Adapter 只负责输入转换。规则合并、依赖推导、组件注册和 `FormConfig` 生成仍由现有 compiler 负责，runtime、renderer 和 Ant Design Form 状态归属不变。
+
+3.2 范围：
+
+- 新增 `ModuleConfigAdapter` 协议。
+- 新增 `AdapterRegistryManager` 和 `defaultAdapterRegistry`。
+- 新增 `adaptModuleConfigs()` 与 `compileAdaptedFormConfig()`。
+- 内置 `ModuleConfigPassthroughAdapter`，支持现有 `ModuleConfig[]` 直接进入 adapter pipeline。
+
+3.2 非目标：
+
+- 不实现 JsonSchema、OpenAPI 或 Metadata 具体 adapter。
+- 不修改 `compileFormConfig()`、`processFormConfig()`、runtime 或 renderer。
+- 不引入 validation rule engine 或异步规则。
+- 不拆 monorepo。
 
 ### DynamicForm 3.1：Rule Engine
 
@@ -48,13 +84,49 @@ Field Modules
 
 ## English Documentation
 
-Version: 3.1 Execution Draft
+Version: 3.2 Execution Draft
 
 Author: Snow
 
-Status: Rule Engine implemented
+Status: Adapter Foundation implemented
 
 ---
+
+### DynamicForm 3.2: Adapter Foundation
+
+DynamicForm 3.2 adds Adapter Foundation before the Rule Engine and Config Compiler. It normalizes external or module-like input into `ModuleConfig[]`.
+
+The 3.2 pipeline is:
+
+```text
+External / Module-like Input
+  -> Adapter Registry
+  -> Adapter Pipeline
+  -> ModuleConfig[]
+  -> Rule Engine / Rule Effect Adapter
+  -> Config Compiler
+  -> FormConfig
+  -> processFormConfig
+  -> FormChainEffectEngine
+  -> Runtime Layer
+  -> DynamicForm Renderer
+```
+
+Adapters only convert input. Rule merging, dependency inference, component registration, and `FormConfig` generation remain owned by the existing compiler, while runtime, renderer, and Ant Design Form ownership stay unchanged.
+
+3.2 scope:
+
+- Add the `ModuleConfigAdapter` protocol.
+- Add `AdapterRegistryManager` and `defaultAdapterRegistry`.
+- Add `adaptModuleConfigs()` and `compileAdaptedFormConfig()`.
+- Add `ModuleConfigPassthroughAdapter` so existing `ModuleConfig[]` can enter the adapter pipeline directly.
+
+3.2 non-goals:
+
+- No concrete JsonSchema, OpenAPI, or Metadata adapters.
+- No changes to `compileFormConfig()`, `processFormConfig()`, runtime, or renderer.
+- No validation rule engine or async rules.
+- No monorepo split.
 
 ### DynamicForm 3.1: Rule Engine
 
@@ -282,7 +354,9 @@ const compiled = compileFormConfig([
 
 3.1 已实现方向：引入独立 Rule Engine，支持声明式同步联动规则，并把规则编译为标准 effects。
 
-3.2+ / 4.0 方向：在 Rule Engine 和 compiler foundation 稳定后，再考虑 validation rules、异步规则、拆包、领域模块包、schema adapter、visual builder 和 AI generator。
+3.2 已实现方向：新增 Adapter Foundation，把外部或类模块输入归一化为 `ModuleConfig[]`，再复用现有 compiler。
+
+3.3+ / 4.0 方向：在 Adapter Foundation、Rule Engine 和 compiler foundation 稳定后，再考虑 JsonSchema/OpenAPI/Metadata adapter、validation rules、异步规则、拆包、领域模块包、visual builder 和 AI generator。
 
 ---
 
@@ -476,4 +550,6 @@ This keeps module compilation outside the runtime renderer and preserves the cur
 
 3.1 implemented direction: introduce an independent Rule Engine for declarative synchronous linkage rules and compile rules into standard effects.
 
-3.2+ / 4.0 direction: consider validation rules, async rules, package split, domain module packages, schema adapters, visual builder, and AI generator after the Rule Engine and compiler foundation are stable.
+3.2 implemented direction: add Adapter Foundation to normalize external or module-like input into `ModuleConfig[]` before reusing the existing compiler.
+
+3.3+ / 4.0 direction: consider JsonSchema/OpenAPI/Metadata adapters, validation rules, async rules, package split, domain module packages, visual builder, and AI generator after Adapter Foundation, Rule Engine, and compiler foundation are stable.
