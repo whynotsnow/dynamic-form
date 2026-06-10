@@ -1,10 +1,12 @@
 import type { BaseFieldConfig, ComponentRegistry, FormConfig } from '../shared/types';
 import type { FieldModule, ModuleRegistryManager } from '../modules';
+import type { DeclarativeRule } from '../rules';
 
 export interface ModuleConfig {
   type: string;
   id: string;
   options?: Record<string, unknown>;
+  rules?: DeclarativeRule[];
   overrides?: Partial<BaseFieldConfig>;
 }
 

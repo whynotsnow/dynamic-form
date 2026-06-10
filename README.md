@@ -98,7 +98,52 @@ export function Example() {
 - `ComponentRegistryManager`
 - `DefaultRegistryFieldComponents`
 - `getDefaultConfig`
+- `RuleEngine`
+- `createRuleEngine`
+- `compileRulesToEffect`
+- `evaluateRule`
 - `DynamicFormProps`、`FormConfig`、`BaseFieldConfig`、`UIConfig`、render hook 参数、组件注册类型等公共类型。
+
+### Rule Engine
+
+DynamicForm 3.1 新增声明式 Rule Engine，用于模块化表单的同步联动规则。规则会被编译成标准 effects，因此渲染层和 runtime provider 不需要变化。
+
+```tsx
+import { compileFormConfig, ModuleRegistryManager } from '@whynotsnow/dynamic-form';
+
+const registry = new ModuleRegistryManager();
+
+registry.register({
+  type: 'CompanyName',
+  createConfig: () => ({
+    id: 'companyName',
+    label: 'Company Name',
+    component: 'TextInput'
+  })
+});
+
+const compiled = compileFormConfig(
+  [
+    {
+      type: 'CompanyName',
+      id: 'companyName',
+      rules: [
+        {
+          when: { field: 'customerType', equals: 'company' },
+          then: { action: 'show' }
+        },
+        {
+          when: { field: 'customerType', notEquals: 'company' },
+          then: { action: 'hide' }
+        }
+      ]
+    }
+  ],
+  { registry }
+);
+```
+
+3.1 首版规则支持同步联动动作：`show`、`hide`、`enable`、`disable`、`readonly`、`editable`、`setValue` 和 `clearValue`。
 
 `DynamicForm` props 分为两类：
 
@@ -124,9 +169,9 @@ export function Example() {
 - 扩展优先于分叉：通过自定义组件、effect 结果处理器和 render hooks 覆盖业务差异。
 - 默认渲染保持简单：默认使用 Ant Design `Form`、`Row`、`Col`、`Card` 和 `Button`。
 
-### 未来升级方向
+### 当前升级方向
 
-后续较大的升级方向是引入字段模块模型。可复用业务字段可以把 component、默认配置、依赖声明和 effect 逻辑打包在一起，再由配置编译层在现有 `processFormConfig()` 之前展开为当前 `FormConfig` 结构。这样既保持现有配置兼容，也为未来基于 rule 自动生成 component 和 effect 留出空间。Ant Design Form 仍然负责 values 和校验运行时状态；DynamicForm 继续负责字段 meta、分组 meta、动态 UI 配置和依赖元数据。
+当前 3.1 升级方向是在字段模块模型之上引入 Rule Engine。可复用业务字段可以把 component、默认配置、依赖声明、effect 逻辑和声明式规则打包在一起，再由配置编译层在现有 `processFormConfig()` 之前展开为当前 `FormConfig` 结构。Ant Design Form 仍然负责 values 和校验运行时状态；DynamicForm 继续负责字段 meta、分组 meta、动态 UI 配置和依赖元数据。
 
 ### 项目结构
 
@@ -206,7 +251,52 @@ Primary exports are defined in `src/exports.ts`:
 - `ComponentRegistryManager`
 - `DefaultRegistryFieldComponents`
 - `getDefaultConfig`
+- `RuleEngine`
+- `createRuleEngine`
+- `compileRulesToEffect`
+- `evaluateRule`
 - Public types such as `DynamicFormProps`, `FormConfig`, `BaseFieldConfig`, `UIConfig`, render hook params, and component registry types.
+
+### Rule Engine
+
+DynamicForm 3.1 adds a declarative Rule Engine for module-based form linkage. Rules are compiled into standard effects, so the renderer and runtime provider stay unchanged.
+
+```tsx
+import { compileFormConfig, ModuleRegistryManager } from '@whynotsnow/dynamic-form';
+
+const registry = new ModuleRegistryManager();
+
+registry.register({
+  type: 'CompanyName',
+  createConfig: () => ({
+    id: 'companyName',
+    label: 'Company Name',
+    component: 'TextInput'
+  })
+});
+
+const compiled = compileFormConfig(
+  [
+    {
+      type: 'CompanyName',
+      id: 'companyName',
+      rules: [
+        {
+          when: { field: 'customerType', equals: 'company' },
+          then: { action: 'show' }
+        },
+        {
+          when: { field: 'customerType', notEquals: 'company' },
+          then: { action: 'hide' }
+        }
+      ]
+    }
+  ],
+  { registry }
+);
+```
+
+The first 3.1 rule set supports synchronous linkage actions: `show`, `hide`, `enable`, `disable`, `readonly`, `editable`, `setValue`, and `clearValue`.
 
 `DynamicForm` props combine:
 
@@ -232,15 +322,13 @@ Primary exports are defined in `src/exports.ts`:
 - Prefer extension points over forks.
 - Keep default rendering simple with Ant Design `Form`, `Row`, `Col`, `Card`, and `Button`.
 
-### Future Direction
+### Current Direction
 
-The planned upgrade direction is to move reusable business fields toward a field module model.
-A field module should be able to bundle its component, default config, dependencies, and effect
-logic, while a config compiler injects those capabilities into `FormConfig` before the existing
-processor runs. This keeps current configs compatible while allowing future rule-driven generation
-of components and effects. Ant Design Form should remain the owner of values and validation runtime
-state; DynamicForm should continue to own field meta, group meta, dynamic UI config, and dependency
-metadata.
+The current 3.1 direction adds the Rule Engine on top of the field module model. A field module can
+bundle its component, default config, dependencies, effect logic, and declarative rules, while the
+config compiler injects those capabilities into `FormConfig` before the existing processor runs.
+Ant Design Form remains the owner of values and validation runtime state; DynamicForm continues to
+own field meta, group meta, dynamic UI config, and dependency metadata.
 
 ### Development
 

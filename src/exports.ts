@@ -40,6 +40,16 @@ export type {
 export { ModuleRegistryManager, defaultModuleRegistry } from './modules';
 export type { FieldModule, ModuleRegistryRegisterOptions } from './modules';
 
+export { RuleEngine, createRuleEngine, compileRulesToEffect, evaluateRule } from './rules';
+export type {
+  DeclarativeRule,
+  RuleAction,
+  RuleCondition,
+  RuleEngineOptions,
+  RuleEvaluationContext,
+  RuleEvaluationResult
+} from './rules';
+
 export { useFormChainContext } from './shared/context/FormChainContext';
 export { useStoreInit } from './state';
 export { useInitHandlers } from './consumer/hooks/useInitHandlers';

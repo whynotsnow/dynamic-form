@@ -1,5 +1,27 @@
 # Changelog
 
+## 3.1.0 - Unreleased
+
+## 中文
+
+### Rule Engine
+
+- 新增声明式 Rule Engine，用于同步表单联动规则。
+- 新增 `RuleEngine`、`createRuleEngine`、`compileRulesToEffect`、`evaluateRule` 和规则相关公共类型导出。
+- 在 field module 和 module config entry 上新增 `rules` 支持。
+- 将规则编译为标准 effects，保持现有 `DynamicForm`、`processFormConfig` 和 renderer 行为不变。
+- 支持从规则条件自动推导字段 `dependents`。
+
+## English
+
+### Rule Engine
+
+- Added a declarative Rule Engine for synchronous form linkage rules.
+- Added public exports for `RuleEngine`, `createRuleEngine`, `compileRulesToEffect`, `evaluateRule`, and rule-related public types.
+- Added `rules` support to field modules and module config entries.
+- Compiled rules into standard effects so existing `DynamicForm`, `processFormConfig`, and renderer behavior remain unchanged.
+- Added automatic dependency inference from rule conditions into field `dependents`.
+
 ## 2.0.0 - 2026-06-02
 
 ## 中文

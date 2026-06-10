@@ -1,6 +1,98 @@
-# DynamicForm 3.0 Architecture Evolution
+# DynamicForm 3.1 Architecture Evolution
 
 ## 中文文档
+
+版本：3.1 执行稿
+
+作者：Snow
+
+状态：Rule Engine 已实现
+
+---
+
+### DynamicForm 3.1：Rule Engine
+
+DynamicForm 3.1 在 3.0 Compiler Foundation 之上新增独立 Rule Engine，用声明式规则描述同步表单联动逻辑。
+
+3.1 管线如下：
+
+```text
+Field Modules
+  -> Rule Engine / Rule Effect Adapter
+  -> Config Compiler
+  -> FormConfig
+  -> processFormConfig
+  -> FormChainEffectEngine
+  -> Runtime Layer
+  -> DynamicForm Renderer
+```
+
+规则会被编译成标准 `EffectFn`，并输出 `visible`、`disabled`、`readonly`、`value` 等现有 effect result。渲染层、Provider props、`processFormConfig()` 和 Ant Design Form 的状态归属保持不变。
+
+3.1 范围：
+
+- 支持在 field module 和 module config entry 上声明规则。
+- 支持同步条件：`equals`、`notEquals`、`empty`、`notEmpty`、`all`、`any`、`not`。
+- 支持同步动作：`show`、`hide`、`enable`、`disable`、`readonly`、`editable`、`setValue`、`clearValue`。
+- 从规则条件中自动推导 `dependents`。
+
+3.1 非目标：
+
+- 不实现 validation rule engine。
+- 不实现异步/API 规则。
+- 不实现可视化规则构建器。
+- 不替换 `form-chain-effect-engine`。
+- 不维护重复 values store。
+
+---
+
+## English Documentation
+
+Version: 3.1 Execution Draft
+
+Author: Snow
+
+Status: Rule Engine implemented
+
+---
+
+### DynamicForm 3.1: Rule Engine
+
+DynamicForm 3.1 introduces an independent Rule Engine for declarative, synchronous form linkage rules on top of the 3.0 Compiler Foundation.
+
+The 3.1 pipeline is:
+
+```text
+Field Modules
+  -> Rule Engine / Rule Effect Adapter
+  -> Config Compiler
+  -> FormConfig
+  -> processFormConfig
+  -> FormChainEffectEngine
+  -> Runtime Layer
+  -> DynamicForm Renderer
+```
+
+Rules are compiled into standard `EffectFn` instances and standard effect results such as `visible`, `disabled`, `readonly`, and `value`. The renderer, provider props, `processFormConfig()`, and Ant Design Form ownership remain unchanged.
+
+3.1 scope:
+
+- Declarative rule definitions on field modules and module config entries.
+- Synchronous conditions: `equals`, `notEquals`, `empty`, `notEmpty`, `all`, `any`, and `not`.
+- Synchronous actions: `show`, `hide`, `enable`, `disable`, `readonly`, `editable`, `setValue`, and `clearValue`.
+- Automatic dependency inference from rule conditions.
+
+3.1 non-goals:
+
+- No validation rule engine.
+- No async/API rules.
+- No visual rule builder.
+- No replacement for `form-chain-effect-engine`.
+- No duplicate values store.
+
+---
+
+## 3.0 Compiler Foundation 中文记录
 
 版本：3.0 执行稿
 
@@ -156,7 +248,7 @@ hooks 只操作编译上下文，不应直接修改 React runtime 或 Ant Design
 - 不维护重复 values store。
 - 不替换 Ant Design Form。
 
-这些内容留给 3.1+ 或 4.0。
+Rule Engine 已在 3.1 进入实现；其余内容留给 3.2+ 或 4.0。
 
 ### Migration Path
 
@@ -188,13 +280,13 @@ const compiled = compileFormConfig([
 
 ### Future Roadmap
 
-3.1 方向：引入声明式规则定义，并把规则编译为标准 effects。
+3.1 已实现方向：引入独立 Rule Engine，支持声明式同步联动规则，并把规则编译为标准 effects。
 
-4.0 方向：在 3.0 compiler foundation 稳定后，再考虑拆包、领域模块包、schema adapter、visual builder 和 AI generator。
+3.2+ / 4.0 方向：在 Rule Engine 和 compiler foundation 稳定后，再考虑 validation rules、异步规则、拆包、领域模块包、schema adapter、visual builder 和 AI generator。
 
 ---
 
-## English Documentation
+## 3.0 Compiler Foundation English Record
 
 Version: 3.0 Execution Draft
 
@@ -350,7 +442,7 @@ Hooks operate on compile context only. They should not mutate React runtime stat
 - No duplicated values store.
 - No replacement for Ant Design Form.
 
-These remain future 3.1+ or 4.0 topics.
+Rule Engine has moved into the 3.1 implementation. The remaining topics stay future 3.2+ or 4.0 work.
 
 ### Migration Path
 
@@ -382,6 +474,6 @@ This keeps module compilation outside the runtime renderer and preserves the cur
 
 ### Future Roadmap
 
-3.1 direction: introduce declarative rule definitions and compile them into standard effects.
+3.1 implemented direction: introduce an independent Rule Engine for declarative synchronous linkage rules and compile rules into standard effects.
 
-4.0 direction: consider package split, domain module packages, schema adapters, visual builder, and AI generator after the 3.0 compiler foundation is stable.
+3.2+ / 4.0 direction: consider validation rules, async rules, package split, domain module packages, schema adapters, visual builder, and AI generator after the Rule Engine and compiler foundation are stable.
