@@ -5,6 +5,7 @@ import CustomComponentsDemo from './customComponentsDemo';
 import FormValidationDemo from './formValidationDemo';
 import UIConfigDemo from './uiConfigDemo';
 import RenderExtensionDemo from './renderExtensionDemo';
+import CompilerFoundationDemo from './compilerFoundationDemo';
 
 export interface DemoDefinition {
   name: string;
@@ -49,6 +50,13 @@ export const DEMO_COMPONENTS = {
     title: '渲染扩展能力演示',
     description: '演示自定义渲染参数和自定义组件注册的扩展能力。',
     component: RenderExtensionDemo
+  },
+  compilerFoundation: {
+    name: 'CompilerFoundationDemo',
+    title: 'Compiler Foundation 编译器基础演示 / Compiler Foundation Demo',
+    description:
+      '演示如何把字段模块编译为标准 FormConfig，再交给 DynamicForm 渲染。 / Compiles field modules into standard FormConfig before rendering with DynamicForm.',
+    component: CompilerFoundationDemo
   }
 } satisfies Record<string, DemoDefinition>;
 

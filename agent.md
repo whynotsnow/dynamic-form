@@ -300,7 +300,11 @@ Documentation language structure:
 
 - Project docs should be bilingual with the complete Chinese document first and the English translation below it.
 - This bilingual rule applies to all project documentation files, including directory-level README files such as `demos/README.md`.
+- New or updated demo-facing text must also be bilingual, including demo registry titles/descriptions,
+  demo README entries, and explanatory copy inside demo pages.
 - Do not use a short explanatory note as a substitute for the full Chinese document.
+- Do not append English-only documentation sections. When adding a new section, add the Chinese section first
+  and the matching English section immediately after it.
 - Keep API names, package names, file paths, and established technical terms in English when clearer.
 - A small amount of emoji is acceptable in headings or summary bullets when it improves scanning.
 

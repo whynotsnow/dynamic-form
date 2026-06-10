@@ -5,6 +5,7 @@ export { default as FormChainEffectEngineWrapper } from './consumer/provider/Dyn
 
 export type {
   DynamicFormProps,
+  FormValues,
   FormConfig,
   FlatFormConfig,
   GroupedFormConfig,
@@ -27,8 +28,21 @@ export {
   DefaultRegistryFieldComponents
 } from './consumer/render/componentRegistry';
 
+export { compileFormConfig } from './compiler';
+export type {
+  CompiledModuleConfig,
+  CompileFormConfigOptions,
+  CompileHookContext,
+  CompilerHooks,
+  ModuleConfig
+} from './compiler';
+
+export { ModuleRegistryManager, defaultModuleRegistry } from './modules';
+export type { FieldModule, ModuleRegistryRegisterOptions } from './modules';
+
 export { useFormChainContext } from './shared/context/FormChainContext';
 export { useStoreInit } from './state';
 export { useInitHandlers } from './consumer/hooks/useInitHandlers';
 
 export { getDefaultConfig } from './config/defaultConfig';
+export { processFormConfig } from './config';

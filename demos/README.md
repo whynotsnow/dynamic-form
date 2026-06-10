@@ -76,6 +76,7 @@ demos/
 | `formValidation` | `formValidationDemo.tsx` | Demonstrates Ant Design `Form.Item` validation integration for standard fields and complex custom components. |
 | `uiConfig` | `uiConfigDemo.tsx` | Demonstrates static `uiConfig` and dynamic UI configuration returned from effects. |
 | `renderExtension` | `renderExtensionDemo.tsx` | Demonstrates render extension points such as `renderFieldItem`, `renderFields`, `renderGroupItem`, `renderGroups`, and `renderFormInner`. |
+| `compilerFoundation` | `compilerFoundationDemo.tsx` | Demonstrates compiling field modules into standard `FormConfig` before rendering with `DynamicForm`. |
 
 ## Entry Points
 
@@ -123,3 +124,21 @@ demos/
 - Use `useDemoInitHandlers` for demo-level effect handler initialization so defaults stay consistent.
 - Keep demo file names aligned with their primary responsibility and use the `*Demo.tsx` suffix for page-level demos.
 - Keep this README in sync with the actual files exposed by `DemoSelector`.
+
+### 3.0 Compiler Demo 中文说明
+
+`compilerFoundation` / `compilerFoundationDemo.tsx` 演示 3.0 compiler foundation：
+
+- 定义 `FieldModule`；
+- 使用 `ModuleRegistryManager` 注册模块；
+- 使用 `compileFormConfig` 编译 `ModuleConfig[]`；
+- 将编译得到的 `FormConfig` 交给现有 `DynamicForm` runtime 渲染。
+
+### 3.0 Compiler Demo
+
+`compilerFoundation` / `compilerFoundationDemo.tsx` demonstrates the 3.0 compiler foundation:
+
+- define a `FieldModule`;
+- register it with `ModuleRegistryManager`;
+- compile `ModuleConfig[]` with `compileFormConfig`;
+- render the compiled `FormConfig` through the existing `DynamicForm` runtime.
