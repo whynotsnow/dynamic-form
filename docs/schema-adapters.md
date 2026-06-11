@@ -88,6 +88,7 @@ const moduleConfigs = adaptModuleConfigs(
 - 不展开 nested object schema。
 - 不展开 object array item schema。
 - 不实现 validation rule engine。
+- 除 `required` 外，不自动把 `minLength`、`maxLength`、`pattern`、`minimum`、`maximum` 转成 Ant Design rules；这些约束需要通过 metadata/module 的显式 `rules` 声明。这样可避免 adapter 隐式决定提示文案、触发时机和组件值语义。
 - 不实现异步/API 规则。
 - 不根据 schema type 自动猜测 UI 或 module type。
 - 输出保持为 flat `ModuleConfig[]`。
@@ -182,6 +183,7 @@ Each field must provide `id` and `type`, with optional `options`, `rules`, and `
 - No nested object schema expansion.
 - No object array item schema expansion.
 - No validation rule engine.
+- Except for field-level `required` semantics, `minLength`, `maxLength`, `pattern`, `minimum`, and `maximum` are not implicitly translated into Ant Design rules. Declare them explicitly through metadata or module rules so adapters do not silently choose messages, triggers, or component value semantics.
 - No async/API rules.
 - No automatic UI or module type inference from schema types.
 - Output remains flat `ModuleConfig[]`.

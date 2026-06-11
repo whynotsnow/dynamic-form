@@ -67,6 +67,7 @@ const compiled = compileAdaptedFormConfig(input, {
 ```
 
 未指定 `adapterType` 时，pipeline 会按注册顺序选择第一个 `supports()` 成功的 adapter。
+默认顺序是 passthrough、JsonSchema、OpenAPI、Metadata。因此单个 object schema 会优先由 JsonSchema adapter 处理；需要强制 OpenAPI 的单 schema 兼容路径时，应显式传入 `adapterType: 'openapi'`。
 
 ### Boundaries
 
@@ -146,6 +147,7 @@ const compiled = compileAdaptedFormConfig(input, {
 ```
 
 When `adapterType` is not specified, the pipeline picks the first registered adapter whose `supports()` method matches the input.
+The default order is passthrough, JsonSchema, OpenAPI, then Metadata. A single object schema therefore resolves to JsonSchema first; pass `adapterType: 'openapi'` when the OpenAPI adapter's single-schema compatibility path is required.
 
 ### Boundaries
 

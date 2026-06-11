@@ -3,6 +3,7 @@ import test from 'node:test';
 import {
   adaptModuleConfigs,
   AdapterRegistryManager,
+  CompiledDynamicForm,
   compileAdaptedFormConfig,
   ModuleConfigPassthroughAdapter,
   ModuleRegistryManager
@@ -123,4 +124,11 @@ test('compileAdaptedFormConfig adapts input before using the module compiler', (
     allowClear: true,
     placeholder: 'Owner name'
   });
+
+  const element = CompiledDynamicForm({ compiled, form: {} });
+  assert.equal(element.props.formConfig, compiled.formConfig);
+  assert.equal(
+    element.props.componentRegistry.customComponents.UserSelector,
+    Component
+  );
 });

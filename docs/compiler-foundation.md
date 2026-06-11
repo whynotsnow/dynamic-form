@@ -21,7 +21,12 @@ Field Modules
 ```ts
 import type { FieldModule } from '@whynotsnow/dynamic-form';
 
-export const UserSelectorModule: FieldModule = {
+interface UserSelectorOptions {
+  label?: string;
+  options?: Array<{ label: string; value: string }>;
+}
+
+export const UserSelectorModule: FieldModule<UserSelectorOptions> = {
   type: 'UserSelector',
   defaultProps: {
     allowClear: true,
@@ -40,6 +45,8 @@ export const UserSelectorModule: FieldModule = {
 ```
 
 模块描述业务字段；渲染组件仍由现有组件注册体系解析。
+
+`FieldModule<TOptions>` 和 `ModuleConfig<TOptions>` 支持模块级 options 类型约束。默认泛型仍是 `Record<string, unknown>`，因此现有调用无需迁移。Registry 继续按运行时 `type` 管理模块；当前版本不尝试在一个异构配置数组中建立 `type` 与 options 的全局类型映射。
 
 ### Registry
 
@@ -94,6 +101,16 @@ export function Example() {
 }
 ```
 
+推荐使用高层 `CompiledDynamicForm`，它会自动接入 compiler 返回的组件注册表：
+
+```tsx
+import { CompiledDynamicForm } from '@whynotsnow/dynamic-form';
+
+<CompiledDynamicForm form={form} compiled={compiled} />;
+```
+
+需要添加或覆盖 compiler 组件时，仍可传入 `componentRegistry`；显式传入的同名 custom component 优先。底层 `DynamicForm` 手动接入方式继续保留，适合需要分别控制 config 和 registry 的场景。
+
 编译器返回：
 
 ```ts
@@ -128,6 +145,7 @@ hooks 只操作编译上下文，不应该修改 Ant Design Form 实例或 React
 - `compileFormConfig()` 负责生成 `FormConfig`。
 - `processFormConfig()` 继续负责准备运行时数据。
 - `DynamicForm` props 不变。
+- `compileFormConfig()` 在 3.x 只输出 flat `FormConfig`；grouped/structured schema compilation 留给未来主版本设计。
 - Ant Design Form 仍然是 values 和 validation state 的唯一真实来源。
 
 ---
@@ -153,7 +171,12 @@ A field module packages reusable business-field behavior:
 ```ts
 import type { FieldModule } from '@whynotsnow/dynamic-form';
 
-export const UserSelectorModule: FieldModule = {
+interface UserSelectorOptions {
+  label?: string;
+  options?: Array<{ label: string; value: string }>;
+}
+
+export const UserSelectorModule: FieldModule<UserSelectorOptions> = {
   type: 'UserSelector',
   defaultProps: {
     allowClear: true,
@@ -172,6 +195,8 @@ export const UserSelectorModule: FieldModule = {
 ```
 
 Modules describe domain fields. Render components are still resolved by the existing component registry.
+
+`FieldModule<TOptions>` and `ModuleConfig<TOptions>` provide module-level option typing. Their default remains `Record<string, unknown>`, so existing callers do not need to migrate. The registry still resolves modules by runtime `type`; this version does not attempt a global type-to-options mapping across heterogeneous config arrays.
 
 ### Registry
 
@@ -226,6 +251,16 @@ export function Example() {
 }
 ```
 
+The higher-level `CompiledDynamicForm` is recommended when rendering compiler output because it automatically wires the returned component registry:
+
+```tsx
+import { CompiledDynamicForm } from '@whynotsnow/dynamic-form';
+
+<CompiledDynamicForm form={form} compiled={compiled} />;
+```
+
+An additional `componentRegistry` may still be provided; an explicitly supplied custom component wins on name conflicts. The lower-level manual `DynamicForm` integration remains available when config and registry need separate control.
+
 The compiler returns:
 
 ```ts
@@ -260,4 +295,5 @@ Hooks operate on compiler context only. They should not mutate Ant Design Form i
 - `compileFormConfig()` creates `FormConfig`.
 - `processFormConfig()` keeps preparing runtime data.
 - `DynamicForm` props are unchanged.
+- `compileFormConfig()` produces flat `FormConfig` in 3.x; grouped or structured schema compilation is reserved for a future major-version design.
 - Ant Design Form remains the source of truth for values and validation state.

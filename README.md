@@ -12,6 +12,7 @@
 - 🧩 支持静态初始值和函数式初始值。
 - 🛠️ 内置 effect 结果处理器，可处理字段值、字段行为、分组可见性、字段渲染 props 和全局 UI 配置。
 - 🎨 支持通过 `componentRegistry` 注册自定义字段组件。
+- 🧩 `CompiledDynamicForm` 可直接渲染 compiler/adapter 产物并自动接入模块组件。
 - 🪝 支持从字段项到整个表单体的分层 render hooks。
 - 🧠 使用 Runtime Layer 统一解析 `rendered`、`submitable`、`editable`、`readonly`、`disabled`、`validatable` 等能力。
 - 🧱 Ant Design Form 仍然是真实表单值和校验运行时状态的唯一来源。
@@ -243,6 +244,7 @@ Schema adapters 要求字段显式声明 module metadata，不会根据 schema p
 - 🧩 Static and function-based initial values.
 - 🛠️ Built-in effect result handlers for values, field behavior, group visibility, field render props, and global UI config.
 - 🎨 Custom field components through `componentRegistry`.
+- 🧩 `CompiledDynamicForm` renders compiler/adapter output with module components wired automatically.
 - 🪝 Layered render hooks from field item to full form body.
 - 🧠 Runtime capability resolution for `rendered`, `submitable`, `editable`, `readonly`, `disabled`, and `validatable`.
 - 🧱 Ant Design Form remains the source of truth for form values and validation runtime state.

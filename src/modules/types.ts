@@ -3,10 +3,10 @@ import type { EffectFn } from 'form-chain-effect-engine';
 import type { BaseFieldConfig, FieldComponentProps } from '../shared/types';
 import type { DeclarativeRule } from '../rules';
 
-export interface FieldModule {
+export interface FieldModule<TOptions extends Record<string, unknown> = Record<string, unknown>> {
   type: string;
   component?: React.ComponentType<FieldComponentProps>;
-  createConfig?: (options?: Record<string, unknown>) => BaseFieldConfig;
+  createConfig?: (options?: TOptions) => BaseFieldConfig;
   dependencies?: string[];
   effect?: EffectFn;
   rules?: DeclarativeRule[];

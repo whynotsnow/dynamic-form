@@ -1,4 +1,6 @@
 export { default as DynamicForm } from './index';
+export { default as CompiledDynamicForm } from './CompiledDynamicForm';
+export type { CompiledDynamicFormProps } from './CompiledDynamicForm';
 
 export { default as DynamicFormProvider } from './consumer/provider/DynamicFormProvider';
 export { default as FormChainEffectEngineWrapper } from './consumer/provider/DynamicFormProvider';

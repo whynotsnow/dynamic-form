@@ -1,6 +1,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { compileFormConfig, ModuleRegistryManager, processFormConfig } from '../dist/index.mjs';
+import {
+  CompiledDynamicForm,
+  compileFormConfig,
+  ModuleRegistryManager,
+  processFormConfig
+} from '../dist/index.mjs';
 
 test('ModuleRegistryManager registers, lists, looks up, and unregisters modules', () => {
   const registry = new ModuleRegistryManager();
@@ -102,6 +107,40 @@ test('compileFormConfig reports unregistered module type and id', () => {
     () => compileFormConfig([{ type: 'MissingModule', id: 'missingId' }], { registry }),
     /MissingModule.*missingId/
   );
+});
+
+test('CompiledDynamicForm injects compiled components and preserves explicit custom components', () => {
+  const CompiledComponent = () => null;
+  const ExtraComponent = () => null;
+  const OverrideComponent = () => null;
+  const form = {};
+  const compiled = {
+    formConfig: { fields: [] },
+    componentRegistry: {
+      UserSelector: CompiledComponent
+    }
+  };
+
+  const element = CompiledDynamicForm({
+    compiled,
+    form,
+    componentRegistry: {
+      customComponents: {
+        UserSelector: OverrideComponent,
+        ExtraField: ExtraComponent
+      },
+      allowOverride: true
+    }
+  });
+
+  assert.equal(element.props.formConfig, compiled.formConfig);
+  assert.equal(element.props.form, form);
+  assert.equal(element.props.componentRegistry.allowOverride, true);
+  assert.equal(
+    element.props.componentRegistry.customComponents.UserSelector,
+    OverrideComponent
+  );
+  assert.equal(element.props.componentRegistry.customComponents.ExtraField, ExtraComponent);
 });
 
 test('compileFormConfig runs hooks in order and wraps hook failures with module context', () => {

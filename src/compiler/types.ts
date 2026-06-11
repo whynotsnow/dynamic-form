@@ -2,10 +2,10 @@ import type { BaseFieldConfig, ComponentRegistry, FormConfig } from '../shared/t
 import type { FieldModule, ModuleRegistryManager } from '../modules';
 import type { DeclarativeRule } from '../rules';
 
-export interface ModuleConfig {
+export interface ModuleConfig<TOptions extends Record<string, unknown> = Record<string, unknown>> {
   type: string;
   id: string;
-  options?: Record<string, unknown>;
+  options?: TOptions;
   rules?: DeclarativeRule[];
   overrides?: Partial<BaseFieldConfig>;
 }
