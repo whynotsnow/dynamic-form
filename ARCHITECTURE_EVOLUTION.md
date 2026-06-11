@@ -106,6 +106,7 @@ Field Modules
 - 支持在 field module 和 module config entry 上声明规则。
 - 支持同步条件：`equals`、`notEquals`、`empty`、`notEmpty`、`all`、`any`、`not`。
 - 支持同步动作：`show`、`hide`、`enable`、`disable`、`readonly`、`editable`、`setValue`、`clearValue`。
+- Rule 是字段所属的 per-field 规则，不支持 `target` 配置；一个源字段影响多个字段时，应在多个被影响字段上分别声明规则。
 - 从规则条件中自动推导 `dependents`。
 
 3.1 非目标：
@@ -224,6 +225,7 @@ Rules are compiled into standard `EffectFn` instances and standard effect result
 - Declarative rule definitions on field modules and module config entries.
 - Synchronous conditions: `equals`, `notEquals`, `empty`, `notEmpty`, `all`, `any`, and `not`.
 - Synchronous actions: `show`, `hide`, `enable`, `disable`, `readonly`, `editable`, `setValue`, and `clearValue`.
+- Rules are field-owned per-field rules and do not support `target`; when one source field affects multiple fields, declare rules on each affected field.
 - Automatic dependency inference from rule conditions.
 
 3.1 non-goals:

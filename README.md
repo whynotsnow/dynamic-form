@@ -145,6 +145,8 @@ const compiled = compileFormConfig(
 
 3.1 首版规则支持同步联动动作：`show`、`hide`、`enable`、`disable`、`readonly`、`editable`、`setValue` 和 `clearValue`。
 
+Rule 是字段所属的 per-field 规则，不支持 `target` 配置。一个源字段影响多个字段时，应在每个被影响字段上分别声明 rule；compiler 会从 `when` 条件推导相同的 `dependents`，再由 `form-chain-effect-engine` 触发这些字段各自的 effect。
+
 `DynamicForm` props 分为两类：
 
 - 引擎层 props：`formConfig`、`form`、可选 `values`、`uiConfig`、`enableInitializationCheck`、`checkDelay`。
@@ -320,6 +322,8 @@ const compiled = compileFormConfig(
 ```
 
 The first 3.1 rule set supports synchronous linkage actions: `show`, `hide`, `enable`, `disable`, `readonly`, `editable`, `setValue`, and `clearValue`.
+
+Rules are field-owned per-field rules and do not support `target` configuration. When one source field affects multiple fields, declare a rule on each affected field; the compiler infers the same `dependents` from `when`, and `form-chain-effect-engine` triggers each field's own effect.
 
 ### Adapter Foundation
 

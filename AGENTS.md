@@ -221,6 +221,8 @@ The field module/compiler direction is now implemented as an optional layer abov
   primitive types.
 - `RuleEngine` and `compileRulesToEffect()` support synchronous declarative actions such as show,
   hide, enable, disable, readonly, editable, setValue, and clearValue.
+- Rules are owned by the affected field and do not support `target`; one source field affecting
+  multiple fields is modeled as multiple fields depending on the same source field.
 
 Keep the store boundary unchanged when working in these layers: Ant Design Form owns values and
 validation runtime state; DynamicForm owns field meta, group meta, dynamic UI config, and dependency

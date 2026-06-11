@@ -90,6 +90,50 @@ test('RuleEngine evaluates composed conditions, skips disabled rules, and merges
   });
 });
 
+test('RuleEngine rejects target configuration because rules are field-owned', () => {
+  const engine = createRuleEngine();
+
+  assert.throws(
+    () =>
+      evaluateRule(
+        {
+          target: 'otherField',
+          when: { field: 'type', equals: 'company' },
+          then: { action: 'show' }
+        },
+        { fieldId: 'companyName', values: { type: 'company' } }
+      ),
+    /rule target is not supported/
+  );
+
+  assert.throws(
+    () =>
+      evaluateRule(
+        {
+          when: { field: 'type', equals: 'company' },
+          then: { action: 'show', target: 'otherField' }
+        },
+        { fieldId: 'companyName', values: { type: 'company' } }
+      ),
+    /rule action target is not supported/
+  );
+
+  assert.throws(
+    () =>
+      engine.evaluate(
+        [
+          {
+            target: 'otherField',
+            when: { field: 'type', equals: 'company' },
+            then: { action: 'show' }
+          }
+        ],
+        { fieldId: 'companyName', values: { type: 'company' } }
+      ),
+    /rule target is not supported/
+  );
+});
+
 test('compileFormConfig compiles module and instance rules into field effect and dependents', () => {
   const registry = new ModuleRegistryManager();
 
@@ -133,6 +177,51 @@ test('compileFormConfig compiles module and instance rules into field effect and
     visible: true,
     disabled: true
   });
+});
+
+test('compileFormConfig models one source affecting multiple fields as multiple field-owned effects', () => {
+  const registry = new ModuleRegistryManager();
+
+  registry.register({
+    type: 'TextRuleField',
+    createConfig: () => ({
+      id: 'fromFactory',
+      component: 'TextInput'
+    })
+  });
+
+  const compiled = compileFormConfig(
+    [
+      {
+        type: 'TextRuleField',
+        id: 'companyName',
+        rules: [
+          {
+            when: { field: 'customerType', equals: 'company' },
+            then: { action: 'show' }
+          }
+        ]
+      },
+      {
+        type: 'TextRuleField',
+        id: 'taxNo',
+        rules: [
+          {
+            when: { field: 'customerType', equals: 'company' },
+            then: { action: 'show' }
+          }
+        ]
+      }
+    ],
+    { registry }
+  );
+
+  const [companyName, taxNo] = compiled.formConfig.fields;
+
+  assert.deepEqual(companyName.dependents, ['customerType']);
+  assert.deepEqual(taxNo.dependents, ['customerType']);
+  assert.deepEqual(companyName.effect(undefined, { customerType: 'company' }), { visible: true });
+  assert.deepEqual(taxNo.effect(undefined, { customerType: 'company' }), { visible: true });
 });
 
 test('compileFormConfig keeps unregistered module errors', () => {

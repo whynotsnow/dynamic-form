@@ -12,6 +12,8 @@
 - 将规则编译为标准 effects，保持现有 `DynamicForm`、`processFormConfig` 和 renderer 行为不变。
 - 支持从规则条件自动推导字段 `dependents`。
 
+- Rule 由被影响字段持有，不支持 `target` 配置；一个源字段影响多个字段时，应在多个字段上分别声明 rule。
+
 ## English
 
 ### Rule Engine
@@ -21,6 +23,7 @@
 - Added `rules` support to field modules and module config entries.
 - Compiled rules into standard effects so existing `DynamicForm`, `processFormConfig`, and renderer behavior remain unchanged.
 - Added automatic dependency inference from rule conditions into field `dependents`.
+- Rules are owned by affected fields and do not support `target`; one source field affecting multiple fields should be modeled as rules declared on each affected field.
 
 ## 2.0.0 - 2026-06-02
 

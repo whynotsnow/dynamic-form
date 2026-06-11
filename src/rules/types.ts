@@ -33,11 +33,9 @@ export type RuleCondition =
 export type RuleAction =
   | {
       action: 'show' | 'hide' | 'enable' | 'disable' | 'readonly' | 'editable' | 'clearValue';
-      target?: string;
     }
   | {
       action: 'setValue';
-      target?: string;
       value: FieldValue;
     };
 
@@ -45,7 +43,6 @@ export interface DeclarativeRule {
   id?: string;
   when: RuleCondition;
   then: RuleAction | RuleAction[];
-  target?: string;
   dependencies?: string[];
   enabled?: boolean;
   metadata?: Record<string, unknown>;

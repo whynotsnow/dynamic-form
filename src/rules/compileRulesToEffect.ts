@@ -3,7 +3,7 @@ import { createRuleEngine } from './RuleEngine';
 import type { CompileRulesToEffectOptions, DeclarativeRule, RuleCondition } from './types';
 
 function collectDependencies(condition: RuleCondition, dependencies: Set<string>) {
-  // Dependencies are inferred only from conditions; actions do not trigger re-evaluation.
+  // 只从 when 条件收集 source fields；then 只影响规则所属字段，不参与依赖触发。
   if ('all' in condition) {
     condition.all.forEach((item) => collectDependencies(item, dependencies));
     return;
@@ -44,7 +44,7 @@ export function compileRulesToEffect(
   const enabledRules = rules.filter((rule) => rule.enabled !== false);
   const engine = createRuleEngine({ debug: options.debug });
 
-  // Keep Rule Engine behind the existing effect contract used by form-chain-effect-engine.
+  // 保持 per-field effect contract：Rule Engine 只返回当前字段的 EffectResult。
   return (changedValue, allValues) =>
     engine.evaluate(enabledRules, {
       fieldId: options.fieldId,

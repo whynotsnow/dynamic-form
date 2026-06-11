@@ -15,6 +15,10 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 }
 
+function isUnsupportedTargetError(error: unknown): boolean {
+  return error instanceof Error && error.message.includes('target is not supported');
+}
+
 function assertCondition(condition: RuleCondition, ruleLabel: string): void {
   if (!isRecord(condition)) {
     throw new Error(`${ruleLabel}: rule condition must be an object.`);
@@ -68,8 +72,10 @@ function assertAction(action: RuleAction, ruleLabel: string): void {
     throw new Error(`${ruleLabel}: unknown rule action.`);
   }
 
-  if ('target' in action && action.target !== undefined && typeof action.target !== 'string') {
-    throw new Error(`${ruleLabel}: rule action target must be a string.`);
+  if ('target' in action) {
+    throw new Error(
+      `${ruleLabel}: rule action target is not supported; declare the rule on the affected field instead.`
+    );
   }
 
   if (action.action === 'setValue' && !('value' in action)) {
@@ -82,6 +88,12 @@ export function assertValidRule(rule: DeclarativeRule): void {
 
   if (!isRecord(rule)) {
     throw new Error(`${ruleLabel}: rule must be an object.`);
+  }
+
+  if ('target' in rule) {
+    throw new Error(
+      `${ruleLabel}: rule target is not supported; declare the rule on the affected field instead.`
+    );
   }
 
   assertCondition(rule.when, ruleLabel);
@@ -129,19 +141,8 @@ export function evaluateCondition(
   return !isEmptyValue(value);
 }
 
-function applyAction(
-  result: RuleEvaluationResult,
-  action: RuleAction,
-  rule: DeclarativeRule,
-  context: RuleEvaluationContext
-) {
-  const target = action.target || rule.target || context.fieldId;
-
-  // 3.1 compiles rules into per-field effects, so only the current field is updated here.
-  if (target !== context.fieldId) {
-    return;
-  }
-
+function applyAction(result: RuleEvaluationResult, action: RuleAction) {
+  // Rule 只描述所属字段的状态补丁；跨字段影响由多个字段依赖同一 source field 表达。
   switch (action.action) {
     case 'show':
       result.visible = true;
@@ -183,7 +184,7 @@ export function evaluateRule(
   const result: RuleEvaluationResult = {};
   const actions = Array.isArray(rule.then) ? rule.then : [rule.then];
 
-  actions.forEach((action) => applyAction(result, action, rule, context));
+  actions.forEach((action) => applyAction(result, action));
 
   return Object.keys(result).length > 0 ? result : undefined;
 }
@@ -214,6 +215,10 @@ export class RuleEngine {
           Object.assign(result, ruleResult);
         }
       } catch (error) {
+        if (isUnsupportedTargetError(error)) {
+          throw error;
+        }
+
         if (this.options.debug) {
           console.warn('RuleEngine.evaluate skipped failed rule.', { rule, error });
         }
