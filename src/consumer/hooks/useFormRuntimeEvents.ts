@@ -18,12 +18,9 @@ export function useFormRuntimeEvents({ form, onSubmit, runtimeState }: UseFormRu
     fieldIds.filter((fieldId) => runtimeState.fields[fieldId]?.validatable === true);
 
   const handleFinish = async () => {
-    const values = await form.validateFields(
-      getValidatableFieldIds(Object.keys(runtimeState.fields))
-    );
+    await form.validateFields(getValidatableFieldIds(Object.keys(runtimeState.fields)));
     const submitValues = form.getFieldsValue(true);
 
-    console.log('表单提交:', values, submitValues);
     onSubmit?.(submitValues);
   };
 

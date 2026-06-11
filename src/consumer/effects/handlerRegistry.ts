@@ -23,6 +23,10 @@ export function getEffectResultHandlerRegistry(): Map<string, CustomEffectResult
   return handlers;
 }
 
+export function isEffectResultDebugEnabled(): boolean {
+  return getDefaultConfig().debug === true;
+}
+
 /**
  * 标记处理器已初始化
  */

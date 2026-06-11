@@ -1,5 +1,5 @@
 import type { EffectResult, EffectResultContext, CustomEffectResultHandler } from './types';
-import { getEffectResultHandlerRegistry } from './handlerRegistry';
+import { getEffectResultHandlerRegistry, isEffectResultDebugEnabled } from './handlerRegistry';
 
 /**
  * 处理结果的核心函数
@@ -29,12 +29,7 @@ import { getEffectResultHandlerRegistry } from './handlerRegistry';
  * ```
  */
 export function applyEffectResult(result: EffectResult | undefined, context: EffectResultContext) {
-  console.group('applyEffectResult Run');
-  console.log('applyEffectResult执行参数:', { result, context });
-  console.groupEnd();
-
   if (!result || typeof result !== 'object') {
-    console.log('无有效返回值，跳过处理');
     return;
   }
 
@@ -44,17 +39,11 @@ export function applyEffectResult(result: EffectResult | undefined, context: Eff
 
   Object.entries(result).forEach(([key, value]) => {
     if (value === undefined) {
-      console.log(`跳过 undefined 值: ${key}`);
       return;
     }
 
     const handler = handlers.get(key) as CustomEffectResultHandler | undefined;
     if (handler && handler.canHandle(key, value)) {
-      console.log(`开始执行处理器: ${handler.name}`, {
-        fieldName: context.fieldName,
-        data: value
-      });
-
       // 执行验证（如果存在）
       if (handler.validate && !handler.validate(value)) {
         console.warn(`验证失败处理器: ${handler.name}`, {
@@ -88,7 +77,7 @@ export function applyEffectResult(result: EffectResult | undefined, context: Eff
   });
 
   // 记录未处理的条目（仅在开发环境且启用调试时）
-  if (unhandledEntries.length > 0) {
+  if (unhandledEntries.length > 0 && isEffectResultDebugEnabled()) {
     const unhandledKeys = unhandledEntries.map(([key]) => key);
     console.warn(
       `发现 ${unhandledEntries.length} 个没有匹配的handle处理器属性: ${unhandledKeys.join(', ')}`,

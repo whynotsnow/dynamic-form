@@ -61,8 +61,6 @@ const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
     const wrapFormItem =
       (Component as typeof Component & { wrapWithFormItem?: boolean }).wrapWithFormItem !== false;
 
-    console.log(`渲染字段 ${field.id} - 组件类型: ${field.component}`);
-
     if (wrapFormItem) {
       return (
         <Form.Item {...resolvedConfigs.formItemProps}>
@@ -73,24 +71,20 @@ const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
     return <Component field={field} form={form} {...resolvedConfigs} />;
   },
   (prevProps, nextProps) => {
-    const fieldId = prevProps.field.id;
     // 字段配置比较
     const prevField = prevProps.field;
     const nextField = nextProps.field;
 
     // meta 属性深度比较 - 检测所有 meta 属性的变化
     if (!shallowEqual(prevField.meta, nextField.meta)) {
-      console.log(`字段 ${fieldId}: meta 属性变化，需要渲染`);
       return false;
     }
 
     if (!shallowEqual(prevProps.runtimeCapability, nextProps.runtimeCapability)) {
-      console.log(`字段 ${fieldId}: runtime 能力变化，需要渲染`);
       return false;
     }
 
     // 所有检查都通过，可以跳过渲染
-    console.log(`字段 ${fieldId}: 跳过渲染`);
     return true;
   }
 );

@@ -4,7 +4,7 @@ import {
   getAllEffectResultHandlers,
   markHandlersInitialized
 } from './handlerRegistry';
-import { getDefaultConfig } from '../../config/defaultConfig';
+import { getDefaultConfig, setDefaultConfig } from '../../config/defaultConfig';
 
 /**
  * 初始化结果处理器系统
@@ -36,16 +36,16 @@ import { getDefaultConfig } from '../../config/defaultConfig';
  */
 export function initializeEffectResultHandlers(config: InitConfig): InitResult {
   try {
-    console.group('初始化结果处理器系统');
-    console.log('初始化配置:', config);
-    console.groupEnd();
-
-    const defaultConfig = getDefaultConfig();
     const { handlers: customHandlers = [], options = {}, debug = false, enabled = true } = config;
+    setDefaultConfig({ debug });
+    const defaultConfig = getDefaultConfig();
+
+    if (debug) {
+      console.debug('[DynamicForm] 初始化结果处理器系统', config);
+    }
 
     // 配置校验：检查是否启用
     if (!enabled) {
-      console.log('处理器系统已禁用');
       return {
         success: true,
         registeredCount: 0,
@@ -65,8 +65,6 @@ export function initializeEffectResultHandlers(config: InitConfig): InitResult {
           .map((h) => h.name || 'unnamed')
           .join(', ')}`;
 
-        console.error('处理器配置验证失败:', errorMessage);
-
         return {
           success: false,
           error: new Error(errorMessage),
@@ -76,19 +74,13 @@ export function initializeEffectResultHandlers(config: InitConfig): InitResult {
         };
       }
 
-      console.log(`验证通过 ${customHandlers.length} 个自定义处理器`);
+      if (debug) {
+        console.debug(`[DynamicForm] 验证通过 ${customHandlers.length} 个自定义处理器`);
+      }
     }
 
     // 注册默认处理器
     if (defaultConfig.enableDefaultHandlers && defaultConfig.baseHandlers) {
-      console.group('注册默认处理器');
-      defaultConfig.baseHandlers!.forEach((handler) => {
-        console.log(`注册处理器: ${handler.name}`, {
-          description: handler.description
-        });
-      });
-      console.groupEnd();
-
       registerCustomEffectResultHandlers(defaultConfig.baseHandlers, {
         ...defaultConfig.defaultHandlersOptions,
         ...options
@@ -97,14 +89,6 @@ export function initializeEffectResultHandlers(config: InitConfig): InitResult {
 
     // 注册自定义处理器
     if (customHandlers.length > 0) {
-      console.group('注册自定义处理器');
-      customHandlers.forEach((handler) => {
-        console.log(`注册处理器: ${handler.name}`, {
-          description: handler.description
-        });
-      });
-      console.groupEnd();
-
       registerCustomEffectResultHandlers(customHandlers, options);
     }
 
@@ -122,15 +106,13 @@ export function initializeEffectResultHandlers(config: InitConfig): InitResult {
       message: `成功注册 ${registeredCount} 个处理器`
     };
 
-    console.group('处理器初始化完成');
-    console.log('初始化结果:', result);
-    console.groupEnd();
+    if (debug) {
+      console.debug('[DynamicForm] 处理器初始化完成', result);
+    }
 
     return result;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : '未知错误';
-
-    console.error('初始化失败:', errorMessage);
 
     return {
       success: false,

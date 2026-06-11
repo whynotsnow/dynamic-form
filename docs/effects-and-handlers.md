@@ -23,6 +23,8 @@ return <DynamicForm form={form} formConfig={formConfig} />;
 
 `DynamicFormProvider` 可以在检测到 handler 可能未初始化时发出 warning。该行为由 `enableInitializationCheck` 和 `checkDelay` 控制。
 
+`useInitHandlers({ debug: true })` 会输出处理器初始化诊断和未匹配 effect result key。默认 `debug: false`，正常渲染、reducer 更新、字段提交和 effect 执行不会向控制台输出过程日志。无效配置、缺失组件和初始化契约问题仍会使用 `warn` 或 `error` 报告。
+
 ### 联动配置
 
 字段和分组都可以声明 `dependents` 和 `effect`。
@@ -166,6 +168,8 @@ return <DynamicForm form={form} formConfig={formConfig} />;
 ```
 
 `DynamicFormProvider` can warn when handler initialization appears to be missing. This is controlled by `enableInitializationCheck` and `checkDelay`.
+
+`useInitHandlers({ debug: true })` enables handler-initialization diagnostics and reports unmatched effect result keys. With the default `debug: false`, normal rendering, reducer updates, submission, and effect execution do not emit process logs. Invalid configuration, missing components, and initialization-contract problems still use `warn` or `error`.
 
 ### Effect Config
 

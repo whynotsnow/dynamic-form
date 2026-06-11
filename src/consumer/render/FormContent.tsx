@@ -190,8 +190,6 @@ const FormContent: React.FC<FormContentProps> = (props) => {
       {formBlocks.submitArea}
     </>
   );
-  console.log('render FormContent', state, form.getFieldsValue(true));
-
   return (
     <Form
       form={form}

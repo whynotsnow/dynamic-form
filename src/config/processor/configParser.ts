@@ -89,7 +89,6 @@ export function hydrateFormConfig(analysisConfig: ConfigAnalysisResult): Hydrate
   const processInitialValueResult = (field: BaseFieldConfig, result: any) => {
     if (!result || typeof result !== 'object') {
       initialValues[field.id] = result;
-      console.log(`字段 ${field.id} 函数计算初始值:`, result);
       return;
     }
 
@@ -126,13 +125,11 @@ export function hydrateFormConfig(analysisConfig: ConfigAnalysisResult): Hydrate
     // 处理静态初始值
     if (field.initialValue !== undefined && typeof field.initialValue !== 'function') {
       initialValues[field.id] = field.initialValue;
-      console.log(`字段 ${field.id} 静态初始值:`, field.initialValue);
     }
 
     // 处理函数初始值
     if (typeof field.initialValue === 'function') {
       try {
-        console.log(`计算字段 ${field.id} 的初始值`, initialValues);
         const result = field.initialValue(initialValues);
         processInitialValueResult(field, result);
       } catch (error) {
@@ -155,10 +152,6 @@ export function hydrateFormConfig(analysisConfig: ConfigAnalysisResult): Hydrate
       group.fields.forEach((f) => processField(f, group.id));
     }
   });
-
-  console.group('初始值计算完成');
-  console.log('initialValues:', initialValues);
-  console.groupEnd();
 
   return {
     initialValues,

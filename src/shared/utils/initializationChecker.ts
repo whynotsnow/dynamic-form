@@ -63,16 +63,6 @@ export class InitializationChecker {
       recommendations
     };
 
-    // 记录检测结果
-    console.group('初始化状态检测');
-    console.log('检测结果:', result);
-
-    if (warnings.length > 0) {
-      console.warn('发现的问题:', warnings);
-      console.log('建议:', recommendations);
-    }
-    console.groupEnd();
-
     return result;
   }
 
