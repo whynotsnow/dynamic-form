@@ -227,7 +227,7 @@ const moduleConfigs = adaptModuleConfigs(
 );
 ```
 
-Schema adapters 要求字段显式声明 module metadata，不会根据 schema primitive type 自动猜测 UI。输出保持为 flat `ModuleConfig[]`，后续仍交给现有 compiler/runtime 管线处理。
+Schema adapters 要求字段显式声明 module metadata，不会根据 schema primitive type 自动猜测 UI。输出保持为 flat `ModuleConfig[]`，后续仍交给现有 compiler/runtime 管线处理。Schema `required` 只映射为字段 `required` 语义，最终 AntD 校验规则由默认 renderer 统一合并。
 
 ---
 
@@ -360,7 +360,7 @@ const moduleConfigs = adaptModuleConfigs(
 );
 ```
 
-Schema adapters require explicit module metadata and do not infer UI from schema primitive types. Output stays flat `ModuleConfig[]`.
+Schema adapters require explicit module metadata and do not infer UI from schema primitive types. Output stays flat `ModuleConfig[]`. Schema `required` maps to field-level `required` semantics, and the default renderer merges final AntD validation rules.
 
 `DynamicForm` props combine:
 

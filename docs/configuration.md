@@ -63,6 +63,8 @@ const formConfig: FormConfig = {
 | `formItemProps` | 静态 `Form.Item` props。 |
 | `componentProps` | 传给字段组件的静态 props。 |
 
+`required` 是字段声明属性。默认 Ant Design renderer 会把 `required: true` 合并成真实 `Form.Item.rules`，并显示 required 标记；如果 `rules` 中已经显式声明 required rule，则以显式 rule 为准，不重复生成。
+
 ### 函数式初始值
 
 `initialValue` 可以是函数。函数接收已计算的初始值，可以返回原始值，也可以返回 effect result 对象。
@@ -194,6 +196,8 @@ const formConfig: FormConfig = {
 ### Field Config
 
 Common options include `id`, `component`, `label`, `rules`, `required`, `span`, `style`, `initialValue`, `initialVisible`, `initialDisabled`, `preserveValueOnHide`, `restoreValueOnShow`, `dependents`, `effect`, `formItemProps`, and `componentProps`.
+
+`required` is a field declaration. The default Ant Design renderer merges `required: true` into real `Form.Item.rules` and shows the required marker. If `rules` already declares a required rule, the explicit rule wins and no duplicate rule is generated.
 
 `initialValue` may be static or a function. Function initial values can return a raw value or an effect result object, which is routed through the same handler system used by runtime effects.
 

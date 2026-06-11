@@ -16,6 +16,8 @@ JsonSchema / OpenAPI / Metadata
 
 Schema adapters 只负责把输入转换成 flat `ModuleConfig[]`。字段模块展开、规则编译、依赖推导、组件注册和 runtime 行为继续由现有 compiler/runtime 管线负责。
 
+Schema `required` 会映射为字段 `required` 语义，不会在 adapter 层直接生成 Ant Design `rules`。默认 Ant Design renderer 会统一把 `required` 合并成最终校验规则。
+
 ### JsonSchemaAdapter
 
 支持顶层 object schema：
@@ -107,6 +109,8 @@ JsonSchema / OpenAPI / Metadata
 ```
 
 Schema adapters only convert input into flat `ModuleConfig[]`. Module expansion, rule compilation, dependency inference, component registration, and runtime behavior remain owned by the existing compiler/runtime pipeline.
+
+Schema `required` is mapped to field-level `required` semantics. Adapters do not generate Ant Design `rules` directly; the default Ant Design renderer merges `required` into final validation rules.
 
 ### JsonSchemaAdapter
 

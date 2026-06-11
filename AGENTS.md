@@ -160,6 +160,8 @@ Important implementation constraints:
   ignores hidden fields, disabled fields, readonly policy, and group-hidden fields.
 - Default field rendering passes `runtimeCapability` into `FieldComponentRenderer`, which suppresses
   Form.Item rules when `validatable` is false and maps runtime `disabled`/`readonly` to component props.
+- `BaseFieldConfig.required` is a field declaration. The default Ant Design renderer merges it into
+  a real required `Form.Item` rule unless an explicit required rule already exists.
 
 ## Meta Boundaries
 

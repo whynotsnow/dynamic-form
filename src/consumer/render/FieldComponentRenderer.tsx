@@ -3,21 +3,21 @@ import { Form } from 'antd';
 import type { FieldRendererProps } from '../../shared/types';
 import { defaultRegistryManager } from './componentRegistry';
 import { shallowEqual } from '../../shared/utils/utils';
+import { resolveFieldRequired, resolveFieldRules } from './fieldValidation';
 
 const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
   function FieldRenderer({ field, form, componentRegistry, dynamicUIConfig, runtimeCapability }) {
-    const baseFormItemProps = useMemo(
-      () => ({
+    const baseFormItemProps = useMemo(() => {
+      const validatable = runtimeCapability?.validatable !== false;
+      const rules = resolveFieldRules(field, validatable);
+
+      return {
         label: field.label,
         name: field.id,
-        rules: runtimeCapability?.validatable === false ? [] : (field.rules ?? []),
-        required:
-          runtimeCapability?.validatable === false
-            ? false
-            : ((field?.rules || [])?.some((r) => 'required' in r && r.required === true) ?? false)
-      }),
-      [field.label, field.id, field.rules, runtimeCapability?.validatable]
-    );
+        rules,
+        required: resolveFieldRequired(field, rules, validatable)
+      };
+    }, [field, runtimeCapability?.validatable]);
     // 解析字段级别配置
     const resolvedConfigs = useMemo(() => {
       // 合并 formItemProps（外层）

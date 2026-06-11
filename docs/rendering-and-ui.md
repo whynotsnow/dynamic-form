@@ -35,7 +35,7 @@ Form
 - `Card`
 - `Button`
 
-`FieldComponentRenderer` 负责解析组件、应用 `Form.Item` props、应用 runtime disabled/readonly 状态，并在字段不可校验时移除 `Form.Item` rules。
+`FieldComponentRenderer` 负责解析组件、应用 `Form.Item` props、应用 runtime disabled/readonly 状态，并在字段不可校验时移除 `Form.Item` rules。字段 `required: true` 会在默认 Ant Design renderer 中自动合并为 required rule；显式 `rules` 中的 required rule 优先。
 
 ### 组件注册
 
@@ -157,7 +157,7 @@ Flat forms render as `Form -> Row -> Col -> FieldComponentRenderer -> Submit But
 
 Default rendering uses `Form`, `Row`, `Col`, `Card`, and `Button`.
 
-`FieldComponentRenderer` resolves the component, applies `Form.Item` props, maps runtime disabled/readonly state, and suppresses rules when a field is not runtime-validatable.
+`FieldComponentRenderer` resolves the component, applies `Form.Item` props, maps runtime disabled/readonly state, and suppresses rules when a field is not runtime-validatable. Field-level `required: true` is automatically merged into a required rule by the default Ant Design renderer, while explicit required rules take precedence.
 
 ### Component Registry
 
