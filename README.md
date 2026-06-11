@@ -12,6 +12,9 @@
 - 🧩 支持静态初始值和函数式初始值。
 - 🛠️ 内置 effect 结果处理器，可处理字段值、字段行为、分组可见性、字段渲染 props 和全局 UI 配置。
 - 🎨 支持通过 `componentRegistry` 注册自定义字段组件。
+- 🧱 支持通过 Field Module、Compiler 和 Adapter 管线复用领域字段配置。
+- 📐 支持声明式同步 Rule Engine，并将规则编译为标准 effects。
+- 🔄 支持 JsonSchema、OpenAPI 和 metadata 输入适配。
 - 🧩 `CompiledDynamicForm` 可直接渲染 compiler/adapter 产物并自动接入模块组件。
 - 🪝 支持从字段项到整个表单体的分层 render hooks。
 - 🧠 使用 Runtime Layer 统一解析 `rendered`、`submitable`、`editable`、`readonly`、`disabled`、`validatable` 等能力。
@@ -91,6 +94,7 @@ export function Example() {
 主要导出定义在 `src/exports.ts`：
 
 - `DynamicForm`
+- `CompiledDynamicForm`
 - `DynamicFormProvider`
 - `FormChainEffectEngineWrapper`
 - `useInitHandlers`
@@ -99,15 +103,26 @@ export function Example() {
 - `ComponentRegistryManager`
 - `DefaultRegistryFieldComponents`
 - `getDefaultConfig`
+- `processFormConfig`
+- `compileFormConfig`
+- `ModuleRegistryManager`
+- `defaultModuleRegistry`
+- `AdapterRegistryManager`
+- `defaultAdapterRegistry`
+- `adaptModuleConfigs`
+- `compileAdaptedFormConfig`
+- `JsonSchemaAdapter`
+- `OpenApiAdapter`
+- `MetadataAdapter`
 - `RuleEngine`
 - `createRuleEngine`
 - `compileRulesToEffect`
 - `evaluateRule`
-- `DynamicFormProps`、`FormConfig`、`BaseFieldConfig`、`UIConfig`、render hook 参数、组件注册类型等公共类型。
+- `DynamicFormProps`、`FormConfig`、compiler、adapter、rule、render hook 和组件注册相关公共类型。
 
 ### Rule Engine
 
-DynamicForm 3.1 新增声明式 Rule Engine，用于模块化表单的同步联动规则。规则会被编译成标准 effects，因此渲染层和 runtime provider 不需要变化。
+DynamicForm 3.0 包含声明式 Rule Engine，用于模块化表单的同步联动规则。规则会被编译成标准 effects，因此渲染层和 runtime provider 不需要变化。
 
 ```tsx
 import { compileFormConfig, ModuleRegistryManager } from '@whynotsnow/dynamic-form';
@@ -126,27 +141,27 @@ registry.register({
 const compiled = compileFormConfig(
   {
     fields: [
-    {
-      type: 'CompanyName',
-      id: 'companyName',
-      rules: [
-        {
-          when: { field: 'customerType', equals: 'company' },
-          then: { action: 'show' }
-        },
-        {
-          when: { field: 'customerType', notEquals: 'company' },
-          then: { action: 'hide' }
-        }
-      ]
-    }
+      {
+        type: 'CompanyName',
+        id: 'companyName',
+        rules: [
+          {
+            when: { field: 'customerType', equals: 'company' },
+            then: { action: 'show' }
+          },
+          {
+            when: { field: 'customerType', notEquals: 'company' },
+            then: { action: 'hide' }
+          }
+        ]
+      }
     ]
   },
   { registry }
 );
 ```
 
-3.1 首版规则支持同步联动动作：`show`、`hide`、`enable`、`disable`、`readonly`、`editable`、`setValue` 和 `clearValue`。
+当前规则支持同步联动动作：`show`、`hide`、`enable`、`disable`、`readonly`、`editable`、`setValue` 和 `clearValue`。Group rules 仅支持 `show` 和 `hide`。
 
 Rule 是字段所属的 per-field 规则，不支持 `target` 配置。一个源字段影响多个字段时，应在每个被影响字段上分别声明 rule；compiler 会从 `when` 条件推导相同的 `dependents`，再由 `form-chain-effect-engine` 触发这些字段各自的 effect。
 
@@ -160,6 +175,10 @@ Rule 是字段所属的 per-field 规则，不支持 `target` 配置。一个源
 - 📚 [文档索引](./docs/README.md)
 - 🏗️ [架构说明](./docs/ARCHITECTURE.md)
 - ⚙️ [配置指南](./docs/configuration.md)
+- 🧩 [Compiler Foundation](./docs/compiler-foundation.md)
+- 📐 [Rule Engine](./docs/rule-engine.md)
+- 🔄 [Adapter Foundation](./docs/adapter-foundation.md)
+- 🧾 [Schema Adapters](./docs/schema-adapters.md)
 - 🔗 [Effect 与处理器](./docs/effects-and-handlers.md)
 - 🎨 [渲染与 UI 扩展](./docs/rendering-and-ui.md)
 - 🧠 [Runtime Layer](./docs/runtime-layer.md)
@@ -174,16 +193,20 @@ Rule 是字段所属的 per-field 规则，不支持 `target` 配置。一个源
 - 扩展优先于分叉：通过自定义组件、effect 结果处理器和 render hooks 覆盖业务差异。
 - 默认渲染保持简单：默认使用 Ant Design `Form`、`Row`、`Col`、`Card` 和 `Button`。
 
-### 当前升级方向
+### 3.0 可选配置管线
 
-Adapter/Compiler 管线现在将 JsonSchema、OpenAPI 和 metadata 输入归一化为结构化 `ModuleFormConfig`。字段通过 `groupId` 加入 group，支持未分组字段与分组字段共存；Schema 无法携带的函数 effect 可通过 `groupOverrides` 在编译前注入。
+3.0 在现有运行时主流程之前提供可选的 Adapter、Rule 和 Compiler 管线。JsonSchema、OpenAPI 和 metadata 输入会先归一化为结构化 `ModuleFormConfig`，再编译成标准 `FormConfig`。字段通过 `groupId` 加入 group，支持未分组字段与分组字段共存；Schema 无法携带的函数 effect 可通过 `groupOverrides` 在编译前注入。
 
 ### 项目结构
 
 ```text
 src/
+  adapters/    外部输入与 schema 适配
+  compiler/    ModuleFormConfig 编译
   config/      默认配置和配置处理
   consumer/    provider、渲染、hooks、effects、组件注册表
+  modules/     字段模块协议和注册器
+  rules/       声明式规则求值和 effect 编译
   runtime/     运行时能力解析和 runtime selectors
   shared/      公共类型、上下文和工具函数
   state/       reducer 和 store 初始化
@@ -211,7 +234,7 @@ npm run build       # 构建库产物
 
 ### Schema Adapters
 
-DynamicForm 3.3 在 Adapter Foundation 之上新增具体 `JsonSchemaAdapter`、`OpenApiAdapter` 和 `MetadataAdapter`。
+DynamicForm 3.0 提供 `JsonSchemaAdapter`、`OpenApiAdapter` 和 `MetadataAdapter`。
 
 ```tsx
 import { adaptModuleConfigs } from '@whynotsnow/dynamic-form';
@@ -246,6 +269,9 @@ Schema adapters 要求字段显式声明 module metadata，不会根据 schema p
 - 🧩 Static and function-based initial values.
 - 🛠️ Built-in effect result handlers for values, field behavior, group visibility, field render props, and global UI config.
 - 🎨 Custom field components through `componentRegistry`.
+- 🧱 Reusable domain field config through Field Modules, Compiler, and Adapter pipelines.
+- 📐 Declarative synchronous rules compiled into standard effects.
+- 🔄 JsonSchema, OpenAPI, and metadata input adapters.
 - 🧩 `CompiledDynamicForm` renders compiler/adapter output with module components wired automatically.
 - 🪝 Layered render hooks from field item to full form body.
 - 🧠 Runtime capability resolution for `rendered`, `submitable`, `editable`, `readonly`, `disabled`, and `validatable`.
@@ -272,6 +298,7 @@ See the Chinese section above for the full code example. The same API is used in
 Primary exports are defined in `src/exports.ts`:
 
 - `DynamicForm`
+- `CompiledDynamicForm`
 - `DynamicFormProvider`
 - `FormChainEffectEngineWrapper`
 - `useInitHandlers`
@@ -280,15 +307,26 @@ Primary exports are defined in `src/exports.ts`:
 - `ComponentRegistryManager`
 - `DefaultRegistryFieldComponents`
 - `getDefaultConfig`
+- `processFormConfig`
+- `compileFormConfig`
+- `ModuleRegistryManager`
+- `defaultModuleRegistry`
+- `AdapterRegistryManager`
+- `defaultAdapterRegistry`
+- `adaptModuleConfigs`
+- `compileAdaptedFormConfig`
+- `JsonSchemaAdapter`
+- `OpenApiAdapter`
+- `MetadataAdapter`
 - `RuleEngine`
 - `createRuleEngine`
 - `compileRulesToEffect`
 - `evaluateRule`
-- Public types such as `DynamicFormProps`, `FormConfig`, `BaseFieldConfig`, `UIConfig`, render hook params, and component registry types.
+- Public types for `DynamicFormProps`, `FormConfig`, compiler, adapters, rules, render hooks, and component registration.
 
 ### Rule Engine
 
-DynamicForm 3.1 adds a declarative Rule Engine for module-based form linkage. Rules are compiled into standard effects, so the renderer and runtime provider stay unchanged.
+DynamicForm 3.0 includes a declarative Rule Engine for module-based form linkage. Rules are compiled into standard effects, so the renderer and runtime provider stay unchanged.
 
 ```tsx
 import { compileFormConfig, ModuleRegistryManager } from '@whynotsnow/dynamic-form';
@@ -307,27 +345,27 @@ registry.register({
 const compiled = compileFormConfig(
   {
     fields: [
-    {
-      type: 'CompanyName',
-      id: 'companyName',
-      rules: [
-        {
-          when: { field: 'customerType', equals: 'company' },
-          then: { action: 'show' }
-        },
-        {
-          when: { field: 'customerType', notEquals: 'company' },
-          then: { action: 'hide' }
-        }
-      ]
-    }
+      {
+        type: 'CompanyName',
+        id: 'companyName',
+        rules: [
+          {
+            when: { field: 'customerType', equals: 'company' },
+            then: { action: 'show' }
+          },
+          {
+            when: { field: 'customerType', notEquals: 'company' },
+            then: { action: 'hide' }
+          }
+        ]
+      }
     ]
   },
   { registry }
 );
 ```
 
-The first 3.1 rule set supports synchronous linkage actions: `show`, `hide`, `enable`, `disable`, `readonly`, `editable`, `setValue`, and `clearValue`.
+Current field rules support `show`, `hide`, `enable`, `disable`, `readonly`, `editable`, `setValue`, and `clearValue`. Group rules support only `show` and `hide`.
 
 Rules are field-owned per-field rules and do not support `target` configuration. When one source field affects multiple fields, declare a rule on each affected field; the compiler infers the same `dependents` from `when`, and `form-chain-effect-engine` triggers each field's own effect.
 
@@ -343,11 +381,11 @@ const compiled = compileAdaptedFormConfig({
 });
 ```
 
-The adapter layer only converts input. Rule merging, dependency inference, component registration, runtime, and rendering behavior remain owned by the existing compiler/runtime pipeline. 3.2 does not include concrete JsonSchema, OpenAPI, or Metadata adapters; those belong to 3.3.
+The adapter layer only converts input. Rule merging, dependency inference, component registration, runtime, and rendering behavior remain owned by the compiler/runtime pipeline.
 
 ### Schema Adapters
 
-DynamicForm 3.3 adds concrete `JsonSchemaAdapter`, `OpenApiAdapter`, and `MetadataAdapter` implementations on top of Adapter Foundation.
+DynamicForm 3.0 provides `JsonSchemaAdapter`, `OpenApiAdapter`, and `MetadataAdapter` on top of Adapter Foundation.
 
 ```tsx
 import { adaptModuleConfigs } from '@whynotsnow/dynamic-form';
@@ -378,6 +416,10 @@ Schema adapters require explicit module metadata and do not infer UI from schema
 - 📚 [Documentation Index](./docs/README.md)
 - 🏗️ [Architecture](./docs/ARCHITECTURE.md)
 - ⚙️ [Configuration Guide](./docs/configuration.md)
+- 🧩 [Compiler Foundation](./docs/compiler-foundation.md)
+- 📐 [Rule Engine](./docs/rule-engine.md)
+- 🔄 [Adapter Foundation](./docs/adapter-foundation.md)
+- 🧾 [Schema Adapters](./docs/schema-adapters.md)
 - 🔗 [Effects and Handlers](./docs/effects-and-handlers.md)
 - 🎨 [Rendering and UI Extensions](./docs/rendering-and-ui.md)
 - 🧠 [Runtime Layer](./docs/runtime-layer.md)
@@ -392,12 +434,13 @@ Schema adapters require explicit module metadata and do not infer UI from schema
 - Prefer extension points over forks.
 - Keep default rendering simple with Ant Design `Form`, `Row`, `Col`, `Card`, and `Button`.
 
-### Current Direction
+### Optional 3.0 Configuration Pipeline
 
-The adapter/compiler pipeline normalizes JsonSchema, OpenAPI, and metadata input into structured
-`ModuleFormConfig`. Fields join groups through `groupId`, mixed grouped and ungrouped fields are
-supported, and function effects that cannot live in Schema data are injected through
-`groupOverrides` before compilation.
+Before the existing runtime pipeline, 3.0 provides optional Adapter, Rule, and Compiler stages.
+JsonSchema, OpenAPI, and metadata input is normalized into structured `ModuleFormConfig` and then
+compiled into standard `FormConfig`. Fields join groups through `groupId`, mixed grouped and
+ungrouped fields are supported, and function effects that cannot live in schema data are injected
+through `groupOverrides` before compilation.
 
 ### Development
 

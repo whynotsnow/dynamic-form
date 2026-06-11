@@ -72,12 +72,12 @@ const compiled = compileAdaptedFormConfig(input, {
 
 ### Boundaries
 
-- 3.2 不实现 JsonSchema、OpenAPI 或 Metadata 具体 adapter。
-- 3.2 不修改 `compileFormConfig()`、`processFormConfig()`、runtime 或 renderer。
-- 3.2 不引入异步规则、validation rule engine 或 monorepo 拆包。
+- Adapter Foundation 本身不负责 JsonSchema、OpenAPI 或 Metadata 的具体映射。
+- Adapter Foundation 不修改 `compileFormConfig()`、`processFormConfig()`、runtime 或 renderer 的职责。
+- 当前版本不引入异步规则、validation rule engine 或 monorepo 拆包。
 - Adapter 输出统一为 `{ fields, groups? }`，字段通过 `groupId` 加入 group，可表达 flat、grouped 和 mixed 配置。
 
-当前仓库已经包含 3.3 `JsonSchemaAdapter`、`OpenApiAdapter` 和 `MetadataAdapter`，详见 [Schema Adapters](./schema-adapters.md)。以上边界仅描述 3.2 Adapter Foundation 本身的职责范围。
+当前 3.0 发布同时包含 `JsonSchemaAdapter`、`OpenApiAdapter` 和 `MetadataAdapter`，详见 [Schema Adapters](./schema-adapters.md)。以上边界仅描述 Adapter Foundation 本身的职责范围。
 
 ---
 
@@ -153,9 +153,9 @@ The default order is passthrough, JsonSchema, OpenAPI, then Metadata. A single o
 
 ### Boundaries
 
-- 3.2 does not implement concrete JsonSchema, OpenAPI, or Metadata adapters.
-- 3.2 does not change `compileFormConfig()`, `processFormConfig()`, runtime, or renderer.
-- 3.2 does not introduce async rules, a validation rule engine, or a monorepo split.
+- Adapter Foundation itself does not own concrete JsonSchema, OpenAPI, or Metadata mappings.
+- Adapter Foundation does not change the responsibilities of `compileFormConfig()`, `processFormConfig()`, runtime, or renderer.
+- The current release does not introduce async rules, a validation rule engine, or a monorepo split.
 - Adapter output is `{ fields, groups? }`. Fields join groups through `groupId`, supporting flat, grouped, and mixed configurations.
 
-The current repository also includes the 3.3 `JsonSchemaAdapter`, `OpenApiAdapter`, and `MetadataAdapter`; see [Schema Adapters](./schema-adapters.md). The boundaries above describe only the 3.2 Adapter Foundation scope.
+The 3.0 release also includes `JsonSchemaAdapter`, `OpenApiAdapter`, and `MetadataAdapter`; see [Schema Adapters](./schema-adapters.md). The boundaries above describe Adapter Foundation itself.

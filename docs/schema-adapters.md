@@ -2,7 +2,7 @@
 
 ## 中文文档
 
-DynamicForm 3.3 在 3.2 Adapter Foundation 之上新增具体 schema adapters：
+DynamicForm 3.0 在 Adapter Foundation 之上提供具体 schema adapters：
 
 ```text
 JsonSchema / OpenAPI / Metadata
@@ -113,7 +113,7 @@ const moduleConfigs = adaptModuleConfigs(
 
 ## English Documentation
 
-DynamicForm 3.3 adds concrete schema adapters on top of the 3.2 Adapter Foundation:
+DynamicForm 3.0 provides concrete schema adapters on top of Adapter Foundation:
 
 ```text
 JsonSchema / OpenAPI / Metadata
