@@ -75,6 +75,8 @@ const compiled = compileAdaptedFormConfig(input, {
 - 3.2 不引入异步规则、validation rule engine 或 monorepo 拆包。
 - Adapter 输出保持为 flat `ModuleConfig[]`；分组和 schema 映射策略留给 3.3。
 
+当前仓库已经包含 3.3 `JsonSchemaAdapter`、`OpenApiAdapter` 和 `MetadataAdapter`，详见 [Schema Adapters](./schema-adapters.md)。以上边界仅描述 3.2 Adapter Foundation 本身的职责范围。
+
 ---
 
 ## English Documentation
@@ -151,3 +153,5 @@ When `adapterType` is not specified, the pipeline picks the first registered ada
 - 3.2 does not change `compileFormConfig()`, `processFormConfig()`, runtime, or renderer.
 - 3.2 does not introduce async rules, a validation rule engine, or a monorepo split.
 - Adapter output stays flat `ModuleConfig[]`; grouped output and schema mapping strategy are 3.3 work.
+
+The current repository also includes the 3.3 `JsonSchemaAdapter`, `OpenApiAdapter`, and `MetadataAdapter`; see [Schema Adapters](./schema-adapters.md). The boundaries above describe only the 3.2 Adapter Foundation scope.

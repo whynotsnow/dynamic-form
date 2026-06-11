@@ -12,6 +12,7 @@
 | `formValidation` | `formValidationDemo.tsx` | 演示标准字段和复杂自定义组件如何接入 Ant Design `Form.Item` 校验。 |
 | `uiConfig` | `uiConfigDemo.tsx` | 演示静态 `uiConfig` 与 effect 返回的动态 UI 配置。 |
 | `renderExtension` | `renderExtensionDemo.tsx` | 演示 `renderFieldItem`、`renderFields`、`renderGroupItem`、`renderGroups`、`renderFormInner` 等渲染扩展点。 |
+| `compilerFoundation` | `compilerFoundationDemo.tsx` | 演示字段模块如何编译为标准 `FormConfig` 后再交给 `DynamicForm` 渲染。 |
 
 ## 入口用法
 
@@ -46,6 +47,7 @@ demos/
 ├── customComponents/
 ├── customComponentsDemo.tsx
 ├── formValidationDemo.tsx
+├── compilerFoundationDemo.tsx
 ├── renderExtensionDemo.tsx
 ├── uiConfigDemo.tsx
 ├── useDemoInitHandlers.ts
@@ -111,6 +113,7 @@ demos/
 ├── customComponents/
 ├── customComponentsDemo.tsx
 ├── formValidationDemo.tsx
+├── compilerFoundationDemo.tsx
 ├── renderExtensionDemo.tsx
 ├── uiConfigDemo.tsx
 ├── useDemoInitHandlers.ts

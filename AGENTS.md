@@ -1,6 +1,6 @@
 # Project Notes for Future Agents
 
-Last reviewed: 2026-06-01
+Last reviewed: 2026-06-11
 
 ## Project Overview
 
@@ -18,6 +18,10 @@ The library is intended to support:
   `renderFields`, and `renderFieldItem`
 - bidirectional synchronization between Ant Design Form state and internal reducer state
 - a Runtime Layer that resolves render/submit/edit/validate capabilities from reducer state
+- an optional compiler layer for module-style field configs
+- an adapter layer that normalizes module-like, JsonSchema, OpenAPI, and metadata inputs into
+  `ModuleConfig[]`
+- a synchronous declarative rule layer that compiles rules into standard effects
 
 ## Tech Stack
 
@@ -43,10 +47,15 @@ Do not run dependency installation or global tool installation without explainin
 
 ## Directory Map
 
-- `src/`: library source, organized by Config / State / Runtime / Consumer / Shared layers
+- `src/`: library source, organized by Config / Compiler / Adapters / Rules / State / Runtime /
+  Consumer / Shared layers
 - `src/exports.ts`: package public export surface; tsup entry point
 - `src/index.tsx`: `DynamicForm` component that composes engine layer and UI layer
 - `src/shared/types.ts`: core public and internal types
+- `src/compiler/`: optional compiler layer that expands `ModuleConfig[]` into standard `FormConfig`
+- `src/modules/`: field module registry and default registry
+- `src/adapters/`: adapter registry, passthrough adapter, schema adapters, and compile-adapt pipeline
+- `src/rules/`: declarative synchronous rule evaluation and rule-to-effect compilation
 - `src/consumer/provider/DynamicFormProvider.tsx`: provider layer; initializes store, effect engine,
   context, initialization warning, and effect result handling
 - `src/consumer/render/FormContent.tsx`: rendering layer; owns Ant Design `Form`, value change handling,
@@ -65,7 +74,7 @@ Do not run dependency installation or global tool installation without explainin
 - `src/shared/context/`: form chain React context access
 - `src/shared/utils/`: path/deep utilities and initialization checks
 - `demos/`: Vite demos for usage, custom handlers, custom components, UI config, sync tests, and render extensions
-- `tests/`: script-style test/demo data, not a conventional test runner setup
+- `tests/`: Node test runner files under `tests/**/*.test.mjs`, plus shared test/demo data
 - `docs/`: architecture, data flow, field types, config, effects, batch updates, and quick reference docs
 - `dist/`: generated build output; reproducible artifact
 
@@ -81,6 +90,12 @@ Public exports are defined in `src/exports.ts`:
 - `ComponentRegistryManager`, `DefaultRegistryFieldComponents`
 - hooks: `useFormChainContext`, `useStoreInit`, `useInitHandlers`
 - `getDefaultConfig`
+- compiler APIs: `compileFormConfig`, `ModuleConfig`, `CompiledModuleConfig`
+- module registry APIs: `ModuleRegistryManager`, `defaultModuleRegistry`, `FieldModule`
+- adapter APIs: `AdapterRegistryManager`, `defaultAdapterRegistry`, `adaptModuleConfigs`,
+  `compileAdaptedFormConfig`, `ModuleConfigPassthroughAdapter`, `JsonSchemaAdapter`,
+  `OpenApiAdapter`, and `MetadataAdapter`
+- rule APIs: `RuleEngine`, `createRuleEngine`, `compileRulesToEffect`, and `evaluateRule`
 
 `DynamicFormProps` combines:
 
@@ -91,21 +106,25 @@ Public exports are defined in `src/exports.ts`:
 
 ## Core Data Flow
 
-1. `DynamicForm` splits props into engine props and UI props.
-2. `DynamicFormProvider` calls `useStoreInit`.
-3. `useStoreInit` processes `formConfig` with `processFormConfig`, merges initial values with `values`,
+1. Optional adapters normalize external input into `ModuleConfig[]` through `adaptModuleConfigs` or
+   `compileAdaptedFormConfig`.
+2. Optional compiler APIs expand `ModuleConfig[]` into the existing `FormConfig` shape through
+   `compileFormConfig`.
+3. `DynamicForm` splits props into engine props and UI props.
+4. `DynamicFormProvider` calls `useStoreInit`.
+5. `useStoreInit` processes `formConfig` with `processFormConfig`, merges initial values with `values`,
    creates reducer state, and dispatches `INIT` once.
-4. `FormContent` renders Ant Design `Form` from reducer state.
-5. User input triggers Ant Design `onValuesChange`.
-6. `FormContent` computes a single `runtimeState` from reducer state with `useRuntimeState(state)`.
-7. `useFormRuntimeEvents` handles submit/change events using that same Runtime snapshot:
+6. `FormContent` renders Ant Design `Form` from reducer state.
+7. User input triggers Ant Design `onValuesChange`.
+8. `FormContent` computes a single `runtimeState` from reducer state with `useRuntimeState(state)`.
+9. `useFormRuntimeEvents` handles submit/change events using that same Runtime snapshot:
    - changed-field validation is filtered by `runtimeState.fields[id].validatable`
    - submit validation is filtered to currently validatable fields
    - effect engine `onValuesChange(changedValues)` is still called after local runtime validation scheduling
-8. `useFieldParticipation` consumes the same `runtimeState` and clears/restores values based on
+10. `useFieldParticipation` consumes the same `runtimeState` and clears/restores values based on
    `submitable`, so hidden/group-hidden fields do not need to recalculate capability independently.
-9. `form-chain-effect-engine` executes dependent field effects from `effectMap`.
-10. `applyEffectResult` applies value/meta/UI updates through built-in or custom handlers.
+11. `form-chain-effect-engine` executes dependent field effects from `effectMap`.
+12. `applyEffectResult` applies value/meta/UI updates through built-in or custom handlers.
 
 ## Runtime Layer
 
@@ -185,27 +204,28 @@ Field essentials:
 
 Grouped config supports group-level `id`, `title`, `initialVisible`, `dependents`, `effect`, and `fields`.
 
-## Future Upgrade Direction
+## Compiler, Adapter, Schema, and Rule Layers
 
-The next larger architecture direction is a field module layer above the current `FormConfig`.
-The goal is for reusable business fields to package their component, default config, dependency
-declarations, and effect logic together. A future `ConfigCompiler` should expand those field
-modules into the existing config shape before `processFormConfig()` runs, preserving backward
-compatibility with the current `dependents` + `effect` model.
+The field module/compiler direction is now implemented as an optional layer above the existing
+`FormConfig` pipeline:
 
-The intended layering is:
+- `ModuleRegistryManager` stores reusable field modules and can reject duplicate module types unless
+  override is requested.
+- `compileFormConfig()` expands `ModuleConfig[]` into the existing `FormConfig` shape before
+  `processFormConfig()` runs.
+- Compiler hooks can observe or adjust module compilation without changing the runtime renderer.
+- `AdapterRegistryManager`, `adaptModuleConfigs()`, and `compileAdaptedFormConfig()` normalize
+  external input before handing it to the compiler.
+- Built-in adapters include passthrough `ModuleConfig[]`, JsonSchema, OpenAPI, and project metadata.
+- Schema adapters require explicit module metadata; they do not infer UI or module types from schema
+  primitive types.
+- `RuleEngine` and `compileRulesToEffect()` support synchronous declarative actions such as show,
+  hide, enable, disable, readonly, editable, setValue, and clearValue.
 
-- `FieldModuleRegistry`: stores reusable field modules and their capabilities.
-- `ConfigCompiler`: merges module defaults, registers components, and converts module dependencies
-  into the existing effect map shape.
-- Existing processor/effect engine/runtime store: continue to execute effects and store dynamic
-  meta.
-- Future rule-driven layer: may generate field modules or effects from a constrained rule schema.
-
-Keep the store boundary unchanged during this upgrade: Ant Design Form owns values and validation
-runtime state; DynamicForm owns field meta, group meta, dynamic UI config, and dependency metadata.
-Do not move rule execution into components. Components should render from props, while effects and
-handlers update meta through the existing pipeline.
+Keep the store boundary unchanged when working in these layers: Ant Design Form owns values and
+validation runtime state; DynamicForm owns field meta, group meta, dynamic UI config, and dependency
+metadata. Do not move rule execution into components. Components should render from props, while
+effects and handlers update meta through the existing pipeline.
 
 ## Effect Result Handling
 
@@ -290,6 +310,9 @@ The documentation was rebuilt on 2026-06-01. The current docs are intentionally 
 - `docs/effects-and-handlers.md`: dependency effects, default result keys, initialization contract, custom handlers.
 - `docs/rendering-and-ui.md`: default rendering, component registry, render hooks, UI extension guidance.
 - `docs/runtime-layer.md`: runtime capability model and validation/participation policy.
+- `docs/compiler-foundation.md`: field module registry, module config compilation, and compiler hooks.
+- `docs/adapter-foundation.md`: adapter registry and external-input normalization into `ModuleConfig[]`.
+- `docs/schema-adapters.md`: JsonSchema, OpenAPI, and metadata adapters built on Adapter Foundation.
 - `docs/development.md`: component usage guide with scenario-based config examples, demo links, custom components, and custom effect handlers.
 - `docs/maintenance.md`: commands, demos, verification, build notes, implementation guardrails, and documentation maintenance rules.
 
@@ -326,6 +349,7 @@ The active demo selector in `demos/DemoSelector.tsx` exposes:
 - `formValidation`
 - `uiConfig`
 - `renderExtension`
+- `compilerFoundation`
 
 Do not rely on older demo names from stale docs unless the files actually exist.
 

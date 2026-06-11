@@ -31,6 +31,20 @@
 - `ComponentRegistryManager`
 - `DefaultRegistryFieldComponents`
 - `getDefaultConfig`
+- `compileFormConfig`
+- `ModuleRegistryManager`
+- `defaultModuleRegistry`
+- `AdapterRegistryManager`
+- `defaultAdapterRegistry`
+- `adaptModuleConfigs`
+- `compileAdaptedFormConfig`
+- `JsonSchemaAdapter`
+- `OpenApiAdapter`
+- `MetadataAdapter`
+- `RuleEngine`
+- `createRuleEngine`
+- `compileRulesToEffect`
+- `evaluateRule`
 - 来自 `src/shared/types.ts` 的核心公共类型。
 
 ### 设计摘要
@@ -76,6 +90,20 @@ The package exports:
 - `ComponentRegistryManager`
 - `DefaultRegistryFieldComponents`
 - `getDefaultConfig`
+- `compileFormConfig`
+- `ModuleRegistryManager`
+- `defaultModuleRegistry`
+- `AdapterRegistryManager`
+- `defaultAdapterRegistry`
+- `adaptModuleConfigs`
+- `compileAdaptedFormConfig`
+- `JsonSchemaAdapter`
+- `OpenApiAdapter`
+- `MetadataAdapter`
+- `RuleEngine`
+- `createRuleEngine`
+- `compileRulesToEffect`
+- `evaluateRule`
 - Core public types from `src/shared/types.ts`.
 
 ### Design Summary

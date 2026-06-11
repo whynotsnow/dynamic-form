@@ -28,6 +28,7 @@ Vite demos 位于 `demos/`，用于人工验证组件行为。当前 `DemoSelect
 - `formValidation`
 - `uiConfig`
 - `renderExtension`
+- `compilerFoundation`
 
 运行 demos：
 
@@ -60,7 +61,7 @@ npm run test
 
 - 更新最接近的 `docs/` 专题文档。
 - 如果公共 API、高层能力摘要或文档入口变化，同步更新根目录 `README.md`。
-- 如果变化会帮助后续 agent 理解项目，更新 `agent.md`。
+- 如果变化会帮助后续 agent 理解项目，更新 `AGENTS.md`。
 - 文档采用中文在上、英文翻译在下的双语结构。
 
 不要重新引入旧的重复文档体系。
@@ -100,7 +101,7 @@ The repository has `package-lock.json`, so npm is the default package manager.
 
 ### Demos and Verification
 
-Vite demos live in `demos/` and are used for manual behavior checks. The current `DemoSelector` exposes `storeBoundary`, `customHandlers`, `customComponents`, `formValidation`, `uiConfig`, and `renderExtension`.
+Vite demos live in `demos/` and are used for manual behavior checks. The current `DemoSelector` exposes `storeBoundary`, `customHandlers`, `customComponents`, `formValidation`, `uiConfig`, `renderExtension`, and `compilerFoundation`.
 
 Run demos with:
 
@@ -129,7 +130,7 @@ For UI behavior, also inspect the relevant demo in the browser.
 
 ### Documentation Maintenance
 
-When source behavior changes, update the closest topic file in `docs/`. Update the root `README.md` if public API, high-level feature summaries, or documentation entry points change. Update `agent.md` when the change creates useful project knowledge for future agents.
+When source behavior changes, update the closest topic file in `docs/`. Update the root `README.md` if public API, high-level feature summaries, or documentation entry points change. Update `AGENTS.md` when the change creates useful project knowledge for future agents.
 
 Docs use a bilingual structure: Chinese content first, followed by the English translation.
 
