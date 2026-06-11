@@ -36,6 +36,8 @@ export type {
   CompileFormConfigOptions,
   CompileHookContext,
   CompilerHooks,
+  GroupModuleConfig,
+  ModuleFormConfig,
   ModuleConfig
 } from './compiler';
 
@@ -65,12 +67,17 @@ export type {
   ModuleConfigAdapter,
   OpenApiAdapterInput,
   SchemaAdapterFieldMetadata,
-  SchemaAdapterOptions
+  SchemaAdapterOptions,
+  SchemaFormMetadata,
+  SchemaGroupConfig,
+  SchemaModuleFormConfig
 } from './adapters';
 
 export { RuleEngine, createRuleEngine, compileRulesToEffect, evaluateRule } from './rules';
 export type {
   DeclarativeRule,
+  GroupDeclarativeRule,
+  GroupRuleAction,
   RuleAction,
   RuleCondition,
   RuleEngineOptions,

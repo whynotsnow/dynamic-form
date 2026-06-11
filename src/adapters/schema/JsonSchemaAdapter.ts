@@ -1,6 +1,6 @@
 import type { AdapterContext, ModuleConfigAdapter } from '../types';
 import type { JsonSchemaAdapterInput } from './types';
-import { isObjectJsonSchema, jsonSchemaToModuleConfigs } from './utils';
+import { isObjectJsonSchema, jsonSchemaToModuleFormConfig } from './utils';
 
 export const JsonSchemaAdapter: ModuleConfigAdapter<JsonSchemaAdapterInput> = {
   type: 'json-schema',
@@ -8,6 +8,6 @@ export const JsonSchemaAdapter: ModuleConfigAdapter<JsonSchemaAdapterInput> = {
     return isObjectJsonSchema(input);
   },
   adapt(input: JsonSchemaAdapterInput) {
-    return jsonSchemaToModuleConfigs(input);
+    return jsonSchemaToModuleFormConfig(input);
   }
 };

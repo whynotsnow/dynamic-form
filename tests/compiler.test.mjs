@@ -63,17 +63,19 @@ test('compileFormConfig expands modules into standard FormConfig', () => {
   });
 
   const compiled = compileFormConfig(
-    [
-      {
-        type: 'UserSelector',
-        id: 'ownerId',
-        options: { label: 'Owner' },
-        overrides: {
-          required: true,
-          componentProps: { placeholder: 'Owner name' }
+    {
+      fields: [
+        {
+          type: 'UserSelector',
+          id: 'ownerId',
+          options: { label: 'Owner' },
+          overrides: {
+            required: true,
+            componentProps: { placeholder: 'Owner name' }
+          }
         }
-      }
-    ],
+      ]
+    },
     { registry }
   );
 
@@ -104,7 +106,7 @@ test('compileFormConfig reports unregistered module type and id', () => {
   const registry = new ModuleRegistryManager();
 
   assert.throws(
-    () => compileFormConfig([{ type: 'MissingModule', id: 'missingId' }], { registry }),
+    () => compileFormConfig({ fields: [{ type: 'MissingModule', id: 'missingId' }] }, { registry }),
     /MissingModule.*missingId/
   );
 });
@@ -136,10 +138,7 @@ test('CompiledDynamicForm injects compiled components and preserves explicit cus
   assert.equal(element.props.formConfig, compiled.formConfig);
   assert.equal(element.props.form, form);
   assert.equal(element.props.componentRegistry.allowOverride, true);
-  assert.equal(
-    element.props.componentRegistry.customComponents.UserSelector,
-    OverrideComponent
-  );
+  assert.equal(element.props.componentRegistry.customComponents.UserSelector, OverrideComponent);
   assert.equal(element.props.componentRegistry.customComponents.ExtraField, ExtraComponent);
 });
 
@@ -152,24 +151,27 @@ test('compileFormConfig runs hooks in order and wraps hook failures with module 
     createConfig: () => ({ id: 'departmentId', component: 'Select' })
   });
 
-  const compiled = compileFormConfig([{ type: 'Department', id: 'departmentId' }], {
-    registry,
-    hooks: {
-      beforeCompile: (context) => {
-        calls.push(`beforeCompile:${context.moduleConfigs.length}`);
-      },
-      beforeModuleExpand: (context) => {
-        calls.push(`beforeModuleExpand:${context.moduleConfig.type}`);
-      },
-      afterModuleExpand: (context) => {
-        context.field.label = 'Department';
-        calls.push(`afterModuleExpand:${context.field.id}`);
-      },
-      afterCompile: (context) => {
-        calls.push(`afterCompile:${context.fields.length}`);
+  const compiled = compileFormConfig(
+    { fields: [{ type: 'Department', id: 'departmentId' }] },
+    {
+      registry,
+      hooks: {
+        beforeCompile: (context) => {
+          calls.push(`beforeCompile:${context.moduleFormConfig.fields.length}`);
+        },
+        beforeModuleExpand: (context) => {
+          calls.push(`beforeModuleExpand:${context.moduleConfig.type}`);
+        },
+        afterModuleExpand: (context) => {
+          context.field.label = 'Department';
+          calls.push(`afterModuleExpand:${context.field.id}`);
+        },
+        afterCompile: (context) => {
+          calls.push(`afterCompile:${context.fields.length}`);
+        }
       }
     }
-  });
+  );
 
   assert.deepEqual(calls, [
     'beforeCompile:1',
@@ -181,14 +183,130 @@ test('compileFormConfig runs hooks in order and wraps hook failures with module 
 
   assert.throws(
     () =>
-      compileFormConfig([{ type: 'Department', id: 'departmentId' }], {
-        registry,
-        hooks: {
-          beforeModuleExpand: () => {
-            throw new Error('blocked');
+      compileFormConfig(
+        { fields: [{ type: 'Department', id: 'departmentId' }] },
+        {
+          registry,
+          hooks: {
+            beforeModuleExpand: () => {
+              throw new Error('blocked');
+            }
           }
         }
-      }),
+      ),
     /beforeModuleExpand.*Department.*departmentId.*blocked/
+  );
+});
+
+test('compileFormConfig assembles mixed fields and groups with group-owned rules', () => {
+  const registry = new ModuleRegistryManager();
+  const Component = () => null;
+
+  registry.register({
+    type: 'TextField',
+    component: Component,
+    createConfig: () => ({ id: 'fromFactory', component: 'TextInput' })
+  });
+
+  const compiled = compileFormConfig(
+    {
+      id: 'mixed-form',
+      fields: [
+        { type: 'TextField', id: 'accountType' },
+        { type: 'TextField', id: 'companyName', groupId: 'companyInfo' },
+        { type: 'TextField', id: 'taxNo', groupId: 'companyInfo' }
+      ],
+      groups: [
+        {
+          id: 'companyInfo',
+          title: 'Company',
+          initialVisible: false,
+          dependents: ['legacyType'],
+          effect: () => ({ visible: false }),
+          rules: [
+            {
+              when: { field: 'accountType', equals: 'company' },
+              then: { action: 'show' }
+            }
+          ]
+        }
+      ]
+    },
+    { registry }
+  );
+
+  assert.equal(compiled.formConfig.id, 'mixed-form');
+  assert.deepEqual(
+    compiled.formConfig.fields.map((field) => field.id),
+    ['accountType']
+  );
+  assert.deepEqual(
+    compiled.formConfig.groups[0].fields.map((field) => field.id),
+    ['companyName', 'taxNo']
+  );
+  assert.deepEqual(compiled.formConfig.groups[0].dependents, ['legacyType', 'accountType']);
+  assert.deepEqual(compiled.formConfig.groups[0].effect(undefined, { accountType: 'company' }), {
+    visible: true
+  });
+  assert.equal(compiled.componentRegistry.TextField, Component);
+
+  const processed = processFormConfig(compiled.formConfig);
+  assert.ok(processed.initializedFields.accountType);
+  assert.ok(processed.initializedGroupFields.companyInfo.fields.companyName);
+});
+
+test('compileFormConfig rejects invalid group membership and ids', () => {
+  const registry = new ModuleRegistryManager([
+    {
+      type: 'TextField',
+      createConfig: () => ({ id: 'fromFactory', component: 'TextInput' })
+    }
+  ]);
+
+  assert.throws(
+    () =>
+      compileFormConfig(
+        { fields: [{ type: 'TextField', id: 'name', groupId: 'missing' }] },
+        { registry }
+      ),
+    /unknown group "missing"/
+  );
+  assert.throws(
+    () => compileFormConfig({ fields: [], groups: [{ id: 'empty', rules: [] }] }, { registry }),
+    /group "empty" must contain at least one field/
+  );
+  assert.throws(
+    () =>
+      compileFormConfig(
+        {
+          fields: [{ type: 'TextField', id: 'same', groupId: 'same' }],
+          groups: [{ id: 'same' }]
+        },
+        { registry }
+      ),
+    /duplicate field or group id "same"/
+  );
+});
+
+test('compileFormConfig supports a purely grouped module form', () => {
+  const registry = new ModuleRegistryManager([
+    {
+      type: 'TextField',
+      createConfig: () => ({ id: 'fromFactory', component: 'TextInput' })
+    }
+  ]);
+
+  const compiled = compileFormConfig(
+    {
+      fields: [{ type: 'TextField', id: 'name', groupId: 'profile' }],
+      groups: [{ id: 'profile', title: 'Profile' }]
+    },
+    { registry }
+  );
+
+  assert.equal(compiled.formConfig.fields, undefined);
+  assert.deepEqual(
+    compiled.formConfig.groups[0].fields.map((field) => field.id),
+    ['name']
   );
 });

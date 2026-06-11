@@ -124,7 +124,8 @@ registry.register({
 });
 
 const compiled = compileFormConfig(
-  [
+  {
+    fields: [
     {
       type: 'CompanyName',
       id: 'companyName',
@@ -139,7 +140,8 @@ const compiled = compileFormConfig(
         }
       ]
     }
-  ],
+    ]
+  },
   { registry }
 );
 ```
@@ -174,7 +176,7 @@ Rule 是字段所属的 per-field 规则，不支持 `target` 配置。一个源
 
 ### 当前升级方向
 
-当前 3.3 升级方向是在 Adapter Foundation 之上新增具体 Schema Adapters。JsonSchema、OpenAPI 和 metadata 输入会先归一化为 `ModuleConfig[]`，再由配置编译层在现有 `processFormConfig()` 之前展开为当前 `FormConfig` 结构。Ant Design Form 仍然负责 values 和校验运行时状态；DynamicForm 继续负责字段 meta、分组 meta、动态 UI 配置和依赖元数据。
+Adapter/Compiler 管线现在将 JsonSchema、OpenAPI 和 metadata 输入归一化为结构化 `ModuleFormConfig`。字段通过 `groupId` 加入 group，支持未分组字段与分组字段共存；Schema 无法携带的函数 effect 可通过 `groupOverrides` 在编译前注入。
 
 ### 项目结构
 
@@ -214,7 +216,7 @@ DynamicForm 3.3 在 Adapter Foundation 之上新增具体 `JsonSchemaAdapter`、
 ```tsx
 import { adaptModuleConfigs } from '@whynotsnow/dynamic-form';
 
-const moduleConfigs = adaptModuleConfigs(
+const moduleFormConfig = adaptModuleConfigs(
   {
     type: 'object',
     properties: {
@@ -228,7 +230,7 @@ const moduleConfigs = adaptModuleConfigs(
 );
 ```
 
-Schema adapters 要求字段显式声明 module metadata，不会根据 schema primitive type 自动猜测 UI。输出保持为 flat `ModuleConfig[]`，后续仍交给现有 compiler/runtime 管线处理。Schema `required` 只映射为字段 `required` 语义，最终 AntD 校验规则由默认 renderer 统一合并。
+Schema adapters 要求字段显式声明 module metadata，不会根据 schema primitive type 自动猜测 UI。输出为 `{ fields, groups? }`；顶层 `x-dynamic-form.groups` 与属性级 `groupId` 控制分组，函数 effect 通过 `groupOverrides` 合并。Schema `required` 映射为字段 `required` 语义，最终 AntD 校验规则由默认 renderer 统一合并。
 
 ---
 
@@ -303,7 +305,8 @@ registry.register({
 });
 
 const compiled = compileFormConfig(
-  [
+  {
+    fields: [
     {
       type: 'CompanyName',
       id: 'companyName',
@@ -318,7 +321,8 @@ const compiled = compileFormConfig(
         }
       ]
     }
-  ],
+    ]
+  },
   { registry }
 );
 ```
@@ -329,14 +333,14 @@ Rules are field-owned per-field rules and do not support `target` configuration.
 
 ### Adapter Foundation
 
-DynamicForm 3.2 adds Adapter Foundation to normalize external or module-like input into `ModuleConfig[]` before handing it to the existing `compileFormConfig()`.
+Adapter Foundation normalizes external or module-like input into structured `ModuleFormConfig` before handing it to `compileFormConfig()`.
 
 ```tsx
 import { compileAdaptedFormConfig } from '@whynotsnow/dynamic-form';
 
-const compiled = compileAdaptedFormConfig([
-  { type: 'UserSelector', id: 'ownerId', options: { label: 'Owner' } }
-]);
+const compiled = compileAdaptedFormConfig({
+  fields: [{ type: 'UserSelector', id: 'ownerId', options: { label: 'Owner' } }]
+});
 ```
 
 The adapter layer only converts input. Rule merging, dependency inference, component registration, runtime, and rendering behavior remain owned by the existing compiler/runtime pipeline. 3.2 does not include concrete JsonSchema, OpenAPI, or Metadata adapters; those belong to 3.3.
@@ -348,7 +352,7 @@ DynamicForm 3.3 adds concrete `JsonSchemaAdapter`, `OpenApiAdapter`, and `Metada
 ```tsx
 import { adaptModuleConfigs } from '@whynotsnow/dynamic-form';
 
-const moduleConfigs = adaptModuleConfigs(
+const moduleFormConfig = adaptModuleConfigs(
   {
     type: 'object',
     properties: {
@@ -362,7 +366,7 @@ const moduleConfigs = adaptModuleConfigs(
 );
 ```
 
-Schema adapters require explicit module metadata and do not infer UI from schema primitive types. Output stays flat `ModuleConfig[]`. Schema `required` maps to field-level `required` semantics, and the default renderer merges final AntD validation rules.
+Schema adapters require explicit module metadata and do not infer UI from schema primitive types. Output is `{ fields, groups? }`; top-level `x-dynamic-form.groups` and property-level `groupId` control grouping, while function effects are merged through `groupOverrides`. Schema `required` maps to field-level `required` semantics, and the default renderer merges final AntD validation rules.
 
 `DynamicForm` props combine:
 
@@ -390,11 +394,10 @@ Schema adapters require explicit module metadata and do not infer UI from schema
 
 ### Current Direction
 
-The current 3.3 direction adds concrete schema adapters on top of Adapter Foundation. JsonSchema,
-OpenAPI, and metadata input are normalized into `ModuleConfig[]`, while the config compiler
-continues to inject module capabilities into `FormConfig` before the existing processor runs.
-Ant Design Form remains the owner of values and validation runtime state; DynamicForm continues to
-own field meta, group meta, dynamic UI config, and dependency metadata.
+The adapter/compiler pipeline normalizes JsonSchema, OpenAPI, and metadata input into structured
+`ModuleFormConfig`. Fields join groups through `groupId`, mixed grouped and ungrouped fields are
+supported, and function effects that cannot live in Schema data are injected through
+`groupOverrides` before compilation.
 
 ### Development
 

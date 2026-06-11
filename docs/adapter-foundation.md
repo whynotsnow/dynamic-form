@@ -2,13 +2,13 @@
 
 ## 中文文档
 
-DynamicForm 3.2 在 Compiler Foundation 之前新增 Adapter Foundation，用于把外部或类模块输入归一化为 `ModuleConfig[]`。
+Adapter Foundation 位于 Compiler Foundation 之前，用于把外部或类模块输入归一化为结构化 `ModuleFormConfig`。
 
 ```text
 External / Module-like Input
   -> Adapter Registry
   -> Adapter Pipeline
-  -> ModuleConfig[]
+  -> ModuleFormConfig
   -> compileFormConfig
   -> FormConfig
   -> processFormConfig
@@ -26,11 +26,12 @@ const adapter: ModuleConfigAdapter<{ fields: Array<{ name: string; type: string 
   type: 'custom-metadata',
   supports: (input): input is { fields: Array<{ name: string; type: string }> } =>
     !!input && typeof input === 'object' && Array.isArray((input as any).fields),
-  adapt: (input) =>
-    input.fields.map((field) => ({
+  adapt: (input) => ({
+    fields: input.fields.map((field) => ({
       type: field.type,
       id: field.name
     }))
+  })
 };
 ```
 
@@ -55,7 +56,7 @@ registry.unregister('custom-metadata');
 ```ts
 import { adaptModuleConfigs, compileAdaptedFormConfig } from '@whynotsnow/dynamic-form';
 
-const moduleConfigs = adaptModuleConfigs(input, {
+const moduleFormConfig = adaptModuleConfigs(input, {
   registry,
   adapterType: 'custom-metadata'
 });
@@ -74,7 +75,7 @@ const compiled = compileAdaptedFormConfig(input, {
 - 3.2 不实现 JsonSchema、OpenAPI 或 Metadata 具体 adapter。
 - 3.2 不修改 `compileFormConfig()`、`processFormConfig()`、runtime 或 renderer。
 - 3.2 不引入异步规则、validation rule engine 或 monorepo 拆包。
-- Adapter 输出保持为 flat `ModuleConfig[]`；分组和 schema 映射策略留给 3.3。
+- Adapter 输出统一为 `{ fields, groups? }`，字段通过 `groupId` 加入 group，可表达 flat、grouped 和 mixed 配置。
 
 当前仓库已经包含 3.3 `JsonSchemaAdapter`、`OpenApiAdapter` 和 `MetadataAdapter`，详见 [Schema Adapters](./schema-adapters.md)。以上边界仅描述 3.2 Adapter Foundation 本身的职责范围。
 
@@ -82,13 +83,13 @@ const compiled = compileAdaptedFormConfig(input, {
 
 ## English Documentation
 
-DynamicForm 3.2 adds Adapter Foundation before Compiler Foundation. It normalizes external or module-like input into `ModuleConfig[]`.
+Adapter Foundation sits before Compiler Foundation and normalizes external or module-like input into structured `ModuleFormConfig`.
 
 ```text
 External / Module-like Input
   -> Adapter Registry
   -> Adapter Pipeline
-  -> ModuleConfig[]
+  -> ModuleFormConfig
   -> compileFormConfig
   -> FormConfig
   -> processFormConfig
@@ -106,11 +107,12 @@ const adapter: ModuleConfigAdapter<{ fields: Array<{ name: string; type: string 
   type: 'custom-metadata',
   supports: (input): input is { fields: Array<{ name: string; type: string }> } =>
     !!input && typeof input === 'object' && Array.isArray((input as any).fields),
-  adapt: (input) =>
-    input.fields.map((field) => ({
+  adapt: (input) => ({
+    fields: input.fields.map((field) => ({
       type: field.type,
       id: field.name
     }))
+  })
 };
 ```
 
@@ -135,7 +137,7 @@ Duplicate adapter types are rejected by default. Pass `{ override: true }` when 
 ```ts
 import { adaptModuleConfigs, compileAdaptedFormConfig } from '@whynotsnow/dynamic-form';
 
-const moduleConfigs = adaptModuleConfigs(input, {
+const moduleFormConfig = adaptModuleConfigs(input, {
   registry,
   adapterType: 'custom-metadata'
 });
@@ -154,6 +156,6 @@ The default order is passthrough, JsonSchema, OpenAPI, then Metadata. A single o
 - 3.2 does not implement concrete JsonSchema, OpenAPI, or Metadata adapters.
 - 3.2 does not change `compileFormConfig()`, `processFormConfig()`, runtime, or renderer.
 - 3.2 does not introduce async rules, a validation rule engine, or a monorepo split.
-- Adapter output stays flat `ModuleConfig[]`; grouped output and schema mapping strategy are 3.3 work.
+- Adapter output is `{ fields, groups? }`. Fields join groups through `groupId`, supporting flat, grouped, and mixed configurations.
 
 The current repository also includes the 3.3 `JsonSchemaAdapter`, `OpenApiAdapter`, and `MetadataAdapter`; see [Schema Adapters](./schema-adapters.md). The boundaries above describe only the 3.2 Adapter Foundation scope.

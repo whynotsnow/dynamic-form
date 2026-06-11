@@ -23,12 +23,17 @@ export const MetadataAdapter: ModuleConfigAdapter<MetadataAdapterInput> = {
     return isMetadataAdapterInput(input);
   },
   adapt(input: MetadataAdapterInput) {
-    return input.fields.map((field) => ({
-      type: field.type,
-      id: field.id,
-      options: field.options,
-      rules: field.rules,
-      overrides: field.overrides
-    }));
+    return {
+      ...(input.id !== undefined ? { id: input.id } : {}),
+      fields: input.fields.map((field) => ({
+        type: field.type,
+        id: field.id,
+        ...(field.groupId ? { groupId: field.groupId } : {}),
+        options: field.options,
+        rules: field.rules,
+        overrides: field.overrides
+      })),
+      ...(input.groups ? { groups: input.groups } : {})
+    };
   }
 };

@@ -14,7 +14,7 @@ test('AdapterRegistryManager registers, lists, looks up, and unregisters adapter
   const adapter = {
     type: 'custom',
     supports: (input) => input === 'custom',
-    adapt: () => [{ type: 'TextInputModule', id: 'name' }]
+    adapt: () => ({ fields: [{ type: 'TextInputModule', id: 'name' }] })
   };
 
   registry.register(adapter);
@@ -31,12 +31,12 @@ test('AdapterRegistryManager rejects duplicate adapters unless override is expli
   const first = {
     type: 'custom',
     supports: () => true,
-    adapt: () => [{ type: 'TextInputModule', id: 'first' }]
+    adapt: () => ({ fields: [{ type: 'TextInputModule', id: 'first' }] })
   };
   const second = {
     type: 'custom',
     supports: () => true,
-    adapt: () => [{ type: 'TextInputModule', id: 'second' }]
+    adapt: () => ({ fields: [{ type: 'TextInputModule', id: 'second' }] })
   };
 
   registry.register(first);
@@ -47,8 +47,14 @@ test('AdapterRegistryManager rejects duplicate adapters unless override is expli
   assert.equal(registry.get('custom'), second);
 });
 
-test('ModuleConfigPassthroughAdapter adapts ModuleConfig arrays without changing them', () => {
-  const moduleConfigs = [{ type: 'TextInputModule', id: 'name', options: { label: 'Name' } }];
+test('ModuleConfigPassthroughAdapter adapts structured module config without changing it', () => {
+  const moduleConfigs = {
+    fields: [
+      { type: 'TextInputModule', id: 'name', options: { label: 'Name' } },
+      { type: 'TextInputModule', id: 'companyName', groupId: 'company' }
+    ],
+    groups: [{ id: 'company', title: 'Company' }]
+  };
   const registry = new AdapterRegistryManager([ModuleConfigPassthroughAdapter]);
 
   const adapted = adaptModuleConfigs(moduleConfigs, { registry });
@@ -61,7 +67,7 @@ test('adaptModuleConfigs reports missing and unsupported adapters', () => {
   const registry = new AdapterRegistryManager([ModuleConfigPassthroughAdapter]);
 
   assert.throws(
-    () => adaptModuleConfigs({ fields: [] }, { registry }),
+    () => adaptModuleConfigs({ items: [] }, { registry }),
     /no adapter supports input object/
   );
   assert.throws(
@@ -69,16 +75,20 @@ test('adaptModuleConfigs reports missing and unsupported adapters', () => {
     /adapter type "missing" is not registered/
   );
   assert.throws(
-    () => adaptModuleConfigs({ fields: [] }, { registry, adapterType: 'module-config' }),
-    /adapter type "module-config" does not support input object/
+    () => adaptModuleConfigs([], { registry, adapterType: 'module-config' }),
+    /adapter type "module-config" does not support input array\(0\)/
   );
 });
 
-test('ModuleConfigPassthroughAdapter validates shallow ModuleConfig structure', () => {
-  assert.throws(() => ModuleConfigPassthroughAdapter.adapt([{ id: 'name' }]), /non-empty type/);
+test('ModuleConfigPassthroughAdapter validates shallow ModuleFormConfig structure', () => {
+  assert.throws(() => ModuleConfigPassthroughAdapter.adapt({ fields: [{ id: 'name' }] }), /non-empty type/);
   assert.throws(
-    () => ModuleConfigPassthroughAdapter.adapt([{ type: 'TextInputModule' }]),
+    () => ModuleConfigPassthroughAdapter.adapt({ fields: [{ type: 'TextInputModule' }] }),
     /non-empty id/
+  );
+  assert.throws(
+    () => ModuleConfigPassthroughAdapter.adapt({ fields: [], groups: {} }),
+    /groups must be an array/
   );
 });
 
@@ -100,7 +110,8 @@ test('compileAdaptedFormConfig adapts input before using the module compiler', (
   });
 
   const compiled = compileAdaptedFormConfig(
-    [
+    {
+      fields: [
       {
         type: 'UserSelector',
         id: 'ownerId',
@@ -109,9 +120,31 @@ test('compileAdaptedFormConfig adapts input before using the module compiler', (
           required: true,
           componentProps: { placeholder: 'Owner name' }
         }
+      },
+      {
+        type: 'UserSelector',
+        id: 'reviewerId',
+        groupId: 'reviewGroup',
+        options: { label: 'Reviewer' }
       }
-    ],
-    { moduleRegistry }
+      ],
+      groups: [{ id: 'reviewGroup', title: 'Review', dependents: ['legacy'] }]
+    },
+    {
+      moduleRegistry,
+      groupOverrides: {
+        reviewGroup: {
+          dependents: ['departmentId'],
+          effect: () => ({ visible: false }),
+          rules: [
+            {
+              when: { field: 'enabled', equals: true },
+              then: { action: 'show' }
+            }
+          ]
+        }
+      }
+    }
   );
 
   assert.equal(compiled.componentRegistry.UserSelector, Component);
@@ -124,11 +157,28 @@ test('compileAdaptedFormConfig adapts input before using the module compiler', (
     allowClear: true,
     placeholder: 'Owner name'
   });
+  assert.deepEqual(compiled.formConfig.groups[0].dependents, [
+    'legacy',
+    'departmentId',
+    'enabled'
+  ]);
+  assert.deepEqual(compiled.formConfig.groups[0].effect(undefined, { enabled: true }), {
+    visible: true
+  });
 
   const element = CompiledDynamicForm({ compiled, form: {} });
   assert.equal(element.props.formConfig, compiled.formConfig);
   assert.equal(
     element.props.componentRegistry.customComponents.UserSelector,
     Component
+  );
+
+  assert.throws(
+    () =>
+      compileAdaptedFormConfig(
+        { fields: [{ type: 'UserSelector', id: 'ownerId' }] },
+        { moduleRegistry, groupOverrides: { missing: { title: 'Missing' } } }
+      ),
+    /group override "missing" was not found/
   );
 });

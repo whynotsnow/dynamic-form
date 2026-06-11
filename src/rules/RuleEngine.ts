@@ -6,6 +6,7 @@ import type {
   RuleEvaluationContext,
   RuleEvaluationResult
 } from './types';
+import type { GroupDeclarativeRule } from './types';
 
 function isEmptyValue(value: unknown) {
   return value === undefined || value === null || value === '';
@@ -98,13 +99,28 @@ export function assertValidRule(rule: DeclarativeRule): void {
 
   assertCondition(rule.when, ruleLabel);
 
-  const actions = Array.isArray(rule.then) ? rule.then : [rule.then];
+  const actions: RuleAction[] = Array.isArray(rule.then) ? rule.then : [rule.then];
 
   if (actions.length === 0) {
     throw new Error(`${ruleLabel}: rule must declare at least one action.`);
   }
 
   actions.forEach((action) => assertAction(action, ruleLabel));
+}
+
+export function assertValidGroupRule(rule: GroupDeclarativeRule): void {
+  assertValidRule(rule);
+
+  // Schema 输入仍需运行时校验，不能只依赖 GroupDeclarativeRule 的静态收窄。
+  const actions: RuleAction[] = Array.isArray(rule.then) ? rule.then : [rule.then];
+  const unsupportedAction = actions.find(
+    (action) => action.action !== 'show' && action.action !== 'hide'
+  );
+
+  if (unsupportedAction) {
+    const ruleLabel = rule.id ? `Rule "${rule.id}"` : 'Rule';
+    throw new Error(`${ruleLabel}: group rules only support show and hide actions.`);
+  }
 }
 
 export function evaluateCondition(

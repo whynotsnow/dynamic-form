@@ -59,12 +59,20 @@ test('RuleEngine evaluates composed conditions, skips disabled rules, and merges
     [
       {
         when: {
-          all: [{ field: 'type', equals: 'company' }, { field: 'country', notEmpty: true }]
+          all: [
+            { field: 'type', equals: 'company' },
+            { field: 'country', notEmpty: true }
+          ]
         },
         then: { action: 'show' }
       },
       {
-        when: { any: [{ field: 'level', equals: 'blocked' }, { field: 'locked', equals: true }] },
+        when: {
+          any: [
+            { field: 'level', equals: 'blocked' },
+            { field: 'locked', equals: true }
+          ]
+        },
         then: { action: 'disable' }
       },
       {
@@ -155,18 +163,20 @@ test('compileFormConfig compiles module and instance rules into field effect and
   });
 
   const compiled = compileFormConfig(
-    [
-      {
-        type: 'CompanyName',
-        id: 'companyName',
-        rules: [
-          {
-            when: { field: 'locked', equals: true },
-            then: { action: 'disable' }
-          }
-        ]
-      }
-    ],
+    {
+      fields: [
+        {
+          type: 'CompanyName',
+          id: 'companyName',
+          rules: [
+            {
+              when: { field: 'locked', equals: true },
+              then: { action: 'disable' }
+            }
+          ]
+        }
+      ]
+    },
     { registry }
   );
 
@@ -191,28 +201,30 @@ test('compileFormConfig models one source affecting multiple fields as multiple 
   });
 
   const compiled = compileFormConfig(
-    [
-      {
-        type: 'TextRuleField',
-        id: 'companyName',
-        rules: [
-          {
-            when: { field: 'customerType', equals: 'company' },
-            then: { action: 'show' }
-          }
-        ]
-      },
-      {
-        type: 'TextRuleField',
-        id: 'taxNo',
-        rules: [
-          {
-            when: { field: 'customerType', equals: 'company' },
-            then: { action: 'show' }
-          }
-        ]
-      }
-    ],
+    {
+      fields: [
+        {
+          type: 'TextRuleField',
+          id: 'companyName',
+          rules: [
+            {
+              when: { field: 'customerType', equals: 'company' },
+              then: { action: 'show' }
+            }
+          ]
+        },
+        {
+          type: 'TextRuleField',
+          id: 'taxNo',
+          rules: [
+            {
+              when: { field: 'customerType', equals: 'company' },
+              then: { action: 'show' }
+            }
+          ]
+        }
+      ]
+    },
     { registry }
   );
 
@@ -228,7 +240,8 @@ test('compileFormConfig keeps unregistered module errors', () => {
   const registry = new ModuleRegistryManager();
 
   assert.throws(
-    () => compileFormConfig([{ type: 'MissingRuleModule', id: 'target' }], { registry }),
+    () =>
+      compileFormConfig({ fields: [{ type: 'MissingRuleModule', id: 'target' }] }, { registry }),
     /MissingRuleModule.*target/
   );
 });

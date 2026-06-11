@@ -1,5 +1,6 @@
 import type { AdapterContext } from '../types';
-import type { ModuleConfig } from '../../compiler';
+import type { GroupModuleConfig, ModuleConfig, ModuleFormConfig } from '../../compiler';
+import { assertValidGroupRule } from '../../rules';
 import type {
   JsonSchemaAdapterInput,
   JsonSchemaProperty,
@@ -52,14 +53,36 @@ function assertSupportedTopLevelProperty(id: string, property: JsonSchemaPropert
   }
 }
 
-export function jsonSchemaToModuleConfigs(schema: JsonSchemaAdapterInput): ModuleConfig[] {
+function getSchemaGroups(schema: JsonSchemaAdapterInput): GroupModuleConfig[] {
+  const groups = schema['x-dynamic-form']?.groups || [];
+
+  return groups.map((group) => {
+    if ('effect' in group && group.effect !== undefined) {
+      throw new Error(
+        `JsonSchemaAdapter: group "${group.id}" cannot declare a function effect in schema data.`
+      );
+    }
+
+    (group.rules || []).forEach(assertValidGroupRule);
+
+    return {
+      id: group.id,
+      title: group.title,
+      initialVisible: group.initialVisible,
+      dependents: group.dependents,
+      rules: group.rules
+    };
+  });
+}
+
+export function jsonSchemaToModuleFormConfig(schema: JsonSchemaAdapterInput): ModuleFormConfig {
   if (!isObjectJsonSchema(schema)) {
     throw new Error('JsonSchemaAdapter: schema must be an object schema with properties.');
   }
 
   const required = new Set(schema.required || []);
 
-  return Object.entries(schema.properties).map(([id, property]) => {
+  const fields: ModuleConfig[] = Object.entries(schema.properties).map(([id, property]) => {
     assertSupportedTopLevelProperty(id, property);
 
     const metadata = getFieldMetadata(property);
@@ -94,9 +117,17 @@ export function jsonSchemaToModuleConfigs(schema: JsonSchemaAdapterInput): Modul
     return {
       type: moduleType,
       id,
+      ...(metadata.groupId ? { groupId: metadata.groupId } : {}),
       options,
       rules: metadata.rules,
       overrides
     };
   });
+
+  const groups = getSchemaGroups(schema);
+
+  return {
+    fields,
+    ...(groups.length > 0 ? { groups } : {})
+  };
 }

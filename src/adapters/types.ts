@@ -1,4 +1,4 @@
-import type { CompileFormConfigOptions, ModuleConfig } from '../compiler';
+import type { CompileFormConfigOptions, GroupModuleConfig, ModuleFormConfig } from '../compiler';
 import type { ModuleRegistryManager } from '../modules';
 import type { AdapterRegistryManager } from './AdapterRegistryManager';
 
@@ -9,7 +9,7 @@ export interface AdapterContext {
 export interface ModuleConfigAdapter<TInput = unknown> {
   type: string;
   supports(input: unknown, context: AdapterContext): input is TInput;
-  adapt(input: TInput, context: AdapterContext): ModuleConfig[];
+  adapt(input: TInput, context: AdapterContext): ModuleFormConfig;
 }
 
 export interface AdapterRegistryRegisterOptions {
@@ -30,4 +30,5 @@ export interface CompileAdaptedFormConfigOptions
     AdapterResolveOptions {
   adapterRegistry?: AdapterRegistryManager;
   moduleRegistry?: ModuleRegistryManager;
+  groupOverrides?: Record<string, Partial<GroupModuleConfig>>;
 }

@@ -75,7 +75,8 @@ import { Form } from 'antd';
 import { DynamicForm, compileFormConfig } from '@whynotsnow/dynamic-form';
 
 const compiled = compileFormConfig(
-  [
+  {
+    fields: [
     {
       type: 'UserSelector',
       id: 'ownerId',
@@ -84,7 +85,8 @@ const compiled = compileFormConfig(
         required: true
       }
     }
-  ],
+    ]
+  },
   { registry }
 );
 
@@ -122,12 +124,35 @@ import { CompiledDynamicForm } from '@whynotsnow/dynamic-form';
 
 `formConfig` 可以继续传给 `processFormConfig()` 或 `DynamicForm`。
 
+### Mixed Fields 与 Groups
+
+Compiler 输入统一为 `ModuleFormConfig`。字段保持 flat 声明，通过 `groupId` 加入 group；未声明 `groupId` 的字段保留在顶层。Group rules 只支持 `show` 和 `hide`，手工 `effect` 先执行，rules 后执行并覆盖同名结果键。
+
+```ts
+compileFormConfig({
+  fields: [
+    { type: 'AccountType', id: 'accountType' },
+    { type: 'CompanyName', id: 'companyName', groupId: 'companyInfo' }
+  ],
+  groups: [
+    {
+      id: 'companyInfo',
+      title: '企业信息',
+      initialVisible: false,
+      rules: [{ when: { field: 'accountType', equals: 'company' }, then: { action: 'show' } }]
+    }
+  ]
+});
+```
+
+Compiler 会校验全局 ID 唯一、group 引用有效且 group 非空。
+
 ### Hooks
 
 编译器支持编译期扩展点：
 
 ```ts
-compileFormConfig(moduleConfigs, {
+compileFormConfig(moduleFormConfig, {
   registry,
   hooks: {
     beforeCompile(context) {},
@@ -145,7 +170,7 @@ hooks 只操作编译上下文，不应该修改 Ant Design Form 实例或 React
 - `compileFormConfig()` 负责生成 `FormConfig`。
 - `processFormConfig()` 继续负责准备运行时数据。
 - `DynamicForm` props 不变。
-- `compileFormConfig()` 在 3.x 只输出 flat `FormConfig`；grouped/structured schema compilation 留给未来主版本设计。
+- `compileFormConfig()` 支持 flat、grouped 和 mixed 输出；group 不改变字段值路径。
 - Ant Design Form 仍然是 values 和 validation state 的唯一真实来源。
 
 ---
@@ -225,7 +250,8 @@ import { Form } from 'antd';
 import { DynamicForm, compileFormConfig } from '@whynotsnow/dynamic-form';
 
 const compiled = compileFormConfig(
-  [
+  {
+    fields: [
     {
       type: 'UserSelector',
       id: 'ownerId',
@@ -234,7 +260,8 @@ const compiled = compileFormConfig(
         required: true
       }
     }
-  ],
+    ]
+  },
   { registry }
 );
 
@@ -272,12 +299,35 @@ The compiler returns:
 
 `formConfig` can be passed to `processFormConfig()` or `DynamicForm`.
 
+### Mixed Fields And Groups
+
+Compiler input is unified as `ModuleFormConfig`. Fields remain flat declarations and join a group through `groupId`; fields without `groupId` remain at the top level. Group rules only support `show` and `hide`. Manual `effect` runs first, and rules run afterward with matching result keys taking precedence.
+
+```ts
+compileFormConfig({
+  fields: [
+    { type: 'AccountType', id: 'accountType' },
+    { type: 'CompanyName', id: 'companyName', groupId: 'companyInfo' }
+  ],
+  groups: [
+    {
+      id: 'companyInfo',
+      title: 'Company Information',
+      initialVisible: false,
+      rules: [{ when: { field: 'accountType', equals: 'company' }, then: { action: 'show' } }]
+    }
+  ]
+});
+```
+
+The compiler validates globally unique IDs, valid group references, and non-empty groups.
+
 ### Hooks
 
 Compiler hooks allow compile-time extension:
 
 ```ts
-compileFormConfig(moduleConfigs, {
+compileFormConfig(moduleFormConfig, {
   registry,
   hooks: {
     beforeCompile(context) {},
@@ -295,5 +345,5 @@ Hooks operate on compiler context only. They should not mutate Ant Design Form i
 - `compileFormConfig()` creates `FormConfig`.
 - `processFormConfig()` keeps preparing runtime data.
 - `DynamicForm` props are unchanged.
-- `compileFormConfig()` produces flat `FormConfig` in 3.x; grouped or structured schema compilation is reserved for a future major-version design.
+- `compileFormConfig()` supports flat, grouped, and mixed output; groups do not change field value paths.
 - Ant Design Form remains the source of truth for values and validation state.

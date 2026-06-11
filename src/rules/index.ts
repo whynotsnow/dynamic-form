@@ -1,5 +1,6 @@
 export {
   RuleEngine,
+  assertValidGroupRule,
   assertValidRule,
   createRuleEngine,
   evaluateCondition,
@@ -13,6 +14,8 @@ export {
 export type {
   CompileRulesToEffectOptions,
   DeclarativeRule,
+  GroupDeclarativeRule,
+  GroupRuleAction,
   RuleAction,
   RuleCondition,
   RuleEngineOptions,

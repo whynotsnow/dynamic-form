@@ -10,7 +10,7 @@ import {
 } from '../dist/index.mjs';
 
 test('JsonSchemaAdapter converts top-level properties into ModuleConfig entries', () => {
-  const moduleConfigs = JsonSchemaAdapter.adapt({
+  const moduleFormConfig = JsonSchemaAdapter.adapt({
     type: 'object',
     required: ['name'],
     properties: {
@@ -37,47 +37,49 @@ test('JsonSchemaAdapter converts top-level properties into ModuleConfig entries'
     }
   });
 
-  assert.deepEqual(moduleConfigs, [
-    {
-      type: 'TextInputModule',
-      id: 'name',
-      options: {
-        label: 'Name',
-        required: true,
-        enum: undefined,
-        default: 'Snow',
-        format: undefined,
-        description: 'Customer name',
-        schemaType: 'string',
-        placeholder: 'Enter name'
+  assert.deepEqual(moduleFormConfig, {
+    fields: [
+      {
+        type: 'TextInputModule',
+        id: 'name',
+        options: {
+          label: 'Name',
+          required: true,
+          enum: undefined,
+          default: 'Snow',
+          format: undefined,
+          description: 'Customer name',
+          schemaType: 'string',
+          placeholder: 'Enter name'
+        },
+        rules: undefined,
+        overrides: {
+          label: 'Name',
+          required: true,
+          initialValue: 'Snow'
+        }
       },
-      rules: undefined,
-      overrides: {
-        label: 'Name',
-        required: true,
-        initialValue: 'Snow'
+      {
+        type: 'SelectModule',
+        id: 'status',
+        options: {
+          label: 'status',
+          required: false,
+          enum: ['active', 'disabled'],
+          default: undefined,
+          format: undefined,
+          description: undefined,
+          schemaType: 'string'
+        },
+        rules: undefined,
+        overrides: {
+          label: 'status',
+          required: false,
+          componentProps: { allowClear: true }
+        }
       }
-    },
-    {
-      type: 'SelectModule',
-      id: 'status',
-      options: {
-        label: 'status',
-        required: false,
-        enum: ['active', 'disabled'],
-        default: undefined,
-        format: undefined,
-        description: undefined,
-        schemaType: 'string'
-      },
-      rules: undefined,
-      overrides: {
-        label: 'status',
-        required: false,
-        componentProps: { allowClear: true }
-      }
-    }
-  ]);
+    ]
+  });
 });
 
 test('JsonSchemaAdapter rejects missing module metadata and nested object schemas', () => {
@@ -135,26 +137,28 @@ test('OpenApiAdapter resolves schemas by schemaName and by single-schema default
     }
   };
 
-  assert.deepEqual(OpenApiAdapter.adapt(document, { metadata: { schemaName: 'Company' } }), [
-    {
-      type: 'TextInputModule',
-      id: 'companyName',
-      options: {
-        label: 'companyName',
-        required: false,
-        enum: undefined,
-        default: undefined,
-        format: undefined,
-        description: undefined,
-        schemaType: 'string'
-      },
-      rules: undefined,
-      overrides: {
-        label: 'companyName',
-        required: false
+  assert.deepEqual(OpenApiAdapter.adapt(document, { metadata: { schemaName: 'Company' } }), {
+    fields: [
+      {
+        type: 'TextInputModule',
+        id: 'companyName',
+        options: {
+          label: 'companyName',
+          required: false,
+          enum: undefined,
+          default: undefined,
+          format: undefined,
+          description: undefined,
+          schemaType: 'string'
+        },
+        rules: undefined,
+        overrides: {
+          label: 'companyName',
+          required: false
+        }
       }
-    }
-  ]);
+    ]
+  });
 
   assert.deepEqual(
     OpenApiAdapter.adapt(
@@ -167,7 +171,7 @@ test('OpenApiAdapter resolves schemas by schemaName and by single-schema default
         }
       },
       {}
-    )[0].id,
+    ).fields[0].id,
     'name'
   );
 });
@@ -192,26 +196,65 @@ test('OpenApiAdapter reports ambiguous or missing schemas', () => {
 
 test('MetadataAdapter passes id, type, options, rules, and overrides through', () => {
   const input = {
+    id: 'metadata-form',
     fields: [
       {
         id: 'name',
         type: 'TextInputModule',
         options: { label: 'Name' },
         rules: [{ when: { field: 'enabled', equals: true }, then: { action: 'show' } }],
-        overrides: { required: true }
+        overrides: { required: true },
+        groupId: 'profile'
       }
-    ]
+    ],
+    groups: [{ id: 'profile', title: 'Profile' }]
   };
 
-  assert.deepEqual(MetadataAdapter.adapt(input), [
+  assert.deepEqual(MetadataAdapter.adapt(input), {
+    id: 'metadata-form',
+    fields: [
+      {
+        type: 'TextInputModule',
+        id: 'name',
+        groupId: 'profile',
+        options: { label: 'Name' },
+        rules: [{ when: { field: 'enabled', equals: true }, then: { action: 'show' } }],
+        overrides: { required: true }
+      }
+    ],
+    groups: [{ id: 'profile', title: 'Profile' }]
+  });
+});
+
+test('OpenApiAdapter preserves groups from the selected schema', () => {
+  const adapted = OpenApiAdapter.adapt(
     {
-      type: 'TextInputModule',
-      id: 'name',
-      options: { label: 'Name' },
-      rules: [{ when: { field: 'enabled', equals: true }, then: { action: 'show' } }],
-      overrides: { required: true }
-    }
-  ]);
+      openapi: '3.1.0',
+      components: {
+        schemas: {
+          Company: {
+            type: 'object',
+            'x-dynamic-form': {
+              groups: [{ id: 'companyInfo', title: 'Company' }]
+            },
+            properties: {
+              companyName: {
+                type: 'string',
+                'x-dynamic-form': {
+                  module: 'TextInputModule',
+                  groupId: 'companyInfo'
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {}
+  );
+
+  assert.equal(adapted.fields[0].groupId, 'companyInfo');
+  assert.equal(adapted.groups[0].id, 'companyInfo');
 });
 
 test('default adapter registry can adapt schema inputs by adapterType', () => {
@@ -222,15 +265,79 @@ test('default adapter registry can adapt schema inputs by adapterType', () => {
       },
       { adapterType: 'metadata' }
     ),
-    [
-      {
-        type: 'TextInputModule',
-        id: 'name',
-        options: undefined,
-        rules: undefined,
-        overrides: undefined
+    {
+      fields: [
+        {
+          type: 'TextInputModule',
+          id: 'name',
+          options: undefined,
+          rules: undefined,
+          overrides: undefined
+        }
+      ]
+    }
+  );
+});
+
+test('schema adapters preserve explicit groups and field membership', () => {
+  const adapted = JsonSchemaAdapter.adapt({
+    type: 'object',
+    'x-dynamic-form': {
+      groups: [
+        {
+          id: 'companyInfo',
+          title: 'Company',
+          initialVisible: false,
+          rules: [
+            {
+              when: { field: 'accountType', equals: 'company' },
+              then: { action: 'show' }
+            }
+          ]
+        }
+      ]
+    },
+    properties: {
+      accountType: {
+        type: 'string',
+        'x-dynamic-form': { module: 'TextInputModule' }
+      },
+      companyName: {
+        type: 'string',
+        'x-dynamic-form': {
+          module: 'TextInputModule',
+          groupId: 'companyInfo'
+        }
       }
-    ]
+    }
+  });
+
+  assert.equal(adapted.fields[1].groupId, 'companyInfo');
+  assert.deepEqual(adapted.groups, [
+    {
+      id: 'companyInfo',
+      title: 'Company',
+      initialVisible: false,
+      dependents: undefined,
+      rules: [
+        {
+          when: { field: 'accountType', equals: 'company' },
+          then: { action: 'show' }
+        }
+      ]
+    }
+  ]);
+
+  assert.throws(
+    () =>
+      JsonSchemaAdapter.adapt({
+        type: 'object',
+        'x-dynamic-form': {
+          groups: [{ id: 'invalid', effect: () => ({ visible: true }) }]
+        },
+        properties: {}
+      }),
+    /cannot declare a function effect/
   );
 });
 

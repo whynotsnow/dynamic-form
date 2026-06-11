@@ -3,7 +3,7 @@ import { Card, Form, Select, Space, Typography } from 'antd';
 import {
   DynamicForm,
   ModuleRegistryManager,
-  compileFormConfig,
+  compileAdaptedFormConfig,
   type FieldComponentProps,
   type FieldModule,
   type FormValues
@@ -43,29 +43,52 @@ const CompilerFoundationDemo: React.FC = () => {
   const compiled = useMemo(() => {
     const registry = new ModuleRegistryManager([departmentModule]);
 
-    return compileFormConfig(
-      [
-        {
-          type: 'DepartmentPicker',
-          id: 'ownerDepartment',
-          options: { label: 'Owner Department' },
-          overrides: {
-            span: 12,
-            componentProps: {
-              placeholder: 'Choose owner department'
+    return compileAdaptedFormConfig(
+      {
+        type: 'object',
+        'x-dynamic-form': {
+          groups: [
+            {
+              id: 'reviewGroup',
+              title: 'Review Departments / 审核部门',
+              initialVisible: false,
+              rules: [
+                {
+                  when: { field: 'ownerDepartment', equals: 'engineering' },
+                  then: { action: 'show' }
+                }
+              ]
+            }
+          ]
+        },
+        properties: {
+          ownerDepartment: {
+            type: 'string',
+            title: 'Owner Department / 归属部门',
+            'x-dynamic-form': {
+              module: 'DepartmentPicker'
+            }
+          },
+          reviewDepartment: {
+            type: 'string',
+            title: 'Review Department / 审核部门',
+            'x-dynamic-form': {
+              module: 'DepartmentPicker',
+              groupId: 'reviewGroup'
             }
           }
-        },
-        {
-          type: 'DepartmentPicker',
-          id: 'reviewDepartment',
-          options: { label: 'Review Department' },
-          overrides: {
-            span: 12
+        }
+      },
+      {
+        adapterType: 'json-schema',
+        moduleRegistry: registry,
+        groupOverrides: {
+          reviewGroup: {
+            // Schema 不能携带函数；业务 effect 在 adapter 后、compiler 前注入。
+            effect: () => ({ visible: false })
           }
         }
-      ],
-      { registry }
+      }
     );
   }, []);
 
@@ -78,11 +101,11 @@ const CompilerFoundationDemo: React.FC = () => {
       <Card title="Compiler Foundation Demo" style={{ marginBottom: 20 }}>
         <Space direction="vertical">
           <Paragraph>
-            本示例把 FieldModule 编译为标准 FormConfig，再使用现有 DynamicForm runtime 渲染。
+            本示例把 Schema 适配为 mixed module config，并通过 groupOverrides 注入函数 effect。
           </Paragraph>
           <Paragraph>
-            This demo compiles FieldModule definitions into standard FormConfig, then renders the
-            result with the existing DynamicForm runtime.
+            This demo adapts Schema into mixed module config and injects a function effect through
+            groupOverrides before compilation.
           </Paragraph>
         </Space>
       </Card>

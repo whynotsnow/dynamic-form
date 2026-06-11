@@ -5,12 +5,9 @@ import type {
   FieldState,
   GroupFieldState,
   Fieldchain,
-  FieldRegistry,
-  GroupedFormConfig,
-  FlatFormConfig
+  FieldRegistry
 } from '../../shared/types';
 import type { ConfigAnalysisResult, ConfigProcessInfo, HydratedConfigResult } from './types';
-import { isGroupedConfig } from '../../shared/utils/utils';
 import { applyEffectResult, createInitialEffectResultContext } from '../../consumer/effects';
 
 /**
@@ -23,43 +20,50 @@ export function analyzeFormConfig(config: FormConfig): ConfigAnalysisResult {
   const effectMap: Record<string, Fieldchain> = {};
   const fieldRegistry: Record<string, FieldRegistry> = {};
 
-  if (isGroupedConfig(config)) {
-    (config as GroupedFormConfig).groups.forEach((group) => {
-      const groupKey = group.id;
+  const registerId = (id: string) => {
+    if (fieldRegistry[id]) {
+      throw new Error(`analyzeFormConfig: duplicate field or group id "${id}".`);
+    }
+  };
 
-      // 注册分组
-      fieldRegistry[groupKey] = { id: groupKey, isGroupField: true, config: group };
+  (config.fields || []).forEach((field) => {
+    registerId(field.id);
+    fieldRegistry[field.id] = { id: field.id, isGroupField: false, config: field };
+    effectMap[field.id] = {
+      effect: field.effect || (() => undefined),
+      dependents: field.dependents || []
+    };
+  });
 
-      // 分组 effectMap 条目
-      if (group.effect || group.dependents) {
-        effectMap[groupKey] = {
-          effect: group.effect || (() => undefined),
-          dependents: group.dependents || []
-        };
-      }
+  (config.groups || []).forEach((group) => {
+    const groupKey = group.id;
+    registerId(groupKey);
+    fieldRegistry[groupKey] = { id: groupKey, isGroupField: true, config: group };
 
-      // 注册分组下字段
-      group.fields.forEach((field) => {
-        fieldRegistry[field.id] = {
-          id: field.id,
-          isGroupField: true,
-          groupId: groupKey,
-          config: field
-        };
-        effectMap[field.id] = {
-          effect: field.effect || (() => undefined),
-          dependents: field.dependents || []
-        };
-      });
-    });
-  } else {
-    ((config as FlatFormConfig).fields || []).forEach((field) => {
-      fieldRegistry[field.id] = { id: field.id, isGroupField: false, config: field };
+    if (group.effect || group.dependents) {
+      effectMap[groupKey] = {
+        effect: group.effect || (() => undefined),
+        dependents: group.dependents || []
+      };
+    }
+
+    group.fields.forEach((field) => {
+      registerId(field.id);
+      fieldRegistry[field.id] = {
+        id: field.id,
+        isGroupField: true,
+        groupId: groupKey,
+        config: field
+      };
       effectMap[field.id] = {
         effect: field.effect || (() => undefined),
         dependents: field.dependents || []
       };
     });
+  });
+
+  if (!config.fields?.length && !config.groups?.length) {
+    throw new Error('analyzeFormConfig: at least one field or group is required.');
   }
 
   return { effectMap, fieldRegistry };
@@ -82,7 +86,7 @@ export function hydrateFormConfig(analysisConfig: ConfigAnalysisResult): Hydrate
   const initializedFields: Record<string, FieldState> = {};
   const initializedGroupFields: Record<string, GroupFieldState> = {};
 
-  const processInitialValueResult = (field: BaseFieldConfig, result: any, groupId?: string) => {
+  const processInitialValueResult = (field: BaseFieldConfig, result: any) => {
     if (!result || typeof result !== 'object') {
       initialValues[field.id] = result;
       console.log(`字段 ${field.id} 函数计算初始值:`, result);
@@ -130,7 +134,7 @@ export function hydrateFormConfig(analysisConfig: ConfigAnalysisResult): Hydrate
       try {
         console.log(`计算字段 ${field.id} 的初始值`, initialValues);
         const result = field.initialValue(initialValues);
-        processInitialValueResult(field, result, groupId);
+        processInitialValueResult(field, result);
       } catch (error) {
         console.error(`计算字段 ${field.id} 的函数初始值时出错:`, error);
       }

@@ -1,4 +1,4 @@
-import type { ModuleConfig } from '../compiler';
+import type { ModuleFormConfig } from '../compiler';
 import type {
   AdapterContext,
   AdapterRegistryRegisterOptions,
@@ -94,7 +94,7 @@ export class AdapterRegistryManager {
 
 export const defaultAdapterRegistry = new AdapterRegistryManager([
   ModuleConfigPassthroughAdapter,
-  // Schema adapters 放在 passthrough 之后，保持现有 ModuleConfig[] 优先兼容。
+  // 结构化 module config 优先直通，其余输入再按 schema adapter 顺序匹配。
   JsonSchemaAdapter,
   OpenApiAdapter,
   MetadataAdapter
@@ -104,7 +104,7 @@ export function adaptWithRegistry(
   input: unknown,
   registry: AdapterRegistryManager,
   options: AdapterResolveOptions = {}
-): ModuleConfig[] {
+): ModuleFormConfig {
   const context = options.context || {};
   const adapter = registry.resolve(input, { ...options, context });
 

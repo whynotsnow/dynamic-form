@@ -1,12 +1,25 @@
 import type React from 'react';
-import type { BaseFieldConfig, ComponentRegistry, FieldComponentProps } from '../shared/types';
+import type {
+  BaseFieldConfig,
+  ComponentRegistry,
+  FieldComponentProps,
+  FormConfig,
+  GroupField
+} from '../shared/types';
 import { defaultModuleRegistry } from '../modules';
-import { assertValidRule, compileRulesToEffect, inferRulesDependencies } from '../rules';
+import {
+  assertValidGroupRule,
+  assertValidRule,
+  compileRulesToEffect,
+  inferRulesDependencies
+} from '../rules';
 import type {
   CompiledModuleConfig,
   CompileFormConfigOptions,
   CompileHookContext,
   CompilerHooks,
+  GroupModuleConfig,
+  ModuleFormConfig,
   ModuleConfig
 } from './types';
 
@@ -123,22 +136,57 @@ function expandModule(
 }
 
 export function compileFormConfig(
-  moduleConfigs: ModuleConfig[],
+  moduleFormConfig: ModuleFormConfig,
   options: CompileFormConfigOptions = {}
 ): CompiledModuleConfig {
   const registry = options.registry || defaultModuleRegistry;
   const componentRegistry: ComponentRegistry = {};
   const fields: BaseFieldConfig[] = [];
+  const groups: GroupField[] = [];
   const context: CompileHookContext = {
-    moduleConfigs,
+    moduleFormConfig,
     registry,
     componentRegistry,
-    fields
+    fields,
+    groups
   };
+
+  if (!Array.isArray(moduleFormConfig.fields)) {
+    throw new Error('compileFormConfig: fields must be an array.');
+  }
 
   runHook(options.hooks, 'beforeCompile', context);
 
-  context.moduleConfigs.forEach((moduleConfig) => {
+  const groupConfigs = context.moduleFormConfig.groups || [];
+  const groupConfigById = new Map<string, GroupModuleConfig>();
+  const allIds = new Set<string>();
+
+  groupConfigs.forEach((groupConfig) => {
+    if (!groupConfig.id) {
+      throw new Error('compileFormConfig: group id is required.');
+    }
+    if (groupConfigById.has(groupConfig.id)) {
+      throw new Error(`compileFormConfig: duplicate group id "${groupConfig.id}".`);
+    }
+    groupConfigById.set(groupConfig.id, groupConfig);
+    allIds.add(groupConfig.id);
+  });
+
+  const compiledFields = context.moduleFormConfig.fields.map((moduleConfig) => {
+    if (!moduleConfig.id) {
+      throw new Error('compileFormConfig: field id is required.');
+    }
+    if (allIds.has(moduleConfig.id)) {
+      throw new Error(`compileFormConfig: duplicate field or group id "${moduleConfig.id}".`);
+    }
+    allIds.add(moduleConfig.id);
+
+    if (moduleConfig.groupId && !groupConfigById.has(moduleConfig.groupId)) {
+      throw new Error(
+        `compileFormConfig: field "${moduleConfig.id}" references unknown group "${moduleConfig.groupId}".`
+      );
+    }
+
     const module = registry.get(moduleConfig.type);
 
     if (!module) {
@@ -161,8 +209,6 @@ export function compileFormConfig(
       componentRegistry[module.type] = module.component as React.FC<FieldComponentProps>;
     }
 
-    fields.push(field);
-
     runHook(
       options.hooks,
       'afterModuleExpand',
@@ -172,13 +218,75 @@ export function compileFormConfig(
       },
       moduleConfig
     );
+
+    return { field, groupId: moduleConfig.groupId };
   });
 
-  context.formConfig = { fields };
+  const compiledFieldsByGroup = new Map<string, BaseFieldConfig[]>();
+  compiledFields.forEach(({ field, groupId }) => {
+    if (!groupId) {
+      fields.push(field);
+      return;
+    }
+
+    const groupFields = compiledFieldsByGroup.get(groupId) || [];
+    groupFields.push(field);
+    compiledFieldsByGroup.set(groupId, groupFields);
+  });
+
+  groupConfigs.forEach((groupConfig) => {
+    const groupFields = compiledFieldsByGroup.get(groupConfig.id) || [];
+
+    if (groupFields.length === 0) {
+      throw new Error(
+        `compileFormConfig: group "${groupConfig.id}" must contain at least one field.`
+      );
+    }
+
+    const groupRules = groupConfig.rules || [];
+    groupRules.forEach(assertValidGroupRule);
+    const ruleEffect =
+      groupRules.length > 0
+        ? compileRulesToEffect(groupRules, { fieldId: groupConfig.id })
+        : undefined;
+    const group: GroupField = {
+      id: groupConfig.id,
+      title: groupConfig.title,
+      initialVisible: groupConfig.initialVisible,
+      dependents: mergeDependents(groupConfig.dependents, inferRulesDependencies(groupRules)),
+      effect:
+        groupConfig.effect && ruleEffect
+          ? (...args) => mergeEffectResults(groupConfig.effect!(...args), ruleEffect(...args))
+          : ruleEffect || groupConfig.effect,
+      fields: groupFields
+    };
+    const groupContext: CompileHookContext = {
+      ...context,
+      groupConfig,
+      group
+    };
+
+    runHook(options.hooks, 'beforeGroupExpand', groupContext);
+    groups.push(group);
+    runHook(options.hooks, 'afterGroupExpand', groupContext);
+  });
+
+  const formConfig: FormConfig = { id: context.moduleFormConfig.id };
+  if (fields.length > 0) {
+    formConfig.fields = fields;
+  }
+  if (groups.length > 0) {
+    formConfig.groups = groups;
+  }
+  if (!formConfig.fields && !formConfig.groups) {
+    throw new Error('compileFormConfig: at least one field or group is required.');
+  }
+
+  context.formConfig = formConfig;
   runHook(options.hooks, 'afterCompile', context);
 
   return {
-    formConfig: context.formConfig || { fields },
+    formConfig: context.formConfig || formConfig,
     componentRegistry
   };
 }

@@ -48,6 +48,12 @@ export interface DeclarativeRule {
   metadata?: Record<string, unknown>;
 }
 
+export type GroupRuleAction = { action: 'show' | 'hide' };
+
+export interface GroupDeclarativeRule extends Omit<DeclarativeRule, 'then'> {
+  then: GroupRuleAction | GroupRuleAction[];
+}
+
 export interface RuleEvaluationContext {
   fieldId: string;
   changedValue?: FieldValue;

@@ -130,18 +130,20 @@ demos/
 
 ### 3.0 Compiler Demo 中文说明
 
-`compilerFoundation` / `compilerFoundationDemo.tsx` 演示 3.0 compiler foundation：
+`compilerFoundation` / `compilerFoundationDemo.tsx` 演示结构化 adapter/compiler 管线：
 
 - 定义 `FieldModule`；
 - 使用 `ModuleRegistryManager` 注册模块；
-- 使用 `compileFormConfig` 编译 `ModuleConfig[]`；
+- 将 JsonSchema 转换为 mixed `ModuleFormConfig`；
+- 使用 `groupOverrides` 注入 Schema 无法序列化的 group effect；
 - 将编译得到的 `FormConfig` 交给现有 `DynamicForm` runtime 渲染。
 
 ### 3.0 Compiler Demo
 
-`compilerFoundation` / `compilerFoundationDemo.tsx` demonstrates the 3.0 compiler foundation:
+`compilerFoundation` / `compilerFoundationDemo.tsx` demonstrates the structured adapter/compiler pipeline:
 
 - define a `FieldModule`;
 - register it with `ModuleRegistryManager`;
-- compile `ModuleConfig[]` with `compileFormConfig`;
+- convert JsonSchema into mixed `ModuleFormConfig`;
+- inject a non-serializable group effect through `groupOverrides`;
 - render the compiled `FormConfig` through the existing `DynamicForm` runtime.

@@ -8,5 +8,8 @@ export type {
   MetadataAdapterInput,
   OpenApiAdapterInput,
   SchemaAdapterFieldMetadata,
-  SchemaAdapterOptions
+  SchemaAdapterOptions,
+  SchemaFormMetadata,
+  SchemaGroupConfig,
+  SchemaModuleFormConfig
 } from './types';

@@ -157,12 +157,18 @@ const FormContent: React.FC<FormContentProps> = (props) => {
     </div>
   );
 
-  /** 最终组装：优先分组，否则平铺字段 */
+  /** 最终组装：未分组字段在前，分组字段在后。 */
+  const fieldsBlock =
+    Object.keys(fields).length > 0 ? internalRenderFields(Object.values(fields)) : null;
+  const groupsBlock =
+    Object.keys(groupFields).length > 0 ? internalRenderGroups(groupFields) : null;
   const formBlocks = {
-    fieldsArea:
-      Object.keys(groupFields).length > 0
-        ? internalRenderGroups(groupFields)
-        : internalRenderFields(Object.values(fields)),
+    fieldsArea: (
+      <>
+        {fieldsBlock}
+        {groupsBlock}
+      </>
+    ),
     submitArea: internalRenderSubmit()
   };
 

@@ -42,6 +42,25 @@ const formConfig: FormConfig = {
 };
 ```
 
+### 混合表单
+
+`FormConfig` 可以同时包含顶层 `fields` 和 `groups`。默认 renderer 先渲染未分组字段，再按声明顺序渲染 groups：
+
+```ts
+const formConfig: FormConfig = {
+  fields: [{ id: 'accountType', component: 'Select' }],
+  groups: [
+    {
+      id: 'companyInfo',
+      title: '企业信息',
+      fields: [{ id: 'companyName', component: 'TextInput' }]
+    }
+  ]
+};
+```
+
+字段 ID 与 group ID 在整个表单内必须唯一。Group 只影响 UI 和行为作用域，不改变字段值路径或提交数据结构。
+
 ### 字段配置
 
 | 配置项 | 说明 |
@@ -192,6 +211,25 @@ const formConfig: FormConfig = {
   ]
 };
 ```
+
+### Mixed Config
+
+`FormConfig` may contain both top-level `fields` and `groups`. The default renderer shows ungrouped fields first, followed by groups in declaration order:
+
+```ts
+const formConfig: FormConfig = {
+  fields: [{ id: 'accountType', component: 'Select' }],
+  groups: [
+    {
+      id: 'companyInfo',
+      title: 'Company Information',
+      fields: [{ id: 'companyName', component: 'TextInput' }]
+    }
+  ]
+};
+```
+
+Field IDs and group IDs must be globally unique. Groups affect UI and behavior scope without changing field value paths or submitted data shape.
 
 ### Field Config
 

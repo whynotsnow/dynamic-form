@@ -1,4 +1,4 @@
-import type { ModuleConfig } from '../compiler';
+import type { ModuleFormConfig } from '../compiler';
 import type { AdapterContext, ModuleConfigAdapter } from './types';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -9,12 +9,12 @@ function isNonEmptyString(value: unknown): value is string {
   return typeof value === 'string' && value.trim().length > 0;
 }
 
-export function assertModuleConfigList(input: unknown): asserts input is ModuleConfig[] {
-  if (!Array.isArray(input)) {
-    throw new Error('ModuleConfigPassthroughAdapter: input must be a ModuleConfig array.');
+export function assertModuleFormConfig(input: unknown): asserts input is ModuleFormConfig {
+  if (!isRecord(input) || !Array.isArray(input.fields)) {
+    throw new Error('ModuleConfigPassthroughAdapter: input must declare a fields array.');
   }
 
-  input.forEach((item, index) => {
+  input.fields.forEach((item, index) => {
     if (!isRecord(item)) {
       throw new Error(`ModuleConfigPassthroughAdapter: item at index ${index} must be an object.`);
     }
@@ -31,20 +31,25 @@ export function assertModuleConfigList(input: unknown): asserts input is ModuleC
       );
     }
   });
+
+  if (input.groups !== undefined && !Array.isArray(input.groups)) {
+    throw new Error('ModuleConfigPassthroughAdapter: groups must be an array.');
+  }
 }
 
-export const ModuleConfigPassthroughAdapter: ModuleConfigAdapter<ModuleConfig[]> = {
+export const ModuleConfigPassthroughAdapter: ModuleConfigAdapter<ModuleFormConfig> = {
   type: 'module-config',
-  supports(input: unknown, _context: AdapterContext): input is ModuleConfig[] {
+  supports(input: unknown, _context: AdapterContext): input is ModuleFormConfig {
     return (
-      Array.isArray(input) &&
-      input.every(
+      isRecord(input) &&
+      Array.isArray(input.fields) &&
+      input.fields.every(
         (item) => isRecord(item) && isNonEmptyString(item.type) && isNonEmptyString(item.id)
       )
     );
   },
-  adapt(input: ModuleConfig[]) {
-    assertModuleConfigList(input);
+  adapt(input: ModuleFormConfig) {
+    assertModuleFormConfig(input);
     return input;
   }
 };

@@ -4,7 +4,7 @@ import {
   getSchemaAdapterOptions,
   isObjectJsonSchema,
   isRecord,
-  jsonSchemaToModuleConfigs
+  jsonSchemaToModuleFormConfig
 } from './utils';
 
 function isOpenApiDocument(input: unknown): input is OpenApiAdapterInput {
@@ -57,6 +57,6 @@ export const OpenApiAdapter: ModuleConfigAdapter<OpenApiAdapterInput | JsonSchem
     return isOpenApiDocument(input) || isObjectJsonSchema(input);
   },
   adapt(input: OpenApiAdapterInput | JsonSchemaAdapterInput, context: AdapterContext) {
-    return jsonSchemaToModuleConfigs(resolveOpenApiSchema(input, context));
+    return jsonSchemaToModuleFormConfig(resolveOpenApiSchema(input, context));
   }
 };

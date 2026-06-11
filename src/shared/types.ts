@@ -121,17 +121,20 @@ export type FormAction =
   | { type: 'UPDATE_DYNAMIC_UICONFIG'; payload: { config: Partial<UIConfig> & object } };
 
 /** 非分组模式下的表单配置 */
-export interface FlatFormConfig {
+export interface FormConfig {
+  id?: string | number;
+  fields?: BaseFieldConfig[];
+  groups?: GroupField[];
+}
+
+export interface FlatFormConfig extends FormConfig {
   fields: BaseFieldConfig[];
 }
 
 /** 分组模式下的表单配置 */
-export interface GroupedFormConfig {
+export interface GroupedFormConfig extends FormConfig {
   groups: GroupField[];
-  id?: string | number;
 }
-
-export type FormConfig = FlatFormConfig | GroupedFormConfig;
 
 // 自定义处理器配置
 export interface CustomEffectResultHandlerConfig {

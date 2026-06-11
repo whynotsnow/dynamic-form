@@ -5,7 +5,7 @@ export {
 } from './AdapterRegistryManager';
 export {
   ModuleConfigPassthroughAdapter,
-  assertModuleConfigList
+  assertModuleFormConfig
 } from './ModuleConfigPassthroughAdapter';
 export { adaptModuleConfigs, compileAdaptedFormConfig } from './adaptModuleConfigs';
 export { JsonSchemaAdapter, MetadataAdapter, OpenApiAdapter } from './schema';
@@ -24,5 +24,8 @@ export type {
   MetadataAdapterInput,
   OpenApiAdapterInput,
   SchemaAdapterFieldMetadata,
-  SchemaAdapterOptions
+  SchemaAdapterOptions,
+  SchemaFormMetadata,
+  SchemaGroupConfig,
+  SchemaModuleFormConfig
 } from './schema';

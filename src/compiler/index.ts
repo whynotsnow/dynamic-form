@@ -4,5 +4,7 @@ export type {
   CompileFormConfigOptions,
   CompileHookContext,
   CompilerHooks,
+  GroupModuleConfig,
+  ModuleFormConfig,
   ModuleConfig
 } from './types';
