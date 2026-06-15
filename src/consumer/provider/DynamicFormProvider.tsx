@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
+import type { FormInstance } from 'antd';
 import { useFormChainEffectEngine } from 'form-chain-effect-engine';
-import { DynamicFormProviderProps } from '../../shared/types';
+import type { DynamicFormProviderProps, FormValues } from '../../shared/types';
 import { useStoreInit } from '../../state';
 import { applyEffectResult } from '../effects';
 import { FormChainContext } from '../../shared/context/FormChainContext';
@@ -9,6 +10,7 @@ import {
   getInitializationSummary
 } from '../../shared/utils/initializationChecker';
 import { createRuntimeEffectResultContext } from '../effects';
+import { createFieldValueView, getChangedFieldIds } from '../../shared/utils';
 
 const DynamicFormProvider: React.FC<DynamicFormProviderProps> = ({
   formConfig,
@@ -45,8 +47,22 @@ const DynamicFormProvider: React.FC<DynamicFormProviderProps> = ({
     return () => clearTimeout(timer);
   }, [enableInitializationCheck, checkDelay]);
 
-  const { onValuesChange, manualTrigger } = useFormChainEffectEngine({
-    form,
+  const effectEngineForm = useMemo(
+    () =>
+      ({
+        ...form,
+        getFieldValue: (fieldId: string) => {
+          const address = configProcessInfo.fieldAddressRegistry[fieldId];
+          return form.getFieldValue(address?.name ?? fieldId);
+        },
+        getFieldsValue: () =>
+          createFieldValueView(form.getFieldsValue(), configProcessInfo.fieldAddressRegistry)
+      }) as FormInstance,
+    [configProcessInfo.fieldAddressRegistry, form]
+  );
+
+  const { onValuesChange: onEffectValuesChange, manualTrigger } = useFormChainEffectEngine({
+    form: effectEngineForm,
     config: configProcessInfo.effectMap || {},
     options: {
       enableAdvancedControl: true,
@@ -64,6 +80,18 @@ const DynamicFormProvider: React.FC<DynamicFormProviderProps> = ({
       applyEffectResult(result, context);
     }
   });
+
+  const onValuesChange = useCallback(
+    (changedValues: FormValues) => {
+      getChangedFieldIds(changedValues, configProcessInfo.fieldAddressRegistry).forEach(
+        (fieldId) => {
+          const address = configProcessInfo.fieldAddressRegistry[fieldId];
+          onEffectValuesChange({ [fieldId]: form.getFieldValue(address.name) });
+        }
+      );
+    },
+    [configProcessInfo.fieldAddressRegistry, form, onEffectValuesChange]
+  );
 
   return (
     <FormChainContext.Provider

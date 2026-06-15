@@ -2,7 +2,13 @@ import { FormInstance } from 'antd';
 import { Dispatch } from 'react';
 import { ConfigProcessInfo, FieldMeta, FieldValue, FormAction, UIConfig } from '../../shared/types';
 import type { EffectResultContext, InitContextParams } from './types';
-import { mergeFieldMetaPatch, mergeGroupMetaPatch } from '../../shared/utils';
+import {
+  createFieldAddressRegistry,
+  getFieldName,
+  mergeFieldMetaPatch,
+  mergeGroupMetaPatch,
+  setValueAtNamePath
+} from '../../shared/utils';
 
 export function createInitialEffectResultContext(params: InitContextParams): EffectResultContext {
   const { fieldId, initialValues, initializedFields, initializedGroupFields, fieldRegistry } =
@@ -27,12 +33,16 @@ export function createInitialEffectResultContext(params: InitContextParams): Eff
     configProcessInfo: {
       effectMap: {},
       fieldRegistry,
+      fieldAddressRegistry: createFieldAddressRegistry(fieldRegistry),
       initialValues,
       initializedFields,
       initializedGroupFields
     },
     setFieldValue: (value: FieldValue) => {
-      initialValues[fieldId] = value;
+      const entry = fieldRegistry[fieldId];
+      if (entry && !('fields' in entry.config)) {
+        setValueAtNamePath(initialValues, getFieldName(entry.config), value);
+      }
     },
     updateFieldMeta: (meta: Partial<FieldMeta>) => {
       const fieldState = findFieldState(fieldId);
@@ -82,7 +92,8 @@ export function createRuntimeEffectResultContext(params: {
   const getFieldMeta = () => getFieldState()?.meta;
 
   const setFieldValue = (value: FieldValue) => {
-    form.setFieldsValue({ [fieldName]: value });
+    const address = configProcessInfo.fieldAddressRegistry[fieldName];
+    form.setFieldValue(address?.name ?? fieldName, value);
   };
 
   const updateFieldMeta = (meta: Partial<FieldMeta>) => {

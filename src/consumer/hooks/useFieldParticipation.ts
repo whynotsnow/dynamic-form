@@ -3,6 +3,7 @@ import type { FormInstance } from 'antd';
 import type { FieldValue, FormState } from '../../shared/types';
 import type { RuntimeState } from '../../runtime';
 import { getAllFields } from '../../runtime/selectors';
+import { getFieldName } from '../../shared/utils';
 
 export function useFieldParticipation(
   form: FormInstance,
@@ -17,6 +18,7 @@ export function useFieldParticipation(
     if (!state.initialized) return;
 
     getAllFields(state).forEach((field) => {
+      const fieldName = getFieldName(field);
       const capability = runtimeState.fields[field.id];
 
       const isSubmitable = capability?.submitable === true;
@@ -29,12 +31,10 @@ export function useFieldParticipation(
 
       if (!isSubmitable && wasSubmitable !== false && !shouldPreserve) {
         if (shouldRestore) {
-          hiddenValueCacheRef.current[field.id] = form.getFieldValue(field.id);
+          hiddenValueCacheRef.current[field.id] = form.getFieldValue(fieldName);
         }
 
-        form.setFieldsValue({
-          [field.id]: undefined
-        });
+        form.setFieldValue(fieldName, undefined);
       }
 
       if (
@@ -43,9 +43,7 @@ export function useFieldParticipation(
         shouldRestore &&
         Object.hasOwn(hiddenValueCacheRef.current, field.id)
       ) {
-        form.setFieldsValue({
-          [field.id]: hiddenValueCacheRef.current[field.id]
-        });
+        form.setFieldValue(fieldName, hiddenValueCacheRef.current[field.id]);
 
         delete hiddenValueCacheRef.current[field.id];
       }

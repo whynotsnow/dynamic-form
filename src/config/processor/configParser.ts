@@ -9,6 +9,12 @@ import type {
 } from '../../shared/types';
 import type { ConfigAnalysisResult, ConfigProcessInfo, HydratedConfigResult } from './types';
 import { applyEffectResult, createInitialEffectResultContext } from '../../consumer/effects';
+import {
+  createFieldAddressRegistry,
+  createFieldValueView,
+  getFieldName,
+  setValueAtNamePath
+} from '../../shared/utils';
 
 /**
  * 分析表单配置，生成 effectMap 和 fieldRegistry
@@ -66,7 +72,11 @@ export function analyzeFormConfig(config: FormConfig): ConfigAnalysisResult {
     throw new Error('analyzeFormConfig: at least one field or group is required.');
   }
 
-  return { effectMap, fieldRegistry };
+  return {
+    effectMap,
+    fieldRegistry,
+    fieldAddressRegistry: createFieldAddressRegistry(fieldRegistry)
+  };
 }
 
 /**
@@ -88,7 +98,7 @@ export function hydrateFormConfig(analysisConfig: ConfigAnalysisResult): Hydrate
 
   const processInitialValueResult = (field: BaseFieldConfig, result: any) => {
     if (!result || typeof result !== 'object') {
-      initialValues[field.id] = result;
+      setValueAtNamePath(initialValues, getFieldName(field), result);
       return;
     }
 
@@ -124,13 +134,15 @@ export function hydrateFormConfig(analysisConfig: ConfigAnalysisResult): Hydrate
 
     // 处理静态初始值
     if (field.initialValue !== undefined && typeof field.initialValue !== 'function') {
-      initialValues[field.id] = field.initialValue;
+      setValueAtNamePath(initialValues, getFieldName(field), field.initialValue);
     }
 
     // 处理函数初始值
     if (typeof field.initialValue === 'function') {
       try {
-        const result = field.initialValue(initialValues);
+        const result = field.initialValue(
+          createFieldValueView(initialValues, analysisConfig.fieldAddressRegistry)
+        );
         processInitialValueResult(field, result);
       } catch (error) {
         console.error(`计算字段 ${field.id} 的函数初始值时出错:`, error);

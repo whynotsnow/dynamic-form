@@ -8,6 +8,7 @@ export { default as FormChainEffectEngineWrapper } from './consumer/provider/Dyn
 export type {
   DynamicFormProps,
   FormValues,
+  FieldAddress,
   FormConfig,
   FlatFormConfig,
   GroupedFormConfig,
@@ -24,6 +25,8 @@ export type {
   RenderGroupsParams,
   RenderFormParams
 } from './shared/types';
+
+export { getFieldName, resolveFieldAddress } from './shared/utils';
 
 export {
   ComponentRegistryManager,

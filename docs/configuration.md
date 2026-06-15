@@ -59,13 +59,14 @@ const formConfig: FormConfig = {
 };
 ```
 
-字段 ID 与 group ID 在整个表单内必须唯一。Group 只影响 UI 和行为作用域，不改变字段值路径或提交数据结构。
+字段 ID 与 group ID 在整个表单内必须唯一。Group 只影响 UI 和行为作用域。字段可以通过 `name` 声明独立的 Ant Design `NamePath`，详见 [Field Address](./field-address.md)。
 
 ### 字段配置
 
 | 配置项 | 说明 |
 | --- | --- |
-| `id` | 字段 key，也是 Ant Design Form 字段名和 registry 查询 key。 |
+| `id` | Runtime、registry 和 effect graph 使用的全局唯一字段 key。 |
+| `name` | 可选 Ant Design `NamePath`；默认使用 `id`。 |
 | `component` | 内置组件名或自定义注册组件名。 |
 | `label` | `Form.Item` label。 |
 | `rules` | Ant Design Form 校验规则。 |
@@ -229,11 +230,11 @@ const formConfig: FormConfig = {
 };
 ```
 
-Field IDs and group IDs must be globally unique. Groups affect UI and behavior scope without changing field value paths or submitted data shape.
+Field IDs and group IDs must be globally unique. Groups affect UI and behavior scope. A field may declare an independent Ant Design `NamePath` through `name`; see [Field Address](./field-address.md).
 
 ### Field Config
 
-Common options include `id`, `component`, `label`, `rules`, `required`, `span`, `style`, `initialValue`, `initialVisible`, `initialDisabled`, `preserveValueOnHide`, `restoreValueOnShow`, `dependents`, `effect`, `formItemProps`, and `componentProps`.
+Common options include `id`, optional `name`, `component`, `label`, `rules`, `required`, `span`, `style`, `initialValue`, `initialVisible`, `initialDisabled`, `preserveValueOnHide`, `restoreValueOnShow`, `dependents`, `effect`, `formItemProps`, and `componentProps`. `id` remains the stable runtime/effect identity, while `name` is the Ant Design value path.
 
 `required` is a field declaration. The default Ant Design renderer merges `required: true` into real `Form.Item.rules` and shows the required marker. If `rules` already declares a required rule, the explicit rule wins and no duplicate rule is generated.
 

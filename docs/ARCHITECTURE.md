@@ -2,7 +2,7 @@
 
 ## 中文文档
 
-DynamicForm 3.0 由可选的 Adapter / Module / Rule / Compiler 预处理能力，以及稳定的 Config / State / Runtime / Consumer / Shared 运行时主线组成。核心目标是让外部输入归一化、领域模块展开、配置解析、状态维护、运行时策略和 UI 渲染各自保持清晰边界，同时保留 Ant Design Form 对真实表单值和校验运行时状态的所有权。
+DynamicForm 3.1 由 Field Address 基础、可选的 Adapter / Module / Rule / Compiler 预处理能力，以及稳定的 Config / State / Runtime / Consumer / Shared 运行时主线组成。核心目标是让字段逻辑标识和值路径分离，并让外部输入归一化、领域模块展开、配置解析、状态维护、运行时策略和 UI 渲染各自保持清晰边界，同时保留 Ant Design Form 对真实表单值和校验运行时状态的所有权。
 
 ### 模块关系
 
@@ -101,7 +101,7 @@ reducer 不维护重复的 values store。更新值的 effect handler 应调用 
 
 ## English Documentation
 
-DynamicForm 3.0 combines optional Adapter / Module / Rule / Compiler preprocessing with a stable Config / State / Runtime / Consumer / Shared runtime pipeline. The goal is to separate external-input normalization, domain-module expansion, configuration processing, state management, runtime policy, and UI rendering while preserving Ant Design Form as the owner of actual values and validation runtime state.
+DynamicForm 3.1 combines the Field Address foundation, optional Adapter / Module / Rule / Compiler preprocessing, and a stable Config / State / Runtime / Consumer / Shared runtime pipeline. It separates logical field identity from value paths while preserving Ant Design Form as the owner of actual values and validation runtime state.
 
 ### Module Map
 

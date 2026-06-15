@@ -19,6 +19,7 @@
 - 🪝 支持从字段项到整个表单体的分层 render hooks。
 - 🧠 使用 Runtime Layer 统一解析 `rendered`、`submitable`、`editable`、`readonly`、`disabled`、`validatable` 等能力。
 - 🧱 Ant Design Form 仍然是真实表单值和校验运行时状态的唯一来源。
+- 🧭 3.1 支持通过 `name: NamePath` 分离稳定字段 `id` 与嵌套值路径，旧配置默认继续使用 `id`。
 
 ### 安装
 
@@ -182,6 +183,7 @@ Rule 是字段所属的 per-field 规则，不支持 `target` 配置。一个源
 - 🔗 [Effect 与处理器](./docs/effects-and-handlers.md)
 - 🎨 [渲染与 UI 扩展](./docs/rendering-and-ui.md)
 - 🧠 [Runtime Layer](./docs/runtime-layer.md)
+- 🧭 [Field Address](./docs/field-address.md)
 - 🧭 [组件使用指南](./docs/development.md)
 - 🛠️ [维护指南](./docs/maintenance.md)
 
@@ -276,6 +278,7 @@ Schema adapters 要求字段显式声明 module metadata，不会根据 schema p
 - 🪝 Layered render hooks from field item to full form body.
 - 🧠 Runtime capability resolution for `rendered`, `submitable`, `editable`, `readonly`, `disabled`, and `validatable`.
 - 🧱 Ant Design Form remains the source of truth for form values and validation runtime state.
+- 🧭 Version 3.1 separates stable field IDs from nested Ant Design `NamePath` values while preserving `id` as the default name.
 
 ### Installation
 
@@ -423,6 +426,7 @@ Schema adapters require explicit module metadata and do not infer UI from schema
 - 🔗 [Effects and Handlers](./docs/effects-and-handlers.md)
 - 🎨 [Rendering and UI Extensions](./docs/rendering-and-ui.md)
 - 🧠 [Runtime Layer](./docs/runtime-layer.md)
+- 🧭 [Field Address](./docs/field-address.md)
 - 🧭 [Component Usage Guide](./docs/development.md)
 - 🛠️ [Maintenance Guide](./docs/maintenance.md)
 

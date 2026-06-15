@@ -4,6 +4,7 @@ import type { FieldRendererProps } from '../../shared/types';
 import { defaultRegistryManager } from './componentRegistry';
 import { shallowEqual } from '../../shared/utils/utils';
 import { resolveFieldRequired, resolveFieldRules } from './fieldValidation';
+import { getFieldName } from '../../shared/utils';
 
 const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
   function FieldRenderer({ field, form, componentRegistry, dynamicUIConfig, runtimeCapability }) {
@@ -13,7 +14,7 @@ const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
 
       return {
         label: field.label,
-        name: field.id,
+        name: getFieldName(field),
         rules,
         required: resolveFieldRequired(field, rules, validatable)
       };

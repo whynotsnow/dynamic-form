@@ -1,13 +1,14 @@
 import { useReducer, useMemo, useLayoutEffect } from 'react';
 import type { FormInstance } from 'antd';
-import type { FormConfig, UIConfig } from '../shared/types';
+import type { FormConfig, FormValues, UIConfig } from '../shared/types';
 import { processFormConfig } from '../config/processor';
 import formReducer from './reducer';
+import { mergeFormValues } from '../shared/utils';
 
 interface useStoreInitParams {
   formConfig: FormConfig;
   form: FormInstance;
-  values?: unknown;
+  values?: FormValues;
   uiConfig?: UIConfig;
 }
 
@@ -24,10 +25,7 @@ export const useStoreInit = ({ formConfig, form, values, uiConfig }: useStoreIni
   // 合并 initialValues + values
   const mergedInitialValues = useMemo(() => {
     if (values) {
-      return {
-        ...(configProcessInfo.initialValues || {}),
-        ...(values || {})
-      };
+      return mergeFormValues(configProcessInfo.initialValues || {}, values);
     }
     return configProcessInfo.initialValues || {};
   }, [configProcessInfo.initialValues, values]);

@@ -1,9 +1,16 @@
-import type { FieldState, GroupFieldState, FieldRegistry, Fieldchain } from '../../shared/types';
+import type {
+  FieldState,
+  GroupFieldState,
+  FieldRegistry,
+  Fieldchain,
+  FieldAddress
+} from '../../shared/types';
 
 /** --------------------- 配置分析结果 --------------------- */
 export interface ConfigAnalysisResult {
   effectMap: Record<string, Fieldchain>;
   fieldRegistry: Record<string, FieldRegistry>;
+  fieldAddressRegistry: Record<string, FieldAddress>;
 }
 
 /** --------------------- 带初始值的结果 --------------------- */

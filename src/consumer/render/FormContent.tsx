@@ -8,6 +8,7 @@ import { ComponentRegistryManager } from './componentRegistry';
 import FieldComponentRenderer from './FieldComponentRenderer';
 
 import { useRuntimeState } from '../../runtime';
+import { getFieldName } from '../../shared/utils';
 
 const FormContent: React.FC<FormContentProps> = (props) => {
   const {
@@ -68,7 +69,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
       return renderFieldItem({
         field,
         form,
-        fieldValue: form.getFieldValue(field.id),
+        fieldValue: form.getFieldValue(getFieldName(field)),
         renderField: internalRenderFieldItem,
         defaultRender
       });

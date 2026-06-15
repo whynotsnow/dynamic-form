@@ -1,4 +1,5 @@
 import type { FormInstance, Rule } from 'antd/es/form';
+import type { NamePath } from 'antd/es/form/interface';
 import type { EffectFn } from 'form-chain-effect-engine';
 import type { Dispatch } from 'react';
 import type { CustomEffectResultHandler, HandlerRegistrationOptions } from '../consumer/effects';
@@ -8,6 +9,15 @@ import { ButtonProps, CardProps, ColProps, FormItemProps, FormProps, RowProps } 
 export type FieldValue = any;
 export type FormValues = Record<string, FieldValue>;
 export type FieldComponentRuntimeProps = Record<string, any>;
+
+/**
+ * 字段稳定标识与 Ant Design 值路径的统一描述。
+ * id 服务于 Runtime、registry 与 effect graph；name 只服务于 Form 值读写。
+ */
+export interface FieldAddress {
+  id: string;
+  name: NamePath;
+}
 
 export interface FieldBehaviorMeta {
   visible?: boolean;
@@ -42,6 +52,8 @@ export interface GroupMeta {
 
 export interface BaseFieldConfig {
   id: string;
+  /** Ant Design Form 值路径；未提供时保持兼容，默认使用 id。 */
+  name?: NamePath;
   initialValue?:
     | FieldValue
     | ((allValues: FormValues) => FieldValue | { value: FieldValue; [key: string]: any });
@@ -296,6 +308,7 @@ export interface FieldRegistry {
 export interface ConfigProcessInfo {
   effectMap: Record<string, Fieldchain>;
   fieldRegistry: Record<string, FieldRegistry>;
+  fieldAddressRegistry: Record<string, FieldAddress>;
   initialValues: FormValues;
   initializedFields: Record<string, FieldState>;
   initializedGroupFields: Record<string, GroupFieldState>;

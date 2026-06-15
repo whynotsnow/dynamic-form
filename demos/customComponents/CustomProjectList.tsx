@@ -1,5 +1,6 @@
 import React from 'react';
-import { FieldComponentProps } from '@/exports';
+import { getFieldName } from '@/exports';
+import type { FieldComponentProps } from '@/exports';
 import {
   Form,
   Input,
@@ -116,7 +117,7 @@ const CustomProjectList: React.FC<FieldComponentProps> & { wrapWithFormItem?: bo
   }
   return (
     <Form.List
-      name={field.id}
+      name={getFieldName(field)}
       rules={[
         {
           validator: async (_, projects) => {

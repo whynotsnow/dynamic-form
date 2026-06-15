@@ -7,6 +7,7 @@ import {
   FolderOpenOutlined
 } from '@ant-design/icons';
 import DynamicForm from '@/index';
+import { getFieldName } from '@/exports';
 import type {
   RenderFieldItemParams,
   RenderFormParams,
@@ -32,7 +33,7 @@ const CustomUsernameField: React.FC<FieldComponentProps> & { wrapWithFormItem?: 
       <StarOutlined /> 推荐
     </Tag>
     <Form.Item
-      name={field.id}
+      name={getFieldName(field)}
       rules={[{ required: field.required, message: `请输入${field.label}` }]}
     >
       <Input placeholder="请输入用户名" />
@@ -55,7 +56,7 @@ const CustomEmailField: React.FC<FieldComponentProps> & { wrapWithFormItem?: boo
       <FireOutlined /> 必填
     </Tag>
     <Form.Item
-      name={field.id}
+      name={getFieldName(field)}
       rules={[
         { required: field.required, message: `请输入${field.label}` },
         { type: 'email', message: '请输入正确的邮箱格式' }

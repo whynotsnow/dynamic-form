@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import { FieldComponentProps } from '@/exports';
+import { getFieldName } from '@/exports';
+import type { FieldComponentProps } from '@/exports';
 import { Button, message, Input, Select, Popconfirm } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { EditableProTable } from '@ant-design/pro-components';
@@ -37,7 +38,7 @@ const CustomEditTable: React.FC<FieldComponentProps> = ({ field, value, onChange
     setDataSource(valueArray);
     onChange?.(valueArray);
     if (form) {
-      form.validateFields([field.id]).catch(() => {});
+      form.validateFields([getFieldName(field)]).catch(() => {});
     }
   };
 
