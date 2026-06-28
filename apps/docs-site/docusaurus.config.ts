@@ -4,7 +4,7 @@ import path from 'node:path';
 
 const config: Config = {
   title: 'DynamicForm',
-  tagline: 'Configuration-driven React forms powered by Ant Design',
+  tagline: '基于 Ant Design 的配置化 React 表单',
 
   url: 'https://whynotsnow.github.io',
   baseUrl: '/dynamic-form/',
@@ -21,7 +21,7 @@ const config: Config = {
 
   i18n: {
     defaultLocale: 'zh-CN',
-    locales: ['zh-CN']
+    locales: ['zh-CN', 'en']
   },
 
   presets: [
@@ -53,12 +53,7 @@ const config: Config = {
               }
             },
             watchOptions: {
-              ignored: [
-                '**/node_modules/**',
-                '**/build/**',
-                '**/.docusaurus/**',
-                '**/dist/**'
-              ]
+              ignored: ['**/node_modules/**', '**/build/**', '**/.docusaurus/**', '**/dist/**']
             }
           };
         }
@@ -74,22 +69,26 @@ const config: Config = {
           type: 'docSidebar',
           sidebarId: 'mainSidebar',
           position: 'left',
-          label: 'Docs'
+          label: '文档'
         },
         {
           to: '/playground',
-          label: 'Playground',
+          label: '演练场',
           position: 'left'
         },
         {
           to: '/examples',
-          label: 'Examples',
+          label: '示例',
           position: 'left'
         },
         {
           to: '/api',
           label: 'API',
           position: 'left'
+        },
+        {
+          type: 'localeDropdown',
+          position: 'right'
         },
         {
           href: 'https://github.com/whynotsnow/dynamic-form',
@@ -102,18 +101,18 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: 'Docs',
+          title: '文档',
           items: [
             {
-              label: 'Documentation',
+              label: '文档首页',
               to: '/docs'
             },
             {
-              label: 'Playground',
+              label: '演练场',
               to: '/playground'
             },
             {
-              label: 'Examples',
+              label: '示例',
               to: '/examples'
             },
             {
@@ -123,7 +122,7 @@ const config: Config = {
           ]
         },
         {
-          title: 'Project',
+          title: '项目',
           items: [
             {
               label: 'GitHub',

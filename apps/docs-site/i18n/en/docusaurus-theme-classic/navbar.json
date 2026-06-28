@@ -1,0 +1,26 @@
+{
+  "title": {
+    "message": "DynamicForm",
+    "description": "The title in the navbar"
+  },
+  "item.label.文档": {
+    "message": "Docs",
+    "description": "Navbar item with label 文档"
+  },
+  "item.label.演练场": {
+    "message": "Playground",
+    "description": "Navbar item with label 演练场"
+  },
+  "item.label.示例": {
+    "message": "Examples",
+    "description": "Navbar item with label 示例"
+  },
+  "item.label.API": {
+    "message": "API",
+    "description": "Navbar item with label API"
+  },
+  "item.label.GitHub": {
+    "message": "GitHub",
+    "description": "Navbar item with label GitHub"
+  }
+}

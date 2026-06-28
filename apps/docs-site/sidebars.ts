@@ -4,32 +4,27 @@ const sidebars: SidebarsConfig = {
   mainSidebar: [
     {
       type: 'category',
-      label: 'Overview',
+      label: '概览',
       items: ['README']
     },
     {
       type: 'category',
-      label: 'Architecture',
+      label: '架构',
       items: ['ARCHITECTURE', 'runtime-layer', 'field-address']
     },
     {
       type: 'category',
-      label: 'Usage',
+      label: '使用',
       items: ['configuration', 'development', 'effects-and-handlers', 'rendering-and-ui']
     },
     {
       type: 'category',
-      label: 'Extension Layers',
-      items: [
-        'compiler-foundation',
-        'rule-engine',
-        'adapter-foundation',
-        'schema-adapters'
-      ]
+      label: '扩展层',
+      items: ['compiler-foundation', 'rule-engine', 'adapter-foundation', 'schema-adapters']
     },
     {
       type: 'category',
-      label: 'Maintenance',
+      label: '维护',
       items: ['maintenance']
     }
   ]

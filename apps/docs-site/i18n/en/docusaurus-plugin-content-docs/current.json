@@ -1,0 +1,26 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.mainSidebar.category.概览": {
+    "message": "Overview",
+    "description": "The label for category '概览' in sidebar 'mainSidebar'"
+  },
+  "sidebar.mainSidebar.category.架构": {
+    "message": "Architecture",
+    "description": "The label for category '架构' in sidebar 'mainSidebar'"
+  },
+  "sidebar.mainSidebar.category.使用": {
+    "message": "Usage",
+    "description": "The label for category '使用' in sidebar 'mainSidebar'"
+  },
+  "sidebar.mainSidebar.category.扩展层": {
+    "message": "Extension Layers",
+    "description": "The label for category '扩展层' in sidebar 'mainSidebar'"
+  },
+  "sidebar.mainSidebar.category.维护": {
+    "message": "Maintenance",
+    "description": "The label for category '维护' in sidebar 'mainSidebar'"
+  }
+}

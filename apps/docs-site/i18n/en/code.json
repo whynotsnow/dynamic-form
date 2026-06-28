@@ -1,0 +1,554 @@
+{
+  "playground.demos.storeBoundary.title": {
+    "message": "Store Boundary Validation"
+  },
+  "playground.demos.storeBoundary.description": {
+    "message": "Verifies that field values are managed by Ant Design Form, while effects only update field values or DynamicForm meta."
+  },
+  "playground.demos.customHandlers.title": {
+    "message": "Custom Handlers Demo"
+  },
+  "playground.demos.customHandlers.description": {
+    "message": "Shows how custom EffectResultHandler implementations update values, field meta, and dynamic styles."
+  },
+  "playground.demos.customComponents.title": {
+    "message": "Custom Component Registry Demo"
+  },
+  "playground.demos.customComponents.description": {
+    "message": "Shows how to register custom components and display the form in detail-view mode."
+  },
+  "playground.demos.formValidation.title": {
+    "message": "Form.Item Validation Integration Demo"
+  },
+  "playground.demos.formValidation.description": {
+    "message": "Shows how standard fields and complex Form.List components share Ant Design Form validation."
+  },
+  "playground.demos.uiConfig.title": {
+    "message": "UI Config Demo"
+  },
+  "playground.demos.uiConfig.description": {
+    "message": "Shows how static uiConfig merges with dynamic UI config returned by effects."
+  },
+  "playground.demos.renderExtension.title": {
+    "message": "Render Extension Demo"
+  },
+  "playground.demos.renderExtension.description": {
+    "message": "Shows render extension parameters and custom component registration extension points."
+  },
+  "playground.demos.compilerFoundation.title": {
+    "message": "Compiler Foundation Demo"
+  },
+  "playground.demos.compilerFoundation.description": {
+    "message": "Shows how field modules compile into standard FormConfig before rendering with DynamicForm."
+  },
+  "playground.client.sidebarLabel": {
+    "message": "DynamicForm demos"
+  },
+  "playground.client.title": {
+    "message": "Playground"
+  },
+  "playground.client.description": {
+    "message": "Select a demo to inspect the interactive behavior."
+  },
+  "api.groups.components.description": {
+    "message": "Primary React entry points for rendering standard config or compiler/adapter output."
+  },
+  "api.groups.hooks.description": {
+    "message": "Initialize effect handlers, access context, and reuse store initialization logic."
+  },
+  "api.groups.configTypes.description": {
+    "message": "Describe form config, field config, UI config, render hook parameters, and core value types."
+  },
+  "api.groups.componentRegistry.description": {
+    "message": "Register or extend field components and access the default Ant Design component set."
+  },
+  "api.groups.compilerModules.description": {
+    "message": "Compile domain field modules into standard FormConfig while preserving the runtime rendering pipeline."
+  },
+  "api.groups.adapters.description": {
+    "message": "Normalize ModuleConfig, JsonSchema, OpenAPI, or metadata inputs into module configs."
+  },
+  "api.groups.rules.description": {
+    "message": "Declarative synchronous rule layer that compiles to standard effects and reuses the existing handler pipeline."
+  },
+  "api.groups.fieldAddress.description": {
+    "message": "Separates stable field ids from Ant Design NamePath and supports nested value paths."
+  },
+  "api.groups.utilities.description": {
+    "message": "Default config and config processing entry points for advanced integrations and tests."
+  },
+  "api.layout.description": {
+    "message": "Hand-written public API summary for @whynotsnow/dynamic-form."
+  },
+  "api.page.description": {
+    "message": "This page groups public exports from src/exports.ts by purpose as a quick lookup entry. The topic docs remain the source of detailed behavior."
+  },
+  "api.group.relatedDocs": {
+    "message": "Related docs"
+  },
+  "examples.minimal.title": {
+    "message": "Minimal Form"
+  },
+  "examples.minimal.description": {
+    "message": "Render basic fields from a flat FormConfig and delegate submit handling to Ant Design Form."
+  },
+  "examples.grouped.title": {
+    "message": "Grouped Form"
+  },
+  "examples.grouped.description": {
+    "message": "Organize fields in groups, using the default Card layout or replacing the shell with render hooks."
+  },
+  "examples.effects.title": {
+    "message": "Field Effects"
+  },
+  "examples.effects.description": {
+    "message": "Use dependents and effect to return visible, disabled, value, or render meta updates."
+  },
+  "examples.customComponents.title": {
+    "message": "Custom Components"
+  },
+  "examples.customComponents.description": {
+    "message": "Register business field components with componentRegistry while DynamicForm still manages runtime props."
+  },
+  "examples.customHandlers.title": {
+    "message": "Custom Handlers"
+  },
+  "examples.customHandlers.description": {
+    "message": "Map effect return values to business semantics while keeping components focused on rendering."
+  },
+  "examples.compilerAdapter.description": {
+    "message": "Adapt JsonSchema, OpenAPI, or metadata into module config, then compile it into standard FormConfig."
+  },
+  "examples.layout.title": {
+    "message": "Examples"
+  },
+  "examples.layout.description": {
+    "message": "Scenario-based DynamicForm examples with docs and playground links."
+  },
+  "examples.page.title": {
+    "message": "Examples"
+  },
+  "examples.page.description": {
+    "message": "Find configuration entry points by scenario, with concise snippets, full documentation links, and interactive playground links."
+  },
+  "examples.card.docsLink": {
+    "message": "Docs"
+  },
+  "examples.card.playgroundLink": {
+    "message": "Playground"
+  },
+  "homepage.features.configDriven.title": {
+    "message": "Config-driven Forms"
+  },
+  "homepage.features.configDriven.description": {
+    "message": "Describe fields, groups, validation, and UI config with FormConfig, keeping Ant Design Form usage behind a stable configuration layer."
+  },
+  "homepage.features.effectsRuntime.title": {
+    "message": "Effects and Runtime Policy"
+  },
+  "homepage.features.effectsRuntime.description": {
+    "message": "Execute dependency chains through form-chain-effect-engine and resolve rendering, submit, disabled, readonly, and validation capabilities through the Runtime Layer."
+  },
+  "homepage.features.extensionPoints.title": {
+    "message": "Extension Points"
+  },
+  "homepage.features.extensionPoints.description": {
+    "message": "Supports custom components, effect result handlers, render hooks, compiler, adapters, and a declarative rule layer."
+  },
+  "homepage.flow.adapterCompiler.description": {
+    "message": "Normalize external schemas, metadata, or field modules into standard FormConfig."
+  },
+  "homepage.flow.stateRuntime.description": {
+    "message": "Store structure and meta, then resolve rendered, editable, validatable, and related capabilities in one place."
+  },
+  "homepage.flow.consumerEffects.description": {
+    "message": "Render Ant Design Form and route field effect results through semantic handlers."
+  },
+  "homepage.paths.start.title": {
+    "message": "Start"
+  },
+  "homepage.paths.start.description": {
+    "message": "Start from installation, minimal config, and field config to run your first DynamicForm."
+  },
+  "homepage.paths.examples.title": {
+    "message": "Browse Scenarios"
+  },
+  "homepage.paths.examples.description": {
+    "message": "Find examples for minimal forms, groups, effects, custom components, and the compiler pipeline."
+  },
+  "homepage.paths.playground.title": {
+    "message": "Interactive Validation"
+  },
+  "homepage.paths.playground.description": {
+    "message": "Run existing demos directly to inspect form effects, validation, render hooks, and extension behavior."
+  },
+  "homepage.paths.api.title": {
+    "message": "Public API"
+  },
+  "homepage.paths.api.description": {
+    "message": "Review public exports grouped by components, hooks, compiler, adapters, rules, and types."
+  },
+  "homepage.layout.description": {
+    "message": "DynamicForm is a dynamic form library built with React, TypeScript, and Ant Design."
+  },
+  "homepage.hero.subtitle": {
+    "message": "A dynamic form library built with React, TypeScript, and Ant Design. Describe form structure with config, handle field dependencies with effect chains, and centralize runtime participation policy in the Runtime Layer."
+  },
+  "homepage.hero.readDocs": {
+    "message": "Read docs"
+  },
+  "homepage.hero.viewPlayground": {
+    "message": "View Playground"
+  },
+  "homepage.hero.browseExamples": {
+    "message": "Browse Examples"
+  },
+  "homepage.workflow.title": {
+    "message": "Core Workflow"
+  },
+  "homepage.workflow.description": {
+    "message": "DynamicForm separates input normalization, runtime capabilities, and UI rendering into clear layers for reuse, extension, and verification."
+  },
+  "homepage.paths.title": {
+    "message": "Paths"
+  },
+  "homepage.paths.description": {
+    "message": "The site is organized for learning, lookup, verification, and API reference."
+  },
+  "playground.layout.title": {
+    "message": "Playground"
+  },
+  "playground.layout.description": {
+    "message": "Interactive DynamicForm demos powered by the shared demo registry."
+  },
+  "playground.loading": {
+    "message": "Loading playground..."
+  },
+  "theme.ErrorPageContent.title": {
+    "message": "This page crashed.",
+    "description": "The title of the fallback page when the page crashed"
+  },
+  "theme.BackToTopButton.buttonAriaLabel": {
+    "message": "Scroll back to top",
+    "description": "The ARIA label for the back to top button"
+  },
+  "theme.blog.archive.title": {
+    "message": "Archive",
+    "description": "The page & hero title of the blog archive page"
+  },
+  "theme.blog.archive.description": {
+    "message": "Archive",
+    "description": "The page & hero description of the blog archive page"
+  },
+  "theme.blog.paginator.navAriaLabel": {
+    "message": "Blog list page navigation",
+    "description": "The ARIA label for the blog pagination"
+  },
+  "theme.blog.paginator.newerEntries": {
+    "message": "Newer entries",
+    "description": "The label used to navigate to the newer blog posts page (previous page)"
+  },
+  "theme.blog.paginator.olderEntries": {
+    "message": "Older entries",
+    "description": "The label used to navigate to the older blog posts page (next page)"
+  },
+  "theme.blog.post.paginator.navAriaLabel": {
+    "message": "Blog post page navigation",
+    "description": "The ARIA label for the blog posts pagination"
+  },
+  "theme.blog.post.paginator.newerPost": {
+    "message": "Newer post",
+    "description": "The blog post button label to navigate to the newer/previous post"
+  },
+  "theme.blog.post.paginator.olderPost": {
+    "message": "Older post",
+    "description": "The blog post button label to navigate to the older/next post"
+  },
+  "theme.tags.tagsPageLink": {
+    "message": "View all tags",
+    "description": "The label of the link targeting the tag list page"
+  },
+  "theme.colorToggle.ariaLabel.mode.system": {
+    "message": "system mode",
+    "description": "The name for the system color mode"
+  },
+  "theme.colorToggle.ariaLabel.mode.light": {
+    "message": "light mode",
+    "description": "The name for the light color mode"
+  },
+  "theme.colorToggle.ariaLabel.mode.dark": {
+    "message": "dark mode",
+    "description": "The name for the dark color mode"
+  },
+  "theme.colorToggle.ariaLabel": {
+    "message": "Switch between dark and light mode (currently {mode})",
+    "description": "The ARIA label for the color mode toggle"
+  },
+  "theme.docs.breadcrumbs.navAriaLabel": {
+    "message": "Breadcrumbs",
+    "description": "The ARIA label for the breadcrumbs"
+  },
+  "theme.docs.paginator.navAriaLabel": {
+    "message": "Docs pages",
+    "description": "The ARIA label for the docs pagination"
+  },
+  "theme.docs.paginator.previous": {
+    "message": "Previous",
+    "description": "The label used to navigate to the previous doc"
+  },
+  "theme.docs.paginator.next": {
+    "message": "Next",
+    "description": "The label used to navigate to the next doc"
+  },
+  "theme.docs.tagDocListPageTitle.nDocsTagged": {
+    "message": "One doc tagged|{count} docs tagged",
+    "description": "Pluralized label for \"{count} docs tagged\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.docs.tagDocListPageTitle": {
+    "message": "{nDocsTagged} with \"{tagName}\"",
+    "description": "The title of the page for a docs tag"
+  },
+  "theme.docs.versionBadge.label": {
+    "message": "Version: {versionLabel}"
+  },
+  "theme.docs.versions.unreleasedVersionLabel": {
+    "message": "This is unreleased documentation for {siteTitle} {versionLabel} version.",
+    "description": "The label used to tell the user that he's browsing an unreleased doc version"
+  },
+  "theme.docs.versions.unmaintainedVersionLabel": {
+    "message": "This is documentation for {siteTitle} {versionLabel}, which is no longer actively maintained.",
+    "description": "The label used to tell the user that he's browsing an unmaintained doc version"
+  },
+  "theme.docs.versions.latestVersionSuggestionLabel": {
+    "message": "For up-to-date documentation, see the {latestVersionLink} ({versionLabel}).",
+    "description": "The label used to tell the user to check the latest version"
+  },
+  "theme.docs.versions.latestVersionLinkLabel": {
+    "message": "latest version",
+    "description": "The label used for the latest version suggestion link label"
+  },
+  "theme.common.editThisPage": {
+    "message": "Edit this page",
+    "description": "The link label to edit the current page"
+  },
+  "theme.common.headingLinkTitle": {
+    "message": "Direct link to {heading}",
+    "description": "Title for link to heading"
+  },
+  "theme.lastUpdated.atDate": {
+    "message": " on {date}",
+    "description": "The words used to describe on which date a page has been last updated"
+  },
+  "theme.lastUpdated.byUser": {
+    "message": " by {user}",
+    "description": "The words used to describe by who the page has been last updated"
+  },
+  "theme.lastUpdated.lastUpdatedAtBy": {
+    "message": "Last updated{atDate}{byUser}",
+    "description": "The sentence used to display when a page has been last updated, and by who"
+  },
+  "theme.NotFound.title": {
+    "message": "Page Not Found",
+    "description": "The title of the 404 page"
+  },
+  "theme.navbar.mobileVersionsDropdown.label": {
+    "message": "Versions",
+    "description": "The label for the navbar versions dropdown on mobile view"
+  },
+  "theme.tags.tagsListLabel": {
+    "message": "Tags:",
+    "description": "The label alongside a tag list"
+  },
+  "theme.AnnouncementBar.closeButtonAriaLabel": {
+    "message": "Close",
+    "description": "The ARIA label for close button of announcement bar"
+  },
+  "theme.admonition.caution": {
+    "message": "caution",
+    "description": "The default label used for the Caution admonition (:::caution)"
+  },
+  "theme.admonition.danger": {
+    "message": "danger",
+    "description": "The default label used for the Danger admonition (:::danger)"
+  },
+  "theme.admonition.info": {
+    "message": "info",
+    "description": "The default label used for the Info admonition (:::info)"
+  },
+  "theme.admonition.note": {
+    "message": "note",
+    "description": "The default label used for the Note admonition (:::note)"
+  },
+  "theme.admonition.tip": {
+    "message": "tip",
+    "description": "The default label used for the Tip admonition (:::tip)"
+  },
+  "theme.admonition.warning": {
+    "message": "warning",
+    "description": "The default label used for the Warning admonition (:::warning)"
+  },
+  "theme.blog.sidebar.navAriaLabel": {
+    "message": "Blog recent posts navigation",
+    "description": "The ARIA label for recent posts in the blog sidebar"
+  },
+  "theme.DocSidebarItem.expandCategoryAriaLabel": {
+    "message": "Expand sidebar category '{label}'",
+    "description": "The ARIA label to expand the sidebar category"
+  },
+  "theme.DocSidebarItem.collapseCategoryAriaLabel": {
+    "message": "Collapse sidebar category '{label}'",
+    "description": "The ARIA label to collapse the sidebar category"
+  },
+  "theme.IconExternalLink.ariaLabel": {
+    "message": "(opens in new tab)",
+    "description": "The ARIA label for the external link icon"
+  },
+  "theme.NavBar.navAriaLabel": {
+    "message": "Main",
+    "description": "The ARIA label for the main navigation"
+  },
+  "theme.NotFound.p1": {
+    "message": "We could not find what you were looking for.",
+    "description": "The first paragraph of the 404 page"
+  },
+  "theme.NotFound.p2": {
+    "message": "Please contact the owner of the site that linked you to the original URL and let them know their link is broken.",
+    "description": "The 2nd paragraph of the 404 page"
+  },
+  "theme.TOCCollapsible.toggleButtonLabel": {
+    "message": "On this page",
+    "description": "The label used by the button on the collapsible TOC component"
+  },
+  "theme.navbar.mobileLanguageDropdown.label": {
+    "message": "Languages",
+    "description": "The label for the mobile language switcher dropdown"
+  },
+  "theme.blog.post.readMore": {
+    "message": "Read more",
+    "description": "The label used in blog post item excerpts to link to full blog posts"
+  },
+  "theme.blog.post.readMoreLabel": {
+    "message": "Read more about {title}",
+    "description": "The ARIA label for the link to full blog posts from excerpts"
+  },
+  "theme.blog.post.readingTime.plurals": {
+    "message": "One min read|{readingTime} min read",
+    "description": "Pluralized label for \"{readingTime} min read\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.CodeBlock.copy": {
+    "message": "Copy",
+    "description": "The copy button label on code blocks"
+  },
+  "theme.CodeBlock.copied": {
+    "message": "Copied",
+    "description": "The copied button label on code blocks"
+  },
+  "theme.CodeBlock.copyButtonAriaLabel": {
+    "message": "Copy code to clipboard",
+    "description": "The ARIA label for copy code blocks button"
+  },
+  "theme.CodeBlock.wordWrapToggle": {
+    "message": "Toggle word wrap",
+    "description": "The title attribute for toggle word wrapping button of code block lines"
+  },
+  "theme.docs.breadcrumbs.home": {
+    "message": "Home page",
+    "description": "The ARIA label for the home page in the breadcrumbs"
+  },
+  "theme.docs.sidebar.collapseButtonTitle": {
+    "message": "Collapse sidebar",
+    "description": "The title attribute for collapse button of doc sidebar"
+  },
+  "theme.docs.sidebar.collapseButtonAriaLabel": {
+    "message": "Collapse sidebar",
+    "description": "The title attribute for collapse button of doc sidebar"
+  },
+  "theme.docs.sidebar.navAriaLabel": {
+    "message": "Docs sidebar",
+    "description": "The ARIA label for the sidebar navigation"
+  },
+  "theme.docs.sidebar.closeSidebarButtonAriaLabel": {
+    "message": "Close navigation bar",
+    "description": "The ARIA label for close button of mobile sidebar"
+  },
+  "theme.navbar.mobileSidebarSecondaryMenu.backButtonLabel": {
+    "message": "← Back to main menu",
+    "description": "The label of the back button to return to main menu, inside the mobile navbar sidebar secondary menu (notably used to display the docs sidebar)"
+  },
+  "theme.docs.sidebar.toggleSidebarButtonAriaLabel": {
+    "message": "Toggle navigation bar",
+    "description": "The ARIA label for hamburger menu button of mobile navigation"
+  },
+  "theme.navbar.mobileDropdown.collapseButton.expandAriaLabel": {
+    "message": "Expand the dropdown",
+    "description": "The ARIA label of the button to expand the mobile dropdown navbar item"
+  },
+  "theme.navbar.mobileDropdown.collapseButton.collapseAriaLabel": {
+    "message": "Collapse the dropdown",
+    "description": "The ARIA label of the button to collapse the mobile dropdown navbar item"
+  },
+  "theme.docs.sidebar.expandButtonTitle": {
+    "message": "Expand sidebar",
+    "description": "The ARIA label and title attribute for expand button of doc sidebar"
+  },
+  "theme.docs.sidebar.expandButtonAriaLabel": {
+    "message": "Expand sidebar",
+    "description": "The ARIA label and title attribute for expand button of doc sidebar"
+  },
+  "theme.blog.post.plurals": {
+    "message": "One post|{count} posts",
+    "description": "Pluralized label for \"{count} posts\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.blog.tagTitle": {
+    "message": "{nPosts} tagged with \"{tagName}\"",
+    "description": "The title of the page for a blog tag"
+  },
+  "theme.blog.author.pageTitle": {
+    "message": "{authorName} - {nPosts}",
+    "description": "The title of the page for a blog author"
+  },
+  "theme.blog.authorsList.pageTitle": {
+    "message": "Authors",
+    "description": "The title of the authors page"
+  },
+  "theme.blog.authorsList.viewAll": {
+    "message": "View all authors",
+    "description": "The label of the link targeting the blog authors page"
+  },
+  "theme.blog.author.noPosts": {
+    "message": "This author has not written any posts yet.",
+    "description": "The text for authors with 0 blog post"
+  },
+  "theme.contentVisibility.unlistedBanner.title": {
+    "message": "Unlisted page",
+    "description": "The unlisted content banner title"
+  },
+  "theme.contentVisibility.unlistedBanner.message": {
+    "message": "This page is unlisted. Search engines will not index it, and only users having a direct link can access it.",
+    "description": "The unlisted content banner message"
+  },
+  "theme.contentVisibility.draftBanner.title": {
+    "message": "Draft page",
+    "description": "The draft content banner title"
+  },
+  "theme.contentVisibility.draftBanner.message": {
+    "message": "This page is a draft. It will only be visible in dev and be excluded from the production build.",
+    "description": "The draft content banner message"
+  },
+  "theme.docs.DocCard.categoryDescription.plurals": {
+    "message": "1 item|{count} items",
+    "description": "The default description for a category card in the generated index about how many items this category includes"
+  },
+  "theme.ErrorPageContent.tryAgain": {
+    "message": "Try again",
+    "description": "The label of the button to try again rendering when the React error boundary captures an error"
+  },
+  "theme.common.skipToMainContent": {
+    "message": "Skip to main content",
+    "description": "The skip to content label used for accessibility, allowing to rapidly navigate to main content with keyboard tab/enter navigation"
+  },
+  "theme.tags.tagsPageTitle": {
+    "message": "Tags",
+    "description": "The title of the tag list page"
+  }
+}

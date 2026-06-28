@@ -1,12 +1,19 @@
 import Heading from '@theme/Heading';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
+import Translate, { translate } from '@docusaurus/Translate';
 import styles from './examples.module.css';
 
 const examples = [
   {
-    title: '最小表单 / Minimal form',
-    description: '用一个 flat FormConfig 渲染基础字段，并把提交交给 Ant Design Form。',
+    title: translate({
+      id: 'examples.minimal.title',
+      message: '最小表单'
+    }),
+    description: translate({
+      id: 'examples.minimal.description',
+      message: '用一个 flat FormConfig 渲染基础字段，并把提交交给 Ant Design Form。'
+    }),
     code: `const formConfig = {
   fields: [
     { id: 'name', label: 'Name', component: 'TextInput', required: true }
@@ -16,8 +23,14 @@ const examples = [
     playground: '/playground?demo=storeBoundary'
   },
   {
-    title: '分组表单 / Grouped form',
-    description: '把字段组织到 groups 中，使用默认 Card 布局或后续 render hooks 替换外壳。',
+    title: translate({
+      id: 'examples.grouped.title',
+      message: '分组表单'
+    }),
+    description: translate({
+      id: 'examples.grouped.description',
+      message: '把字段组织到 groups 中，使用默认 Card 布局或后续 render hooks 替换外壳。'
+    }),
     code: `const formConfig = {
   groups: [
     { id: 'basic', title: 'Basic', fields: [{ id: 'email', component: 'TextInput' }] }
@@ -27,8 +40,14 @@ const examples = [
     playground: '/playground?demo=uiConfig'
   },
   {
-    title: '字段联动 / Field effects',
-    description: '通过 dependents 和 effect 返回 visible、disabled、value 或 render meta。',
+    title: translate({
+      id: 'examples.effects.title',
+      message: '字段联动'
+    }),
+    description: translate({
+      id: 'examples.effects.description',
+      message: '通过 dependents 和 effect 返回 visible、disabled、value 或 render meta。'
+    }),
     code: `{
   id: 'companyName',
   dependents: ['hasCompany'],
@@ -38,8 +57,14 @@ const examples = [
     playground: '/playground?demo=customHandlers'
   },
   {
-    title: '自定义组件 / Custom components',
-    description: '用 componentRegistry 注册业务字段组件，仍由 DynamicForm 负责运行时 props。',
+    title: translate({
+      id: 'examples.customComponents.title',
+      message: '自定义组件'
+    }),
+    description: translate({
+      id: 'examples.customComponents.description',
+      message: '用 componentRegistry 注册业务字段组件，仍由 DynamicForm 负责运行时 props。'
+    }),
     code: `<DynamicForm
   componentRegistry={{ customComponents: { ProjectSelect } }}
   formConfig={formConfig}
@@ -48,8 +73,14 @@ const examples = [
     playground: '/playground?demo=customComponents'
   },
   {
-    title: '自定义 handlers / Custom handlers',
-    description: '把 effect 返回值映射到业务语义，保持组件只负责渲染。',
+    title: translate({
+      id: 'examples.customHandlers.title',
+      message: '自定义 handlers'
+    }),
+    description: translate({
+      id: 'examples.customHandlers.description',
+      message: '把 effect 返回值映射到业务语义，保持组件只负责渲染。'
+    }),
     code: `const handler = {
   name: 'highlight',
   canHandle: (key) => key === 'highlight',
@@ -60,7 +91,10 @@ const examples = [
   },
   {
     title: 'Compiler / Adapter',
-    description: '把 JsonSchema、OpenAPI 或 metadata 适配为模块配置，再编译为标准 FormConfig。',
+    description: translate({
+      id: 'examples.compilerAdapter.description',
+      message: '把 JsonSchema、OpenAPI 或 metadata 适配为模块配置，再编译为标准 FormConfig。'
+    }),
     code: `const compiled = compileAdaptedFormConfig(schema, {
   adapterType: 'json-schema',
   moduleRegistry
@@ -73,17 +107,25 @@ const examples = [
 export default function Examples(): JSX.Element {
   return (
     <Layout
-      title="Examples"
-      description="Scenario-based DynamicForm examples with docs and playground links."
+      title={translate({
+        id: 'examples.layout.title',
+        message: '示例'
+      })}
+      description={translate({
+        id: 'examples.layout.description',
+        message: '按场景组织的 DynamicForm 示例，包含文档和演练场入口。'
+      })}
     >
       <main className={styles.page}>
         <div className="container">
           <section className={styles.intro}>
-            <Heading as="h1">Examples</Heading>
+            <Heading as="h1">
+              <Translate id="examples.page.title">示例</Translate>
+            </Heading>
             <p>
-              按常见场景查找配置入口。每个示例保留短代码片段，并链接到完整文档和可交互
-              Playground。 / Find configuration entry points by scenario, with concise snippets,
-              full documentation links, and interactive playground links.
+              <Translate id="examples.page.description">
+                按常见场景查找配置入口。每个示例保留短代码片段，并链接到完整文档和可交互演练场。
+              </Translate>
             </p>
           </section>
 
@@ -97,10 +139,10 @@ export default function Examples(): JSX.Element {
                 </pre>
                 <div className={styles.links}>
                   <Link className="button button--primary button--sm" to={example.docs}>
-                    Docs
+                    <Translate id="examples.card.docsLink">文档</Translate>
                   </Link>
                   <Link className="button button--secondary button--sm" to={example.playground}>
-                    Playground
+                    <Translate id="examples.card.playgroundLink">演练场</Translate>
                   </Link>
                 </div>
               </article>
