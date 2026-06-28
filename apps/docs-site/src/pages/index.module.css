@@ -5,8 +5,9 @@
 
 .heroInner {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.8fr);
   gap: 32px;
+  align-items: center;
 }
 
 .eyebrow {
@@ -42,6 +43,19 @@
   margin-top: 28px;
 }
 
+.heroMedia {
+  display: grid;
+  gap: 14px;
+}
+
+.heroMedia img {
+  display: block;
+  width: 100%;
+  border: 1px solid #d8dee8;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
 .install {
   max-width: 640px;
   margin: 0;
@@ -55,6 +69,29 @@
 
 .section {
   padding: 44px 0;
+}
+
+.sectionAlt {
+  padding: 44px 0;
+  background: #f7f8fb;
+}
+
+.sectionHeader {
+  max-width: 760px;
+  margin-bottom: 22px;
+}
+
+.sectionHeader h2 {
+  margin: 0 0 10px;
+  color: #18202b;
+  font-size: 1.8rem;
+  letter-spacing: 0;
+}
+
+.sectionHeader p {
+  margin: 0;
+  color: #526071;
+  line-height: 1.7;
 }
 
 .grid {
@@ -82,16 +119,87 @@
   line-height: 1.65;
 }
 
+.flow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.flowStep {
+  min-height: 168px;
+  padding: 22px;
+  border: 1px solid #dce2ec;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.flowStep span {
+  display: inline-flex;
+  margin-bottom: 12px;
+  color: #2458d3;
+  font-weight: 800;
+}
+
+.flowStep h3 {
+  margin: 0 0 10px;
+  font-size: 1.1rem;
+}
+
+.flowStep p {
+  margin: 0;
+  color: #526071;
+  line-height: 1.65;
+}
+
+.pathGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.pathCard {
+  min-height: 168px;
+  padding: 22px;
+  border: 1px solid #e2e6ef;
+  border-radius: 8px;
+  background: #ffffff;
+  color: inherit;
+  text-decoration: none;
+}
+
+.pathCard:hover {
+  border-color: #2458d3;
+  color: inherit;
+  text-decoration: none;
+}
+
+.pathCard h3 {
+  margin: 0 0 10px;
+  font-size: 1.1rem;
+}
+
+.pathCard p {
+  margin: 0;
+  color: #526071;
+  line-height: 1.65;
+}
+
 @media (max-width: 996px) {
   .hero {
     padding-top: 52px;
+  }
+
+  .heroInner {
+    grid-template-columns: 1fr;
   }
 
   .title {
     font-size: 2.3rem;
   }
 
-  .grid {
+  .grid,
+  .flow,
+  .pathGrid {
     grid-template-columns: 1fr;
   }
 }

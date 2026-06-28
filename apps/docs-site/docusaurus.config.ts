@@ -82,6 +82,16 @@ const config: Config = {
           position: 'left'
         },
         {
+          to: '/examples',
+          label: 'Examples',
+          position: 'left'
+        },
+        {
+          to: '/api',
+          label: 'API',
+          position: 'left'
+        },
+        {
           href: 'https://github.com/whynotsnow/dynamic-form',
           label: 'GitHub',
           position: 'right'
@@ -101,6 +111,14 @@ const config: Config = {
             {
               label: 'Playground',
               to: '/playground'
+            },
+            {
+              label: 'Examples',
+              to: '/examples'
+            },
+            {
+              label: 'API',
+              to: '/api'
             }
           ]
         },
