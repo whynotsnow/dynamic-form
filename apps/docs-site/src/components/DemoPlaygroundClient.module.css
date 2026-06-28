@@ -1,0 +1,111 @@
+.shell {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.sidebar {
+  position: sticky;
+  top: 88px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid #dfe4ed;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.sidebarHeader {
+  margin-bottom: 8px;
+}
+
+.sidebarHeader h1 {
+  margin: 0 0 8px;
+  color: #18202b;
+  font-size: 1.35rem;
+  letter-spacing: 0;
+}
+
+.sidebarHeader p {
+  margin: 0;
+  color: #536173;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.demoButton {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: #263344;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.demoButton:hover {
+  background: #f3f6fb;
+}
+
+.demoButtonActive {
+  border-color: #2458d3;
+  background: #edf3ff;
+  color: #123f9e;
+  font-weight: 700;
+}
+
+.content {
+  min-width: 0;
+}
+
+.intro {
+  margin-bottom: 18px;
+}
+
+.intro h2 {
+  margin: 0 0 8px;
+  color: #18202b;
+  font-size: 1.8rem;
+  letter-spacing: 0;
+}
+
+.intro p {
+  margin: 0;
+  color: #536173;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.demoFrame {
+  min-width: 0;
+  padding: 16px;
+  overflow-x: auto;
+  border: 1px solid #dfe4ed;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.demoFrame :global(.ant-card),
+.demoFrame :global(.ant-form),
+.demoFrame :global(.ant-form-item) {
+  width: 100%;
+}
+
+.demoFrame :global(.ant-col) {
+  min-width: 0;
+}
+
+@media (max-width: 996px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+  }
+}

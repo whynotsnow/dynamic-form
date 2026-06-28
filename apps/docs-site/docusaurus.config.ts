@@ -1,5 +1,6 @@
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import path from 'node:path';
 
 const config: Config = {
   title: 'DynamicForm',
@@ -46,6 +47,11 @@ const config: Config = {
         name: 'workspace-watch-options',
         configureWebpack() {
           return {
+            resolve: {
+              alias: {
+                '@': path.resolve(__dirname, '../../src')
+              }
+            },
             watchOptions: {
               ignored: [
                 '**/node_modules/**',
