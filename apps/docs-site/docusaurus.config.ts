@@ -8,6 +8,7 @@ const config: Config = {
 
   url: 'https://whynotsnow.github.io',
   baseUrl: '/dynamic-form/',
+  trailingSlash: true,
 
   organizationName: 'whynotsnow',
   projectName: 'dynamic-form',

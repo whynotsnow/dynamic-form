@@ -4,7 +4,7 @@
 
 .loading {
   padding: 32px 0;
-  color: #536173;
+  color: var(--df-text-muted);
   font-size: 1rem;
   line-height: 1.7;
 }

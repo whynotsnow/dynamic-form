@@ -9,14 +9,14 @@
 
 .intro h1 {
   margin-bottom: 12px;
-  color: #18202b;
+  color: var(--df-text-strong);
   font-size: 2.2rem;
   letter-spacing: 0;
 }
 
 .intro p {
   margin: 0;
-  color: #536173;
+  color: var(--df-text-muted);
   font-size: 1.05rem;
   line-height: 1.75;
 }
@@ -30,21 +30,21 @@
 .group {
   min-width: 0;
   padding: 22px;
-  border: 1px solid #dfe4ed;
+  border: 1px solid var(--df-border-subtle);
   border-radius: 8px;
-  background: #ffffff;
+  background: var(--df-background-panel);
 }
 
 .group h2 {
   margin: 0 0 10px;
-  color: #18202b;
+  color: var(--df-text-strong);
   font-size: 1.2rem;
   letter-spacing: 0;
 }
 
 .group p {
   margin: 0 0 14px;
-  color: #536173;
+  color: var(--df-text-muted);
   line-height: 1.65;
 }
 
@@ -57,10 +57,10 @@
 
 .exports code {
   padding: 4px 8px;
-  border: 1px solid #e2e6ef;
+  border: 1px solid var(--df-border-muted);
   border-radius: 6px;
-  background: #f7f8fb;
-  color: #253041;
+  background: var(--df-background-muted);
+  color: var(--df-text-main);
   font-size: 0.85rem;
 }
 
