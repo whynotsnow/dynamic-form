@@ -1,0 +1,67 @@
+{
+  "name": "@whynotsnow/dynamic-form",
+  "version": "3.1.0",
+  "description": "DynamicForm 是一个基于 React 和 Ant Design 的动态表单组件，支持复杂的表单联动、自定义处理器、状态管理和性能优化。",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "files": [
+    "dist",
+    "docs",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "react",
+    "antd",
+    "form",
+    "dynamic-form",
+    "react-form",
+    "ant-design",
+    "form-engine",
+    "dynamic",
+    "dependency",
+    "form-component",
+    "动态表单",
+    "表单引擎",
+    "表单联动",
+    "表单组件"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "type-check": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whynotsnow/dynamic-form.git",
+    "directory": "packages/dynamic-form"
+  },
+  "author": {
+    "name": "whynotsnow",
+    "email": "whynotsnow@163.com",
+    "url": "https://github.com/whynotsnow"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/whynotsnow/dynamic-form/issues"
+  },
+  "homepage": "https://github.com/whynotsnow/dynamic-form#readme",
+  "peerDependencies": {
+    "antd": ">=5",
+    "react": ">=17",
+    "react-dom": ">=17"
+  },
+  "dependencies": {
+    "form-chain-effect-engine": "^2.0.4"
+  }
+}

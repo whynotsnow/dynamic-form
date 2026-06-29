@@ -9,12 +9,13 @@ const expectedPackageName = '@whynotsnow/dynamic-form';
 const expectedNpmUser = 'whynotsnow';
 const expectedRegistry = 'https://registry.npmjs.org/';
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const packageDir = resolve(rootDir, 'packages/dynamic-form');
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const node = process.platform === 'win32' ? 'node.exe' : 'node';
 
 function run(command, args, options = {}) {
   return spawnSync(command, args, {
-    cwd: rootDir,
+    cwd: options.cwd ?? rootDir,
     encoding: 'utf8',
     shell: process.platform === 'win32',
     stdio: options.capture ? 'pipe' : 'inherit',
@@ -44,7 +45,7 @@ function requireSuccess(command, args, options = {}) {
 }
 
 function readPackageJson() {
-  const packageJsonPath = resolve(rootDir, 'package.json');
+  const packageJsonPath = resolve(packageDir, 'package.json');
   return JSON.parse(readFileSync(packageJsonPath, 'utf8'));
 }
 
@@ -77,7 +78,8 @@ async function main() {
 
     console.log('');
     console.log(`Publishing ${packageName}@${packageVersion}`);
-    console.log(`Workspace: ${rootDir}`);
+    console.log(`Workspace root: ${rootDir}`);
+    console.log(`Package workspace: ${packageDir}`);
     console.log('Auth mode: npm default user config');
     console.log('');
 
@@ -138,6 +140,7 @@ async function main() {
     console.log('');
     console.log('Running package dry-run...');
     requireSuccess(npm, ['pack', '--dry-run'], {
+      cwd: packageDir,
       env: {
         HUSKY: '0'
       }
@@ -160,6 +163,7 @@ async function main() {
     console.log('');
     console.log('Publishing to npm...');
     requireSuccess(npm, ['publish', '--access', 'public'], {
+      cwd: packageDir,
       env: {
         HUSKY: '0'
       }

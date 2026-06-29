@@ -57,7 +57,7 @@ The package exports:
 - `evaluateRule`
 - `getFieldName`
 - `resolveFieldAddress`
-- Core public types from `src/shared/types.ts`.
+- Core public types from `packages/dynamic-form/src/shared/types.ts`.
 
 ### Design Summary
 

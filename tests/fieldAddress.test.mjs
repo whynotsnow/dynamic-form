@@ -3,7 +3,10 @@ import test from 'node:test';
 import { build } from 'esbuild';
 
 const modulePromise = build({
-  entryPoints: ['src/config/processor/configParser.ts', 'src/shared/utils/fieldAddress.ts'],
+  entryPoints: [
+    'packages/dynamic-form/src/config/processor/configParser.ts',
+    'packages/dynamic-form/src/shared/utils/fieldAddress.ts'
+  ],
   bundle: true,
   format: 'esm',
   platform: 'node',

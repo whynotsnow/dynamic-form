@@ -118,7 +118,7 @@ export default function Api(): JSX.Element {
             <Heading as="h1">API</Heading>
             <p>
               <Translate id="api.page.description">
-                这里按用途整理 src/exports.ts
+                这里按用途整理 packages/dynamic-form/src/exports.ts
                 的公共导出，作为快速查找入口。完整行为说明仍以专题文档为准。
               </Translate>
             </p>

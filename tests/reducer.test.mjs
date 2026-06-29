@@ -3,7 +3,7 @@ import test from 'node:test';
 import { build } from 'esbuild';
 
 const reducerModulePromise = build({
-  entryPoints: ['src/state/reducer.ts'],
+  entryPoints: ['packages/dynamic-form/src/state/reducer.ts'],
   bundle: true,
   format: 'esm',
   platform: 'node',

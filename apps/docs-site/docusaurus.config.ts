@@ -50,7 +50,11 @@ const config: Config = {
           return {
             resolve: {
               alias: {
-                '@': path.resolve(__dirname, '../../src')
+                '@': path.resolve(__dirname, '../../packages/dynamic-form/src'),
+                '@whynotsnow/dynamic-form': path.resolve(
+                  __dirname,
+                  '../../packages/dynamic-form/src/exports.ts'
+                )
               }
             },
             watchOptions: {

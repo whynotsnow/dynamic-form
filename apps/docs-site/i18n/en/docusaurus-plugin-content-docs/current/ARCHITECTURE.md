@@ -10,7 +10,7 @@ External input / ModuleFormConfig
   -> Rule + Config Compiler (optional)
   -> FormConfig
 
-src/index.tsx
+packages/dynamic-form/src/index.tsx
   -> DynamicFormProvider
       -> useStoreInit
       -> form-chain-effect-engine
@@ -24,20 +24,20 @@ src/index.tsx
 
 ### Important Files
 
-- `src/adapters/`: normalizes module-like, JsonSchema, OpenAPI, and metadata input into `ModuleFormConfig`.
-- `src/modules/`: defines the `FieldModule` protocol and module registry.
-- `src/rules/`: validates and evaluates declarative rules and compiles them into standard effects.
-- `src/compiler/compileFormConfig.ts`: compiles `ModuleFormConfig` into standard `FormConfig` and a component registry.
-- `src/CompiledDynamicForm.tsx`: wires compiler output and its component registry into `DynamicForm`.
-- `src/index.tsx`: splits `DynamicFormProps` into engine props and UI props.
-- `src/consumer/provider/DynamicFormProvider.tsx`: initializes store, effect engine, and React context.
-- `src/state/useStoreInit.ts`: processes config, creates reducer state, merges initial values, and syncs Ant Design Form.
-- `src/config/processor/configParser.ts`: creates `effectMap`, `fieldRegistry`, `initialValues`, `initializedFields`, and `initializedGroupFields`.
-- `src/state/reducer.ts`: handles field meta, group meta, and dynamic UI config updates with Immer.
-- `src/runtime/resolver.ts`: resolves field and group runtime capabilities.
-- `src/consumer/render/FormContent.tsx`: renders the form and wires submit/change events.
-- `src/consumer/effects/`: applies effect results through handlers.
-- `src/consumer/render/componentRegistry.tsx`: provides built-in components and custom registration.
+- `packages/dynamic-form/src/adapters/`: normalizes module-like, JsonSchema, OpenAPI, and metadata input into `ModuleFormConfig`.
+- `packages/dynamic-form/src/modules/`: defines the `FieldModule` protocol and module registry.
+- `packages/dynamic-form/src/rules/`: validates and evaluates declarative rules and compiles them into standard effects.
+- `packages/dynamic-form/src/compiler/compileFormConfig.ts`: compiles `ModuleFormConfig` into standard `FormConfig` and a component registry.
+- `packages/dynamic-form/src/CompiledDynamicForm.tsx`: wires compiler output and its component registry into `DynamicForm`.
+- `packages/dynamic-form/src/index.tsx`: splits `DynamicFormProps` into engine props and UI props.
+- `packages/dynamic-form/src/consumer/provider/DynamicFormProvider.tsx`: initializes store, effect engine, and React context.
+- `packages/dynamic-form/src/state/useStoreInit.ts`: processes config, creates reducer state, merges initial values, and syncs Ant Design Form.
+- `packages/dynamic-form/src/config/processor/configParser.ts`: creates `effectMap`, `fieldRegistry`, `initialValues`, `initializedFields`, and `initializedGroupFields`.
+- `packages/dynamic-form/src/state/reducer.ts`: handles field meta, group meta, and dynamic UI config updates with Immer.
+- `packages/dynamic-form/src/runtime/resolver.ts`: resolves field and group runtime capabilities.
+- `packages/dynamic-form/src/consumer/render/FormContent.tsx`: renders the form and wires submit/change events.
+- `packages/dynamic-form/src/consumer/effects/`: applies effect results through handlers.
+- `packages/dynamic-form/src/consumer/render/componentRegistry.tsx`: provides built-in components and custom registration.
 
 ### Data Flow
 

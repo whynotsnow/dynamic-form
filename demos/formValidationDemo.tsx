@@ -4,7 +4,7 @@ import DynamicForm from '@/index';
 import { customComponents } from './customComponents';
 import { FormConfig } from '@/exports';
 import { exampleHandlers } from './customHandlers';
-import { mockFetchFormData } from '../src/shared/utils';
+import { mockFetchFormData } from '../packages/dynamic-form/src/shared/utils';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
 
 const { Title, Paragraph } = Typography;

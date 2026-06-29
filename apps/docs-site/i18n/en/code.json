@@ -81,7 +81,7 @@
     "message": "Hand-written public API summary for @whynotsnow/dynamic-form."
   },
   "api.page.description": {
-    "message": "This page groups public exports from src/exports.ts by purpose as a quick lookup entry. The topic docs remain the source of detailed behavior."
+    "message": "This page groups public exports from packages/dynamic-form/src/exports.ts by purpose as a quick lookup entry. The topic docs remain the source of detailed behavior."
   },
   "api.group.relatedDocs": {
     "message": "Related docs"

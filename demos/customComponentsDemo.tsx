@@ -9,7 +9,7 @@ import DynamicForm from '@/index';
 import { exampleHandlers } from './customHandlers';
 import { customComponents } from './customComponents';
 import { Button, Form, message, Space, Spin } from 'antd';
-import { mockFetchFormData } from '../src/shared/utils/utils';
+import { mockFetchFormData } from '../packages/dynamic-form/src/shared/utils/utils';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
 
 // 组件注册器配置

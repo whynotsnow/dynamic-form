@@ -10,7 +10,7 @@ External input / ModuleFormConfig
   -> Rule + Config Compiler (optional)
   -> FormConfig
 
-src/index.tsx
+packages/dynamic-form/src/index.tsx
   -> DynamicFormProvider
       -> useStoreInit
       -> form-chain-effect-engine
@@ -24,20 +24,20 @@ src/index.tsx
 
 ### 关键文件
 
-- `src/adapters/`：把 module-like、JsonSchema、OpenAPI 和 metadata 输入归一化为 `ModuleFormConfig`。
-- `src/modules/`：定义 `FieldModule` 协议和模块注册器。
-- `src/rules/`：校验、求值声明式规则，并把规则编译为标准 effects。
-- `src/compiler/compileFormConfig.ts`：把 `ModuleFormConfig` 编译为标准 `FormConfig` 和组件注册表。
-- `src/CompiledDynamicForm.tsx`：把 compiler 产物及其组件注册表接入 `DynamicForm`。
-- `src/index.tsx`：拆分 `DynamicFormProps`，把引擎层 props 交给 Provider，把 UI 层 props 交给 FormContent。
-- `src/consumer/provider/DynamicFormProvider.tsx`：初始化 store、effect engine 和 React context。
-- `src/state/useStoreInit.ts`：处理配置、创建 reducer state、合并初始值并同步到 Ant Design Form。
-- `src/config/processor/configParser.ts`：生成 `effectMap`、`fieldRegistry`、`initialValues`、`initializedFields`、`initializedGroupFields`。
-- `src/state/reducer.ts`：用 Immer 处理字段 meta、分组 meta 和动态 UI 配置更新。
-- `src/runtime/resolver.ts`：解析字段和分组运行时能力。
-- `src/consumer/render/FormContent.tsx`：渲染表单并连接提交、变更事件。
-- `src/consumer/effects/`：通过 handler 系统应用 effect 返回值。
-- `src/consumer/render/componentRegistry.tsx`：提供内置组件和自定义组件注册能力。
+- `packages/dynamic-form/src/adapters/`：把 module-like、JsonSchema、OpenAPI 和 metadata 输入归一化为 `ModuleFormConfig`。
+- `packages/dynamic-form/src/modules/`：定义 `FieldModule` 协议和模块注册器。
+- `packages/dynamic-form/src/rules/`：校验、求值声明式规则，并把规则编译为标准 effects。
+- `packages/dynamic-form/src/compiler/compileFormConfig.ts`：把 `ModuleFormConfig` 编译为标准 `FormConfig` 和组件注册表。
+- `packages/dynamic-form/src/CompiledDynamicForm.tsx`：把 compiler 产物及其组件注册表接入 `DynamicForm`。
+- `packages/dynamic-form/src/index.tsx`：拆分 `DynamicFormProps`，把引擎层 props 交给 Provider，把 UI 层 props 交给 FormContent。
+- `packages/dynamic-form/src/consumer/provider/DynamicFormProvider.tsx`：初始化 store、effect engine 和 React context。
+- `packages/dynamic-form/src/state/useStoreInit.ts`：处理配置、创建 reducer state、合并初始值并同步到 Ant Design Form。
+- `packages/dynamic-form/src/config/processor/configParser.ts`：生成 `effectMap`、`fieldRegistry`、`initialValues`、`initializedFields`、`initializedGroupFields`。
+- `packages/dynamic-form/src/state/reducer.ts`：用 Immer 处理字段 meta、分组 meta 和动态 UI 配置更新。
+- `packages/dynamic-form/src/runtime/resolver.ts`：解析字段和分组运行时能力。
+- `packages/dynamic-form/src/consumer/render/FormContent.tsx`：渲染表单并连接提交、变更事件。
+- `packages/dynamic-form/src/consumer/effects/`：通过 handler 系统应用 effect 返回值。
+- `packages/dynamic-form/src/consumer/render/componentRegistry.tsx`：提供内置组件和自定义组件注册能力。
 
 ### 数据流
 

@@ -46,7 +46,7 @@ return <DynamicForm form={form} formConfig={formConfig} />;
 
 ### 默认返回 key
 
-默认 handler 定义在 `src/config/defaultConfig.ts`。
+默认 handler 定义在 `packages/dynamic-form/src/config/defaultConfig.ts`。
 
 | 返回 key          | 作用                                        |
 | ----------------- | ------------------------------------------- |

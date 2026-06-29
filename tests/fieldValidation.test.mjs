@@ -9,7 +9,7 @@ import ts from 'typescript';
 const require = createRequire(import.meta.url);
 
 function loadFieldValidationModule() {
-  const sourcePath = path.resolve('src/consumer/render/fieldValidation.ts');
+  const sourcePath = path.resolve('packages/dynamic-form/src/consumer/render/fieldValidation.ts');
   const source = fs.readFileSync(sourcePath, 'utf8');
   const output = ts.transpileModule(source, {
     compilerOptions: {

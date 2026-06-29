@@ -3,19 +3,21 @@
     "target": "ESNext",
     "module": "ESNext",
     "jsx": "react-jsx",
-    "noEmit": true,
+    "declaration": true,
+    "declarationDir": "dist/types",
+    "outDir": "dist",
     "moduleResolution": "Node",
     "types": ["vite/client", "node"],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["packages/dynamic-form/src/*"],
-      "@whynotsnow/dynamic-form": ["packages/dynamic-form/src/exports.ts"]
+      "@/*": ["src/*"],
+      "@whynotsnow/dynamic-form": ["src/exports.ts"]
     },
     "esModuleInterop": true,
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["demos", "tests/**/*.ts", "tests/**/*.tsx"],
-  "exclude": ["node_modules", "dist", "packages/dynamic-form/dist"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }

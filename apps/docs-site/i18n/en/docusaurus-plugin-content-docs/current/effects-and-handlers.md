@@ -29,7 +29,7 @@ Fields and groups can declare `dependents` and `effect`. Config processing creat
 
 ### Default Result Keys
 
-Default handlers are defined in `src/config/defaultConfig.ts`. Supported keys include `value`, `visible`, `disabled`, `readonly`, `groupsVisible`, `formItemProps`, `componentProps`, `formProps`, `buttonProps`, `cardProps`, `rowProps`, `colProps`, and `submitAreaProps`.
+Default handlers are defined in `packages/dynamic-form/src/config/defaultConfig.ts`. Supported keys include `value`, `visible`, `disabled`, `readonly`, `groupsVisible`, `formItemProps`, `componentProps`, `formProps`, `buttonProps`, `cardProps`, `rowProps`, `colProps`, and `submitAreaProps`.
 
 Unknown keys are not applied and are only reported through warning logs.
 
