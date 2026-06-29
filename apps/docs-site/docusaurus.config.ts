@@ -6,8 +6,8 @@ const config: Config = {
   title: 'DynamicForm',
   tagline: '基于 Ant Design 的配置化 React 表单',
 
-  url: 'https://whynotsnow.github.io',
-  baseUrl: '/dynamic-form/',
+  url: process.env.SITE_URL ?? 'https://form.whynotsnow.com',
+  baseUrl: process.env.SITE_BASE_URL ?? '/',
   trailingSlash: true,
 
   organizationName: 'whynotsnow',
