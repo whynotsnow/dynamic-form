@@ -80,6 +80,6 @@ DynamicForm 3.0 adds an optional adapter/rule/compiler pipeline before the exist
 - [Schema Adapters](./schema-adapters.md): JsonSchema, OpenAPI, and metadata adapters built on Adapter Foundation.
 - Existing `FormConfig` and `DynamicForm` usage remains compatible.
 
-### 3.1 Field Address
+### 3.2 Field Address
 
-DynamicForm 3.1 separates stable field IDs from Ant Design `NamePath` values. Omitting `name` continues to use `id`, preserving existing configurations. See [Field Address](./field-address.md).
+DynamicForm 3.2 separates stable field IDs from Ant Design `NamePath` values. Omitting `name` continues to use `id`, preserving existing configurations. See [Field Address](./field-address.md).

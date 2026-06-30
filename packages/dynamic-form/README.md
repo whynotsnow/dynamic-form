@@ -17,7 +17,7 @@
 - 🪝 支持从字段项到整个表单体的分层 render hooks。
 - 🧠 使用 Runtime Layer 统一解析 `rendered`、`submitable`、`editable`、`readonly`、`disabled`、`validatable` 等能力。
 - 🧱 Ant Design Form 仍然是真实表单值和校验运行时状态的唯一来源。
-- 🧭 3.1 支持通过 `name: NamePath` 分离稳定字段 `id` 与嵌套值路径，旧配置默认继续使用 `id`。
+- 🧭 3.2 支持通过 `name: NamePath` 分离稳定字段 `id` 与嵌套值路径，旧配置默认继续使用 `id`。
 
 ### 安装
 

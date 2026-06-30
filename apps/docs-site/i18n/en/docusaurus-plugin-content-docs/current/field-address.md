@@ -1,6 +1,6 @@
 # Field Address
 
-DynamicForm 3.1 introduces `FieldAddress`, separating a field's stable logical identity from its Ant Design Form value path:
+DynamicForm 3.2 includes `FieldAddress` in the current capability baseline, separating a field's stable logical identity from its Ant Design Form value path:
 
 ```ts
 interface FieldAddress {
@@ -15,4 +15,4 @@ interface FieldAddress {
 
 Nested values can use `name: ['shipping', 'city']` while effects continue referencing the stable field `id`. Effect and functional `initialValue` values preserve the nested structure and also expose stable field-ID aliases. The package exports `resolveFieldAddress(field)` and `getFieldName(field)` for custom renderers and components.
 
-Version 3.1 establishes the addressing foundation only. It does not add container fields or a recursive node tree. Field and group IDs remain globally unique, and two fields cannot use the same `name` path.
+Version 3.2 establishes the addressing foundation only. It does not add container fields or a recursive node tree. Field and group IDs remain globally unique, and two fields cannot use the same `name` path.

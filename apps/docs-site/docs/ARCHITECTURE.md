@@ -1,6 +1,6 @@
 # 架构说明
 
-DynamicForm 3.1 由 Field Address 基础、可选的 Adapter / Module / Rule / Compiler 预处理能力，以及稳定的 Config / State / Runtime / Consumer / Shared 运行时主线组成。核心目标是让字段逻辑标识和值路径分离，并让外部输入归一化、领域模块展开、配置解析、状态维护、运行时策略和 UI 渲染各自保持清晰边界，同时保留 Ant Design Form 对真实表单值和校验运行时状态的所有权。
+DynamicForm 3.2 由 Field Address 基础、可选的 Adapter / Module / Rule / Compiler 预处理能力，以及稳定的 Config / State / Runtime / Consumer / Shared 运行时主线组成。核心目标是让字段逻辑标识和值路径分离，并让外部输入归一化、领域模块展开、配置解析、状态维护、运行时策略和 UI 渲染各自保持清晰边界，同时保留 Ant Design Form 对真实表单值和校验运行时状态的所有权。
 
 ### 仓库结构
 

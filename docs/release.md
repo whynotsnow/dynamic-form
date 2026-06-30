@@ -38,4 +38,4 @@ pnpm run release:publish
 
 ### Tag
 
-版本 tag 采用 `v` 前缀，例如 `v3.0.0`。
+版本 tag 采用 `v` 前缀，例如 `v3.2.0`。

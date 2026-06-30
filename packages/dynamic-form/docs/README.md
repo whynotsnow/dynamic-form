@@ -80,7 +80,6 @@ DynamicForm 3.0 在现有 `FormConfig` 运行时管线前新增可选 Adapter / 
 - [Schema Adapters](./schema-adapters.md)：基于 Adapter Foundation 的 JsonSchema、OpenAPI 和 metadata adapters。
 - 现有 `FormConfig` 和 `DynamicForm` 用法保持兼容。
 
-### 3.1 Field Address
+### 3.2 Field Address
 
-DynamicForm 3.1 将稳定字段 `id` 与 Ant Design `NamePath` 分离。未声明 `name` 时继续使用 `id`，因此原有配置保持兼容；详见 [Field Address](./field-address.md)。
-
+DynamicForm 3.2 将稳定字段 `id` 与 Ant Design `NamePath` 分离。未声明 `name` 时继续使用 `id`，因此原有配置保持兼容；详见 [Field Address](./field-address.md)。

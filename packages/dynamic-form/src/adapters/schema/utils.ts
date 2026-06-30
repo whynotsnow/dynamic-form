@@ -43,13 +43,13 @@ function getFieldMetadata(property: JsonSchemaProperty): SchemaAdapterFieldMetad
 }
 
 function assertSupportedTopLevelProperty(id: string, property: JsonSchemaProperty) {
-  // 3.3 只处理顶层字段，嵌套对象留给后续结构化表单能力。
+  // 3.2 只处理顶层字段，嵌套对象留给后续结构化表单能力。
   if (property.type === 'object' && property.properties) {
-    throw new Error(`JsonSchemaAdapter: nested object property "${id}" is not supported in 3.3.`);
+    throw new Error(`JsonSchemaAdapter: nested object property "${id}" is not supported in 3.2.`);
   }
 
   if (property.type === 'array' && property.items && property.items.type === 'object') {
-    throw new Error(`JsonSchemaAdapter: object array property "${id}" is not supported in 3.3.`);
+    throw new Error(`JsonSchemaAdapter: object array property "${id}" is not supported in 3.2.`);
   }
 }
 

@@ -1,6 +1,6 @@
 # Architecture
 
-DynamicForm 3.1 combines the Field Address foundation, optional Adapter / Module / Rule / Compiler preprocessing, and a stable Config / State / Runtime / Consumer / Shared runtime pipeline. It separates logical field identity from value paths while preserving Ant Design Form as the owner of actual values and validation runtime state.
+DynamicForm 3.2 combines the Field Address foundation, optional Adapter / Module / Rule / Compiler preprocessing, and a stable Config / State / Runtime / Consumer / Shared runtime pipeline. It separates logical field identity from value paths while preserving Ant Design Form as the owner of actual values and validation runtime state.
 
 ### Repository Layout
 

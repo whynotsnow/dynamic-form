@@ -1,5 +1,71 @@
 # Changelog
 
+## 3.2.0 - 2026-06-30
+
+### 版本概览
+
+- 将当前实现基线校正为 `3.2.0`，用于归档 monorepo 化、docs-site、demo 复用边界和当前文档体系。
+- 保持 `@whynotsnow/dynamic-form` 的 public export surface 与 3.1 配置兼容；根目录继续作为 private workspace root，不作为 npm 发布包。
+- 明确库级同步边界：DynamicForm 核心不支持库级异步 effect 或 async validation compile。异步请求、远程选项、搜索联想和服务端校验等场景应由自定义字段组件或业务容器封装。
+
+### Monorepo 与发布边界
+
+- 仓库已调整为 private pnpm workspace root，唯一 npm 发布包保留在 `packages/dynamic-form/`。
+- 新增 Docusaurus docs-site workspace：`apps/docs-site/`，站点中文文档与英文 i18n 文档独立维护。
+- 根 `demos/` 作为 Vite demo 和 docs-site playground 复用的业务 demo 来源，避免在站点复制 demo 逻辑。
+- 根 `docs/` 只维护 monorepo 级架构、维护、发布和站点规划文档；库权威文档保留在 `packages/dynamic-form/docs/`。
+
+### 文档与能力基线
+
+- 保留并整理 Compiler、Module Registry、Adapter Registry、Schema Adapters、同步 Rule Engine、Runtime Layer、Field Address 和 `CompiledDynamicForm` 的公共 API 与文档。
+- 将当前文档中的 Field Address 基线统一到 `3.2`，与 package 版本保持一致。
+- Schema adapters 继续保持显式 module metadata 策略，不根据 schema primitive type 自动推断 UI 或 module type。
+- JsonSchemaAdapter 的 nested object / object array 不支持错误信息同步更新为当前 `3.2` 版本。
+
+### 异步边界
+
+- Effect result handling 保持同步边界；自定义 `EffectResultHandler` 不承载异步任务调度、请求生命周期、loading/error/cache 或竞态控制。
+- Rule Engine 仅支持同步求值，不实现异步/API 规则、远程规则、请求取消或竞态策略。
+- Schema / Adapter 管线不提供 async validation compile。
+- Demo 中移除容易误导的异步 handler 示例。
+
+### Package
+
+- 根 workspace 和 `@whynotsnow/dynamic-form` package 版本升级到 `3.2.0`。
+
+## 3.1.0 - 2026-06-12
+
+### 版本概览
+
+- 新增 Field Address 基础能力，将字段稳定逻辑标识 `id` 与 Ant Design Form 值路径 `name` 分离。
+- 支持通过 Ant Design `NamePath` 表达嵌套 values，同时保持 effect graph、Runtime、field registry 和 meta 更新继续使用稳定字段 `id`。
+- 未声明 `name` 时默认继续使用 `id`，原有单层字段配置无需迁移。
+
+### Field Address 与嵌套值
+
+- 新增 `FieldAddress` 描述字段 `id` 与 `name` 的对应关系。
+- 新增 `resolveFieldAddress()` 和 `getFieldName()` 公共工具，便于自定义渲染、`Form.Item`、`Form.List` 和手工校验调用复用同一值路径解析策略。
+- `processFormConfig()` 会生成 `fieldAddressRegistry`，并在初始化阶段按 `NamePath` 写入嵌套 initial values。
+- 函数式 `initialValue` 和 effect values 快照同时保留嵌套值结构，并提供按稳定字段 `id` 读取的别名。
+- `onValuesChange` 会把 Ant Design 嵌套 changed values 映射回稳定字段 `id`，再触发 effect chain。
+
+### Runtime、校验和提交
+
+- 默认字段渲染器使用 `getFieldName(field)` 作为 Ant Design `Form.Item.name`。
+- Runtime 校验流程会把 validatable field ids 转换为对应 `NamePath` 后再调用 `form.validateFields()`。
+- 提交值继续从 Ant Design Form 读取，因此嵌套值结构会保留在提交结果中。
+- 隐藏字段参与策略继续按 Runtime `submitable` 能力清理或恢复对应 `NamePath` 下的值。
+
+### 边界与兼容性
+
+- Field Address 只提供字段寻址和嵌套值路径基础，不引入 container 字段、递归节点树或 nested group。
+- 字段和 group 的 `id` 仍须全局唯一；两个字段不能使用相同 `name` 路径。
+- `dependents`、rule dependencies 和 effect graph 节点仍引用稳定字段 `id`，不引用 Ant Design `NamePath`。
+
+### Package
+
+- 根 workspace 和 `@whynotsnow/dynamic-form` package 版本升级到 `3.1.0`。
+
 ## 3.0.0 - 2026.06.16
 
 ### 版本概览
@@ -63,7 +129,6 @@
 - 包版本升级到 `3.0.0`。
 - 移除仅用于 reducer 便利写法的 `immer` 运行时依赖，改用显式不可变状态更新。
 
-
 ## 2.0.0 - 2026-06-02
 
 ### 破坏性变更 / 架构调整
@@ -120,4 +185,3 @@
 ### Package
 
 - 包版本从 `1.0.2` 升级到 `2.0.0`。
-

@@ -1,6 +1,6 @@
 # Field Address
 
-DynamicForm 3.1 引入 `FieldAddress`，将字段的稳定逻辑标识与 Ant Design Form 值路径分离：
+DynamicForm 3.2 将 `FieldAddress` 纳入当前能力基线，用来把字段的稳定逻辑标识与 Ant Design Form 值路径分离：
 
 ```ts
 interface FieldAddress {
@@ -42,5 +42,4 @@ const formConfig: FormConfig = {
 
 ### 当前边界
 
-3.1 提供字段寻址和嵌套值路径基础，但不引入 container 字段或递归节点树。字段和 group 的 `id` 仍须全局唯一，两个字段不能使用相同 `name` 路径。
-
+3.2 提供字段寻址和嵌套值路径基础，但不引入 container 字段或递归节点树。字段和 group 的 `id` 仍须全局唯一，两个字段不能使用相同 `name` 路径。
