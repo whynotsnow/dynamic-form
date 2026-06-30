@@ -7,18 +7,25 @@ import { resolveFieldRequired, resolveFieldRules } from './fieldValidation';
 import { getFieldName } from '../../shared/utils';
 
 const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
-  function FieldRenderer({ field, form, componentRegistry, dynamicUIConfig, runtimeCapability }) {
+  function FieldRenderer({
+    field,
+    form,
+    componentRegistry,
+    dynamicUIConfig,
+    runtimeCapability,
+    name
+  }) {
     const baseFormItemProps = useMemo(() => {
       const validatable = runtimeCapability?.validatable !== false;
       const rules = resolveFieldRules(field, validatable);
 
       return {
         label: field.label,
-        name: getFieldName(field),
+        name: name ?? getFieldName(field),
         rules,
         required: resolveFieldRequired(field, rules, validatable)
       };
-    }, [field, runtimeCapability?.validatable]);
+    }, [field, name, runtimeCapability?.validatable]);
     // 解析字段级别配置
     const resolvedConfigs = useMemo(() => {
       // 合并 formItemProps（外层）
