@@ -1,8 +1,16 @@
 # 架构说明
 
-## 中文文档
-
 DynamicForm 3.1 由 Field Address 基础、可选的 Adapter / Module / Rule / Compiler 预处理能力，以及稳定的 Config / State / Runtime / Consumer / Shared 运行时主线组成。核心目标是让字段逻辑标识和值路径分离，并让外部输入归一化、领域模块展开、配置解析、状态维护、运行时策略和 UI 渲染各自保持清晰边界，同时保留 Ant Design Form 对真实表单值和校验运行时状态的所有权。
+
+### 仓库结构
+
+当前仓库是 monorepo：
+
+- `packages/dynamic-form/` 是唯一 npm 发布包边界，包含库源码、`tsup` 配置和 package manifest。
+- `packages/dynamic-form/docs/` 是 DynamicForm 库文档的维护源，随 npm 包一起维护和发布。
+- 根 `docs/` 只维护 monorepo 级文档，例如 workspace 结构、发布流程、站点规划和仓库维护规则。
+- `apps/docs-site/` 是 Docusaurus 文档站，使用站点自己的 zh-CN docs 和 `i18n/en` 文档内容。
+- `demos/` 保留 Vite demo 和 `demoRegistry`，站点只复用 demo 组件与注册信息，不复制 demo 业务逻辑。
 
 ### 模块关系
 
@@ -97,88 +105,3 @@ reducer 不维护重复的 values store。更新值的 effect handler 应调用 
 - render hooks 可以绕过默认渲染，因此修改扩展行为时要谨慎。
 - Adapter、Compiler 和 Rule Engine 应保持在 React runtime 之外，不直接维护 Form 实例或 reducer state。
 
----
-
-## English Documentation
-
-DynamicForm 3.1 combines the Field Address foundation, optional Adapter / Module / Rule / Compiler preprocessing, and a stable Config / State / Runtime / Consumer / Shared runtime pipeline. It separates logical field identity from value paths while preserving Ant Design Form as the owner of actual values and validation runtime state.
-
-### Module Map
-
-```text
-External input / ModuleFormConfig
-  -> Adapter Registry (optional)
-  -> Rule + Config Compiler (optional)
-  -> FormConfig
-
-packages/dynamic-form/src/index.tsx
-  -> DynamicFormProvider
-      -> useStoreInit
-      -> form-chain-effect-engine
-      -> FormChainContext
-  -> FormContent
-      -> useRuntimeState
-      -> useFormRuntimeEvents
-      -> useFieldParticipation
-      -> FieldComponentRenderer
-```
-
-### Important Files
-
-- `packages/dynamic-form/src/adapters/`: normalizes module-like, JsonSchema, OpenAPI, and metadata input into `ModuleFormConfig`.
-- `packages/dynamic-form/src/modules/`: defines the `FieldModule` protocol and module registry.
-- `packages/dynamic-form/src/rules/`: validates and evaluates declarative rules and compiles them into standard effects.
-- `packages/dynamic-form/src/compiler/compileFormConfig.ts`: compiles `ModuleFormConfig` into standard `FormConfig` and a component registry.
-- `packages/dynamic-form/src/CompiledDynamicForm.tsx`: wires compiler output and its component registry into `DynamicForm`.
-- `packages/dynamic-form/src/index.tsx`: splits `DynamicFormProps` into engine props and UI props.
-- `packages/dynamic-form/src/consumer/provider/DynamicFormProvider.tsx`: initializes store, effect engine, and React context.
-- `packages/dynamic-form/src/state/useStoreInit.ts`: processes config, creates reducer state, merges initial values, and syncs Ant Design Form.
-- `packages/dynamic-form/src/config/processor/configParser.ts`: creates `effectMap`, `fieldRegistry`, `initialValues`, `initializedFields`, and `initializedGroupFields`.
-- `packages/dynamic-form/src/state/reducer.ts`: handles field meta, group meta, and dynamic UI config updates with Immer.
-- `packages/dynamic-form/src/runtime/resolver.ts`: resolves field and group runtime capabilities.
-- `packages/dynamic-form/src/consumer/render/FormContent.tsx`: renders the form and wires submit/change events.
-- `packages/dynamic-form/src/consumer/effects/`: applies effect results through handlers.
-- `packages/dynamic-form/src/consumer/render/componentRegistry.tsx`: provides built-in components and custom registration.
-
-### Data Flow
-
-1. An optional adapter normalizes external input into `ModuleFormConfig`.
-2. The optional compiler expands field modules, compiles field/group rules, and creates standard `FormConfig` plus a component registry.
-3. The user supplies handwritten `FormConfig` to `DynamicForm`, or compiler output to `CompiledDynamicForm`.
-4. `DynamicForm` passes engine props to `DynamicFormProvider` and UI props to `FormContent`.
-5. `useStoreInit` calls `processFormConfig(formConfig)`.
-6. Config processing creates dependency maps, field registry, initial values, and initialized field/group state.
-7. The reducer receives `INIT` and stores structure, meta, config process info, and dynamic UI config.
-8. `DynamicFormProvider` initializes `form-chain-effect-engine` with `effectMap`.
-9. `FormContent` computes one `runtimeState` from reducer state.
-10. Rendering, validation, and hidden-field participation consume that same `runtimeState`.
-11. User input triggers runtime-filtered validation and then the effect engine.
-12. Effect results pass through `applyEffectResult`, and handlers update Ant Design Form values, field meta, group meta, or dynamic UI config.
-
-### State Ownership
-
-Ant Design Form owns values, validation errors and warnings, touched and validating state, and submitted value retrieval.
-
-DynamicForm reducer owns flat field state, grouped field state, field behavior/render meta, group behavior meta, config processing info, dynamic UI config, and initialized state.
-
-The reducer intentionally does not maintain a duplicate value store. Effect handlers that update values should call `form.setFieldsValue`.
-
-### Layer Responsibilities
-
-- Adapter Layer: converts external input into `ModuleFormConfig` without deciding Runtime or renderer behavior.
-- Module / Compiler Layer: expands domain field modules, assembles flat/grouped/mixed structure, and outputs standard `FormConfig`.
-- Rule Layer: compiles synchronous declarative rules into standard effects without replacing the effect engine or Ant Design validation.
-- Config Layer: normalizes flat/grouped/mixed `FormConfig` into runtime inputs.
-- State Layer: stores initialized field/group structure and meta while normalizing legacy flat meta keys.
-- Runtime Layer: resolves rendered, submitable, editable, readonly, disabled, and validatable policy.
-- Consumer Layer: connects provider, rendering, hooks, effect results, and component registry.
-- Shared Layer: contains types, context, utilities, and meta normalization helpers.
-
-### Maintenance Constraints
-
-- Field lookup should use `configProcessInfo.fieldRegistry` because fields can be flat or grouped.
-- Runtime should be computed once per state snapshot in `FormContent`.
-- Validation must be filtered through `runtimeState.fields[fieldId].validatable`.
-- Hidden fields are excluded from submit participation unless explicitly preserved.
-- Render hooks can bypass default rendering, so extension behavior changes should be deliberate.
-- Adapters, the compiler, and the Rule Engine should remain outside React runtime and must not directly own Form instances or reducer state.

@@ -1,7 +1,5 @@
 # 组件使用指南
 
-## 中文文档
-
 本文面向 DynamicForm 的使用者，说明常见配置如何组合使用，并给出对应 demo 链接。这里提供的是最小示例；更完整的场景请阅读对应 demo 源码。
 
 ### Demo 入口
@@ -12,16 +10,16 @@
 npm run start
 ```
 
-当前 demo 入口位于 [`demos/DemoSelector.tsx`](../demos/DemoSelector.tsx)，demo 配置位于 [`demos/index.ts`](../demos/index.ts)。
+当前 demo 入口位于 [`demos/DemoSelector.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/DemoSelector.tsx)，demo 注册中心位于 [`demos/demoRegistry.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/demoRegistry.tsx)。
 
 | 场景 | Demo |
 | --- | --- |
-| 表单值同步和 effect 更新边界 | [`demos/storeBoundaryDemo.tsx`](../demos/storeBoundaryDemo.tsx) |
-| 自定义 effect result handlers | [`demos/customHandlersDemo.tsx`](../demos/customHandlersDemo.tsx)、[`demos/customHandlers.ts`](../demos/customHandlers.ts) |
-| 自定义组件注册 | [`demos/customComponentsDemo.tsx`](../demos/customComponentsDemo.tsx) |
-| Ant Design Form 校验集成 | [`demos/formValidationDemo.tsx`](../demos/formValidationDemo.tsx) |
-| 静态和动态 UI 配置 | [`demos/uiConfigDemo.tsx`](../demos/uiConfigDemo.tsx) |
-| render hooks 渲染扩展 | [`demos/renderExtensionDemo.tsx`](../demos/renderExtensionDemo.tsx) |
+| 表单值同步和 effect 更新边界 | [`demos/storeBoundaryDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/storeBoundaryDemo.tsx) |
+| 自定义 effect result handlers | [`demos/customHandlersDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/customHandlersDemo.tsx)、[`demos/customHandlers.ts`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/customHandlers.ts) |
+| 自定义组件注册 | [`demos/customComponentsDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/customComponentsDemo.tsx) |
+| Ant Design Form 校验集成 | [`demos/formValidationDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/formValidationDemo.tsx) |
+| 静态和动态 UI 配置 | [`demos/uiConfigDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/uiConfigDemo.tsx) |
+| render hooks 渲染扩展 | [`demos/renderExtensionDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/renderExtensionDemo.tsx) |
 
 ### 最小使用
 
@@ -103,7 +101,7 @@ const formConfig: FormConfig = {
 };
 ```
 
-如果要把分组改成 tabs 或其他布局，优先查看 [`demos/renderExtensionDemo.tsx`](../demos/renderExtensionDemo.tsx)。
+如果要把分组改成 tabs 或其他布局，优先查看 [`demos/renderExtensionDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/renderExtensionDemo.tsx)。
 
 ### UI 配置
 
@@ -123,7 +121,7 @@ const formConfig: FormConfig = {
 />
 ```
 
-完整示例见 [`demos/uiConfigDemo.tsx`](../demos/uiConfigDemo.tsx)。
+完整示例见 [`demos/uiConfigDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/uiConfigDemo.tsx)。
 
 ### 字段联动 effect
 
@@ -155,7 +153,7 @@ const formConfig: FormConfig = {
 };
 ```
 
-更完整的 effect 和 handler 说明见 [`effects-and-handlers.md`](./effects-and-handlers.md)，运行时行为边界见 [`runtime-layer.md`](./runtime-layer.md)。跨字段复杂更新建议使用自定义 handler，参考 [`demos/customHandlersDemo.tsx`](../demos/customHandlersDemo.tsx)。
+更完整的 effect 和 handler 说明见 [`effects-and-handlers.md`](./effects-and-handlers.md)，运行时行为边界见 [`runtime-layer.md`](./runtime-layer.md)。跨字段复杂更新建议使用自定义 handler，参考 [`demos/customHandlersDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/customHandlersDemo.tsx)。
 
 ### 注册自定义组件
 
@@ -202,7 +200,7 @@ const formConfig: FormConfig = {
 />;
 ```
 
-完整示例见 [`demos/customComponentsDemo.tsx`](../demos/customComponentsDemo.tsx)。
+完整示例见 [`demos/customComponentsDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/customComponentsDemo.tsx)。
 
 ### 自定义 Effect Handlers
 
@@ -247,7 +245,7 @@ const { isInitialized } = useInitHandlers({
 }
 ```
 
-完整示例见 [`demos/customHandlersDemo.tsx`](../demos/customHandlersDemo.tsx) 和 [`demos/customHandlers.ts`](../demos/customHandlers.ts)。
+完整示例见 [`demos/customHandlersDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/customHandlersDemo.tsx) 和 [`demos/customHandlers.ts`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/customHandlers.ts)。
 
 ### 渲染扩展
 
@@ -270,7 +268,7 @@ const { isInitialized } = useInitHandlers({
 />
 ```
 
-完整示例见 [`demos/renderExtensionDemo.tsx`](../demos/renderExtensionDemo.tsx)，系统说明见 [`rendering-and-ui.md`](./rendering-and-ui.md)。
+完整示例见 [`demos/renderExtensionDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/renderExtensionDemo.tsx)，系统说明见 [`rendering-and-ui.md`](./rendering-and-ui.md)。
 
 ### 校验配置
 
@@ -288,7 +286,7 @@ const { isInitialized } = useInitHandlers({
 }
 ```
 
-隐藏字段、分组隐藏字段、disabled 字段是否参与校验由 Runtime Layer 统一决定。完整示例见 [`demos/formValidationDemo.tsx`](../demos/formValidationDemo.tsx)。
+隐藏字段、分组隐藏字段、disabled 字段是否参与校验由 Runtime Layer 统一决定。完整示例见 [`demos/formValidationDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/formValidationDemo.tsx)。
 
 ### 使用建议
 
@@ -298,71 +296,3 @@ const { isInitialized } = useInitHandlers({
 - 改变整体布局或局部结构：使用 render hooks。
 - 判断字段是否渲染、提交、校验：遵循 Runtime Layer，不在业务组件里重复计算。
 
----
-
-## English Documentation
-
-This guide is for DynamicForm users. It explains how common configuration options are used together and links to the relevant demos. Examples here are intentionally small; complete scenarios live in the demo files.
-
-### Demo Entry
-
-Run local demos:
-
-```bash
-npm run start
-```
-
-The demo selector is [`demos/DemoSelector.tsx`](../demos/DemoSelector.tsx), and demo metadata is in [`demos/index.ts`](../demos/index.ts).
-
-| Scenario | Demo |
-| --- | --- |
-| Form value sync and effect update boundary | [`demos/storeBoundaryDemo.tsx`](../demos/storeBoundaryDemo.tsx) |
-| Custom effect result handlers | [`demos/customHandlersDemo.tsx`](../demos/customHandlersDemo.tsx), [`demos/customHandlers.ts`](../demos/customHandlers.ts) |
-| Custom component registry | [`demos/customComponentsDemo.tsx`](../demos/customComponentsDemo.tsx) |
-| Ant Design Form validation integration | [`demos/formValidationDemo.tsx`](../demos/formValidationDemo.tsx) |
-| Static and dynamic UI config | [`demos/uiConfigDemo.tsx`](../demos/uiConfigDemo.tsx) |
-| Render hook extensions | [`demos/renderExtensionDemo.tsx`](../demos/renderExtensionDemo.tsx) |
-
-### Minimal Usage
-
-Use `useInitHandlers` before rendering forms that rely on handlers, then render `DynamicForm` with an Ant Design `form` instance and `formConfig`.
-
-### Flat and Grouped Config
-
-Use flat config for small forms and grouped config for business sections. Grouped forms render each group with an Ant Design `Card` by default.
-
-Detailed config options are documented in [`configuration.md`](./configuration.md).
-
-### UI Config
-
-Use `uiConfig` when the default Ant Design structure is correct and only props need to change. See [`demos/uiConfigDemo.tsx`](../demos/uiConfigDemo.tsx).
-
-### Field Effects
-
-Fields use `dependents` to declare dependencies and `effect` to return updates. Default handlers support keys such as `value`, `visible`, `disabled`, `readonly`, `componentProps`, and `formItemProps`.
-
-For deeper details, see [`effects-and-handlers.md`](./effects-and-handlers.md) and [`runtime-layer.md`](./runtime-layer.md).
-
-### Custom Components
-
-Use `componentRegistry` when field input UI is business-specific. Custom components receive `field`, `value`, `onChange`, and `form`. See [`demos/customComponentsDemo.tsx`](../demos/customComponentsDemo.tsx).
-
-### Custom Effect Handlers
-
-Register custom handlers when effect result keys represent business semantics. Handlers should use the semantic APIs from context and should not maintain duplicate form values. See [`demos/customHandlersDemo.tsx`](../demos/customHandlersDemo.tsx) and [`demos/customHandlers.ts`](../demos/customHandlers.ts).
-
-### Render Extensions
-
-Use render hooks when the default `Form -> Row -> Col` or `Card -> Row -> Col` structure is not enough. See [`demos/renderExtensionDemo.tsx`](../demos/renderExtensionDemo.tsx) and [`rendering-and-ui.md`](./rendering-and-ui.md).
-
-### Validation
-
-Use Ant Design Form `rules` for normal fields. Runtime decides whether hidden, group-hidden, or disabled fields participate in validation. See [`demos/formValidationDemo.tsx`](../demos/formValidationDemo.tsx).
-
-### Usage Guidance
-
-- Use `uiConfig` for Ant Design prop changes.
-- Use `componentRegistry` for business-specific field interactions.
-- Use custom handlers for business-semantic effect result keys.
-- Use render hooks for layout or structural changes.
-- Follow Runtime Layer for rendering, submission, and validation policy.

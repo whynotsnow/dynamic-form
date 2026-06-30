@@ -2,6 +2,16 @@
 
 DynamicForm 3.1 combines the Field Address foundation, optional Adapter / Module / Rule / Compiler preprocessing, and a stable Config / State / Runtime / Consumer / Shared runtime pipeline. It separates logical field identity from value paths while preserving Ant Design Form as the owner of actual values and validation runtime state.
 
+### Repository Layout
+
+The repository is now a monorepo:
+
+- `packages/dynamic-form/` is the only npm package boundary. It contains the library source, `tsup` config, and package manifest.
+- `packages/dynamic-form/docs/` is the maintained source for DynamicForm library documentation and is published with the npm package.
+- Root `docs/` only maintains monorepo-level documentation such as workspace layout, release flow, site planning, and repository maintenance rules.
+- `apps/docs-site/` is the Docusaurus site, with site-specific zh-CN docs and `i18n/en` content.
+- `demos/` keeps the Vite demos and `demoRegistry`; the site reuses demo components and registry metadata without copying demo business logic.
+
 ### Module Map
 
 ```text

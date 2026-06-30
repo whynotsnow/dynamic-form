@@ -47,11 +47,11 @@ For UI behavior, also inspect the relevant demo in the browser.
 
 ### Documentation Maintenance
 
-When source behavior changes, update the closest topic file in `docs/`. Update the root `README.md` if public API, high-level feature summaries, or documentation entry points change. Update `AGENTS.md` when the change creates useful project knowledge for future agents.
+When library behavior, public APIs, or usage changes, update the closest library topic file in `packages/dynamic-form/docs/`. When workspace layout, release, CI, site planning, or repository governance changes, update root `docs/`. Update the root `README.md` if public API, high-level feature summaries, or documentation entry points change. Update `AGENTS.md` when the change creates useful project knowledge for future agents.
 
 Docs use a bilingual structure: Chinese content first, followed by the English translation.
 
-Do not reintroduce the old overlapping documentation set.
+Do not reintroduce the old overlapping documentation set, and do not copy demo business logic into the site directory.
 
 ### Implementation Guardrails
 

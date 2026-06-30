@@ -2,6 +2,16 @@
 
 DynamicForm 3.1 由 Field Address 基础、可选的 Adapter / Module / Rule / Compiler 预处理能力，以及稳定的 Config / State / Runtime / Consumer / Shared 运行时主线组成。核心目标是让字段逻辑标识和值路径分离，并让外部输入归一化、领域模块展开、配置解析、状态维护、运行时策略和 UI 渲染各自保持清晰边界，同时保留 Ant Design Form 对真实表单值和校验运行时状态的所有权。
 
+### 仓库结构
+
+当前仓库是 monorepo：
+
+- `packages/dynamic-form/` 是唯一 npm 发布包边界，包含库源码、`tsup` 配置和 package manifest。
+- `packages/dynamic-form/docs/` 是 DynamicForm 库文档的维护源，随 npm 包一起维护和发布。
+- 根 `docs/` 只维护 monorepo 级文档，例如 workspace 结构、发布流程、站点规划和仓库维护规则。
+- `apps/docs-site/` 是 Docusaurus 文档站，使用站点自己的 zh-CN docs 和 `i18n/en` 文档内容。
+- `demos/` 保留 Vite demo 和 `demoRegistry`，站点只复用 demo 组件与注册信息，不复制 demo 业务逻辑。
+
 ### 模块关系
 
 ```text

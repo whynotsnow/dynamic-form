@@ -1,7 +1,5 @@
 # DynamicForm
 
-## 中文文档
-
 `@whynotsnow/dynamic-form` 是一个基于 React、TypeScript 和 Ant Design 的动态表单库。它用配置描述表单结构，用 `form-chain-effect-engine` 执行字段联动，并通过 Runtime Layer 统一处理字段是否渲染、是否提交、是否可编辑、是否校验等运行时策略。
 
 ### 项目能力
@@ -27,7 +25,7 @@
 npm install @whynotsnow/dynamic-form antd react react-dom
 ```
 
-Peer dependencies:
+Peer dependencies（对等依赖）：
 
 - `react >= 17`
 - `react-dom >= 17`
@@ -204,11 +202,12 @@ Rule 是字段所属的 per-field 规则，不支持 `target` 配置。一个源
 ```text
 packages/dynamic-form/   npm 发布包、源码和构建配置
   src/                   库源码
+  docs/                  库文档
   dist/                  构建产物
 apps/docs-site/          Docusaurus 文档站
 demos/                   Vite demos 和可复用 demo 组件
 tests/                   Node test 文件和 demo 测试数据
-docs/                    仓库级双语文档
+docs/                    monorepo 级文档
 ```
 
 ### 开发命令
@@ -249,202 +248,3 @@ const moduleFormConfig = adaptModuleConfigs(
 ```
 
 Schema adapters 要求字段显式声明 module metadata，不会根据 schema primitive type 自动猜测 UI。输出为 `{ fields, groups? }`；顶层 `x-dynamic-form.groups` 与属性级 `groupId` 控制分组，函数 effect 通过 `groupOverrides` 合并。Schema `required` 映射为字段 `required` 语义，最终 AntD 校验规则由默认 renderer 统一合并。
-
----
-
-## English Documentation
-
-`@whynotsnow/dynamic-form` is a React + TypeScript dynamic form library built on Ant Design. It renders forms from configuration, delegates dependency chains to `form-chain-effect-engine`, and uses a Runtime Layer to keep rendering, submission, editing, and validation policies consistent.
-
-### What It Provides
-
-- 🚀 Configuration-driven Ant Design forms through `formConfig`.
-- 🗂️ Flat and grouped form configuration.
-- 🔗 Field and group dependency effects through `dependents` and `effect`.
-- 🧩 Static and function-based initial values.
-- 🛠️ Built-in effect result handlers for values, field behavior, group visibility, field render props, and global UI config.
-- 🎨 Custom field components through `componentRegistry`.
-- 🧱 Reusable domain field config through Field Modules, Compiler, and Adapter pipelines.
-- 📐 Declarative synchronous rules compiled into standard effects.
-- 🔄 JsonSchema, OpenAPI, and metadata input adapters.
-- 🧩 `CompiledDynamicForm` renders compiler/adapter output with module components wired automatically.
-- 🪝 Layered render hooks from field item to full form body.
-- 🧠 Runtime capability resolution for `rendered`, `submitable`, `editable`, `readonly`, `disabled`, and `validatable`.
-- 🧱 Ant Design Form remains the source of truth for form values and validation runtime state.
-- 🧭 Version 3.1 separates stable field IDs from nested Ant Design `NamePath` values while preserving `id` as the default name.
-
-### Installation
-
-```bash
-npm install @whynotsnow/dynamic-form antd react react-dom
-```
-
-Peer dependencies:
-
-- `react >= 17`
-- `react-dom >= 17`
-- `antd >= 5`
-
-### Basic Usage
-
-See the Chinese section above for the full code example. The same API is used in both languages.
-
-### Core API
-
-Primary exports are defined in `packages/dynamic-form/src/exports.ts`:
-
-- `DynamicForm`
-- `CompiledDynamicForm`
-- `DynamicFormProvider`
-- `FormChainEffectEngineWrapper`
-- `useInitHandlers`
-- `useStoreInit`
-- `useFormChainContext`
-- `ComponentRegistryManager`
-- `DefaultRegistryFieldComponents`
-- `getDefaultConfig`
-- `processFormConfig`
-- `compileFormConfig`
-- `ModuleRegistryManager`
-- `defaultModuleRegistry`
-- `AdapterRegistryManager`
-- `defaultAdapterRegistry`
-- `adaptModuleConfigs`
-- `compileAdaptedFormConfig`
-- `JsonSchemaAdapter`
-- `OpenApiAdapter`
-- `MetadataAdapter`
-- `RuleEngine`
-- `createRuleEngine`
-- `compileRulesToEffect`
-- `evaluateRule`
-- Public types for `DynamicFormProps`, `FormConfig`, compiler, adapters, rules, render hooks, and component registration.
-
-### Rule Engine
-
-DynamicForm 3.0 includes a declarative Rule Engine for module-based form linkage. Rules are compiled into standard effects, so the renderer and runtime provider stay unchanged.
-
-```tsx
-import { compileFormConfig, ModuleRegistryManager } from '@whynotsnow/dynamic-form';
-
-const registry = new ModuleRegistryManager();
-
-registry.register({
-  type: 'CompanyName',
-  createConfig: () => ({
-    id: 'companyName',
-    label: 'Company Name',
-    component: 'TextInput'
-  })
-});
-
-const compiled = compileFormConfig(
-  {
-    fields: [
-      {
-        type: 'CompanyName',
-        id: 'companyName',
-        rules: [
-          {
-            when: { field: 'customerType', equals: 'company' },
-            then: { action: 'show' }
-          },
-          {
-            when: { field: 'customerType', notEquals: 'company' },
-            then: { action: 'hide' }
-          }
-        ]
-      }
-    ]
-  },
-  { registry }
-);
-```
-
-Current field rules support `show`, `hide`, `enable`, `disable`, `readonly`, `editable`, `setValue`, and `clearValue`. Group rules support only `show` and `hide`.
-
-Rules are field-owned per-field rules and do not support `target` configuration. When one source field affects multiple fields, declare a rule on each affected field; the compiler infers the same `dependents` from `when`, and `form-chain-effect-engine` triggers each field's own effect.
-
-### Adapter Foundation
-
-Adapter Foundation normalizes external or module-like input into structured `ModuleFormConfig` before handing it to `compileFormConfig()`.
-
-```tsx
-import { compileAdaptedFormConfig } from '@whynotsnow/dynamic-form';
-
-const compiled = compileAdaptedFormConfig({
-  fields: [{ type: 'UserSelector', id: 'ownerId', options: { label: 'Owner' } }]
-});
-```
-
-The adapter layer only converts input. Rule merging, dependency inference, component registration, runtime, and rendering behavior remain owned by the compiler/runtime pipeline.
-
-### Schema Adapters
-
-DynamicForm 3.0 provides `JsonSchemaAdapter`, `OpenApiAdapter`, and `MetadataAdapter` on top of Adapter Foundation.
-
-```tsx
-import { adaptModuleConfigs } from '@whynotsnow/dynamic-form';
-
-const moduleFormConfig = adaptModuleConfigs(
-  {
-    type: 'object',
-    properties: {
-      name: {
-        type: 'string',
-        metadata: { module: 'TextInputModule' }
-      }
-    }
-  },
-  { adapterType: 'json-schema' }
-);
-```
-
-Schema adapters require explicit module metadata and do not infer UI from schema primitive types. Output is `{ fields, groups? }`; top-level `x-dynamic-form.groups` and property-level `groupId` control grouping, while function effects are merged through `groupOverrides`. Schema `required` maps to field-level `required` semantics, and the default renderer merges final AntD validation rules.
-
-`DynamicForm` props combine:
-
-- Engine props: `formConfig`, `form`, optional `values`, `uiConfig`, `enableInitializationCheck`, `checkDelay`.
-- UI props: optional `onSubmit`, `submitButtonText`, `componentRegistry`, `renderFormInner`, `renderGroups`, `renderGroupItem`, `renderFields`, `renderFieldItem`.
-
-### Documentation
-
-- 📚 [Documentation Index](./docs/README.md)
-- 🏗️ [Architecture](./docs/ARCHITECTURE.md)
-- ⚙️ [Configuration Guide](./docs/configuration.md)
-- 🧩 [Compiler Foundation](./docs/compiler-foundation.md)
-- 📐 [Rule Engine](./docs/rule-engine.md)
-- 🔄 [Adapter Foundation](./docs/adapter-foundation.md)
-- 🧾 [Schema Adapters](./docs/schema-adapters.md)
-- 🔗 [Effects and Handlers](./docs/effects-and-handlers.md)
-- 🎨 [Rendering and UI Extensions](./docs/rendering-and-ui.md)
-- 🧠 [Runtime Layer](./docs/runtime-layer.md)
-- 🧭 [Field Address](./docs/field-address.md)
-- 🧭 [Component Usage Guide](./docs/development.md)
-- 🛠️ [Maintenance Guide](./docs/maintenance.md)
-
-### Design Principles
-
-- Keep business forms declarative.
-- Keep values in Ant Design Form instead of duplicating them in the reducer.
-- Make Runtime the policy boundary for rendering, submission, editing, and validation.
-- Prefer extension points over forks.
-- Keep default rendering simple with Ant Design `Form`, `Row`, `Col`, `Card`, and `Button`.
-
-### Optional 3.0 Configuration Pipeline
-
-Before the existing runtime pipeline, 3.0 provides optional Adapter, Rule, and Compiler stages.
-JsonSchema, OpenAPI, and metadata input is normalized into structured `ModuleFormConfig` and then
-compiled into standard `FormConfig`. Fields join groups through `groupId`, mixed grouped and
-ungrouped fields are supported, and function effects that cannot live in schema data are injected
-through `groupOverrides` before compilation.
-
-### Development
-
-```bash
-npm run start
-npm run type-check
-npm run lint:check
-npm run test
-npm run build
-```

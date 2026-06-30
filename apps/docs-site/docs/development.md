@@ -10,7 +10,7 @@
 npm run start
 ```
 
-当前 demo 入口位于 [`demos/DemoSelector.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/DemoSelector.tsx)，demo 配置位于 [`demos/index.ts`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/index.ts)。
+当前 demo 入口位于 [`demos/DemoSelector.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/DemoSelector.tsx)，demo 注册中心位于 [`demos/demoRegistry.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/demoRegistry.tsx)。
 
 | 场景                          | Demo                                                                                                                                                                                                                           |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |

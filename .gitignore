@@ -5,6 +5,7 @@
 /apps/*/build
 /apps/*/.docusaurus
 /apps/*/node_modules
+/packages/*/dist
 /tmp
 
 # Logs

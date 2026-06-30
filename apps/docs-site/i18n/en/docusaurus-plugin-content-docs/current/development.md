@@ -10,7 +10,7 @@ Run local demos:
 npm run start
 ```
 
-The demo selector is [`demos/DemoSelector.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/DemoSelector.tsx), and demo metadata is in [`demos/index.ts`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/index.ts).
+The demo selector is [`demos/DemoSelector.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/DemoSelector.tsx), and the demo registry is [`demos/demoRegistry.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/demoRegistry.tsx).
 
 | Scenario                                   | Demo                                                                                                                                                                                                                           |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |

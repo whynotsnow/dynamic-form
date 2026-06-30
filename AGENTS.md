@@ -1,390 +1,81 @@
-# Project Notes for Future Agents
-
-Last reviewed: 2026-06-11
-
-## Project Overview
-
-This repository is a React + TypeScript dynamic form library named `@whynotsnow/dynamic-form`.
-It renders Ant Design forms from configuration and delegates dependency/effect execution to
-`form-chain-effect-engine`.
-
-The library is intended to support:
-
-- flat and grouped form configuration
-- field dependency chains through `dependents` + `effect`
-- custom field components through `componentRegistry`
-- custom effect result handlers through `useInitHandlers`
-- render extension hooks such as `renderFormInner`, `renderGroups`, `renderGroupItem`,
-  `renderFields`, and `renderFieldItem`
-- bidirectional synchronization between Ant Design Form state and internal reducer state
-- a Runtime Layer that resolves render/submit/edit/validate capabilities from reducer state
-- an optional compiler layer for module-style field configs
-- an adapter layer that normalizes module-like, JsonSchema, OpenAPI, and metadata inputs into
-  `ModuleConfig[]`
-- a synchronous declarative rule layer that compiles rules into standard effects
-
-## Tech Stack
-
-- React, TypeScript, ES modules
-- Ant Design as the UI peer dependency
-- `form-chain-effect-engine` for effect chain execution
-- `immer` for reducer updates
-- Vite for local demo development
-- tsup for library builds
-- ESLint + Prettier + Husky/lint-staged
-- npm lockfile is present; use npm unless the user asks otherwise
-
-## Important Commands
-
-- `npm run start`: run the Vite demo server on port 3000
-- `npm run build`: build the package with tsup into `dist`
-- `npm run type-check`: run TypeScript checks
-- `npm run lint:check`: run ESLint without fixes
-- `npm run lint`: run ESLint with fixes
-- `npm run format`: format `src` and `demos`
-
-Do not run dependency installation or global tool installation without explaining why first.
-
-## Directory Map
-
-- `src/`: library source, organized by Config / Compiler / Adapters / Rules / State / Runtime /
-  Consumer / Shared layers
-- `src/exports.ts`: package public export surface; tsup entry point
-- `src/index.tsx`: `DynamicForm` component that composes engine layer and UI layer
-- `src/shared/types.ts`: core public and internal types
-- `src/compiler/`: optional compiler layer that expands `ModuleConfig[]` into standard `FormConfig`
-- `src/modules/`: field module registry and default registry
-- `src/adapters/`: adapter registry, passthrough adapter, schema adapters, and compile-adapt pipeline
-- `src/rules/`: declarative synchronous rule evaluation and rule-to-effect compilation
-- `src/consumer/provider/DynamicFormProvider.tsx`: provider layer; initializes store, effect engine,
-  context, initialization warning, and effect result handling
-- `src/consumer/render/FormContent.tsx`: rendering layer; owns Ant Design `Form`, value change handling,
-  submit handling, default rendering, and render extension hooks
-- `src/runtime/`: Runtime Layer. It resolves `FormState` into `RuntimeState` via
-  `resolveRuntimeState()` and exposes selectors/resolvers for field and group capabilities.
-- `src/state/reducer.ts`: Immer reducer for field values, field/group meta, batched updates, and dynamic UI config
-- `src/state/useStoreInit.ts`: initializes reducer state and synchronizes initial values into AntD Form
-- `src/config/processor/`: converts user config into `effectMap`, `fieldRegistry`, initial values,
-  initialized fields, and initialized groups
-- `src/config/defaultConfig.ts`: exported default config helper
-- `src/consumer/effects/`: applies effect/initialValue return objects through registered handlers
-- `src/consumer/hooks/`: consumer hooks for submit/change events, field participation, and handler initialization
-- `src/consumer/render/componentRegistry.tsx`: built-in Ant Design field components and component registry manager
-- `src/consumer/render/FieldComponentRenderer.tsx`: renders a configured field via the registry
-- `src/shared/context/`: form chain React context access
-- `src/shared/utils/`: path/deep utilities and initialization checks
-- `demos/`: Vite demos for usage, custom handlers, custom components, UI config, sync tests, and render extensions
-- `tests/`: Node test runner files under `tests/**/*.test.mjs`, plus shared test/demo data
-- `docs/`: architecture, data flow, field types, config, effects, batch updates, and quick reference docs
-- `dist/`: generated build output; reproducible artifact
-
-## Public API Shape
-
-Public exports are defined in `src/exports.ts`:
-
-- `DynamicForm`
-- `DynamicFormProvider`
-- `FormChainEffectEngineWrapper` (backward-compatible export alias)
-- key types: `DynamicFormProps`, `FormConfig`, `BaseFieldConfig`,
-  `FieldComponentProps`, `ComponentRegistry`, `ComponentRegistryConfig`
-- `ComponentRegistryManager`, `DefaultRegistryFieldComponents`
-- hooks: `useFormChainContext`, `useStoreInit`, `useInitHandlers`
-- `getDefaultConfig`
-- compiler APIs: `compileFormConfig`, `ModuleConfig`, `CompiledModuleConfig`
-- module registry APIs: `ModuleRegistryManager`, `defaultModuleRegistry`, `FieldModule`
-- adapter APIs: `AdapterRegistryManager`, `defaultAdapterRegistry`, `adaptModuleConfigs`,
-  `compileAdaptedFormConfig`, `ModuleConfigPassthroughAdapter`, `JsonSchemaAdapter`,
-  `OpenApiAdapter`, and `MetadataAdapter`
-- rule APIs: `RuleEngine`, `createRuleEngine`, `compileRulesToEffect`, and `evaluateRule`
-
-`DynamicFormProps` combines:
-
-- engine props: `formConfig`, `form`, optional `values`, `uiConfig`,
-  `enableInitializationCheck`, `checkDelay`
-- UI props: optional `onSubmit`, `submitButtonText`, `componentRegistry`,
-  and render extension callbacks
-
-## Core Data Flow
-
-1. Optional adapters normalize external input into `ModuleConfig[]` through `adaptModuleConfigs` or
-   `compileAdaptedFormConfig`.
-2. Optional compiler APIs expand `ModuleConfig[]` into the existing `FormConfig` shape through
-   `compileFormConfig`.
-3. `DynamicForm` splits props into engine props and UI props.
-4. `DynamicFormProvider` calls `useStoreInit`.
-5. `useStoreInit` processes `formConfig` with `processFormConfig`, merges initial values with `values`,
-   creates reducer state, and dispatches `INIT` once.
-6. `FormContent` renders Ant Design `Form` from reducer state.
-7. User input triggers Ant Design `onValuesChange`.
-8. `FormContent` computes a single `runtimeState` from reducer state with `useRuntimeState(state)`.
-9. `useFormRuntimeEvents` handles submit/change events using that same Runtime snapshot:
-   - changed-field validation is filtered by `runtimeState.fields[id].validatable`
-   - submit validation is filtered to currently validatable fields
-   - effect engine `onValuesChange(changedValues)` is still called after local runtime validation scheduling
-10. `useFieldParticipation` consumes the same `runtimeState` and clears/restores values based on
-   `submitable`, so hidden/group-hidden fields do not need to recalculate capability independently.
-11. `form-chain-effect-engine` executes dependent field effects from `effectMap`.
-12. `applyEffectResult` applies value/meta/UI updates through built-in or custom handlers.
-
-## Runtime Layer
-
-The Runtime Layer is the current migration direction:
-
-```text
-FormState
-  -> resolveRuntimeState()
-  -> RuntimeState
-       -> FormContent
-       -> useFieldParticipation
-       -> validation
-       -> future plugins
-```
-
-Runtime capabilities are the intended source of truth for UI participation decisions:
-
-- `rendered`: field/group should be rendered. Field rendering also respects group visibility.
-- `submitable`: field participates in submitted form data. Current policy follows `rendered`.
-- `disabled`: derived from field behavior meta.
-- `readonly`: derived from field behavior meta.
-- `editable`: `rendered && !disabled && !readonly`.
-- `validatable`: current policy is `rendered && !disabled`; readonly fields still validate.
-
-Important implementation constraints:
-
-- Compute Runtime once per state snapshot in `FormContent` with `useRuntimeState(state)`.
-- Pass the same `runtimeState` into consumers instead of calling `resolveFieldCapability()` repeatedly.
-- `useFieldParticipation` must not independently resolve capabilities; it should consume Runtime.
-- Runtime resolvers should read field/group behavior through helpers such as `getFieldBehaviorMeta`
-  and `getGroupBehaviorMeta`, not by directly reading legacy flat meta keys.
-- Validation must not call `form.validateFields(Object.keys(changedValues))` directly, because that
-  ignores hidden fields, disabled fields, readonly policy, and group-hidden fields.
-- Default field rendering passes `runtimeCapability` into `FieldComponentRenderer`, which suppresses
-  Form.Item rules when `validatable` is false and maps runtime `disabled`/`readonly` to component props.
-- `BaseFieldConfig.required` is a field declaration. The default Ant Design renderer merges it into
-  a real required `Form.Item` rule unless an explicit required rule already exists.
-
-## Meta Boundaries
-
-`FieldMeta` is split by responsibility:
-
-- `meta.behavior`: behavior state consumed by Runtime, currently `visible`, `disabled`, and `readonly`.
-- `meta.formItemProps`: render-layer dynamic props for Ant Design `Form.Item`.
-- `meta.componentProps`: render-layer dynamic props for the inner field component.
-
-Legacy flat keys are still accepted for compatibility:
-
-```ts
-{ visible: false, disabled: true, readonly: true }
-```
-
-Reducers and initialization helpers normalize those flat keys into:
-
-```ts
-{ behavior: { visible: false, disabled: true, readonly: true } }
-```
-
-Default effect handlers should write behavior updates as `meta.behavior`. Do not put render-only
-configuration into Runtime; `formItemProps` and `componentProps` remain render-layer metadata.
-
-## Configuration Model
-
-Two config shapes are supported:
-
-- flat: `{ fields: BaseFieldConfig[] }`
-- grouped: `{ groups: GroupField[] }`
-
-Field essentials:
-
-- `id`: field key, also used by form values and registry lookup
-- `component`: built-in or custom component name
-- `label`, `required`, `rules`, `span`, `style`
-- `initialValue`: static value or function based on computed initial values
-- `initialVisible`, `initialDisabled`
-- `dependents`: dependencies watched by the effect engine
-- `effect`: effect function from `form-chain-effect-engine`
-- `formItemProps`, `componentProps`
-
-Grouped config supports group-level `id`, `title`, `initialVisible`, `dependents`, `effect`, and `fields`.
-
-## Compiler, Adapter, Schema, and Rule Layers
-
-The field module/compiler direction is now implemented as an optional layer above the existing
-`FormConfig` pipeline:
-
-- `ModuleRegistryManager` stores reusable field modules and can reject duplicate module types unless
-  override is requested.
-- `compileFormConfig()` expands `ModuleConfig[]` into the existing `FormConfig` shape before
-  `processFormConfig()` runs.
-- Compiler hooks can observe or adjust module compilation without changing the runtime renderer.
-- `AdapterRegistryManager`, `adaptModuleConfigs()`, and `compileAdaptedFormConfig()` normalize
-  external input before handing it to the compiler.
-- Built-in adapters include passthrough `ModuleConfig[]`, JsonSchema, OpenAPI, and project metadata.
-- Schema adapters require explicit module metadata; they do not infer UI or module types from schema
-  primitive types.
-- `RuleEngine` and `compileRulesToEffect()` support synchronous declarative actions such as show,
-  hide, enable, disable, readonly, editable, setValue, and clearValue.
-- Rules are owned by the affected field and do not support `target`; one source field affecting
-  multiple fields is modeled as multiple fields depending on the same source field.
-
-Keep the store boundary unchanged when working in these layers: Ant Design Form owns values and
-validation runtime state; DynamicForm owns field meta, group meta, dynamic UI config, and dependency
-metadata. Do not move rule execution into components. Components should render from props, while
-effects and handlers update meta through the existing pipeline.
-
-## Effect Result Handling
-
-Effects and function-style `initialValue` can return objects. `applyEffectResult` routes each returned key
-to registered handlers from `src/consumer/effects/handlerRegistry.ts`.
-
-Known update categories include:
-
-- field values
-- field behavior meta such as visibility/disabled/readonly
-- field render meta such as component/form item props
-- group behavior/meta
-- dynamic UI config
-- custom handler-specific result keys
-
-For effect-related changes, inspect `src/consumer/effects/types.ts`, `handlerRegistry.ts`,
-`applyEffectResult.ts`, and `effectResultContext.ts` together. Avoid adding one-off handling in components
-if it belongs in effect result handling.
-
-## Rendering Model
-
-`FormContent` provides default rendering but exposes layered render extension hooks:
-
-- `renderFieldItem`: customize one field item while receiving `defaultRender`
-- `renderFields`: customize a field list
-- `renderGroupItem`: customize one group
-- `renderGroups`: customize group collection
-- `renderFormInner`: customize the full form body and submit area
-
-Default layout uses Ant Design:
-
-- `Form`
-- `Row`
-- `Col`
-- `Card` for groups
-- `Button` for submit
-
-Default UI config comes from `useStoreInit`:
-
-- `rowProps: { gutter: [16, 0] }`
-- `colProps: { span: 8 }`
-- empty form/button/card/submit/formItem props
-
-## Built-In Field Components
-
-Defined in `src/consumer/render/componentRegistry.tsx`:
-
-- `Password`
-- `ConfirmPassword`
-- `TextInput`
-- `NumberInput`
-- `SelectField`
-- `DatePicker`
-- `Switch`
-- `Rate`
-- `TextDisplay`
-- `CheckboxGroup`
-- `Select`
-- `TextArea`
-
-Custom components are passed via:
-
-```tsx
-componentRegistry={{
-  customComponents: {
-    CustomField: CustomFieldComponent
-  },
-  allowOverride: false
-}}
-```
-
-By default, custom components do not override built-ins unless `allowOverride` is true.
-
-## Documentation System
-
-The documentation was rebuilt on 2026-06-01. The current docs are intentionally smaller and topic-based:
-
-- `README.md`: public project overview, feature summary, install/basic usage, design principles, and doc index.
-- `docs/README.md`: documentation entry point and reading order.
-- `docs/ARCHITECTURE.md`: Config / State / Runtime / Consumer / Shared architecture and data flow.
-- `docs/configuration.md`: flat/grouped config, field/group options, UI config, built-in components.
-- `docs/effects-and-handlers.md`: dependency effects, default result keys, initialization contract, custom handlers.
-- `docs/rendering-and-ui.md`: default rendering, component registry, render hooks, UI extension guidance.
-- `docs/runtime-layer.md`: runtime capability model and validation/participation policy.
-- `docs/compiler-foundation.md`: field module registry, module config compilation, and compiler hooks.
-- `docs/adapter-foundation.md`: adapter registry and external-input normalization into `ModuleConfig[]`.
-- `docs/schema-adapters.md`: JsonSchema, OpenAPI, and metadata adapters built on Adapter Foundation.
-- `docs/development.md`: component usage guide with scenario-based config examples, demo links, custom components, and custom effect handlers.
-- `docs/maintenance.md`: commands, demos, verification, build notes, implementation guardrails, and documentation maintenance rules.
-
-Do not recreate the old document set unless the user explicitly asks. When project behavior changes, update the
-nearest topic doc and then update the root `README.md` only if public-facing summaries or links change.
-
-Documentation language structure:
-
-- Project docs should be bilingual with the complete Chinese document first and the English translation below it.
-- Architecture/version documents must keep their title, status, roadmap, and newly added feature sections aligned with the current implemented version, and every new version section must include Chinese content before English.
-- This bilingual rule applies to all project documentation files, including directory-level README files such as `demos/README.md`.
-- New or updated demo-facing text must also be bilingual, including demo registry titles/descriptions,
-  demo README entries, and explanatory copy inside demo pages.
-- Do not use a short explanatory note as a substitute for the full Chinese document.
-- Do not append English-only documentation sections. When adding a new section, add the Chinese section first
-  and the matching English section immediately after it.
-- Keep API names, package names, file paths, and established technical terms in English when clearer.
-- A small amount of emoji is acceptable in headings or summary bullets when it improves scanning.
-
-Code comment language:
-
-- Add short Chinese comments at key non-obvious implementation points, especially adapters, compiler
-  boundaries, schema mappings, runtime policies, and compatibility decisions.
-- Keep comments concise and explain intent or boundary decisions instead of restating the code.
-- Do not add noisy comments for self-explanatory assignments, imports, or simple control flow.
-
-## Current Demo Coverage
-
-The active demo selector in `demos/DemoSelector.tsx` exposes:
-
-- `storeBoundary`
-- `customHandlers`
-- `customComponents`
-- `formValidation`
-- `uiConfig`
-- `renderExtension`
-- `compilerFoundation`
-
-Do not rely on older demo names from stale docs unless the files actually exist.
-
-## Implementation Notes and Risks
-
-- Keep changes small and aligned with existing architecture.
-- Do not rewrite the whole form pipeline for a narrow behavior fix.
-- The internal reducer state is split into `fields`, `groupFields`, `configProcessInfo`, `initialized`,
-  and `dynamicUIConfig`. Ant Design Form owns runtime values, errors, touched state, warnings, and validating state.
-- Field lookup must respect `configProcessInfo.fieldRegistry`, because fields may be flat or inside groups.
-- `UPDATE_META` needs to update either `fields` or `groupFields[groupId].fields`
-  depending on registry metadata, and should use `mergeFieldMetaPatch` so legacy flat behavior keys
-  are normalized.
-- `SET_GROUP_META` should use `mergeGroupMetaPatch` for the same compatibility reason.
-- Runtime validation currently lives in `useFormRuntimeEvents`; keep it filtered by runtime capability.
-- Runtime is taking over validation and participation. Avoid reintroducing direct changed-key validation
-  without filtering through `runtimeState.fields[fieldId].validatable`.
-- `FieldComponentRenderer` is where default component-level runtime props are applied. Custom render
-  hooks can bypass this, so changes to render extension behavior should be deliberate.
-- `enableInitializationCheck` warns if `useInitHandlers` was not called; do not remove this unless the
-  initialization contract changes.
-- Some docs may display garbled text in default PowerShell output; read Chinese markdown with explicit UTF-8.
-
-## Verification Guidance
-
-For source changes, prefer:
-
-1. `npm run type-check`
-2. `npm run lint:check`
-3. `npm run build`
-4. For UI/render behavior, run `npm run start` and inspect demos at `http://localhost:3000`
-
-The `test` script runs Node tests under `tests/**/*.test.mjs`; do not claim automated tests passed unless
-the relevant command was actually run.
+# 后续 Agent 项目说明
+
+最近审阅：2026-06-30
+
+## 作用范围
+
+本文适用于仓库根目录和 monorepo 级工作。更具体的规则放在各 workspace 附近：
+
+- `packages/dynamic-form/AGENTS.md`：库源码、package 文档、构建和发布边界。
+- `apps/docs-site/AGENTS.md`：Docusaurus 文档站。
+- `demos/AGENTS.md`：可复用 demo 组件和 demo-facing 文案。
+
+处理子目录文件时，应同时遵守最近的 `AGENTS.md` 与本文规则。
+
+## 仓库概览
+
+本仓库是 `@whynotsnow/dynamic-form` 的 private npm workspace root。
+
+- `packages/dynamic-form/`：唯一 npm 发布包。
+- `apps/docs-site/`：Docusaurus 文档站。
+- `demos/`：repo-level Vite demos，以及 docs-site 复用的 demo 组件。
+- `tests/`：Node test runner 文件和共享 demo 测试数据。
+- `docs/`：monorepo 级架构、维护、发布和站点规划文档。
+
+根目录不能作为 npm 发布包处理。
+
+## 工具规则
+
+- 默认使用 npm；仓库包含 `package-lock.json`。
+- 不要在未说明原因的情况下安装依赖或全局工具。
+- 不要提前添加当前仓库状态下不可运行的 npm scripts。
+- 搜索优先使用 `rg` / `rg --files`。
+- 手工编辑文件时使用 `apply_patch`。
+
+## 常用命令
+
+- `npm run start`：启动 Vite demo server，端口 3000。
+- `npm run site:start`：启动 Docusaurus docs site，端口 3001。
+- `npm run type-check`：执行 package 与 repo TypeScript 检查。
+- `npm run lint:check`：执行 ESLint 检查，不自动修复。
+- `npm run test`：执行 `tests/**/*.test.mjs`。
+- `npm run build`：构建 `@whynotsnow/dynamic-form`。
+- `npm run site:build`：构建 docs site。
+- `npm run release:publish`：执行 package 发布保护脚本。
+
+不要声称某个命令通过，除非实际运行过。
+
+## 文档语言规则
+
+- 从 2026-06-30 起，项目文档默认只使用中文编写。
+- 文档、README、CHANGELOG、AGENTS 等说明性文件不再维护完整英文翻译结构。
+- 可以保留 API name、package name、file path、npm scripts、TypeScript 类型名、Docusaurus、Runtime、Adapter、Compiler 等英文关键词。
+- 唯一例外是 `apps/docs-site/i18n/`：该目录继续维护 docs-site 的英文翻译内容。
+- 修改 `apps/docs-site/docs/` 的中文站点内容时，应同步维护 `apps/docs-site/i18n/` 中对应英文翻译。
+
+## 文档归属
+
+- 根 `README.md` 是 monorepo 入口，保持简短并链接到各 workspace 文档。
+- 根 `docs/` 只维护 monorepo 级文档。
+- 库文档归属 `packages/dynamic-form/docs/`。
+- docs-site 中文内容归属 `apps/docs-site/docs/`，英文 i18n 内容归属 `apps/docs-site/i18n/`。
+- demo 文档归属 `demos/README.md`。
+
+## Demo 边界
+
+- 不要把 `demos/` 中的 demo 业务逻辑复制到 `apps/docs-site/`。
+- docs-site 可以包装和样式化 demos，但 demo 行为应保留在 demo 组件中。
+- 新增或修改 demo-facing 文案时，默认使用中文；如果该文案也展示在 docs-site 英文 i18n 页面中，再同步维护对应英文翻译。
+
+## 发布边界
+
+- 可发布 package 是 `packages/dynamic-form/`。
+- package name、public exports、`main`、`module`、`types` 和 `exports` 兼容性很重要。
+- `npm publish --access public` 必须通过发布脚本在 package workspace 内执行。
+- 根文档和站点文档不是 package 发布输入，除非明确复制到 package 边界。
+
+## Git 安全
+
+- 工作区可能包含用户未提交修改。不要回滚你没有创建的改动，除非用户明确要求。
+- 避免执行 `git reset --hard`、`git checkout --` 等破坏性命令，除非用户明确要求。
+- 保持改动范围聚焦，不做无关重构。

@@ -1,7 +1,5 @@
 # Field Address
 
-## 中文文档
-
 DynamicForm 3.1 引入 `FieldAddress`，将字段的稳定逻辑标识与 Ant Design Form 值路径分离：
 
 ```ts
@@ -46,23 +44,3 @@ const formConfig: FormConfig = {
 
 3.1 提供字段寻址和嵌套值路径基础，但不引入 container 字段或递归节点树。字段和 group 的 `id` 仍须全局唯一，两个字段不能使用相同 `name` 路径。
 
----
-
-## English Documentation
-
-DynamicForm 3.1 introduces `FieldAddress`, separating a field's stable logical identity from its Ant Design Form value path:
-
-```ts
-interface FieldAddress {
-  id: string;
-  name: NamePath;
-}
-```
-
-- `id` is the globally unique identity used by Runtime, the field registry, the effect graph, and meta updates.
-- `name` is the Ant Design `NamePath` used by `Form.Item`, value access, and validation.
-- When `name` is omitted, it defaults to `id`, so existing flat configurations require no migration.
-
-Nested values can use `name: ['shipping', 'city']` while effects continue referencing the stable field `id`. Effect and functional `initialValue` values preserve the nested structure and also expose stable field-ID aliases. The package exports `resolveFieldAddress(field)` and `getFieldName(field)` for custom renderers and components.
-
-Version 3.1 establishes the addressing foundation only. It does not add container fields or a recursive node tree. Field and group IDs remain globally unique, and two fields cannot use the same `name` path.

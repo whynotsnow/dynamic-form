@@ -2,8 +2,6 @@
 
 ## 3.0.0 - 2026.06.16
 
-## 中文
-
 ### 版本概览
 
 - 在 2.0 Runtime/State 分层基础上新增模块编译、声明式规则、输入适配和 Schema Adapter 能力，使 DynamicForm 从直接配置驱动扩展为可选的领域模块编译管线。
@@ -51,7 +49,7 @@
 
 - 从包根入口导出 compiler、module registry、adapter、schema adapter、rule engine、`CompiledDynamicForm` 及相关公共类型。
 - 新增 compiler、adapter、schema adapter、rule engine 和字段校验测试，覆盖 mixed/grouped 编译、规则依赖推导、adapter 解析和错误边界。
-- 新增 Compiler Foundation、Adapter Foundation 和 Schema Adapters 双语文档，并更新 README、配置、渲染和维护文档及 compiler demo。
+- 新增 Compiler Foundation、Adapter Foundation 和 Schema Adapters 中文文档，并更新 README、配置、渲染和维护文档及 compiler demo。
 
 ### 兼容性与限制
 
@@ -65,72 +63,8 @@
 - 包版本升级到 `3.0.0`。
 - 移除仅用于 reducer 便利写法的 `immer` 运行时依赖，改用显式不可变状态更新。
 
-## English
-
-### Release Overview
-
-- Added module compilation, declarative rules, input adapters, and schema adapters on top of the 2.0 Runtime/State architecture, extending DynamicForm with an optional domain-module compilation pipeline.
-- Preserved the existing `FormConfig -> processFormConfig -> Runtime -> Renderer` pipeline; existing `DynamicForm` and handwritten `FormConfig` usage require no migration.
-- Added `CompiledDynamicForm` to render compiler/adapter output while automatically merging the generated component registry.
-
-### Compiler And Field Modules
-
-- Added the `FieldModule` protocol, `ModuleRegistryManager`, and `defaultModuleRegistry` for reusable field modules, with duplicate module types rejected by default.
-- Added `compileFormConfig()` to compile structured `ModuleFormConfig` input into standard `FormConfig` and `componentRegistry` output.
-- Added merging for module-level config factories, components, default props, dependencies, effects, and rules with instance-level `options`, `rules`, and `overrides`.
-- Added `beforeCompile`, `beforeGroupExpand`, `afterGroupExpand`, `beforeModuleExpand`, `afterModuleExpand`, and `afterCompile` hooks.
-- Added flat, grouped, and mixed compiler output. Fields join groups through `groupId`, while ungrouped fields remain at the top level.
-- Added validation for globally unique field/group IDs, valid group references, non-empty groups, and registered module types.
-
-### Declarative Rule Engine
-
-- Added a declarative Rule Engine for synchronous form linkage rules.
-- Added public exports for `RuleEngine`, `createRuleEngine`, `compileRulesToEffect`, `evaluateRule`, and rule-related public types.
-- Added synchronous conditions: `equals`, `notEquals`, `empty`, `notEmpty`, `all`, `any`, and `not`.
-- Added field actions: `show`, `hide`, `enable`, `disable`, `readonly`, `editable`, `setValue`, and `clearValue`.
-- Compiled rules into standard effects and inferred `dependents` from `when` conditions. Existing handwritten effects run first, then rule results are merged.
-- Added group-owned rules restricted to `show` and `hide` actions.
-- Rules are owned by the affected field or group and do not support `target`; model one source affecting multiple fields by declaring rules on each affected field.
-
-### Adapters And Schema Inputs
-
-- Added the `ModuleConfigAdapter` protocol, `AdapterRegistryManager`, `defaultAdapterRegistry`, `adaptModuleConfigs()`, and `compileAdaptedFormConfig()`.
-- Added `ModuleConfigPassthroughAdapter` for sending structured module config directly through the adapter/compiler pipeline.
-- Added `JsonSchemaAdapter`, `OpenApiAdapter`, and `MetadataAdapter`.
-- Required explicit dynamic-form module metadata for JsonSchema/OpenAPI fields instead of inferring UI or module types from schema primitive types.
-- Added group declarations through top-level JsonSchema/OpenAPI metadata and field membership through property-level `groupId`.
-- Added `groupOverrides` to inject function effects after schema adaptation and before compilation while merging group dependencies and rules.
-- Mapped schema `required` to field declaration semantics, with the default Ant Design renderer creating the final required rule.
-
-### Configuration, Rendering, And Validation
-
-- `FormConfig` can now contain top-level `fields` and `groups` together. Default rendering places ungrouped fields before grouped fields.
-- Updated config processing for mixed configs and added early errors for duplicate field/group IDs and empty configs.
-- Updated the default field renderer to merge `BaseFieldConfig.required` into an Ant Design required rule without duplicating an explicit required rule.
-- Continued to suppress rules and required markers for non-validatable fields, preserving Runtime `validatable` policy.
-- Removed unconditional process logs from reducer, rendering, submission, initial-value, and effect execution paths. Handler diagnostics are available through `useInitHandlers({ debug: true })`, while configuration and initialization-contract problems still emit warnings.
-
-### Public API, Tests, And Documentation
-
-- Exported compiler, module registry, adapter, schema adapter, rule engine, `CompiledDynamicForm`, and related public types from the package root.
-- Added compiler, adapter, schema adapter, rule engine, and field validation tests covering mixed/grouped compilation, rule dependency inference, adapter resolution, and error boundaries.
-- Added bilingual Compiler Foundation, Adapter Foundation, and Schema Adapters documentation, and updated the README, configuration, rendering, maintenance docs, and compiler demo.
-
-### Compatibility And Limitations
-
-- Existing `DynamicForm` props, handwritten `FormConfig`, `processFormConfig()`, Runtime Layer, and effect handler pipeline remain compatible.
-- Ant Design Form remains responsible for values, validation, touched state, and submit runtime state; DynamicForm does not add a duplicate values store.
-- The Rule Engine supports synchronous rules only; async/API rules and an independent validation rule engine are not included.
-- Schema adapters do not currently expand nested objects, object-array items, or nested groups, and a field cannot belong to multiple groups.
-
-### Package
-
-- Bumped the package version to `3.0.0`.
-- Removed the `immer` runtime dependency and replaced it with explicit immutable reducer updates.
 
 ## 2.0.0 - 2026-06-02
-
-## 中文
 
 ### 破坏性变更 / 架构调整
 
@@ -187,59 +121,3 @@
 
 - 包版本从 `1.0.2` 升级到 `2.0.0`。
 
-## English
-
-### Breaking / Architecture Changes
-
-- Reorganized the project into clearer layers: `config`, `state`, `runtime`, `consumer`, and `shared`.
-- Moved default config and config processor code under `src/config`.
-- Moved rendering, provider, hooks, and effect handling code under `src/consumer`.
-- Moved shared types, context, and utilities under `src/shared`.
-- Replaced duplicated form value storage in the reducer with Ant Design Form as the runtime source of truth for values and validation state.
-- Removed the old logger utility and the previous batch update/result processor structure.
-
-### Runtime And State
-
-- Added a runtime layer for resolving field and group capabilities such as rendering, submission, editing, readonly, disabled, and validation behavior.
-- Added runtime selectors, resolver utilities, and runtime state helpers.
-- Split structural state from runtime form values to make store boundaries clearer.
-- Added hooks for runtime events and field participation.
-- Tightened form boundary types and effect result handling semantics.
-
-### Effects And Handlers
-
-- Split behavior field meta handling from other field metadata.
-- Added a runtime validation layer.
-- Added effect result context and semantic effect result application helpers.
-- Reworked initialization and custom handler registration around the new consumer effect structure.
-
-### Rendering And Extension Points
-
-- Reorganized default rendering into consumer render modules.
-- Kept custom component registration as an explicit extension point.
-- Added layered render hook support from field item rendering through full form body rendering.
-- Added custom business component examples for priority and operating area fields.
-
-### Demos
-
-- Reworked the demo registry and demo selector.
-- Renamed the store boundary demo and stabilized demo behavior.
-- Added examples for custom handlers, custom components, UI config, render extension, validation, and store boundaries.
-- Added shared demo initialization handler wiring.
-
-### Tests
-
-- Added a store boundary Node test runner.
-- Updated demo test data and store boundary examples.
-- Removed old batch update tests that no longer match the new architecture.
-
-### Documentation
-
-- Rebuilt the documentation set around the current implementation instead of the previous scattered topic files.
-- Added or refreshed documentation for architecture, configuration, effects and handlers, rendering and UI extension, runtime layer, development, and maintenance.
-- Updated the root README with current package behavior, public exports, design principles, development commands, and future field module direction.
-- Added an agent note file that records field module upgrade direction.
-
-### Package
-
-- Bumped package version from `1.0.2` to `2.0.0`.
