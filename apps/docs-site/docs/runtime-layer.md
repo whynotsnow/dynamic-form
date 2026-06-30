@@ -10,14 +10,14 @@ Runtime Layer 从 reducer state 解析字段和分组的最终运行时能力。
 
 当前流程：
 
-```text
-FormState
-  -> resolveRuntimeState()
-  -> RuntimeState
-      -> rendering
-      -> submit validation
-      -> changed-field validation
-      -> field participation
+```mermaid
+flowchart TD
+  formState["FormState"] --> resolver["resolveRuntimeState()"]
+  resolver --> runtimeState["RuntimeState"]
+  runtimeState --> rendering["rendering"]
+  runtimeState --> submit["submit validation"]
+  runtimeState --> changed["changed-field validation"]
+  runtimeState --> participation["field participation"]
 ```
 
 ### 字段能力

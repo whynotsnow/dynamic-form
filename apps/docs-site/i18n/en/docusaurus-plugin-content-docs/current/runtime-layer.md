@@ -10,14 +10,14 @@ Visibility, submission, disabled state, readonly state, and validation are relat
 
 The current flow is:
 
-```text
-FormState
-  -> resolveRuntimeState()
-  -> RuntimeState
-      -> rendering
-      -> submit validation
-      -> changed-field validation
-      -> field participation
+```mermaid
+flowchart TD
+  formState["FormState"] --> resolver["resolveRuntimeState()"]
+  resolver --> runtimeState["RuntimeState"]
+  runtimeState --> rendering["rendering"]
+  runtimeState --> submit["submit validation"]
+  runtimeState --> changed["changed-field validation"]
+  runtimeState --> participation["field participation"]
 ```
 
 ### Field Capabilities

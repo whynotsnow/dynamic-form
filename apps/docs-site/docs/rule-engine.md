@@ -4,13 +4,13 @@ DynamicForm 3.0 提供声明式同步 Rule Engine。规则属于被影响的字�
 
 ### 执行位置
 
-```text
-Module rules
-  -> compileRulesToEffect
-  -> standard effect
-  -> form-chain-effect-engine
-  -> effect result handlers
-  -> field/group meta or field value
+```mermaid
+flowchart TD
+  rules["Module rules"] --> compiler["compileRulesToEffect"]
+  compiler --> effect["standard effect"]
+  effect --> engine["form-chain-effect-engine"]
+  engine --> handlers["effect result handlers"]
+  handlers --> output["field/group meta or field value"]
 ```
 
 字段模块和 `ModuleConfig` 都可以声明 `rules`。模块规则先合并，实例规则后合并；手写 effect 先执行，规则结果后执行并覆盖同名结果 key。

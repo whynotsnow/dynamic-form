@@ -2,12 +2,12 @@
 
 DynamicForm 3.0 adds a field module and compiler layer before the existing `FormConfig` pipeline.
 
-```text
-Field Modules
-  -> compileFormConfig
-  -> FormConfig
-  -> processFormConfig
-  -> DynamicForm
+```mermaid
+flowchart TD
+  modules["Field Modules"] --> compiler["compileFormConfig"]
+  compiler --> formConfig["FormConfig"]
+  formConfig --> processor["processFormConfig"]
+  processor --> dynamicForm["DynamicForm"]
 ```
 
 This is additive. Existing `FormConfig` usage does not need to change.

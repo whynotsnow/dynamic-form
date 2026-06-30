@@ -2,12 +2,12 @@
 
 DynamicForm 3.0 在现有 `FormConfig` 管线之前新增字段模块和配置编译层。
 
-```text
-Field Modules
-  -> compileFormConfig
-  -> FormConfig
-  -> processFormConfig
-  -> DynamicForm
+```mermaid
+flowchart TD
+  modules["Field Modules"] --> compiler["compileFormConfig"]
+  compiler --> formConfig["FormConfig"]
+  formConfig --> processor["processFormConfig"]
+  processor --> dynamicForm["DynamicForm"]
 ```
 
 这是增量能力。现有 `FormConfig` 用法不需要迁移。
@@ -170,4 +170,3 @@ hooks 只操作编译上下文，不应该修改 Ant Design Form 实例或 React
 - `DynamicForm` props 不变。
 - `compileFormConfig()` 支持 flat、grouped 和 mixed 输出；group 不改变字段值路径。
 - Ant Design Form 仍然是 values 和 validation state 的唯一真实来源。
-

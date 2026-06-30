@@ -6,23 +6,23 @@
 
 平铺表单：
 
-```text
-Form
-  Row
-    Col
-      FieldComponentRenderer
-  Submit Button
+```mermaid
+flowchart TD
+  form["Form"] --> row["Row"]
+  row --> col["Col"]
+  col --> renderer["FieldComponentRenderer"]
+  form --> submit["Submit Button"]
 ```
 
 分组表单：
 
-```text
-Form
-  Card per group
-    Row
-      Col
-        FieldComponentRenderer
-  Submit Button
+```mermaid
+flowchart TD
+  form["Form"] --> card["Card per group"]
+  card --> row["Row"]
+  row --> col["Col"]
+  col --> renderer["FieldComponentRenderer"]
+  form --> submit["Submit Button"]
 ```
 
 默认渲染使用：
@@ -142,4 +142,3 @@ render hooks 按作用范围从小到大排列：
 默认渲染尊重 Runtime：不可渲染字段返回 `null`，分组隐藏时子字段不渲染，disabled/readonly 会传给组件，不可校验字段不会挂载 rules。
 
 自定义 render hooks 如果不使用提供的 render helper，可能绕过 Runtime 默认行为，应谨慎处理。
-

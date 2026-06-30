@@ -2,15 +2,15 @@
 
 Adapter Foundation sits before Compiler Foundation and normalizes external or module-like input into structured `ModuleFormConfig`.
 
-```text
-External / Module-like Input
-  -> Adapter Registry
-  -> Adapter Pipeline
-  -> ModuleFormConfig
-  -> compileFormConfig
-  -> FormConfig
-  -> processFormConfig
-  -> DynamicForm
+```mermaid
+flowchart TD
+  input["External / Module-like Input"] --> registry["Adapter Registry"]
+  registry --> pipeline["Adapter Pipeline"]
+  pipeline --> moduleConfig["ModuleFormConfig"]
+  moduleConfig --> compiler["compileFormConfig"]
+  compiler --> formConfig["FormConfig"]
+  formConfig --> processor["processFormConfig"]
+  processor --> dynamicForm["DynamicForm"]
 ```
 
 Adapters only convert input. Rule merging, dependency inference, component registration, and `FormConfig` generation remain owned by the existing compiler.

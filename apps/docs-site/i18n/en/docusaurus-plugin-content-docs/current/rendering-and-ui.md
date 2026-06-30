@@ -4,7 +4,26 @@
 
 ### Default Rendering
 
-Flat forms render as `Form -> Row -> Col -> FieldComponentRenderer -> Submit Button`. Grouped forms render as `Form -> Card -> Row -> Col -> FieldComponentRenderer -> Submit Button`.
+Flat forms:
+
+```mermaid
+flowchart TD
+  form["Form"] --> row["Row"]
+  row --> col["Col"]
+  col --> renderer["FieldComponentRenderer"]
+  form --> submit["Submit Button"]
+```
+
+Grouped forms:
+
+```mermaid
+flowchart TD
+  form["Form"] --> card["Card per group"]
+  card --> row["Row"]
+  row --> col["Col"]
+  col --> renderer["FieldComponentRenderer"]
+  form --> submit["Submit Button"]
+```
 
 Default rendering uses `Form`, `Row`, `Col`, `Card`, and `Button`.
 

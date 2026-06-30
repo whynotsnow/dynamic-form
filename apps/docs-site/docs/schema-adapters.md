@@ -2,14 +2,14 @@
 
 DynamicForm 3.0 在 Adapter Foundation 之上提供具体 schema adapters：
 
-```text
-JsonSchema / OpenAPI / Metadata
-  -> Schema Adapter
-  -> ModuleFormConfig
-  -> compileFormConfig
-  -> FormConfig
-  -> processFormConfig
-  -> DynamicForm
+```mermaid
+flowchart TD
+  schema["JsonSchema / OpenAPI / Metadata"] --> adapter["Schema Adapter"]
+  adapter --> moduleConfig["ModuleFormConfig"]
+  moduleConfig --> compiler["compileFormConfig"]
+  compiler --> formConfig["FormConfig"]
+  formConfig --> processor["processFormConfig"]
+  processor --> dynamicForm["DynamicForm"]
 ```
 
 Schema adapters 把输入转换成结构化 `ModuleFormConfig`。字段模块展开、group 装配、规则编译、依赖推导、组件注册和 runtime 行为继续由现有 compiler/runtime 管线负责。

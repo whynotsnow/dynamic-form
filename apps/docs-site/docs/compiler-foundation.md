@@ -2,12 +2,12 @@
 
 DynamicForm 3.0 在现有 `FormConfig` 管线之前新增字段模块和配置编译层。
 
-```text
-Field Modules
-  -> compileFormConfig
-  -> FormConfig
-  -> processFormConfig
-  -> DynamicForm
+```mermaid
+flowchart TD
+  modules["Field Modules"] --> compiler["compileFormConfig"]
+  compiler --> formConfig["FormConfig"]
+  formConfig --> processor["processFormConfig"]
+  processor --> dynamicForm["DynamicForm"]
 ```
 
 这是增量能力。现有 `FormConfig` 用法不需要迁移。

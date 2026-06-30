@@ -6,23 +6,23 @@
 
 平铺表单：
 
-```text
-Form
-  Row
-    Col
-      FieldComponentRenderer
-  Submit Button
+```mermaid
+flowchart TD
+  form["Form"] --> row["Row"]
+  row --> col["Col"]
+  col --> renderer["FieldComponentRenderer"]
+  form --> submit["Submit Button"]
 ```
 
 分组表单：
 
-```text
-Form
-  Card per group
-    Row
-      Col
-        FieldComponentRenderer
-  Submit Button
+```mermaid
+flowchart TD
+  form["Form"] --> card["Card per group"]
+  card --> row["Row"]
+  row --> col["Col"]
+  col --> renderer["FieldComponentRenderer"]
+  form --> submit["Submit Button"]
 ```
 
 默认渲染使用：

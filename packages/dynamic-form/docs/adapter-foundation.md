@@ -2,15 +2,15 @@
 
 Adapter Foundation 位于 Compiler Foundation 之前，用于把外部或类模块输入归一化为结构化 `ModuleFormConfig`。
 
-```text
-External / Module-like Input
-  -> Adapter Registry
-  -> Adapter Pipeline
-  -> ModuleFormConfig
-  -> compileFormConfig
-  -> FormConfig
-  -> processFormConfig
-  -> DynamicForm
+```mermaid
+flowchart TD
+  input["External / Module-like Input"] --> registry["Adapter Registry"]
+  registry --> pipeline["Adapter Pipeline"]
+  pipeline --> moduleConfig["ModuleFormConfig"]
+  moduleConfig --> compiler["compileFormConfig"]
+  compiler --> formConfig["FormConfig"]
+  formConfig --> processor["processFormConfig"]
+  processor --> dynamicForm["DynamicForm"]
 ```
 
 Adapter 只负责输入转换。规则合并、依赖推导、组件注册和 `FormConfig` 生成仍由现有 compiler 负责。

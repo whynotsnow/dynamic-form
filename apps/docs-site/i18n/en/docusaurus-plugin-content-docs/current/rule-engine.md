@@ -4,13 +4,13 @@ DynamicForm 3.0 provides a declarative synchronous Rule Engine. Rules belong to 
 
 ### Execution Position
 
-```text
-Module rules
-  -> compileRulesToEffect
-  -> standard effect
-  -> form-chain-effect-engine
-  -> effect result handlers
-  -> field/group meta or field value
+```mermaid
+flowchart TD
+  rules["Module rules"] --> compiler["compileRulesToEffect"]
+  compiler --> effect["standard effect"]
+  effect --> engine["form-chain-effect-engine"]
+  engine --> handlers["effect result handlers"]
+  handlers --> output["field/group meta or field value"]
 ```
 
 Both field modules and `ModuleConfig` entries may declare `rules`. Module rules are merged before instance rules. A handwritten effect runs first, and rule results run afterward with matching result keys taking precedence.

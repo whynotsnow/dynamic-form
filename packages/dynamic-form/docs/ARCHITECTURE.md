@@ -14,22 +14,22 @@ DynamicForm 3.2 由 Field Address 基础、可选的 Adapter / Module / Rule / C
 
 ### 模块关系
 
-```text
-External input / ModuleFormConfig
-  -> Adapter Registry (optional)
-  -> Rule + Config Compiler (optional)
-  -> FormConfig
+```mermaid
+flowchart TD
+  external["External input / ModuleFormConfig"] --> adapter["Adapter Registry (optional)"]
+  adapter --> compiler["Rule + Config Compiler (optional)"]
+  compiler --> formConfig["FormConfig"]
 
-packages/dynamic-form/src/index.tsx
-  -> DynamicFormProvider
-      -> useStoreInit
-      -> form-chain-effect-engine
-      -> FormChainContext
-  -> FormContent
-      -> useRuntimeState
-      -> useFormRuntimeEvents
-      -> useFieldParticipation
-      -> FieldComponentRenderer
+  entry["packages/dynamic-form/src/index.tsx"] --> provider["DynamicFormProvider"]
+  provider --> storeInit["useStoreInit"]
+  provider --> effectEngine["form-chain-effect-engine"]
+  provider --> context["FormChainContext"]
+
+  entry --> content["FormContent"]
+  content --> runtime["useRuntimeState"]
+  content --> events["useFormRuntimeEvents"]
+  content --> participation["useFieldParticipation"]
+  content --> renderer["FieldComponentRenderer"]
 ```
 
 3.x 主流程仍然是 `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`。`DynamicForm` 继续接收现有 `FormConfig`；Adapter、Compiler、Rule Engine 和 Schema Adapters 只是可选预处理层，最终仍输出当前标准 `FormConfig`。

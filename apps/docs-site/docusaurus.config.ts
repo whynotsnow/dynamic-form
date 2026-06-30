@@ -1,5 +1,6 @@
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import { themes as prismThemes } from 'prism-react-renderer';
 import path from 'node:path';
 
 const config: Config = {
@@ -15,6 +16,7 @@ const config: Config = {
 
   onBrokenLinks: 'throw',
   markdown: {
+    mermaid: true,
     hooks: {
       onBrokenMarkdownLinks: 'warn'
     }
@@ -65,6 +67,8 @@ const config: Config = {
       };
     }
   ],
+
+  themes: ['@docusaurus/theme-mermaid'],
 
   themeConfig: {
     navbar: {
@@ -143,8 +147,8 @@ const config: Config = {
       copyright: `Copyright © ${new Date().getFullYear()} DynamicForm.`
     },
     prism: {
-      theme: require('prism-react-renderer').themes.github,
-      darkTheme: require('prism-react-renderer').themes.dracula
+      theme: prismThemes.github,
+      darkTheme: prismThemes.dracula
     }
   } satisfies Preset.ThemeConfig
 };
