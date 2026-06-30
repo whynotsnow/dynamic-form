@@ -54,3 +54,15 @@ html[data-theme='dark'] {
 .markdown h3 {
   letter-spacing: 0;
 }
+
+.theme-doc-markdown {
+  line-height: 1.85;
+}
+
+.theme-doc-markdown li {
+  line-height: 1.8;
+}
+
+.theme-doc-markdown code {
+  line-height: 1;
+}
