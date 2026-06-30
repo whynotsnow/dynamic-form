@@ -58,6 +58,7 @@ slug: /
 - `getFieldName`
 - `resolveFieldAddress`
 - 来自 `packages/dynamic-form/src/shared/types.ts` 的核心公共类型。
+- Runtime 类型：`FieldCapability`、`GroupCapability`、`RuntimeState`。
 
 ### 设计摘要
 

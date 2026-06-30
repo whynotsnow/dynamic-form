@@ -26,6 +26,8 @@ export type {
   RenderFormParams
 } from './shared/types';
 
+export type { FieldCapability, GroupCapability, RuntimeState } from './runtime';
+
 export { getFieldName, resolveFieldAddress } from './shared/utils';
 
 export {

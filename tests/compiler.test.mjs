@@ -5,7 +5,7 @@ import {
   compileFormConfig,
   ModuleRegistryManager,
   processFormConfig
-} from '../dist/index.mjs';
+} from '../packages/dynamic-form/dist/index.mjs';
 
 test('ModuleRegistryManager registers, lists, looks up, and unregisters modules', () => {
   const registry = new ModuleRegistryManager();

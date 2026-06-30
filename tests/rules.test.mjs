@@ -5,7 +5,7 @@ import {
   createRuleEngine,
   evaluateRule,
   ModuleRegistryManager
-} from '../dist/index.mjs';
+} from '../packages/dynamic-form/dist/index.mjs';
 
 test('RuleEngine evaluates field conditions and default target actions', () => {
   assert.deepEqual(

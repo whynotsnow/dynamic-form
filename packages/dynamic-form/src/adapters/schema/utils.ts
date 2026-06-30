@@ -110,6 +110,7 @@ export function jsonSchemaToModuleFormConfig(schema: JsonSchemaAdapterInput): Mo
     const overrides = {
       label,
       required: isRequired,
+      ...(metadata.name !== undefined ? { name: metadata.name } : {}),
       ...(property.default !== undefined ? { initialValue: property.default } : {}),
       ...(metadata.overrides || {})
     };

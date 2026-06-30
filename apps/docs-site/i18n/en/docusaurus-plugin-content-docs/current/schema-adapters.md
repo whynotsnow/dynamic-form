@@ -33,6 +33,7 @@ const moduleConfigs = adaptModuleConfigs(
         title: 'Name',
         metadata: {
           module: 'TextInputModule',
+          name: ['profile', 'name'],
           options: { placeholder: 'Enter name' }
         }
       }
@@ -43,6 +44,17 @@ const moduleConfigs = adaptModuleConfigs(
 ```
 
 Fields must explicitly declare module type through `metadata.module` or `x-dynamic-form.module`. The adapter does not infer UI components from schema types such as `string`, `number`, or `boolean`.
+
+Starting in 3.3, field metadata can explicitly pass a Field Address `name`. The adapter writes it to module config `overrides.name`. This only passes through the existing `BaseFieldConfig.name` capability and does not expand nested object schemas:
+
+```ts
+{
+  metadata: {
+    module: 'TextInputModule',
+    name: ['profile', 'name']
+  }
+}
+```
 
 Top-level `x-dynamic-form.groups` declares groups, while property-level `x-dynamic-form.groupId` declares membership. Schema data may configure `initialVisible` and group-owned show/hide rules, but cannot carry function effects. Inject functions through `groupOverrides` after adaptation and before compilation:
 
@@ -86,6 +98,7 @@ const moduleConfigs = adaptModuleConfigs(
       {
         id: 'name',
         type: 'TextInputModule',
+        name: ['profile', 'name'],
         options: { label: 'Name' },
         overrides: { required: true }
       }
@@ -95,7 +108,7 @@ const moduleConfigs = adaptModuleConfigs(
 );
 ```
 
-Each field must provide `id` and `type`, with optional `options`, `rules`, and `overrides`.
+Each field must provide `id` and `type`, with optional `name`, `options`, `rules`, and `overrides`. `name` is merged into `overrides.name` for nested values.
 
 ### Boundaries
 

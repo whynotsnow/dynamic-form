@@ -58,6 +58,7 @@ The package exports:
 - `getFieldName`
 - `resolveFieldAddress`
 - Core public types from `packages/dynamic-form/src/shared/types.ts`.
+- Runtime types: `FieldCapability`, `GroupCapability`, and `RuntimeState`.
 
 ### Design Summary
 

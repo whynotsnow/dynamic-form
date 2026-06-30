@@ -7,7 +7,7 @@ import {
   compileAdaptedFormConfig,
   ModuleConfigPassthroughAdapter,
   ModuleRegistryManager
-} from '../dist/index.mjs';
+} from '../packages/dynamic-form/dist/index.mjs';
 
 test('AdapterRegistryManager registers, lists, looks up, and unregisters adapters', () => {
   const registry = new AdapterRegistryManager();

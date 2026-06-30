@@ -31,7 +31,13 @@ export const MetadataAdapter: ModuleConfigAdapter<MetadataAdapterInput> = {
         ...(field.groupId ? { groupId: field.groupId } : {}),
         options: field.options,
         rules: field.rules,
-        overrides: field.overrides
+        overrides:
+          field.name !== undefined
+            ? {
+                name: field.name,
+                ...(field.overrides || {})
+              }
+            : field.overrides
       })),
       ...(input.groups ? { groups: input.groups } : {})
     };

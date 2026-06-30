@@ -2,6 +2,8 @@
 
 The Runtime Layer resolves final field and group capabilities from reducer state. It is the policy boundary between stored meta and UI behavior.
 
+Starting in 3.3, the package root exports `FieldCapability`, `GroupCapability`, and `RuntimeState` types so custom render hooks and application wrappers can type Runtime snapshots directly.
+
 ### Why Runtime Exists
 
 Visibility, submission, disabled state, readonly state, and validation are related decisions. If each component computes them independently, behavior diverges. Runtime centralizes those policies in one resolution step.

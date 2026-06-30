@@ -2,6 +2,8 @@
 
 Runtime Layer 从 reducer state 解析字段和分组的最终运行时能力。它是存储 meta 和 UI 行为之间的策略边界。
 
+3.3 起，包根入口导出 `FieldCapability`、`GroupCapability` 和 `RuntimeState` 类型，方便自定义 render hooks 或业务封装复用 Runtime snapshot 的类型约束。
+
 ### 为什么需要 Runtime
 
 字段是否显示、是否参与提交、是否禁用、是否只读、是否需要校验，这些判断彼此关联。如果每个组件各自计算，很容易产生行为不一致。Runtime Layer 把这些策略集中到同一次解析中。

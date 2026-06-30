@@ -1,5 +1,29 @@
 # Changelog
 
+## 3.3.0 - 2026-06-30
+
+### 版本概览
+
+- 发布兼容性小增强，继续保持现有 `FormConfig`、Runtime 和 renderer 行为不变。
+- Schema / metadata adapter 增加显式 Field Address `name` passthrough 能力，方便外部 schema 输入生成嵌套 values。
+
+### Adapter 与 Runtime 类型
+
+- `SchemaAdapterFieldMetadata` 支持声明 `name`，适配结果会写入 module config 的 `overrides.name`。
+- `MetadataAdapterField` 支持声明 `name`，同样转入 `overrides.name`。
+- 包根入口新增 `FieldCapability`、`GroupCapability` 和 `RuntimeState` 类型导出。
+- Schema adapters 仍要求显式 module metadata，不根据 schema primitive type 推断 UI，也不展开 nested object 或 object array。
+
+### 测试与文档
+
+- 补充 JsonSchema、OpenAPI 和 Metadata adapter 的显式 `name` 映射测试。
+- 补充包根 Runtime 类型导出的 TypeScript 检查。
+- 同步更新 package docs、docs-site 中文文档和英文 i18n 文档。
+
+### Package
+
+- 根 workspace 和 `@whynotsnow/dynamic-form` package 版本升级到 `3.3.0`。
+
 ## 3.2.1 - 2026-06-30
 
 ### 版本概览

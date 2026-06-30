@@ -9,6 +9,7 @@ export interface SchemaAdapterOptions {
 export interface SchemaAdapterFieldMetadata {
   module?: string;
   groupId?: string;
+  name?: BaseFieldConfig['name'];
   options?: Record<string, unknown>;
   rules?: DeclarativeRule[];
   overrides?: Partial<BaseFieldConfig>;
@@ -53,6 +54,7 @@ export interface MetadataAdapterField {
   id: string;
   type: string;
   groupId?: string;
+  name?: BaseFieldConfig['name'];
   options?: Record<string, unknown>;
   rules?: DeclarativeRule[];
   overrides?: Partial<BaseFieldConfig>;

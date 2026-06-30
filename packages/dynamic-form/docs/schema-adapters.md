@@ -33,6 +33,7 @@ const moduleConfigs = adaptModuleConfigs(
         title: 'Name',
         metadata: {
           module: 'TextInputModule',
+          name: ['profile', 'name'],
           options: { placeholder: 'Enter name' }
         }
       }
@@ -43,6 +44,17 @@ const moduleConfigs = adaptModuleConfigs(
 ```
 
 字段必须通过 `metadata.module` 或 `x-dynamic-form.module` 显式声明 module type。Adapter 不根据 `string`、`number`、`boolean` 等 schema type 猜测 UI 组件。
+
+3.3 起，字段 metadata 可以显式声明 Field Address `name`，adapter 会把它写入 module config 的 `overrides.name`。这只是在 schema 输入中透传现有 `BaseFieldConfig.name` 能力，不会展开 nested object schema：
+
+```ts
+{
+  metadata: {
+    module: 'TextInputModule',
+    name: ['profile', 'name']
+  }
+}
+```
 
 顶层 `x-dynamic-form.groups` 声明 groups，属性级 `x-dynamic-form.groupId` 声明成员关系。Schema 可配置 `initialVisible` 和 group-owned show/hide rules，但不能携带函数 effect。函数通过 `groupOverrides` 在 adapter 后、compiler 前注入：
 
@@ -86,6 +98,7 @@ const moduleConfigs = adaptModuleConfigs(
       {
         id: 'name',
         type: 'TextInputModule',
+        name: ['profile', 'name'],
         options: { label: 'Name' },
         overrides: { required: true }
       }
@@ -95,7 +108,7 @@ const moduleConfigs = adaptModuleConfigs(
 );
 ```
 
-每个 field 必须提供 `id` 和 `type`，可选透传 `options`、`rules`、`overrides`。
+每个 field 必须提供 `id` 和 `type`，可选透传 `name`、`options`、`rules`、`overrides`。`name` 会合并进 `overrides.name`，用于生成嵌套 values。
 
 ### Boundaries
 

@@ -40,6 +40,8 @@ const formConfig: FormConfig = {
 
 包导出 `resolveFieldAddress(field)` 和 `getFieldName(field)`。自定义 `Form.Item`、`Form.List` 或手工调用 `form.validateFields()` 时应使用 `getFieldName(field)`。
 
+3.3 起，JsonSchema、OpenAPI 和 Metadata adapters 可以通过 metadata 显式透传 `name`，最终仍落到现有 `BaseFieldConfig.name`。这适合外部 schema 输入需要生成嵌套 values，但不改变 effect graph 仍引用稳定 `id` 的规则。
+
 ### 3.2 稳定边界
 
 3.2 提供字段寻址和嵌套值路径基础，但不引入 container 字段、递归节点树、nested group 或跨层级 effect graph。字段和 group 的 `id` 仍须全局唯一，两个字段不能使用相同 `name` 路径。

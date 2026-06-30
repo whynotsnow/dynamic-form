@@ -7,7 +7,7 @@ import {
   MetadataAdapter,
   ModuleRegistryManager,
   OpenApiAdapter
-} from '../dist/index.mjs';
+} from '../packages/dynamic-form/dist/index.mjs';
 
 test('JsonSchemaAdapter converts top-level properties into ModuleConfig entries', () => {
   const moduleFormConfig = JsonSchemaAdapter.adapt({
@@ -21,6 +21,7 @@ test('JsonSchemaAdapter converts top-level properties into ModuleConfig entries'
         default: 'Snow',
         metadata: {
           module: 'TextInputModule',
+          name: ['profile', 'name'],
           options: { placeholder: 'Enter name' }
         }
       },
@@ -56,6 +57,7 @@ test('JsonSchemaAdapter converts top-level properties into ModuleConfig entries'
         overrides: {
           label: 'Name',
           required: true,
+          name: ['profile', 'name'],
           initialValue: 'Snow'
         }
       },
@@ -200,6 +202,7 @@ test('MetadataAdapter passes id, type, options, rules, and overrides through', (
     fields: [
       {
         id: 'name',
+        name: ['profile', 'name'],
         type: 'TextInputModule',
         options: { label: 'Name' },
         rules: [{ when: { field: 'enabled', equals: true }, then: { action: 'show' } }],
@@ -219,7 +222,7 @@ test('MetadataAdapter passes id, type, options, rules, and overrides through', (
         groupId: 'profile',
         options: { label: 'Name' },
         rules: [{ when: { field: 'enabled', equals: true }, then: { action: 'show' } }],
-        overrides: { required: true }
+        overrides: { name: ['profile', 'name'], required: true }
       }
     ],
     groups: [{ id: 'profile', title: 'Profile' }]
