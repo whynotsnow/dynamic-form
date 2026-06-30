@@ -2,7 +2,24 @@ import type { FormState } from '../shared/types';
 import type { FieldCapability, GroupCapability } from './types';
 import { getFieldBehaviorMeta, getGroupBehaviorMeta } from '../shared/utils';
 
-import { getAllFieldIds, getFieldById, getFieldGroup, getGroupById } from './selectors';
+import { getAllFieldIds, getContainerById, getFieldById, getParentContainerId } from './selectors';
+
+function resolveContainerRendered(containerId: string | undefined, state: FormState): boolean {
+  if (!containerId) {
+    return true;
+  }
+
+  const container = getContainerById(containerId, state);
+
+  if (!container) {
+    return false;
+  }
+
+  const parentRendered = resolveContainerRendered(getParentContainerId(containerId, state), state);
+  const behavior = getGroupBehaviorMeta(container.meta);
+
+  return parentRendered && behavior.visible !== false;
+}
 
 /**
  * 计算字段最终运行时能力
@@ -31,16 +48,14 @@ export function resolveFieldCapability(fieldId: string, state: FormState): Field
     };
   }
 
-  const group = getFieldGroup(fieldId, state);
-
   /**
    * Visible
    */
   const fieldBehavior = getFieldBehaviorMeta(field.meta);
-  const groupBehavior = getGroupBehaviorMeta(group?.meta);
+  const parentId = getParentContainerId(fieldId, state);
 
   const fieldVisible = fieldBehavior.visible !== false;
-  const groupVisible = groupBehavior.visible !== false;
+  const groupVisible = resolveContainerRendered(parentId, state);
 
   const rendered = fieldVisible && groupVisible;
 
@@ -95,7 +110,7 @@ export function resolveFieldCapability(fieldId: string, state: FormState): Field
  * 计算 Group 最终运行时能力
  */
 export function resolveGroupCapability(groupId: string, state: FormState): GroupCapability {
-  const group = getGroupById(groupId, state);
+  const group = getContainerById(groupId, state);
 
   if (!group) {
     return {
@@ -103,11 +118,8 @@ export function resolveGroupCapability(groupId: string, state: FormState): Group
     };
   }
 
-  const groupBehavior = getGroupBehaviorMeta(group.meta);
-  const groupVisible = groupBehavior.visible !== false;
-
   return {
-    rendered: groupVisible
+    rendered: resolveContainerRendered(groupId, state)
   };
 }
 

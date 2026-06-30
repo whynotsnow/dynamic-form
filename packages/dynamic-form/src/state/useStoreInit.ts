@@ -51,6 +51,9 @@ export const useStoreInit = ({ formConfig, form, values, uiConfig }: useStoreIni
   const [state, dispatch] = useReducer(formReducer, {
     fields: configProcessInfo.initializedFields,
     groupFields: configProcessInfo.initializedGroupFields,
+    nodes: configProcessInfo.initializedNodes,
+    rootNodeIds: configProcessInfo.rootNodeIds,
+    containerFields: configProcessInfo.initializedContainerFields,
     configProcessInfo,
     initialized: false,
     dynamicUIConfig: initDynamicUIConfig(uiConfig)

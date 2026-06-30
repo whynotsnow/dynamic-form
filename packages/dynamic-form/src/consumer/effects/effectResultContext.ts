@@ -32,11 +32,16 @@ export function createInitialEffectResultContext(params: InitContextParams): Eff
     fieldName: fieldId,
     configProcessInfo: {
       effectMap: {},
+      nodeRegistry: {},
+      containerRegistry: {},
       fieldRegistry,
       fieldAddressRegistry: createFieldAddressRegistry(fieldRegistry),
       initialValues,
       initializedFields,
-      initializedGroupFields
+      initializedGroupFields,
+      initializedNodes: {},
+      initializedContainerFields: {},
+      rootNodeIds: []
     },
     setFieldValue: (value: FieldValue) => {
       const entry = fieldRegistry[fieldId];
@@ -107,8 +112,8 @@ export function createRuntimeEffectResultContext(params: {
   const setGroupVisible = (targetGroupId: string, visible: boolean) => {
     if (targetGroupId) {
       dispatch({
-        type: 'SET_GROUP_META',
-        payload: { groupId: targetGroupId, meta: { visible } }
+        type: 'SET_CONTAINER_META',
+        payload: { containerId: targetGroupId, meta: { visible } }
       });
     }
   };
