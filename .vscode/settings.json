@@ -8,6 +8,7 @@
   "prettier.configPath": ".prettierrc",
   "eslint.run": "onSave",
   "eslint.enable": true,
+  "eslint.packageManager": "pnpm",
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
 
   // 保存时执行 ESLint 自动修复
@@ -19,7 +20,7 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
 
   // 使用项目里安装的 TypeScript
-  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.tsdk": "./node_modules/typescript/lib",
 
   // 自动导入使用路径别名
   "javascript.preferences.importModuleSpecifier": "non-relative",
