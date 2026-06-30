@@ -1,4 +1,10 @@
-import type { BaseFieldConfig, ComponentRegistry, FormConfig, GroupField } from '../shared/types';
+import type {
+  BaseFieldConfig,
+  ComponentRegistry,
+  ContainerNode,
+  FormConfig,
+  GroupField
+} from '../shared/types';
 import type { FieldModule, ModuleRegistryManager } from '../modules';
 import type { DeclarativeRule, GroupDeclarativeRule } from '../rules';
 
@@ -15,10 +21,26 @@ export interface GroupModuleConfig extends Omit<GroupField, 'fields'> {
   rules?: GroupDeclarativeRule[];
 }
 
+export type ModuleFieldNode<TOptions extends Record<string, unknown> = Record<string, unknown>> =
+  ModuleConfig<TOptions> & {
+    nodeType: 'field';
+  };
+
+export interface ModuleContainerNode
+  extends Omit<ContainerNode, 'children' | 'nodeType' | 'effect'> {
+  nodeType: 'container';
+  children: ModuleFormNode[];
+  effect?: never;
+  rules?: GroupDeclarativeRule[];
+}
+
+export type ModuleFormNode = ModuleFieldNode | ModuleContainerNode;
+
 export interface ModuleFormConfig {
   id?: string | number;
-  fields: ModuleConfig[];
+  fields?: ModuleConfig[];
   groups?: GroupModuleConfig[];
+  nodes?: ModuleFormNode[];
 }
 
 export interface CompiledModuleConfig {

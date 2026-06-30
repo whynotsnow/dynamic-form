@@ -10,11 +10,13 @@ function isNonEmptyString(value: unknown): value is string {
 }
 
 export function assertModuleFormConfig(input: unknown): asserts input is ModuleFormConfig {
-  if (!isRecord(input) || !Array.isArray(input.fields)) {
-    throw new Error('ModuleConfigPassthroughAdapter: input must declare a fields array.');
+  if (!isRecord(input) || (!Array.isArray(input.fields) && !Array.isArray(input.nodes))) {
+    throw new Error('ModuleConfigPassthroughAdapter: input must declare fields or nodes.');
   }
 
-  input.fields.forEach((item, index) => {
+  const fields = Array.isArray(input.fields) ? input.fields : [];
+
+  fields.forEach((item, index) => {
     if (!isRecord(item)) {
       throw new Error(`ModuleConfigPassthroughAdapter: item at index ${index} must be an object.`);
     }
@@ -35,6 +37,10 @@ export function assertModuleFormConfig(input: unknown): asserts input is ModuleF
   if (input.groups !== undefined && !Array.isArray(input.groups)) {
     throw new Error('ModuleConfigPassthroughAdapter: groups must be an array.');
   }
+
+  if (input.nodes !== undefined && !Array.isArray(input.nodes)) {
+    throw new Error('ModuleConfigPassthroughAdapter: nodes must be an array.');
+  }
 }
 
 export const ModuleConfigPassthroughAdapter: ModuleConfigAdapter<ModuleFormConfig> = {
@@ -42,8 +48,12 @@ export const ModuleConfigPassthroughAdapter: ModuleConfigAdapter<ModuleFormConfi
   supports(input: unknown, _context: AdapterContext): input is ModuleFormConfig {
     return (
       isRecord(input) &&
-      Array.isArray(input.fields) &&
-      input.fields.every(
+      ((Array.isArray(input.fields) &&
+        input.fields.every(
+          (item) => isRecord(item) && isNonEmptyString(item.type) && isNonEmptyString(item.id)
+        )) ||
+        Array.isArray(input.nodes)) &&
+      (Array.isArray(input.fields) ? input.fields : []).every(
         (item) => isRecord(item) && isNonEmptyString(item.type) && isNonEmptyString(item.id)
       )
     );

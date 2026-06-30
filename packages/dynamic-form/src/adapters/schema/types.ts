@@ -31,6 +31,7 @@ export interface JsonSchemaProperty {
   default?: unknown;
   format?: string;
   properties?: Record<string, JsonSchemaProperty>;
+  required?: string[];
   items?: JsonSchemaProperty;
   metadata?: SchemaAdapterFieldMetadata;
   'x-dynamic-form'?: SchemaAdapterFieldMetadata;

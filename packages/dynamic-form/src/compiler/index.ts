@@ -5,6 +5,9 @@ export type {
   CompileHookContext,
   CompilerHooks,
   GroupModuleConfig,
+  ModuleContainerNode,
+  ModuleFieldNode,
   ModuleFormConfig,
+  ModuleFormNode,
   ModuleConfig
 } from './types';
