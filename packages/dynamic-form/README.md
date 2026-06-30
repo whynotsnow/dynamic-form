@@ -22,7 +22,7 @@
 ### 安装
 
 ```bash
-npm install @whynotsnow/dynamic-form antd react react-dom
+pnpm add @whynotsnow/dynamic-form antd react react-dom
 ```
 
 Peer dependencies（对等依赖）：
@@ -213,14 +213,14 @@ docs/                    monorepo 级文档
 ### 开发命令
 
 ```bash
-npm run start       # 启动 Vite demos
-npm run type-check  # TypeScript 检查
-npm run lint:check  # ESLint 检查，不自动修复
-npm run test        # Node test runner
-npm run build       # 构建库产物
+pnpm run start       # 启动 Vite demos
+pnpm run type-check  # TypeScript 检查
+pnpm run lint:check  # ESLint 检查，不自动修复
+pnpm run test        # Node test runner
+pnpm run build       # 构建库产物
 ```
 
-当前仓库存在 `package-lock.json`，默认使用 npm。
+当前仓库存在 `pnpm-lock.yaml`，默认使用 pnpm。
 
 ### 当前说明
 

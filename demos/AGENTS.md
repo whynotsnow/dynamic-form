@@ -40,7 +40,7 @@
 
 demo 变更优先验证：
 
-1. `npm run type-check`
-2. `npm run lint:check`
-3. `npm run start` 后检查 `http://localhost:3000`
-4. 如果 docs-site 引用或展示了相关 demo，再运行 `npm run site:build`
+1. `pnpm run type-check`
+2. `pnpm run lint:check`
+3. `pnpm run start` 后检查 `http://localhost:3000`
+4. 如果 docs-site 引用或展示了相关 demo，再运行 `pnpm run site:build`

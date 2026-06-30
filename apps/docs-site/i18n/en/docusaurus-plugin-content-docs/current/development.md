@@ -7,7 +7,7 @@ This guide is for DynamicForm users. It explains how common configuration option
 Run local demos:
 
 ```bash
-npm run start
+pnpm run start
 ```
 
 The demo selector is [`demos/DemoSelector.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/DemoSelector.tsx), and the demo registry is [`demos/demoRegistry.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/demoRegistry.tsx).

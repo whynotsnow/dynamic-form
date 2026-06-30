@@ -14,7 +14,7 @@
 
 ## 仓库概览
 
-本仓库是 `@whynotsnow/dynamic-form` 的 private npm workspace root。
+本仓库是 `@whynotsnow/dynamic-form` 的 private pnpm workspace root。
 
 - `packages/dynamic-form/`：唯一 npm 发布包。
 - `apps/docs-site/`：Docusaurus 文档站。
@@ -26,7 +26,7 @@
 
 ## 工具规则
 
-- 默认使用 npm；仓库包含 `package-lock.json`。
+- 默认使用 pnpm；仓库包含 `pnpm-lock.yaml`。
 - 不要在未说明原因的情况下安装依赖或全局工具。
 - 不要提前添加当前仓库状态下不可运行的 npm scripts。
 - 搜索优先使用 `rg` / `rg --files`。
@@ -34,14 +34,14 @@
 
 ## 常用命令
 
-- `npm run start`：启动 Vite demo server，端口 3000。
-- `npm run site:start`：启动 Docusaurus docs site，端口 3001。
-- `npm run type-check`：执行 package 与 repo TypeScript 检查。
-- `npm run lint:check`：执行 ESLint 检查，不自动修复。
-- `npm run test`：执行 `tests/**/*.test.mjs`。
-- `npm run build`：构建 `@whynotsnow/dynamic-form`。
-- `npm run site:build`：构建 docs site。
-- `npm run release:publish`：执行 package 发布保护脚本。
+- `pnpm run start`：启动 Vite demo server，端口 3000。
+- `pnpm run site:start`：启动 Docusaurus docs site，端口 3001。
+- `pnpm run type-check`：执行 package 与 repo TypeScript 检查。
+- `pnpm run lint:check`：执行 ESLint 检查，不自动修复。
+- `pnpm run test`：执行 `tests/**/*.test.mjs`。
+- `pnpm run build`：构建 `@whynotsnow/dynamic-form`。
+- `pnpm run site:build`：构建 docs site。
+- `pnpm run release:publish`：执行 package 发布保护脚本。
 
 不要声称某个命令通过，除非实际运行过。
 

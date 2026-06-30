@@ -23,6 +23,6 @@ demos/        站点 playground 复用的 demo 组件和 demoRegistry
 
 - 新增或修改站点展示文案时，同步维护 `apps/docs-site/docs/` 和 `apps/docs-site/i18n/en/`。
 - 新增 demo 时，先更新 `demos/demoRegistry.tsx`，再更新站点 playground 文案和相关说明。
-- 站点构建验证使用 `npm run site:build`。
+- 站点构建验证使用 `pnpm run site:build`。
 - 站点生成物 `apps/docs-site/build` 和 `.docusaurus` 不提交。
 

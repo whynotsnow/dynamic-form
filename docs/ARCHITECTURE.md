@@ -1,6 +1,6 @@
 # Monorepo 架构
 
-当前仓库采用 npm workspaces 组织，根目录只负责统一调度，不再作为 npm 发布包。
+当前仓库采用 pnpm workspaces 组织，根目录只负责统一调度，不再作为 npm 发布包。
 
 ### 目录边界
 
@@ -33,4 +33,3 @@ scripts/                 发布和维护脚本
 ### Demo 职责
 
 `demos/` 是 demo 业务逻辑和 `demoRegistry` 的唯一来源。Vite demo 和 docs-site playground 都应复用这里的组件，不应把 demo 业务逻辑复制到站点目录。
-

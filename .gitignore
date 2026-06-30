@@ -1,10 +1,12 @@
 # Nestjs specific
 /dist
 /node_modules
+/.pnpm-store
 /build
 /apps/*/build
 /apps/*/.docusaurus
 /apps/*/node_modules
+/packages/*/node_modules
 /packages/*/dist
 /tmp
 

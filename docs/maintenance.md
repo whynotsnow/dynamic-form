@@ -5,14 +5,14 @@
 ### 常用命令
 
 ```bash
-npm run start       # 启动根 Vite demos
-npm run type-check  # 检查库 package 与 demos/tests
-npm run test        # 运行仓库级 Node tests
-npm run build       # 构建 @whynotsnow/dynamic-form
-npm run site:build  # 构建 Docusaurus 站点
+pnpm run start       # 启动根 Vite demos
+pnpm run type-check  # 检查库 package 与 demos/tests
+pnpm run test        # 运行仓库级 Node tests
+pnpm run build       # 构建 @whynotsnow/dynamic-form
+pnpm run site:build  # 构建 Docusaurus 站点
 ```
 
-当前仓库存在 `package-lock.json`，默认使用 npm。
+当前仓库存在 `pnpm-lock.yaml`，默认使用 pnpm。
 
 ### 文档维护
 

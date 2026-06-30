@@ -12,15 +12,15 @@ docs-site 是名为 `@whynotsnow/dynamic-form-site` 的 Docusaurus workspace。�
 
 从仓库根目录运行：
 
-- `npm run site:start`：在端口 3001 启动 Docusaurus。
-- `npm run site:build`：构建 Docusaurus 站点。
+- `pnpm run site:start`：在端口 3001 启动 Docusaurus。
+- `pnpm run site:build`：构建 Docusaurus 站点。
 
 workspace 命令：
 
-- `npm --workspace apps/docs-site run start`
-- `npm --workspace apps/docs-site run build`
-- `npm --workspace apps/docs-site run serve`
-- `npm --workspace apps/docs-site run clear`
+- `pnpm --filter @whynotsnow/dynamic-form-site start`
+- `pnpm --filter @whynotsnow/dynamic-form-site build`
+- `pnpm --filter @whynotsnow/dynamic-form-site serve`
+- `pnpm --filter @whynotsnow/dynamic-form-site clear`
 
 ## 文档布局
 
@@ -42,13 +42,13 @@ workspace 命令：
 ## 源码引用
 
 - 站点可以通过 workspace resolution 引用 package，也可以在本地开发时 alias 到 package source。
-- 如果 alias 路径变化，验证 `npm run site:build`。
+- 如果 alias 路径变化，验证 `pnpm run site:build`。
 - 不要为了站点工作改动核心库的 rendering、Runtime、reducer、compiler、adapter、rule 或 effect pipelines。
 
 ## 验证
 
 站点变更优先验证：
 
-1. `npm run site:build`
-2. TypeScript 或共享 import 变化时运行 `npm run type-check`
-3. 布局或交互 demo 变化时，用 `npm run site:start` 本地检查
+1. `pnpm run site:build`
+2. TypeScript 或共享 import 变化时运行 `pnpm run type-check`
+3. 布局或交互 demo 变化时，用 `pnpm run site:start` 本地检查

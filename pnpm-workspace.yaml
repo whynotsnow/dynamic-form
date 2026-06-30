@@ -1,0 +1,10 @@
+packages:
+  - packages/*
+  - apps/*
+
+onlyBuiltDependencies:
+  - core-js
+  - esbuild
+allowBuilds:
+  core-js: true
+  esbuild: true

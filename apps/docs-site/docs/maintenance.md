@@ -5,16 +5,16 @@
 ### 常用命令
 
 ```bash
-npm run start       # 启动 Vite demo server
-npm run build       # 使用 tsup 构建库产物
-npm run type-check  # TypeScript 类型检查
-npm run lint:check  # ESLint 检查，不自动修复
-npm run lint        # ESLint 自动修复
-npm run format      # Prettier 格式化 src 和 demos
-npm run test        # Node test runner
+pnpm run start       # 启动 Vite demo server
+pnpm run build       # 使用 tsup 构建库产物
+pnpm run type-check  # TypeScript 类型检查
+pnpm run lint:check  # ESLint 检查，不自动修复
+pnpm run lint        # ESLint 自动修复
+pnpm run format      # Prettier 格式化 src 和 demos
+pnpm run test        # Node test runner
 ```
 
-当前仓库存在 `package-lock.json`，默认使用 npm。
+当前仓库存在 `pnpm-lock.yaml`，默认使用 pnpm。
 
 ### Demo 与验证
 
@@ -31,7 +31,7 @@ Vite demos 位于 `demos/`，用于人工验证组件行为。当前 `DemoSelect
 运行 demos：
 
 ```bash
-npm run start
+pnpm run start
 ```
 
 ### 测试
@@ -39,17 +39,17 @@ npm run start
 测试命令：
 
 ```bash
-npm run test
+pnpm run test
 ```
 
 当前测试包含 store boundary 检查，用来记录所有权规则：reducer / effect store 不应保存 Ant Design Form 运行时 values、errors、touched、warnings 或 validating 状态。
 
 源码变更后建议按以下顺序验证：
 
-1. `npm run type-check`
-2. `npm run lint:check`
-3. `npm run test`
-4. `npm run build`
+1. `pnpm run type-check`
+2. `pnpm run lint:check`
+3. `pnpm run test`
+4. `pnpm run build`
 
 如果涉及 UI 行为，还应在浏览器中检查对应 demo。
 
@@ -77,4 +77,4 @@ npm run test
 
 ### 构建产物
 
-`dist/` 由 `npm run build` 生成，是可重建产物，不应作为源码文档维护。
+`dist/` 由 `pnpm run build` 生成，是可重建产物，不应作为源码文档维护。

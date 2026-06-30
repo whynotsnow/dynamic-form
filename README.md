@@ -23,16 +23,16 @@ docs/                    monorepo 级架构、维护、发布和站点规划文�
 ### 常用命令
 
 ```bash
-npm run start       # 启动 Vite demos
-npm run site:start  # 启动 Docusaurus 文档站
-npm run type-check  # TypeScript 检查
-npm run lint:check  # ESLint 检查，不自动修复
-npm run test        # Node test runner
-npm run build       # 构建 @whynotsnow/dynamic-form
-npm run site:build  # 构建文档站
+pnpm run start       # 启动 Vite demos
+pnpm run site:start  # 启动 Docusaurus 文档站
+pnpm run type-check  # TypeScript 检查
+pnpm run lint:check  # ESLint 检查，不自动修复
+pnpm run test        # Node test runner
+pnpm run build       # 构建 @whynotsnow/dynamic-form
+pnpm run site:build  # 构建文档站
 ```
 
-当前仓库存在 `package-lock.json`，默认使用 npm。
+当前仓库存在 `pnpm-lock.yaml`，默认使用 pnpm。
 
 ### 维护边界
 

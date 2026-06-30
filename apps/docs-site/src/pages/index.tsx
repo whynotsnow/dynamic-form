@@ -157,7 +157,7 @@ export default function Home(): JSX.Element {
                   src={workflowImage}
                 />
                 <pre className={styles.install}>
-                  <code>npm install @whynotsnow/dynamic-form antd react react-dom</code>
+                  <code>pnpm add @whynotsnow/dynamic-form antd react react-dom</code>
                 </pre>
               </div>
             </div>

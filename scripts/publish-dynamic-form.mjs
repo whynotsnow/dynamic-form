@@ -11,6 +11,7 @@ const expectedRegistry = 'https://registry.npmjs.org/';
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const packageDir = resolve(rootDir, 'packages/dynamic-form');
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+const pnpm = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
 const node = process.platform === 'win32' ? 'node.exe' : 'node';
 
 function run(command, args, options = {}) {
@@ -58,6 +59,7 @@ async function waitBeforeExit() {
 async function main() {
   try {
     requireSuccess(npm, ['--version'], { capture: true });
+    requireSuccess(pnpm, ['--version'], { capture: true });
     requireSuccess(node, ['--version'], { capture: true });
 
     const packageJson = readPackageJson();
@@ -133,9 +135,9 @@ async function main() {
 
     console.log('');
     console.log('Running release checks...');
-    requireSuccess(npm, ['run', 'type-check']);
-    requireSuccess(npm, ['run', 'test']);
-    requireSuccess(npm, ['run', 'build']);
+    requireSuccess(pnpm, ['run', 'type-check']);
+    requireSuccess(pnpm, ['run', 'test']);
+    requireSuccess(pnpm, ['run', 'build']);
 
     console.log('');
     console.log('Running package dry-run...');

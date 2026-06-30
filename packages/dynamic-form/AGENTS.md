@@ -33,16 +33,16 @@ import { DynamicForm } from '@whynotsnow/dynamic-form';
 
 从仓库根目录运行：
 
-- `npm --workspace @whynotsnow/dynamic-form run type-check`
-- `npm --workspace @whynotsnow/dynamic-form run build`
-- `npm pack --dry-run --workspace @whynotsnow/dynamic-form`
+- `pnpm --filter @whynotsnow/dynamic-form type-check`
+- `pnpm --filter @whynotsnow/dynamic-form build`
+- `pnpm --filter @whynotsnow/dynamic-form exec npm pack --dry-run`
 
 package 变更通常还需要关注：
 
-- `npm run type-check`
-- `npm run lint:check`
-- `npm run test`
-- `npm run build`
+- `pnpm run type-check`
+- `pnpm run lint:check`
+- `pnpm run test`
+- `pnpm run build`
 
 不要声称自动化检查通过，除非实际运行过对应命令。
 

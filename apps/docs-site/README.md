@@ -12,15 +12,15 @@
 ### 开发命令
 
 ```bash
-npm run site:start  # 从仓库根目录启动站点
-npm run site:build  # 从仓库根目录构建站点
+pnpm run site:start  # 从仓库根目录启动站点
+pnpm run site:build  # 从仓库根目录构建站点
 ```
 
 也可以在 workspace 内运行：
 
 ```bash
-npm --workspace apps/docs-site run start
-npm --workspace apps/docs-site run build
+pnpm --filter @whynotsnow/dynamic-form-site start
+pnpm --filter @whynotsnow/dynamic-form-site build
 ```
 
 ### 维护规则

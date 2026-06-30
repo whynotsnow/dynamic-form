@@ -17,11 +17,11 @@
 ### 发布前验证
 
 ```bash
-npm run type-check
-npm run test
-npm run build
-npm run site:build
-npm pack --dry-run --workspace @whynotsnow/dynamic-form
+pnpm run type-check
+pnpm run test
+pnpm run build
+pnpm run site:build
+pnpm --filter @whynotsnow/dynamic-form exec npm pack --dry-run
 ```
 
 `npm pack --dry-run` 应包含 `dist/`、`docs/`、`README.md`、`LICENSE` 和 package manifest。
@@ -31,7 +31,7 @@ npm pack --dry-run --workspace @whynotsnow/dynamic-form
 使用：
 
 ```bash
-npm run release:publish
+pnpm run release:publish
 ```
 
 脚本会从 `packages/dynamic-form/package.json` 读取包名和版本，在仓库根运行验证命令，并在 `packages/dynamic-form/` 内执行 `npm pack --dry-run` 和 `npm publish --access public`。
@@ -39,4 +39,3 @@ npm run release:publish
 ### Tag
 
 版本 tag 采用 `v` 前缀，例如 `v3.0.0`。
-
