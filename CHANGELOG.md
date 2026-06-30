@@ -1,5 +1,22 @@
 # Changelog
 
+## 3.2.1 - 2026-06-30
+
+### 版本概览
+
+- 发布 3.2 稳定性补丁，继续保持 `FormConfig`、Field Address、Runtime Layer 和同步 effect 边界兼容。
+- 不新增 public API，不引入 container、递归节点树、nested group 或跨层级 effect graph。
+
+### 测试与文档
+
+- 补充 grouped field 的嵌套 `name` 路径、flat/group 重复 `name` 路径和函数式 `initialValue` 的 Field Address 测试。
+- 补充 Runtime 对 group 隐藏、disabled 字段校验能力和 hidden field preserve/restore 策略的护栏测试。
+- 同步补强 package docs、docs-site 中文文档和英文 i18n 文档中的 3.2 能力边界。
+
+### Package
+
+- 根 workspace 和 `@whynotsnow/dynamic-form` package 版本升级到 `3.2.1`。
+
 ## 3.2.0 - 2026-06-30
 
 ### 版本概览

@@ -15,4 +15,6 @@ interface FieldAddress {
 
 Nested values can use `name: ['shipping', 'city']` while effects continue referencing the stable field `id`. Effect and functional `initialValue` values preserve the nested structure and also expose stable field-ID aliases. The package exports `resolveFieldAddress(field)` and `getFieldName(field)` for custom renderers and components.
 
-Version 3.2 establishes the addressing foundation only. It does not add container fields or a recursive node tree. Field and group IDs remain globally unique, and two fields cannot use the same `name` path.
+Version 3.2 establishes the addressing foundation only. It does not add container fields, a recursive node tree, nested groups, or a cross-level effect graph. Field and group IDs remain globally unique, and two fields cannot use the same `name` path.
+
+This boundary applies to both flat fields and grouped fields. A group only affects Runtime rendering, submission, and validation capability; a field value path is still determined by the field's own `name`, and is not automatically prefixed by the group.

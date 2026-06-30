@@ -28,6 +28,8 @@ Each field resolves to `rendered`, `submitable`, `disabled`, `readonly`, `editab
 
 Each group resolves to `rendered`. Group visibility affects child field rendering and submit participation.
 
+3.2 only supports the current single-level `groups -> fields` model. Runtime propagates group visibility to direct child fields, but does not resolve nested groups, container subtrees, or cross-level node capabilities; those belong to the 4.0 unified node tree plan.
+
 ### Meta Input
 
 Runtime reads behavior meta through `getFieldBehaviorMeta` and `getGroupBehaviorMeta`. This keeps compatibility with legacy flat meta keys while centering new logic on `meta.behavior`.
@@ -43,6 +45,8 @@ Changed-field validation and submit validation both filter fields through `runti
 ### Hidden Field Participation
 
 `useFieldParticipation` clears a field value when it leaves submit participation unless `preserveValueOnHide` is true. If `restoreValueOnShow` is not false, the old value is cached and restored when the field becomes submitable again.
+
+The same policy applies when a field leaves submit participation because its group is hidden. `preserveValueOnHide` and `restoreValueOnShow` are field-level options and are not automatically overridden by the group.
 
 ### Extension Guidance
 

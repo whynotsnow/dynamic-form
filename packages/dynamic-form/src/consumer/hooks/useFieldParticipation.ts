@@ -4,6 +4,7 @@ import type { FieldValue, FormState } from '../../shared/types';
 import type { RuntimeState } from '../../runtime';
 import { getAllFields } from '../../runtime/selectors';
 import { getFieldName } from '../../shared/utils';
+import { resolveFieldParticipationPolicy } from './fieldParticipationPolicy';
 
 export function useFieldParticipation(
   form: FormInstance,
@@ -25,9 +26,8 @@ export function useFieldParticipation(
 
       const wasSubmitable = previousSubmitableRef.current[field.id];
 
-      const shouldPreserve = field.preserveValueOnHide === true;
-
-      const shouldRestore = field.restoreValueOnShow !== false;
+      const { preserveValueOnHide: shouldPreserve, restoreValueOnShow: shouldRestore } =
+        resolveFieldParticipationPolicy(field);
 
       if (!isSubmitable && wasSubmitable !== false && !shouldPreserve) {
         if (shouldRestore) {

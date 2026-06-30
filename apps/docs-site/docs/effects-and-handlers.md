@@ -52,6 +52,8 @@ return <DynamicForm form={form} formConfig={formConfig} />;
 
 配置处理阶段会生成 `effectMap`，并传给 `form-chain-effect-engine`。
 
+3.2 的 effect graph 节点仍然引用稳定 `id`，不引用 Ant Design `NamePath`。Field Address 可以让 values 呈现嵌套结构，但不会引入 container 节点、nested group 或跨层级 effect graph；这些结构性能力留到 4.0 统一节点树处理。
+
 ### 默认返回 key
 
 默认 handler 定义在 `packages/dynamic-form/src/config/defaultConfig.ts`。

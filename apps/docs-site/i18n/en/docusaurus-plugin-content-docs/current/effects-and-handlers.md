@@ -35,6 +35,8 @@ return <DynamicForm form={form} formConfig={formConfig} />;
 
 Fields and groups can declare `dependents` and `effect`. Config processing creates an `effectMap` and passes it to `form-chain-effect-engine`.
 
+In 3.2, effect graph nodes still reference stable `id` values, not Ant Design `NamePath` values. Field Address can make values nested, but it does not introduce container nodes, nested groups, or a cross-level effect graph; those structural capabilities are left for the 4.0 unified node tree.
+
 ### Default Result Keys
 
 Default handlers are defined in `packages/dynamic-form/src/config/defaultConfig.ts`. Supported keys include `value`, `visible`, `disabled`, `readonly`, `groupsVisible`, `formItemProps`, `componentProps`, `formProps`, `buttonProps`, `cardProps`, `rowProps`, `colProps`, and `submitAreaProps`.

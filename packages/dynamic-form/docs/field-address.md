@@ -40,6 +40,8 @@ const formConfig: FormConfig = {
 
 包导出 `resolveFieldAddress(field)` 和 `getFieldName(field)`。自定义 `Form.Item`、`Form.List` 或手工调用 `form.validateFields()` 时应使用 `getFieldName(field)`。
 
-### 当前边界
+### 3.2 稳定边界
 
-3.2 提供字段寻址和嵌套值路径基础，但不引入 container 字段或递归节点树。字段和 group 的 `id` 仍须全局唯一，两个字段不能使用相同 `name` 路径。
+3.2 提供字段寻址和嵌套值路径基础，但不引入 container 字段、递归节点树、nested group 或跨层级 effect graph。字段和 group 的 `id` 仍须全局唯一，两个字段不能使用相同 `name` 路径。
+
+这一边界适用于 flat fields 和 grouped fields。分组只影响 Runtime 渲染、提交和校验能力；字段值路径仍由字段自己的 `name` 决定，不会因为位于 group 中而自动增加 group 前缀。

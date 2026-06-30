@@ -74,6 +74,43 @@ test('processFormConfig builds nested initial values and an address registry', a
   });
 });
 
+test('processFormConfig supports grouped fields with nested name paths', async () => {
+  const { configParser } = await modulePromise;
+  const result = configParser.processFormConfig({
+    fields: [
+      {
+        id: 'customerType',
+        name: ['customer', 'type'],
+        component: 'TextInput',
+        initialValue: 'company'
+      }
+    ],
+    groups: [
+      {
+        id: 'companyInfo',
+        fields: [
+          {
+            id: 'companyName',
+            name: ['company', 'name'],
+            component: 'TextInput',
+            initialValue: (values) => `${values.customerType}: Snow Ltd`
+          }
+        ]
+      }
+    ]
+  });
+
+  assert.deepEqual(result.initialValues, {
+    customer: { type: 'company' },
+    company: { name: 'company: Snow Ltd' }
+  });
+  assert.deepEqual(result.fieldAddressRegistry.companyName, {
+    id: 'companyName',
+    name: ['company', 'name']
+  });
+  assert.ok(result.initializedGroupFields.companyInfo.fields.companyName);
+});
+
 test('field address registry rejects duplicate Ant Design name paths', async () => {
   const { configParser } = await modulePromise;
 
@@ -83,6 +120,26 @@ test('field address registry rejects duplicate Ant Design name paths', async () 
         fields: [
           { id: 'billingCity', name: ['address', 'city'], component: 'TextInput' },
           { id: 'shippingCity', name: ['address', 'city'], component: 'TextInput' }
+        ]
+      }),
+    /use the same name path/
+  );
+});
+
+test('field address registry rejects duplicate name paths across flat and grouped fields', async () => {
+  const { configParser } = await modulePromise;
+
+  assert.throws(
+    () =>
+      configParser.processFormConfig({
+        fields: [{ id: 'billingCity', name: ['address', 'city'], component: 'TextInput' }],
+        groups: [
+          {
+            id: 'shippingGroup',
+            fields: [
+              { id: 'shippingCity', name: ['address', 'city'], component: 'TextInput' }
+            ]
+          }
         ]
       }),
     /use the same name path/

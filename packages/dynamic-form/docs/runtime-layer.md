@@ -43,6 +43,8 @@ FormState
 
 分组可见性会影响所有子字段的渲染和提交参与。
 
+3.2 只支持当前 `groups -> fields` 的单层分组模型。Runtime 会把 group 可见性传递给直接子字段，但不会解析 nested group、container 子树或跨层级节点能力；这些属于 4.0 统一节点树规划。
+
 ### Meta 输入
 
 Runtime 通过工具函数读取行为 meta：
@@ -92,10 +94,11 @@ form.validateFields(Object.keys(changedValues));
 
 这样默认能避免隐藏字段进入提交数据，同时给需要保留值的业务场景留出配置能力。
 
+该策略同样适用于因 group 隐藏而离开 submit participation 的字段。`preserveValueOnHide` 和 `restoreValueOnShow` 都是字段级配置，不会被 group 自动覆盖。
+
 ### 扩展建议
 
 - 新行为只有会影响运行时策略时，才应进入 behavior meta。
 - 渲染专用配置应留在 `formItemProps` 或 `componentProps`。
 - 新策略应优先修改 Runtime resolver，而不是在组件内重复判断。
 - Ant Design Form 应继续作为 values 和校验运行时状态的所有者。
-
