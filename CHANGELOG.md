@@ -1,5 +1,27 @@
 # Changelog
 
+## 3.4.0 - 2026-06-30
+
+### 版本概览
+
+- 发布 4.0 前置兼容版本，明确 3.x 主模型和 4.0 结构性重构边界。
+- 3.4 不引入统一节点树、container、nested group 或跨层级 effect graph 主流程。
+
+### 迁移基线
+
+- 新增 3.x 兼容与 4.0 迁移基线文档，说明当前主流程仍是 `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`。
+- 明确 4.0 才会引入统一 Form Node Tree、container、跨层级 effect graph 和完整嵌套结构模型。
+- 建议 3.x 用户提前使用稳定 `id`、显式 `name`、schema metadata 和同步 rules/effects 边界，为 4.0 兼容适配层做准备。
+
+### 测试与文档
+
+- 补充 3.x 兼容护栏测试，确保 nested object schema、object array schema、重复 field/group id 和重复 `name` path 继续被拒绝。
+- 同步新增 package docs、docs-site 中文文档和英文 i18n 文档的 4.0 preview 说明。
+
+### Package
+
+- 根 workspace 和 `@whynotsnow/dynamic-form` package 版本升级到 `3.4.0`。
+
 ## 3.3.0 - 2026-06-30
 
 ### 版本概览

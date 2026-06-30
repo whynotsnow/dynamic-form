@@ -19,7 +19,8 @@ slug: /
 9. 🎨 [渲染与 UI 扩展](./rendering-and-ui.md)：学习默认渲染结构、组件注册和分层 render hooks。
 10. 🧠 [Runtime Layer](./runtime-layer.md)：理解显示、提交、禁用、只读、校验等策略如何统一计算。
 11. 🧭 [组件使用指南](./development.md)：按使用场景学习配置、demo 链接、自定义组件和自定义 handlers。
-12. 🛠️ [维护指南](./maintenance.md)：了解测试、构建、验证和文档维护规则。
+12. 🧭 [3.x 兼容与 4.0 迁移基线](./3x-compatibility.md)：理解 3.x 稳定边界和 4.0 规划能力的分界。
+13. 🛠️ [维护指南](./maintenance.md)：了解测试、构建、验证和文档维护规则。
 
 ### 文档范围
 

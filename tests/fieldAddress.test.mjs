@@ -146,6 +146,19 @@ test('field address registry rejects duplicate name paths across flat and groupe
   );
 });
 
+test('processFormConfig rejects duplicate field and group ids before 4.0 node-tree migration', async () => {
+  const { configParser } = await modulePromise;
+
+  assert.throws(
+    () =>
+      configParser.processFormConfig({
+        fields: [{ id: 'profile', component: 'TextInput' }],
+        groups: [{ id: 'profile', fields: [{ id: 'companyName', component: 'TextInput' }] }]
+      }),
+    /duplicate field or group id "profile"/
+  );
+});
+
 test('nested changed values map back to stable effect and runtime ids', async () => {
   const { fieldAddress } = await modulePromise;
   const registry = {

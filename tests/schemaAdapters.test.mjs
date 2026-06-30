@@ -110,6 +110,25 @@ test('JsonSchemaAdapter rejects missing module metadata and nested object schema
       }),
     /nested object property "profile" is not supported/
   );
+
+  assert.throws(
+    () =>
+      JsonSchemaAdapter.adapt({
+        type: 'object',
+        properties: {
+          contacts: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {},
+              metadata: { module: 'ContactModule' }
+            },
+            metadata: { module: 'ContactListModule' }
+          }
+        }
+      }),
+    /object array property "contacts" is not supported/
+  );
 });
 
 test('OpenApiAdapter resolves schemas by schemaName and by single-schema default', () => {
