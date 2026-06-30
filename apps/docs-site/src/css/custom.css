@@ -66,3 +66,52 @@ html[data-theme='dark'] {
 .theme-doc-markdown code {
   line-height: 1;
 }
+
+.docusaurus-mermaid-container {
+  margin: 1.25rem 0;
+  padding: 1.25rem;
+  overflow-x: auto;
+  border: 1px solid var(--df-border-muted);
+  border-radius: 8px;
+  background: var(--df-background-panel);
+}
+
+.docusaurus-mermaid-container > svg {
+  display: block;
+  height: auto;
+  margin: 0 auto;
+}
+
+html[data-theme='dark'] .docusaurus-mermaid-container {
+  background: var(--df-background-muted);
+  border-color: var(--df-border-subtle);
+}
+
+html[data-theme='dark'] .docusaurus-mermaid-container .node rect,
+html[data-theme='dark'] .docusaurus-mermaid-container .node circle,
+html[data-theme='dark'] .docusaurus-mermaid-container .node ellipse,
+html[data-theme='dark'] .docusaurus-mermaid-container .node polygon,
+html[data-theme='dark'] .docusaurus-mermaid-container .node path {
+  fill: var(--df-background-panel) !important;
+  stroke: var(--ifm-color-primary-light) !important;
+}
+
+html[data-theme='dark'] .docusaurus-mermaid-container .edgePaths path,
+html[data-theme='dark'] .docusaurus-mermaid-container .flowchart-link {
+  stroke: var(--ifm-color-primary-light) !important;
+}
+
+html[data-theme='dark'] .docusaurus-mermaid-container .arrowheadPath {
+  fill: var(--ifm-color-primary-light) !important;
+}
+
+html[data-theme='dark'] .docusaurus-mermaid-container .label,
+html[data-theme='dark'] .docusaurus-mermaid-container .nodeLabel,
+html[data-theme='dark'] .docusaurus-mermaid-container .edgeLabel {
+  color: var(--df-text-main) !important;
+}
+
+html[data-theme='dark'] .docusaurus-mermaid-container .edgeLabel,
+html[data-theme='dark'] .docusaurus-mermaid-container .edgeLabel p {
+  background: var(--df-background-muted) !important;
+}
