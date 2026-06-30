@@ -30,7 +30,7 @@ Each field resolves to `rendered`, `submitable`, `disabled`, `readonly`, `editab
 
 Each group resolves to `rendered`. Group visibility affects child field rendering and submit participation.
 
-3.2 only supports the current single-level `groups -> fields` model. Runtime propagates group visibility to direct child fields, but does not resolve nested groups, container subtrees, or cross-level node capabilities; those belong to the 4.0 unified node tree plan.
+3.2 only supports the current single-level `groups -> fields` model. Runtime resolves field/group capabilities and propagates group visibility to direct child fields; it does not resolve nested groups, container subtrees, recursive node trees, or cross-level node capabilities. Those structural capabilities belong to the future unified node tree plan and are not current public APIs.
 
 ### Meta Input
 

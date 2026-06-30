@@ -66,6 +66,10 @@ pnpm run test
 
 不要重新引入旧的重复文档体系，也不要把 demo 业务逻辑复制到文档站目录。
 
+### 版本记录维护
+
+仓库根目录 `CHANGELOG.md` 是完整发布日志来源。docs-site 的 `/docs/changelog` 只维护面向读者的精简摘要、迁移影响和相关专题入口；更新版本记录时应保持两者信息一致，但不要把完整发布日志原文复制进站点页面。
+
 ### 实现约束
 
 - 保持 Config -> State -> Runtime -> Consumer 架构。

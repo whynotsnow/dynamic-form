@@ -45,7 +45,7 @@ FormState
 
 分组可见性会影响所有子字段的渲染和提交参与。
 
-3.2 只支持当前 `groups -> fields` 的单层分组模型。Runtime 会把 group 可见性传递给直接子字段，但不会解析 nested group、container 子树或跨层级节点能力；这些属于 4.0 统一节点树规划。
+3.2 只支持当前 `groups -> fields` 的单层分组模型。Runtime 只解析 field/group 能力，并把 group 可见性传递给直接子字段；它不会解析 nested group、container 子树、递归节点树或跨层级节点能力。这些结构性能力属于后续统一节点树规划，不是当前 public API。
 
 ### Meta 输入
 

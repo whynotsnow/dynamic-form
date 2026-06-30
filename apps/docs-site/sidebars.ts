@@ -25,7 +25,7 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: '维护',
-      items: ['3x-compatibility', 'maintenance']
+      items: ['changelog', 'maintenance']
     }
   ]
 };

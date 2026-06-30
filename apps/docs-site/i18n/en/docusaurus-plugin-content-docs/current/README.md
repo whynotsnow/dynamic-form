@@ -19,7 +19,7 @@ This directory is the entry point for the current DynamicForm documentation. The
 9. 🎨 [Rendering and UI Extensions](./rendering-and-ui.md): default rendering, component registry, and layered render hooks.
 10. 🧠 [Runtime Layer](./runtime-layer.md): rendering, submission, disabled, readonly, and validation policies.
 11. 🧭 [Component Usage Guide](./development.md): usage-oriented configuration, demo links, custom components, and custom handlers.
-12. 🧭 [3.x Compatibility and 4.0 Migration Baseline](./3x-compatibility.md): stable 3.x boundaries and planned 4.0 capabilities.
+12. 🧾 [CHANGELOG](./changelog.md): reader-focused release summaries and related topic entry points.
 13. 🛠️ [Maintenance Guide](./maintenance.md): tests, builds, verification, and documentation maintenance.
 
 ### Documentation Scope

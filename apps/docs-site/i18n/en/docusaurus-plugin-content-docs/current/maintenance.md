@@ -49,9 +49,13 @@ For UI behavior, also inspect the relevant demo in the browser.
 
 When library behavior, public APIs, or usage changes, update the closest library topic file in `packages/dynamic-form/docs/`. When workspace layout, release, CI, site planning, or repository governance changes, update root `docs/`. Update the root `README.md` if public API, high-level feature summaries, or documentation entry points change. Update `AGENTS.md` when the change creates useful project knowledge for future agents.
 
-Docs use a bilingual structure: Chinese content first, followed by the English translation.
+Project documentation is written in Chinese by default. The docs-site `i18n/` directory is the exception and continues to maintain English translations.
 
 Do not reintroduce the old overlapping documentation set, and do not copy demo business logic into the site directory.
+
+### Release Notes Maintenance
+
+The repository root `CHANGELOG.md` is the complete release log source. The docs-site `/docs/changelog` page keeps only a reader-focused summary, migration impact, and related topic entry points. Keep both sources consistent when release records change, but do not copy the complete release log verbatim into the site page.
 
 ### Implementation Guardrails
 

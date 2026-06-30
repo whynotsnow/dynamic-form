@@ -110,6 +110,8 @@ const moduleConfigs = adaptModuleConfigs(
 
 Each field must provide `id` and `type`, with optional `name`, `options`, `rules`, and `overrides`. `name` is merged into `overrides.name` for nested values.
 
+External schema input should declare `module`, `name`, `groupId`, `rules`, and `overrides` explicitly through metadata. Adapters normalize input only; they do not infer UI from primitive types and do not expand nested structures.
+
 ### Boundaries
 
 - No nested object schema expansion.

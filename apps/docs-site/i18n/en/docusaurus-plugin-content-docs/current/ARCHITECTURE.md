@@ -32,6 +32,8 @@ packages/dynamic-form/src/index.tsx
       -> FieldComponentRenderer
 ```
 
+The 3.x main flow remains `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`. `DynamicForm` continues to accept the existing `FormConfig`; Adapter, Compiler, Rule Engine, and Schema Adapters are optional preprocessing layers that still output the current standard `FormConfig`.
+
 ### Important Files
 
 - `packages/dynamic-form/src/adapters/`: normalizes module-like, JsonSchema, OpenAPI, and metadata input into `ModuleFormConfig`.

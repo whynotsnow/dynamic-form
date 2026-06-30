@@ -32,6 +32,8 @@ packages/dynamic-form/src/index.tsx
       -> FieldComponentRenderer
 ```
 
+3.x 主流程仍然是 `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`。`DynamicForm` 继续接收现有 `FormConfig`；Adapter、Compiler、Rule Engine 和 Schema Adapters 只是可选预处理层，最终仍输出当前标准 `FormConfig`。
+
 ### 关键文件
 
 - `packages/dynamic-form/src/adapters/`：把 module-like、JsonSchema、OpenAPI 和 metadata 输入归一化为 `ModuleFormConfig`。

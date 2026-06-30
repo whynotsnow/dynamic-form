@@ -110,6 +110,8 @@ const moduleConfigs = adaptModuleConfigs(
 
 每个 field 必须提供 `id` 和 `type`，可选透传 `name`、`options`、`rules`、`overrides`。`name` 会合并进 `overrides.name`，用于生成嵌套 values。
 
+外部 schema 输入应通过 metadata 显式声明 `module`、`name`、`groupId`、`rules` 和 `overrides`。Adapter 只负责归一化输入，不通过 primitive type 猜测 UI，也不展开嵌套结构。
+
 ### Boundaries
 
 - 不展开 nested object schema。

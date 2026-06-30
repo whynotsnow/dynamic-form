@@ -47,3 +47,5 @@ const formConfig: FormConfig = {
 3.2 提供字段寻址和嵌套值路径基础，但不引入 container 字段、递归节点树、nested group 或跨层级 effect graph。字段和 group 的 `id` 仍须全局唯一，两个字段不能使用相同 `name` 路径。
 
 这一边界适用于 flat fields 和 grouped fields。分组只影响 Runtime 渲染、提交和校验能力；字段值路径仍由字段自己的 `name` 决定，不会因为位于 group 中而自动增加 group 前缀。
+
+面向后续结构性升级时，应始终使用全局唯一、稳定的 field/group `id`。需要嵌套提交值时显式配置 `name`，不要把嵌套语义编码进 `id`。
