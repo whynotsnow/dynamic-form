@@ -57,6 +57,8 @@ Use render hooks when the default `Form -> Row -> Col` or `Card -> Row -> Col` s
 
 Use Ant Design Form `rules` for normal fields. Runtime decides whether hidden, group-hidden, or disabled fields participate in validation. See [`demos/formValidationDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/formValidationDemo.tsx).
 
+DynamicForm does not provide async validation compilation. For remote validation, prefer owning the request lifecycle inside a custom field component or application container. If you only need Ant Design validation integration, use Ant Design `rules.validator`; cancellation and race strategies remain application code.
+
 ### Usage Guidance
 
 - Use `uiConfig` for Ant Design prop changes.

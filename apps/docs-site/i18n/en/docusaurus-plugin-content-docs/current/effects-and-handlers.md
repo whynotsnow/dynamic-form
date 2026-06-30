@@ -2,6 +2,14 @@
 
 DynamicForm delegates dependency execution to `form-chain-effect-engine`, while DynamicForm owns how effect results are applied through its handler system.
 
+### Async Boundary
+
+DynamicForm core does not support library-level async effects. It also does not provide async validation compilation, cancellation, race handling, debounce, loading, error, or cache lifecycle management. The current roadmap does not commit to supporting those capabilities later.
+
+Remote requests, remote option loading, search suggestions, server-side validation, and other async interactions should be encapsulated in custom field components or application containers. Those components may own `AbortController`, request sequencing, cache, loading, and error state, then connect to the form through Ant Design Form `onChange`, `form.setFieldValue`, or `rules.validator`.
+
+DynamicForm only routes and applies synchronous effect results. Custom `EffectResultHandler` implementations should stay synchronous and should not host async task scheduling, request lifecycle, or race handling.
+
 ### Initialization Contract
 
 Forms that rely on default or custom effect result handlers should call `useInitHandlers` before rendering.

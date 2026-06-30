@@ -56,32 +56,7 @@ export const dataTransformHandler: CustomEffectResultHandler = {
   }
 };
 
-// 示例4: 异步处理器（简化版本，避免在同步上下文中使用异步）
-export const asyncHandler: CustomEffectResultHandler = {
-  name: 'async',
-  description: '异步处理数据（简化版本）',
-  canHandle: (key) => key === 'async',
-  validate: (value) => typeof value === 'object' && 'url' in value,
-  handle: (context, value) => {
-    // 简化版本：直接处理数据而不是真正的异步请求
-    const { url, method = 'GET', body } = value;
-
-    // 模拟异步处理结果
-    const mockResult = {
-      status: 'success',
-      data: body || 'mock-data',
-      url,
-      method
-    };
-
-    // 使用语义化的 API 更新字段值
-    context.setFieldValue(mockResult);
-
-    // console.log(`异步处理完成: ${context.fieldName}`, mockResult);
-  }
-};
-
-// 示例5: 链式处理器
+// 示例4: 链式处理器
 export const chainedHandler: CustomEffectResultHandler = {
   name: 'chained',
   description: '链式处理多个效果',
@@ -89,7 +64,7 @@ export const chainedHandler: CustomEffectResultHandler = {
   validate: (value) => Array.isArray(value) && value.length > 0,
   handle: (context, value) => {
     // 执行多个处理器
-    value.forEach((item: { type: string; value: any }, index: number) => {
+    value.forEach((item: { type: string; value: any }) => {
       // 根据 item 的类型执行不同的处理逻辑逻辑
       if (item.type === 'style') {
         context.updateFieldMeta({
@@ -106,9 +81,4 @@ export const chainedHandler: CustomEffectResultHandler = {
 };
 
 // 导出所有示例处理器
-export const exampleHandlers = [
-  conditionalDisplayHandler,
-  dataTransformHandler,
-  asyncHandler,
-  chainedHandler
-];
+export const exampleHandlers = [conditionalDisplayHandler, dataTransformHandler, chainedHandler];

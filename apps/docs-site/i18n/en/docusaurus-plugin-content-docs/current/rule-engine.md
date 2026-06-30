@@ -46,6 +46,8 @@ Application code should normally consume rules through `compileFormConfig()`. Di
 ### Boundaries
 
 - Evaluation is synchronous and does not perform requests or side effects.
+- Async rules, remote rules, cancellation, and race strategies are not supported. Put those async interactions in custom field components, application containers, or Ant Design `rules.validator`.
+- The current roadmap does not commit to library-level async validation compilation.
 - Rules do not replace Ant Design validation rules.
 - Rules do not replace `form-chain-effect-engine`; they generate standard effects for it.
 - Rules do not maintain a separate values store and read the current values snapshot provided by the effect engine.

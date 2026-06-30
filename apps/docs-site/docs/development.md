@@ -280,6 +280,8 @@ const { isInitialized } = useInitHandlers({
 
 隐藏字段、分组隐藏字段、disabled 字段是否参与校验由 Runtime Layer 统一决定。完整示例见 [`demos/formValidationDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/formValidationDemo.tsx)。
 
+DynamicForm 不提供 async validation compile。需要远程校验时，优先在自定义字段组件或业务容器中处理请求生命周期；如果只是接入 Ant Design 校验，可以直接使用 Ant Design `rules.validator`，异步取消和竞态策略由业务代码负责。
+
 ### 使用建议
 
 - 只调整 Ant Design props：使用 `uiConfig`。

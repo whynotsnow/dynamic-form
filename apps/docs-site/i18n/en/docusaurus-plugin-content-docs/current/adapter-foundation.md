@@ -72,7 +72,7 @@ The default order is passthrough, JsonSchema, OpenAPI, then Metadata. A single o
 
 - Adapter Foundation itself does not own concrete JsonSchema, OpenAPI, or Metadata mappings.
 - Adapter Foundation does not change the responsibilities of `compileFormConfig()`, `processFormConfig()`, runtime, or renderer.
-- The current release does not introduce async rules, a validation rule engine, or a monorepo split.
+- Adapter Foundation does not introduce async rules, async validation compilation, a validation rule engine, or a monorepo split.
 - Adapter output is `{ fields, groups? }`. Fields join groups through `groupId`, supporting flat, grouped, and mixed configurations.
 
 The 3.0 release also includes `JsonSchemaAdapter`, `OpenApiAdapter`, and `MetadataAdapter`; see [Schema Adapters](./schema-adapters.md). The boundaries above describe Adapter Foundation itself.

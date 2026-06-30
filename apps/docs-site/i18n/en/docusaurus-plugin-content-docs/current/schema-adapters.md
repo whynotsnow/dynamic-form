@@ -103,6 +103,6 @@ Each field must provide `id` and `type`, with optional `options`, `rules`, and `
 - No object array item schema expansion.
 - No validation rule engine.
 - Except for field-level `required` semantics, `minLength`, `maxLength`, `pattern`, `minimum`, and `maximum` are not implicitly translated into Ant Design rules. Declare them explicitly through metadata or module rules so adapters do not silently choose messages, triggers, or component value semantics.
-- No async/API rules.
+- No async/API rules and no commitment to async validation compilation. Remote validation and remote options should be owned by custom components or application containers.
 - No automatic UI or module type inference from schema types.
 - Single-level groups and mixed fields are supported. Nested groups and multi-group field membership are not supported.

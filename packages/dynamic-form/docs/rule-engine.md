@@ -104,7 +104,8 @@ compileFormConfig({
 ### 边界
 
 - 仅支持同步求值，不执行异步请求或副作用。
+- 不支持异步规则、远程规则、请求取消或竞态策略；这些异步交互应放在自定义字段组件、业务容器或 Ant Design `rules.validator` 中。
+- 当前路线不承诺提供库级 async validation compile。
 - 不替代 Ant Design validation rules。
 - 不替代 `form-chain-effect-engine`，而是生成该引擎可执行的标准 effects。
 - 不维护独立 values store，规则从 effect engine 提供的当前 values 快照读取数据。
-

@@ -162,12 +162,15 @@ Reducers 和初始化 helpers 会归一化为：
 - Schema adapters 要求显式 module metadata，不根据 schema primitive types 推断 UI 或 module type。
 - `RuleEngine` 和 `compileRulesToEffect()` 支持 `show`、`hide`、`enable`、`disable`、`readonly`、`editable`、`setValue`、`clearValue` 等同步声明式 actions。
 - Rules 由受影响 field 持有，不支持 `target`；一个 source field 影响多个 fields 时，应由多个受影响 fields 分别声明 rule。
+- 当前实现明确不支持库级异步 effect 或 async validation compile，也不承诺未来支持。远程请求、远程选项、搜索联想、服务端校验、取消和竞态策略应由自定义字段组件或业务容器负责；必要时直接使用 Ant Design `rules.validator`。
 
 这些 layers 内的改动必须保持 store boundary：Ant Design Form 拥有 values 和 validation runtime state；DynamicForm 拥有 field meta、group meta、dynamic UI config 和 dependency metadata。
 
 ## Effect Result Handling 处理
 
 Effects 和函数式 `initialValue` 可以返回对象。`applyEffectResult` 会把每个返回 key 路由到 `src/consumer/effects/handlerRegistry.ts` 中注册的 handlers。
+
+Effect result handling 保持同步边界；不要把异步任务调度、请求生命周期、loading/error/cache 或竞态控制放进 handler 系统。
 
 已知 update categories 包括：
 

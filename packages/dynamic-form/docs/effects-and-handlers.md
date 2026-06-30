@@ -2,6 +2,14 @@
 
 DynamicForm 使用 `form-chain-effect-engine` 执行依赖链，但 effect 返回值如何作用到表单由 DynamicForm 的 handler 系统负责。
 
+### 异步边界
+
+DynamicForm 核心不支持库级异步 effect，也不提供 async validation compile、取消、竞态、debounce、loading、error 或 cache 等异步流程管理能力。当前路线不承诺后续支持这些能力。
+
+涉及远程请求、远程选项加载、搜索联想、服务端校验或其他异步交互时，应在自定义字段组件或业务容器中封装。组件可以自行使用 `AbortController`、请求序号、缓存、loading 和错误状态，并通过 Ant Design Form 的 `onChange`、`form.setFieldValue` 或 `rules.validator` 接入表单。
+
+DynamicForm 只负责同步 effect result 的路由和应用。自定义 `EffectResultHandler` 应保持同步，不应把异步任务调度、请求生命周期或竞态处理放进 handler 系统。
+
 ### 初始化约束
 
 依赖默认或自定义 effect result handler 的表单，应在渲染前调用 `useInitHandlers`。
@@ -141,4 +149,3 @@ reducer 不存储 values、errors、warnings、touched、validating。`value` ha
 ### 初始值结果
 
 函数式 `initialValue` 可以返回 effect result 对象。初始化阶段也会使用同一套 handler 路由，因此初始值也能配置字段 meta 或 UI props。
-

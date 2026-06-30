@@ -103,6 +103,6 @@ const moduleConfigs = adaptModuleConfigs(
 - 不展开 object array item schema。
 - 不实现 validation rule engine。
 - 除 `required` 外，不自动把 `minLength`、`maxLength`、`pattern`、`minimum`、`maximum` 转成 Ant Design rules；这些约束需要通过 metadata/module 的显式 `rules` 声明。这样可避免 adapter 隐式决定提示文案、触发时机和组件值语义。
-- 不实现异步/API 规则。
+- 不实现异步/API 规则，也不承诺提供 async validation compile；远程校验或远程选项应由自定义组件或业务容器负责。
 - 不根据 schema type 自动猜测 UI 或 module type。
 - 支持单层 groups 和 mixed fields；不支持 group 嵌套或一个字段属于多个 group。
