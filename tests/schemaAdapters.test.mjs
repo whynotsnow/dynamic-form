@@ -39,8 +39,9 @@ test('JsonSchemaAdapter converts top-level properties into ModuleConfig entries'
   });
 
   assert.deepEqual(moduleFormConfig, {
-    fields: [
+    nodes: [
       {
+        nodeType: 'field',
         type: 'TextInputModule',
         id: 'name',
         options: {
@@ -62,6 +63,7 @@ test('JsonSchemaAdapter converts top-level properties into ModuleConfig entries'
         }
       },
       {
+        nodeType: 'field',
         type: 'SelectModule',
         id: 'status',
         options: {
@@ -75,6 +77,7 @@ test('JsonSchemaAdapter converts top-level properties into ModuleConfig entries'
         },
         rules: undefined,
         overrides: {
+          name: 'status',
           label: 'status',
           required: false,
           componentProps: { allowClear: true }
@@ -84,7 +87,7 @@ test('JsonSchemaAdapter converts top-level properties into ModuleConfig entries'
   });
 });
 
-test('JsonSchemaAdapter rejects missing module metadata and nested object schemas', () => {
+test('JsonSchemaAdapter rejects missing module metadata on leaf fields', () => {
   assert.throws(
     () =>
       JsonSchemaAdapter.adapt({
@@ -96,39 +99,6 @@ test('JsonSchemaAdapter rejects missing module metadata and nested object schema
     /property "name" must declare dynamic form module metadata/
   );
 
-  assert.throws(
-    () =>
-      JsonSchemaAdapter.adapt({
-        type: 'object',
-        properties: {
-          profile: {
-            type: 'object',
-            properties: {},
-            metadata: { module: 'ProfileModule' }
-          }
-        }
-      }),
-    /nested object property "profile" is not supported/
-  );
-
-  assert.throws(
-    () =>
-      JsonSchemaAdapter.adapt({
-        type: 'object',
-        properties: {
-          contacts: {
-            type: 'array',
-            items: {
-              type: 'object',
-              properties: {},
-              metadata: { module: 'ContactModule' }
-            },
-            metadata: { module: 'ContactListModule' }
-          }
-        }
-      }),
-    /object array property "contacts" is not supported/
-  );
 });
 
 test('OpenApiAdapter resolves schemas by schemaName and by single-schema default', () => {
@@ -159,8 +129,9 @@ test('OpenApiAdapter resolves schemas by schemaName and by single-schema default
   };
 
   assert.deepEqual(OpenApiAdapter.adapt(document, { metadata: { schemaName: 'Company' } }), {
-    fields: [
+    nodes: [
       {
+        nodeType: 'field',
         type: 'TextInputModule',
         id: 'companyName',
         options: {
@@ -174,6 +145,7 @@ test('OpenApiAdapter resolves schemas by schemaName and by single-schema default
         },
         rules: undefined,
         overrides: {
+          name: 'companyName',
           label: 'companyName',
           required: false
         }
@@ -192,9 +164,72 @@ test('OpenApiAdapter resolves schemas by schemaName and by single-schema default
         }
       },
       {}
-    ).fields[0].id,
+    ).nodes[0].id,
     'name'
   );
+});
+
+test('JsonSchemaAdapter converts nested objects and object arrays into containers', () => {
+  const adapted = JsonSchemaAdapter.adapt({
+    type: 'object',
+    properties: {
+      profile: {
+        type: 'object',
+        title: 'Profile',
+        required: ['city'],
+        properties: {
+          city: {
+            type: 'string',
+            metadata: { module: 'TextInputModule' }
+          }
+        }
+      },
+      contacts: {
+        type: 'array',
+        title: 'Contacts',
+        items: {
+          type: 'object',
+          properties: {
+            phone: {
+              type: 'string',
+              metadata: { module: 'TextInputModule' }
+            }
+          }
+        }
+      }
+    }
+  });
+
+  assert.deepEqual(adapted.nodes[0], {
+    nodeType: 'container',
+    id: 'profile',
+    title: 'Profile',
+    name: 'profile',
+    children: [
+      {
+        nodeType: 'field',
+        type: 'TextInputModule',
+        id: 'profile.city',
+        options: {
+          label: 'city',
+          required: true,
+          enum: undefined,
+          default: undefined,
+          format: undefined,
+          description: undefined,
+          schemaType: 'string'
+        },
+        rules: undefined,
+        overrides: {
+          name: 'city',
+          label: 'city',
+          required: true
+        }
+      }
+    ]
+  });
+  assert.equal(adapted.nodes[1].repeatable, true);
+  assert.equal(adapted.nodes[1].children[0].id, 'contacts.phone');
 });
 
 test('OpenApiAdapter reports ambiguous or missing schemas', () => {
@@ -275,7 +310,7 @@ test('OpenApiAdapter preserves groups from the selected schema', () => {
     {}
   );
 
-  assert.equal(adapted.fields[0].groupId, 'companyInfo');
+  assert.equal(adapted.nodes[0].groupId, 'companyInfo');
   assert.equal(adapted.groups[0].id, 'companyInfo');
 });
 
@@ -334,7 +369,7 @@ test('schema adapters preserve explicit groups and field membership', () => {
     }
   });
 
-  assert.equal(adapted.fields[1].groupId, 'companyInfo');
+  assert.equal(adapted.nodes[1].groupId, 'companyInfo');
   assert.deepEqual(adapted.groups, [
     {
       id: 'companyInfo',
@@ -400,9 +435,11 @@ test('compileAdaptedFormConfig compiles schema adapter output into standard Form
   );
 
   assert.deepEqual(compiled.componentRegistry, {});
-  assert.deepEqual(compiled.formConfig.fields, [
+  assert.deepEqual(compiled.formConfig.nodes, [
     {
+      nodeType: 'field',
       id: 'name',
+      name: 'name',
       label: 'Name',
       component: 'TextInput',
       componentProps: { placeholder: 'Enter name' },
