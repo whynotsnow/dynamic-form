@@ -9,7 +9,7 @@ RESET="\033[0m"
 
 echo "${YELLOW}⚡ Running lint-staged...${RESET}"
 
-if npx lint-staged; then
+if pnpm exec lint-staged; then
   echo "${GREEN}✅ lint-staged finished successfully!${RESET}"
 else
   echo "${RED}❌ lint-staged failed! Commit aborted.${RESET}"
