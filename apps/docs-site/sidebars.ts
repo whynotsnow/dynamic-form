@@ -4,13 +4,8 @@ const sidebars: SidebarsConfig = {
   mainSidebar: [
     {
       type: 'category',
-      label: '概览',
-      items: ['README']
-    },
-    {
-      type: 'category',
-      label: '架构',
-      items: ['ARCHITECTURE', 'runtime-layer', 'field-address']
+      label: '开始',
+      items: ['README', 'quick-start']
     },
     {
       type: 'category',
@@ -19,8 +14,13 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
-      label: '扩展层',
+      label: '高级能力',
       items: ['compiler-foundation', 'rule-engine', 'adapter-foundation', 'schema-adapters']
+    },
+    {
+      type: 'category',
+      label: '深入理解',
+      items: ['ARCHITECTURE', 'runtime-layer', 'field-address']
     },
     {
       type: 'category',

@@ -76,12 +76,12 @@ const paths = [
       id: 'homepage.paths.start.description',
       message: '从安装、最小配置和字段配置开始，快速运行第一个 DynamicForm。'
     }),
-    to: '/docs/development'
+    to: '/docs/quick-start'
   },
   {
     title: translate({
       id: 'homepage.paths.examples.title',
-      message: '查看场景'
+      message: '配置示例'
     }),
     description: translate({
       id: 'homepage.paths.examples.description',
@@ -92,7 +92,7 @@ const paths = [
   {
     title: translate({
       id: 'homepage.paths.playground.title',
-      message: '交互验证'
+      message: 'demo演示'
     }),
     description: translate({
       id: 'homepage.paths.playground.description',
@@ -103,7 +103,7 @@ const paths = [
   {
     title: translate({
       id: 'homepage.paths.api.title',
-      message: '公共接口'
+      message: '导出API'
     }),
     description: translate({
       id: 'homepage.paths.api.description',
@@ -140,14 +140,14 @@ export default function Home(): JSX.Element {
                   </Translate>
                 </p>
                 <div className={styles.actions}>
-                  <Link className="button button--primary button--lg" to="/docs">
-                    <Translate id="homepage.hero.readDocs">阅读文档</Translate>
+                  <Link className="button button--primary button--lg" to="/docs/quick-start">
+                    <Translate id="homepage.hero.readDocs">快速开始</Translate>
                   </Link>
                   <Link className="button button--secondary button--lg" to="/playground">
-                    <Translate id="homepage.hero.viewPlayground">查看演练场</Translate>
+                    <Translate id="homepage.hero.viewPlayground">demo演示</Translate>
                   </Link>
                   <Link className="button button--secondary button--lg" to="/examples">
-                    <Translate id="homepage.hero.browseExamples">浏览示例</Translate>
+                    <Translate id="homepage.hero.browseExamples">配置示例</Translate>
                   </Link>
                 </div>
               </div>
@@ -209,7 +209,7 @@ export default function Home(): JSX.Element {
               </Heading>
               <p>
                 <Translate id="homepage.paths.description">
-                  站点内容按学习、查找、验证和 API 摘要组织。
+                  站点内容按快速开始、配置示例、demo演示和导出API组织。
                 </Translate>
               </p>
             </div>

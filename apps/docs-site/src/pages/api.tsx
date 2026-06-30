@@ -106,20 +106,25 @@ const apiGroups = [
 export default function Api(): JSX.Element {
   return (
     <Layout
-      title="API"
+      title={translate({
+        id: 'api.layout.title',
+        message: '导出API'
+      })}
       description={translate({
         id: 'api.layout.description',
-        message: '@whynotsnow/dynamic-form 的手写公共 API 摘要。'
+        message: '@whynotsnow/dynamic-form 的导出API摘要。'
       })}
     >
       <main className={styles.page}>
         <div className="container">
           <section className={styles.intro}>
-            <Heading as="h1">API</Heading>
+            <Heading as="h1">
+              <Translate id="api.page.title">导出API</Translate>
+            </Heading>
             <p>
               <Translate id="api.page.description">
                 这里按用途整理 packages/dynamic-form/src/exports.ts
-                的公共导出，作为快速查找入口。完整行为说明仍以专题文档为准。
+                的公共导出API，作为快速查找入口。完整行为说明仍以专题文档为准。
               </Translate>
             </p>
           </section>

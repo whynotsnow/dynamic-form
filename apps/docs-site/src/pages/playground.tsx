@@ -1,6 +1,7 @@
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import Translate, { translate } from '@docusaurus/Translate';
 import Layout from '@theme/Layout';
+import DemoPlaygroundClient from '../components/DemoPlaygroundClient';
 import styles from './playground.module.css';
 
 export default function Playground(): JSX.Element {
@@ -8,7 +9,7 @@ export default function Playground(): JSX.Element {
     <Layout
       title={translate({
         id: 'playground.layout.title',
-        message: '演练场'
+        message: 'demo演示'
       })}
       description={translate({
         id: 'playground.layout.description',
@@ -20,15 +21,12 @@ export default function Playground(): JSX.Element {
           fallback={
             <div className="container">
               <div className={styles.loading}>
-                <Translate id="playground.loading">正在加载演练场...</Translate>
+                <Translate id="playground.loading">正在加载 demo演示...</Translate>
               </div>
             </div>
           }
         >
-          {() => {
-            const DemoPlaygroundClient = require('../components/DemoPlaygroundClient').default;
-            return <DemoPlaygroundClient />;
-          }}
+          {() => <DemoPlaygroundClient />}
         </BrowserOnly>
       </main>
     </Layout>

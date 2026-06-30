@@ -4,22 +4,18 @@ slug: /
 
 # DynamicForm 文档索引
 
-这里是 DynamicForm 当前文档体系的入口。文档按照“先理解设计，再学习配置，再按使用场景落地，最后查看维护规则”的顺序组织。
+这里是 DynamicForm 的文档入口。首次使用建议先从快速开始跑通最小表单，再按业务场景查找配置、联动、校验和扩展方式；架构、Runtime、Compiler、Adapter 等专题用于深入理解和维护。
 
-### 阅读路径
+### 推荐路径
 
-1. 🏗️ [架构说明](./ARCHITECTURE.md)：理解可选预处理管线和 Config / State / Runtime / Consumer / Shared 的职责边界。
-2. ⚙️ [配置指南](./configuration.md)：学习 flat、grouped、mixed 配置、字段配置、UI 配置和内置组件。
-3. 🧭 [Field Address](./field-address.md)：理解稳定字段 `id` 与 Ant Design `NamePath` 的边界。
-4. 🧩 [Compiler Foundation](./compiler-foundation.md)：学习字段模块、模块注册器、结构化分组编译和 compiler hooks。
-5. 📐 [Rule Engine](./rule-engine.md)：学习声明式同步条件、字段/group 动作和规则所有权。
-6. 🔄 [Adapter Foundation](./adapter-foundation.md)：学习 adapter 注册器和输入归一化管线。
-7. 🧾 [Schema Adapters](./schema-adapters.md)：学习 JsonSchema、OpenAPI 和 metadata 映射边界。
-8. 🔗 [Effect 与处理器](./effects-and-handlers.md)：学习字段联动、默认返回 key、自定义处理器和初始化约束。
-9. 🎨 [渲染与 UI 扩展](./rendering-and-ui.md)：学习默认渲染结构、组件注册和分层 render hooks。
-10. 🧠 [Runtime Layer](./runtime-layer.md)：理解显示、提交、禁用、只读、校验等策略如何统一计算。
-11. 🧭 [组件使用指南](./development.md)：按使用场景学习配置、demo 链接、自定义组件和自定义 handlers。
-12. 🛠️ [维护指南](./maintenance.md)：了解测试、构建、验证和文档维护规则。3.x 兼容边界分散记录在架构、Field Address、Runtime、Effect 和 Schema Adapters 等专题文档中。
+1. 🚀 [快速开始](./quick-start.md)：安装、最小表单、提交处理和本地 demo。
+2. ⚙️ [配置指南](./configuration.md)：学习字段、分组、UI 配置和内置组件。
+3. 🔗 [Effect 与处理器](./effects-and-handlers.md)：学习字段联动、默认返回 key、自定义处理器和初始化约束。
+4. 🎨 [渲染与 UI 扩展](./rendering-and-ui.md)：学习默认渲染结构、组件注册和分层 render hooks。
+5. 🧭 [组件使用指南](./development.md)：按使用场景查找 demo、配置组合、自定义组件和自定义 handlers。
+6. 🧩 [高级配置管线](./compiler-foundation.md)：需要字段模块、规则或外部 schema 输入时，再阅读 Compiler、Rule、Adapter 和 Schema Adapters 专题。
+7. 🧠 [深入理解](./ARCHITECTURE.md)：通过架构、Runtime Layer 和 Field Address 理解运行时边界。
+8. 🛠️ [维护指南](./maintenance.md)：了解测试、构建、验证和文档维护规则。
 
 ### 文档范围
 

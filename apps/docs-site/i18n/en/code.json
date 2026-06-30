@@ -45,7 +45,7 @@
     "message": "DynamicForm demos"
   },
   "playground.client.title": {
-    "message": "Playground"
+    "message": "Demo Showcase"
   },
   "playground.client.description": {
     "message": "Select a demo to inspect the interactive behavior."
@@ -78,10 +78,16 @@
     "message": "Default config and config processing entry points for advanced integrations and tests."
   },
   "api.layout.description": {
-    "message": "Hand-written public API summary for @whynotsnow/dynamic-form."
+    "message": "Exported API summary for @whynotsnow/dynamic-form."
+  },
+  "api.layout.title": {
+    "message": "Exported API"
   },
   "api.page.description": {
-    "message": "This page groups public exports from packages/dynamic-form/src/exports.ts by purpose as a quick lookup entry. The topic docs remain the source of detailed behavior."
+    "message": "This page groups public exported APIs from packages/dynamic-form/src/exports.ts by purpose as a quick lookup entry. The topic docs remain the source of detailed behavior."
+  },
+  "api.page.title": {
+    "message": "Exported API"
   },
   "api.group.relatedDocs": {
     "message": "Related docs"
@@ -120,22 +126,22 @@
     "message": "Adapt JsonSchema, OpenAPI, or metadata into module config, then compile it into standard FormConfig."
   },
   "examples.layout.title": {
-    "message": "Examples"
+    "message": "Config Examples"
   },
   "examples.layout.description": {
-    "message": "Scenario-based DynamicForm examples with docs and playground links."
+    "message": "Scenario-based DynamicForm config examples with docs and demo showcase links."
   },
   "examples.page.title": {
-    "message": "Examples"
+    "message": "Config Examples"
   },
   "examples.page.description": {
-    "message": "Find configuration entry points by scenario, with concise snippets, full documentation links, and interactive playground links."
+    "message": "Find configuration entry points by scenario, with concise snippets, full documentation links, and interactive demo showcase links."
   },
   "examples.card.docsLink": {
     "message": "Docs"
   },
   "examples.card.playgroundLink": {
-    "message": "Playground"
+    "message": "Demo Showcase"
   },
   "homepage.features.configDriven.title": {
     "message": "Config-driven Forms"
@@ -171,19 +177,19 @@
     "message": "Start from installation, minimal config, and field config to run your first DynamicForm."
   },
   "homepage.paths.examples.title": {
-    "message": "Browse Scenarios"
+    "message": "Config Examples"
   },
   "homepage.paths.examples.description": {
     "message": "Find examples for minimal forms, groups, effects, custom components, and the compiler pipeline."
   },
   "homepage.paths.playground.title": {
-    "message": "Interactive Validation"
+    "message": "Demo Showcase"
   },
   "homepage.paths.playground.description": {
     "message": "Run existing demos directly to inspect form effects, validation, render hooks, and extension behavior."
   },
   "homepage.paths.api.title": {
-    "message": "Public API"
+    "message": "Exported API"
   },
   "homepage.paths.api.description": {
     "message": "Review public exports grouped by components, hooks, compiler, adapters, rules, and types."
@@ -195,13 +201,13 @@
     "message": "A dynamic form library built with React, TypeScript, and Ant Design. Describe form structure with config, handle field dependencies with effect chains, and centralize runtime participation policy in the Runtime Layer."
   },
   "homepage.hero.readDocs": {
-    "message": "Read docs"
+    "message": "Quick Start"
   },
   "homepage.hero.viewPlayground": {
-    "message": "View Playground"
+    "message": "Demo Showcase"
   },
   "homepage.hero.browseExamples": {
-    "message": "Browse Examples"
+    "message": "Config Examples"
   },
   "homepage.workflow.title": {
     "message": "Core Workflow"
@@ -213,16 +219,16 @@
     "message": "Paths"
   },
   "homepage.paths.description": {
-    "message": "The site is organized for learning, lookup, verification, and API reference."
+    "message": "The site is organized around quick start, config examples, demo showcase, and exported APIs."
   },
   "playground.layout.title": {
-    "message": "Playground"
+    "message": "Demo Showcase"
   },
   "playground.layout.description": {
     "message": "Interactive DynamicForm demos powered by the shared demo registry."
   },
   "playground.loading": {
-    "message": "Loading playground..."
+    "message": "Loading demo showcase..."
   },
   "theme.ErrorPageContent.title": {
     "message": "This page crashed.",

@@ -152,7 +152,7 @@ export default function DemoPlaygroundClient(): JSX.Element {
             <Heading as="h1">
               {translate({
                 id: 'playground.client.title',
-                message: '演练场'
+                message: 'demo演示'
               })}
             </Heading>
             <p>

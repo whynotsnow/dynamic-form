@@ -109,22 +109,22 @@ export default function Examples(): JSX.Element {
     <Layout
       title={translate({
         id: 'examples.layout.title',
-        message: '示例'
+        message: '配置示例'
       })}
       description={translate({
         id: 'examples.layout.description',
-        message: '按场景组织的 DynamicForm 示例，包含文档和演练场入口。'
+        message: '按场景组织的 DynamicForm 配置示例，包含文档和 demo演示入口。'
       })}
     >
       <main className={styles.page}>
         <div className="container">
           <section className={styles.intro}>
             <Heading as="h1">
-              <Translate id="examples.page.title">示例</Translate>
+              <Translate id="examples.page.title">配置示例</Translate>
             </Heading>
             <p>
               <Translate id="examples.page.description">
-                按常见场景查找配置入口。每个示例保留短代码片段，并链接到完整文档和可交互演练场。
+                按常见场景查找配置入口。每个示例保留短代码片段，并链接到完整文档和可交互 demo演示。
               </Translate>
             </p>
           </section>
@@ -142,7 +142,7 @@ export default function Examples(): JSX.Element {
                     <Translate id="examples.card.docsLink">文档</Translate>
                   </Link>
                   <Link className="button button--secondary button--sm" to={example.playground}>
-                    <Translate id="examples.card.playgroundLink">演练场</Translate>
+                    <Translate id="examples.card.playgroundLink">demo演示</Translate>
                   </Link>
                 </div>
               </article>

@@ -88,17 +88,17 @@ const config: Config = {
         },
         {
           to: '/playground',
-          label: '演练场',
+          label: 'demo演示',
           position: 'left'
         },
         {
           to: '/examples',
-          label: '示例',
+          label: '配置示例',
           position: 'left'
         },
         {
           to: '/api',
-          label: 'API',
+          label: '导出API',
           position: 'left'
         },
         {
@@ -123,15 +123,15 @@ const config: Config = {
               to: '/docs'
             },
             {
-              label: '演练场',
+              label: 'demo演示',
               to: '/playground'
             },
             {
-              label: '示例',
+              label: '配置示例',
               to: '/examples'
             },
             {
-              label: 'API',
+              label: '导出API',
               to: '/api'
             }
           ]
