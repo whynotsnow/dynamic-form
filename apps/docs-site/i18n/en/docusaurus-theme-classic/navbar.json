@@ -15,6 +15,10 @@
     "message": "Config Examples",
     "description": "Navbar item with label 配置示例"
   },
+  "item.label.扩展市场": {
+    "message": "Extension Marketplace",
+    "description": "Navbar item with label 扩展市场"
+  },
   "item.label.导出API": {
     "message": "Exported API",
     "description": "Navbar item with label 导出API"

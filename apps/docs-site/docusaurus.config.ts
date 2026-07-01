@@ -97,6 +97,11 @@ const config: Config = {
           position: 'left'
         },
         {
+          to: '/marketplace',
+          label: '扩展市场',
+          position: 'left'
+        },
+        {
           to: '/api',
           label: '导出API',
           position: 'left'
@@ -129,6 +134,10 @@ const config: Config = {
             {
               label: '配置示例',
               to: '/examples'
+            },
+            {
+              label: '扩展市场',
+              to: '/marketplace'
             },
             {
               label: '导出API',

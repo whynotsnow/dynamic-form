@@ -19,6 +19,10 @@
     "message": "Config Examples",
     "description": "The label of footer link with label=配置示例 linking to /examples"
   },
+  "link.item.label.扩展市场": {
+    "message": "Extension Marketplace",
+    "description": "The label of footer link with label=扩展市场 linking to /marketplace"
+  },
   "link.item.label.导出API": {
     "message": "Exported API",
     "description": "The label of footer link with label=导出API linking to /api"

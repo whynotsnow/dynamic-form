@@ -143,6 +143,147 @@
   "examples.card.playgroundLink": {
     "message": "Demo Showcase"
   },
+  "marketplace.loading": {
+    "message": "Loading extension marketplace..."
+  },
+  "marketplace.layout.title": {
+    "message": "Extension Marketplace"
+  },
+  "marketplace.layout.description": {
+    "message": "Marketplace page for DynamicForm built-in capabilities and copy-install extensions."
+  },
+  "marketplace.installMode.builtin": {
+    "message": "Built-in Install"
+  },
+  "marketplace.installMode.copy": {
+    "message": "Copy Install"
+  },
+  "marketplace.installMode.builtin.description": {
+    "message": "No code copy required. Components can be referenced directly in component, and default handlers are available after useInitHandlers()."
+  },
+  "marketplace.installMode.copy.description": {
+    "message": "Copy source, registration code, and usage examples into your project, then wire them through DynamicForm registration APIs."
+  },
+  "marketplace.code.copied": {
+    "message": "Copied"
+  },
+  "marketplace.code.copy": {
+    "message": "Copy"
+  },
+  "marketplace.card.dependencies": {
+    "message": "Dependencies"
+  },
+  "marketplace.card.preview": {
+    "message": "Preview"
+  },
+  "marketplace.card.docs": {
+    "message": "Docs"
+  },
+  "marketplace.page.title": {
+    "message": "Extension Marketplace"
+  },
+  "marketplace.page.description": {
+    "message": "Browse DynamicForm built-in capabilities and copy-install components, handlers, and recipes. Copy-install entries target user projects and are registered through componentRegistry or useInitHandlers."
+  },
+  "marketplace.preview.label": {
+    "message": "Lazy Preview"
+  },
+  "marketplace.preview.emptyTitle": {
+    "message": "Select an item to preview"
+  },
+  "marketplace.preview.reset": {
+    "message": "Reset Preview"
+  },
+  "marketplace.preview.emptyDescription": {
+    "message": "The page does not mount all previews by default. Click an item's Preview button to render the matching real DynamicForm example here."
+  },
+  "marketplace.filters.label": {
+    "message": "Extension marketplace categories"
+  },
+  "marketplace.data.builtinComponent.description": {
+    "message": "Built-in field component. No copy install required; reference it directly in FormConfig component."
+  },
+  "marketplace.data.builtinHandler.description": {
+    "message": "Built-in effect result handler. After useInitHandlers(), it handles the matching effect result key."
+  },
+  "marketplace.filters.all": {
+    "message": "All"
+  },
+  "marketplace.filters.builtinComponent": {
+    "message": "Built-in Components"
+  },
+  "marketplace.filters.builtinHandler": {
+    "message": "Built-in Handlers"
+  },
+  "marketplace.filters.componentSnippet": {
+    "message": "Component Snippets"
+  },
+  "marketplace.filters.handlerSnippet": {
+    "message": "Handler Snippets"
+  },
+  "marketplace.filters.recipe": {
+    "message": "Recipes"
+  },
+  "marketplace.code.useInFormConfig": {
+    "message": "Use in FormConfig"
+  },
+  "marketplace.code.initHandlers": {
+    "message": "Initialize handlers"
+  },
+  "marketplace.code.effectResult": {
+    "message": "Effect result example"
+  },
+  "marketplace.data.remoteSelect.description": {
+    "message": "Wraps a searchable remote-select field for teams, organizations, projects, and other async option scenarios."
+  },
+  "marketplace.code.componentSource": {
+    "message": "Component source"
+  },
+  "marketplace.code.registerComponent": {
+    "message": "Registration code"
+  },
+  "marketplace.code.formConfigExample": {
+    "message": "FormConfig example"
+  },
+  "marketplace.data.userPicker.description": {
+    "message": "Wraps a user picker with avatar display for owners, approvers, and collaborators."
+  },
+  "marketplace.data.editableTable.description": {
+    "message": "Wraps an editable detail table field for order lines, expense details, and task breakdowns."
+  },
+  "marketplace.data.toast.description": {
+    "message": "Converts effect results into lightweight message feedback for pre-save hints or interaction feedback."
+  },
+  "marketplace.code.handlerSource": {
+    "message": "Handler source"
+  },
+  "marketplace.code.registerHandler": {
+    "message": "Registration code"
+  },
+  "marketplace.data.highlight.description": {
+    "message": "Converts the business semantic highlight into field render meta for important-field hints."
+  },
+  "marketplace.data.fieldErrors.description": {
+    "message": "Writes server-side field errors into Ant Design Form for business validation feedback before or after submit."
+  },
+  "marketplace.recipe.remoteSearch.title": {
+    "message": "Remote Search Field"
+  },
+  "marketplace.recipe.remoteSearch.description": {
+    "message": "Use RemoteSelectField for remote option search and register it through componentRegistry."
+  },
+  "marketplace.recipe.approverPicker.title": {
+    "message": "Approver Picker"
+  },
+  "marketplace.recipe.approverPicker.description": {
+    "message": "Use UserPickerField to provide person selection for approval or task workflows."
+  },
+  "marketplace.recipe.editableTable.title": {
+    "message": "Editable Detail Table"
+  },
+  "marketplace.recipe.editableTable.description": {
+    "message": "Use EditableTableField to maintain structured detail rows inside a form."
+  },
   "homepage.features.configDriven.title": {
     "message": "Config-driven Forms"
   },
