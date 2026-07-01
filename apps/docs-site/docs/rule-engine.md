@@ -1,6 +1,6 @@
 # Rule Engine
 
-DynamicForm 3.0 提供声明式同步 Rule Engine。规则属于被影响的字段或 group，并在 compiler 阶段转换为标准 `effect`，因此不会改变 `processFormConfig()`、Runtime Layer 或 renderer 的职责。
+DynamicForm 提供声明式同步 Rule Engine。规则属于被影响的字段、group 或 container，并在 compiler 阶段转换为标准 `effect`，因此不会改变 `processFormConfig()`、Runtime Layer 或 renderer 的职责。
 
 ### 执行位置
 

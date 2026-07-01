@@ -1,6 +1,6 @@
 # Configuration Guide
 
-DynamicForm is driven by `FormConfig`. Configuration describes fields, groups, components, initial values, validation, dependencies, and UI behavior.
+DynamicForm is driven by `FormConfig`. Version 4.0 supports three entry points: `fields`, `groups`, and the unified node tree `nodes`. Configuration describes fields, containers, components, initial values, validation, dependencies, and UI behavior.
 
 ### Flat Config
 
@@ -36,7 +36,7 @@ const formConfig: FormConfig = {
 
 ### Mixed Config
 
-`FormConfig` may contain both top-level `fields` and `groups`. The default renderer shows ungrouped fields first, followed by groups in declaration order:
+`FormConfig` may contain top-level `fields`, `groups`, and `nodes` at the same time. The default renderer renders normalized root nodes in order: `nodes` first, then `fields`, then `groups` converted into containers.
 
 ```ts
 const formConfig: FormConfig = {
@@ -53,6 +53,49 @@ const formConfig: FormConfig = {
 
 Field IDs and group IDs must be globally unique. Groups affect UI and behavior scope. A field may declare an independent Ant Design `NamePath` through `name`; see [Field Address](./field-address.md).
 
+### Node Tree
+
+Use `nodes` when you need nested sections, recursive layout, or repeated items. A node tree is composed of `FieldNode` and `ContainerNode`:
+
+```ts
+const formConfig: FormConfig = {
+  nodes: [
+    {
+      nodeType: 'container',
+      id: 'shipping',
+      title: 'Shipping',
+      name: 'shipping',
+      children: [
+        {
+          nodeType: 'field',
+          id: 'shippingCity',
+          label: 'City',
+          component: 'TextInput'
+        },
+        {
+          nodeType: 'container',
+          id: 'shippingContact',
+          title: 'Contact',
+          name: 'contact',
+          children: [
+            {
+              nodeType: 'field',
+              id: 'shippingContactName',
+              label: 'Name',
+              component: 'TextInput'
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+```
+
+This writes values as `{ shipping: { shippingCity, contact: { shippingContactName } } }`. Field `id` remains the stable identity used by effects, Runtime, and meta updates; container `name` only affects the Ant Design value path.
+
+For repeated items, set `repeatable: true` on a container. Repeatable containers must declare `name`. Repeatable containers use Ant Design `Form.List`. The current default renderer reads existing list items; add, remove, and reorder controls should be supplied by business UI, render hooks, or a custom container wrapper.
+
 ### Field Config
 
 Common options include `id`, optional `name`, `component`, `label`, `rules`, `required`, `span`, `style`, `initialValue`, `initialVisible`, `initialDisabled`, `preserveValueOnHide`, `restoreValueOnShow`, `dependents`, `effect`, `formItemProps`, and `componentProps`. `id` remains the stable runtime/effect identity, while `name` is the Ant Design value path.
@@ -63,7 +106,15 @@ Common options include `id`, optional `name`, `component`, `label`, `rules`, `re
 
 ### Group Config
 
+`groups` is the pre-4.0 single-level grouping entry point and remains compatible. Config processing converts each group into a top-level container.
+
 Groups support `id`, `title`, `fields`, `initialVisible`, `dependents`, and `effect`. Group visibility affects child field rendering and submit participation.
+
+### Container Config
+
+Containers support `nodeType: 'container'`, globally unique `id`, optional `title`, optional Ant Design `NamePath` prefix `name`, recursive `children`, `initialVisible`, `dependents`, `effect`, and `repeatable`. Repeatable containers must declare `name` and render through Ant Design `Form.List`.
+
+Container visibility recursively affects rendering, submission, and validation participation for all descendant fields and containers.
 
 ### UI Config
 

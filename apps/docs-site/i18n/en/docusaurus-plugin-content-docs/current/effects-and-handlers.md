@@ -35,7 +35,7 @@ return <DynamicForm form={form} formConfig={formConfig} />;
 
 Fields and groups can declare `dependents` and `effect`. Config processing creates an `effectMap` and passes it to `form-chain-effect-engine`.
 
-In 3.2, effect graph nodes still reference stable `id` values, not Ant Design `NamePath` values. Field Address can make values nested, but it does not introduce container nodes, nested groups, or a cross-level effect graph; those structural capabilities are left for the 4.0 unified node tree.
+Effect graph nodes reference stable `id` values, not Ant Design `NamePath` values. Field Address and 4.0 container `name` prefixes can make values nested, but field, group, and container dependencies should still be declared through globally unique `id` values.
 
 Declarative rules and handwritten effects both stay synchronous. When one source field affects multiple fields, keep declaring rules on each affected field. Do not put remote request lifecycle, loading/error/cache, or race state into effect result handlers.
 

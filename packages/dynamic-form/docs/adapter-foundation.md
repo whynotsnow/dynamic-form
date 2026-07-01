@@ -75,4 +75,4 @@ const compiled = compileAdaptedFormConfig(input, {
 - Adapter Foundation 不引入异步规则、async validation compile、validation rule engine 或 monorepo 拆包。
 - Adapter 输出统一为 `{ fields, groups? }`，字段通过 `groupId` 加入 group，可表达 flat、grouped 和 mixed 配置。
 
-当前 3.0 发布同时包含 `JsonSchemaAdapter`、`OpenApiAdapter` 和 `MetadataAdapter`，详见 [Schema Adapters](./schema-adapters.md)。以上边界仅描述 Adapter Foundation 本身的职责范围。
+当前版本同时包含 `JsonSchemaAdapter`、`OpenApiAdapter` 和 `MetadataAdapter`，详见 [Schema Adapters](./schema-adapters.md)。以上边界仅描述 Adapter Foundation 本身的职责范围。

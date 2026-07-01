@@ -1,8 +1,8 @@
 # Runtime Layer
 
-The Runtime Layer resolves final field and group capabilities from reducer state. It is the policy boundary between stored meta and UI behavior.
+The Runtime Layer resolves final field, group, and container capabilities from reducer state. It is the policy boundary between stored meta and UI behavior.
 
-Starting in 3.3, the package root exports `FieldCapability`, `GroupCapability`, and `RuntimeState` types so custom render hooks and application wrappers can type Runtime snapshots directly.
+The package root exports `FieldCapability`, `GroupCapability`, `NodeCapability`, and `RuntimeState` types so custom render hooks and application wrappers can type Runtime snapshots directly.
 
 ### Why Runtime Exists
 
@@ -24,13 +24,13 @@ flowchart TD
 
 Each field resolves to `rendered`, `submitable`, `disabled`, `readonly`, `editable`, and `validatable`.
 
-`rendered` is affected by field and group visibility. `submitable` currently follows `rendered`. `validatable` currently means rendered and not disabled. Readonly fields still validate.
+`rendered` is affected by field visibility and all parent container visibility. `submitable` currently follows `rendered`. `validatable` currently means rendered and not disabled. Readonly fields still validate.
 
 ### Group Capabilities
 
-Each group resolves to `rendered`. Group visibility affects child field rendering and submit participation.
+Each group or container resolves to `rendered`. Group/container visibility affects rendering, submission, and validation participation for all descendant fields.
 
-3.2 only supports the current single-level `groups -> fields` model. Runtime resolves field/group capabilities and propagates group visibility to direct child fields; it does not resolve nested groups, container subtrees, recursive node trees, or cross-level node capabilities. Those structural capabilities belong to the future unified node tree plan and are not current public APIs.
+Version 4.0 supports recursive container subtrees. Runtime resolves container visibility through the parent chain; when a parent is hidden, all descendant containers and fields are treated as not rendered.
 
 ### Meta Input
 
@@ -42,13 +42,13 @@ Runtime reads behavior meta through `getFieldBehaviorMeta` and `getGroupBehavior
 
 ### Validation Policy
 
-Changed-field validation and submit validation both filter fields through `runtimeState.fields[fieldId]?.validatable === true`. Avoid direct validation against changed keys because it ignores hidden, group-hidden, disabled, and future runtime policies.
+Changed-field validation and submit validation both filter fields through `runtimeState.fields[fieldId]?.validatable === true`. Avoid direct validation against changed keys because it ignores hidden, parent-container-hidden, disabled, and future runtime policies.
 
 ### Hidden Field Participation
 
 `useFieldParticipation` clears a field value when it leaves submit participation unless `preserveValueOnHide` is true. If `restoreValueOnShow` is not false, the old value is cached and restored when the field becomes submitable again.
 
-The same policy applies when a field leaves submit participation because its group is hidden. `preserveValueOnHide` and `restoreValueOnShow` are field-level options and are not automatically overridden by the group.
+The same policy applies when a field leaves submit participation because its group or container is hidden. `preserveValueOnHide` and `restoreValueOnShow` are field-level options and are not automatically overridden by parent containers.
 
 ### Extension Guidance
 

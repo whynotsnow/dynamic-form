@@ -1,6 +1,6 @@
 # Schema Adapters
 
-DynamicForm 3.0 provides concrete schema adapters on top of Adapter Foundation:
+DynamicForm provides concrete schema adapters on top of Adapter Foundation:
 
 ```mermaid
 flowchart TD
@@ -45,7 +45,7 @@ const moduleConfigs = adaptModuleConfigs(
 
 Fields must explicitly declare module type through `metadata.module` or `x-dynamic-form.module`. The adapter does not infer UI components from schema types such as `string`, `number`, or `boolean`.
 
-Starting in 3.3, field metadata can explicitly pass a Field Address `name`. The adapter writes it to module config `overrides.name`. This only passes through the existing `BaseFieldConfig.name` capability and does not expand nested object schemas:
+Field metadata can explicitly pass a Field Address `name`. The adapter writes it to module config `overrides.name`. This only passes through the existing `BaseFieldConfig.name` capability and does not expand nested object schemas:
 
 ```ts
 {

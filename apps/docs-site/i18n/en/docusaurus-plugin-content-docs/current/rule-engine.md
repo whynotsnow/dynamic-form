@@ -1,6 +1,6 @@
 # Rule Engine
 
-DynamicForm 3.0 provides a declarative synchronous Rule Engine. Rules belong to the affected field or group and are compiled into standard effects, preserving the responsibilities of `processFormConfig()`, the Runtime Layer, and the renderer.
+DynamicForm provides a declarative synchronous Rule Engine. Rules belong to the affected field, group, or container and are compiled into standard effects, preserving the responsibilities of `processFormConfig()`, the Runtime Layer, and the renderer.
 
 ### Execution Position
 

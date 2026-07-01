@@ -4,11 +4,20 @@
 
 ### 当前版本
 
-当前文档基线是 DynamicForm 3.4。它是 4.0 前的兼容版本，明确 3.x 主模型和 4.0 结构性重构的边界。
+当前文档基线是 DynamicForm 4.0。它把统一节点树、递归 container、container `name` 前缀和 repeatable container 纳入当前实现，同时保持 `fields`、`groups` 和 mixed 配置兼容。
 
-3.4 不引入统一节点树、container、nested group 或跨层级 effect graph。当前主流程仍是 `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`。
+当前主流程仍是 `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`。`fields`、`groups` 和 `nodes` 会在 Config Layer 归一化为节点树。
 
 ### 版本时间线
+
+#### 4.0.0 - 2026-07-01
+
+- 新增 `FormConfig.nodes` 和 `ModuleFormConfig.nodes`，支持递归 `FieldNode` / `ContainerNode`。
+- `ContainerNode.name` 可作为后代字段 Ant Design `NamePath` 前缀；`repeatable` container 通过 Ant Design `Form.List` 渲染已有重复项。
+- Runtime 沿父级 container 可见性解析字段和 container 能力，隐藏父级会影响所有后代字段的渲染、提交和校验参与。
+- `fields`、`groups`、mixed 配置和 `CompiledDynamicForm` 继续兼容。
+
+相关专题：[配置指南](./configuration.md)、[Compiler Foundation](./compiler-foundation.md)、[Runtime Layer](./runtime-layer.md)、[Field Address](./field-address.md)。
 
 #### 3.4.0 - 2026-06-30
 

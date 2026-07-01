@@ -1,6 +1,6 @@
 # Compiler Foundation
 
-DynamicForm 3.0 adds a field module and compiler layer before the existing `FormConfig` pipeline.
+DynamicForm provides a field module and compiler layer before the existing `FormConfig` pipeline. Version 4.0 supports flat fields, legacy groups, and recursive `nodes`.
 
 ```mermaid
 flowchart TD
@@ -124,7 +124,7 @@ The compiler returns:
 
 ### Mixed Fields And Groups
 
-Compiler input is unified as `ModuleFormConfig`. Fields remain flat declarations and join a group through `groupId`; fields without `groupId` remain at the top level. Group rules only support `show` and `hide`. Manual `effect` runs first, and rules run afterward with matching result keys taking precedence.
+Compiler input is unified as `ModuleFormConfig`. Fields may be declared through flat `fields` and join legacy groups through `groupId`; recursive structure can be declared through `nodes`. Group/container rules only support `show` and `hide`. Manual `effect` runs first, and rules run afterward with matching result keys taking precedence.
 
 ```ts
 compileFormConfig({
@@ -144,6 +144,36 @@ compileFormConfig({
 ```
 
 The compiler validates globally unique IDs, valid group references, and non-empty groups.
+
+### Nodes And Containers
+
+`ModuleFormConfig.nodes` declares recursive module trees. Field nodes use `nodeType: 'field'`; container nodes use `nodeType: 'container'`:
+
+```ts
+const compiled = compileFormConfig({
+  nodes: [
+    {
+      nodeType: 'container',
+      id: 'shipping',
+      title: 'Shipping',
+      name: 'shipping',
+      rules: [{ when: { field: 'hasShipping', equals: true }, then: { action: 'show' } }],
+      children: [
+        {
+          nodeType: 'field',
+          type: 'TextInput',
+          id: 'shippingCity',
+          options: { label: 'City' }
+        }
+      ]
+    }
+  ]
+});
+```
+
+The compiler expands field modules into `FieldNode` and containers into `ContainerNode`. Module components still enter `componentRegistry`, so `CompiledDynamicForm` is the recommended rendering entry point for compiler output.
+
+Containers may declare `name`; config processing uses it as an Ant Design `NamePath` prefix for descendant fields. Containers with `repeatable: true` must declare `name`; the default renderer uses Ant Design `Form.List` for existing repeated items.
 
 ### Hooks
 
@@ -168,5 +198,6 @@ Hooks operate on compiler context only. They should not mutate Ant Design Form i
 - `compileFormConfig()` creates `FormConfig`.
 - `processFormConfig()` keeps preparing runtime data.
 - `DynamicForm` props are unchanged.
-- `compileFormConfig()` supports flat, grouped, and mixed output; groups do not change field value paths.
+- `compileFormConfig()` supports flat, grouped, mixed, and recursive nodes output.
+- Groups do not change field value paths; container `name` prefixes descendant value paths.
 - Ant Design Form remains the source of truth for values and validation state.

@@ -52,7 +52,7 @@ return <DynamicForm form={form} formConfig={formConfig} />;
 
 配置处理阶段会生成 `effectMap`，并传给 `form-chain-effect-engine`。
 
-3.2 的 effect graph 节点仍然引用稳定 `id`，不引用 Ant Design `NamePath`。Field Address 可以让 values 呈现嵌套结构，但不会引入 container 节点、nested group 或跨层级 effect graph；这些结构性能力留到 4.0 统一节点树处理。
+Effect graph 节点引用稳定 `id`，不引用 Ant Design `NamePath`。Field Address 和 4.0 container `name` 可以让 values 呈现嵌套结构，但字段、group 和 container 的联动依赖仍应通过全局唯一 `id` 声明。
 
 声明式 rules 和手写 effects 都保持同步边界。一个 source field 影响多个 fields 时，继续在多个受影响字段上分别声明 rules；不要把远程请求生命周期、loading/error/cache 或竞态状态塞进 effect result handler。
 

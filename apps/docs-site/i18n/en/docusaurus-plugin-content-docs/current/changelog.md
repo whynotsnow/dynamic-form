@@ -4,11 +4,20 @@ This page is a reader-focused release summary for the docs site. Use it to quick
 
 ### Current Version
 
-The current documentation baseline is DynamicForm 3.4. It is the compatibility release before 4.0 and clarifies the boundary between the 3.x main model and the planned 4.0 structural redesign.
+The current documentation baseline is DynamicForm 4.0. It includes the unified node tree, recursive containers, container `name` prefixes, and repeatable containers while keeping `fields`, `groups`, and mixed configurations compatible.
 
-Version 3.4 does not introduce a unified node tree, containers, nested groups, or a cross-level effect graph. The current main flow remains `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`.
+The main flow remains `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`. `fields`, `groups`, and `nodes` are normalized into a node tree in the Config Layer.
 
 ### Release Timeline
+
+#### 4.0.0 - 2026-07-01
+
+- Adds `FormConfig.nodes` and `ModuleFormConfig.nodes` with recursive `FieldNode` / `ContainerNode` support.
+- `ContainerNode.name` can prefix descendant Ant Design `NamePath` values; repeatable containers render existing repeated items through Ant Design `Form.List`.
+- Runtime resolves field and container capabilities through parent container visibility, so hidden parents affect all descendant rendering, submission, and validation participation.
+- `fields`, `groups`, mixed configurations, and `CompiledDynamicForm` remain compatible.
+
+Related topics: [Configuration Guide](./configuration.md), [Compiler Foundation](./compiler-foundation.md), [Runtime Layer](./runtime-layer.md), [Field Address](./field-address.md).
 
 #### 3.4.0 - 2026-06-30
 

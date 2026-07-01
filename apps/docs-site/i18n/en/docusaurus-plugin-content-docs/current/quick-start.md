@@ -86,6 +86,33 @@ const formConfig: FormConfig = {
 
 See the [Configuration Guide](./configuration.md) for all field and group options.
 
+### Use the 4.0 Node Tree
+
+Use `nodes` when you need nested sections, nested submitted values, or repeated items. A container in `nodes` renders as the default `Card`, and its `name` prefixes descendant Ant Design value paths:
+
+```ts
+const formConfig: FormConfig = {
+  nodes: [
+    {
+      nodeType: 'container',
+      id: 'profile',
+      title: 'Profile',
+      name: 'profile',
+      children: [
+        {
+          nodeType: 'field',
+          id: 'profileName',
+          label: 'Name',
+          component: 'TextInput'
+        }
+      ]
+    }
+  ]
+};
+```
+
+The submitted value shape is `{ profile: { profileName: string } }`. The `profileName` id is still used by Runtime, the effect graph, and meta updates.
+
 ### Add a Simple Effect
 
 Use `dependents` to declare dependent fields and `effect` to return field state or UI updates.
@@ -121,4 +148,4 @@ Default handlers support result keys such as `value`, `visible`, `disabled`, `re
 - Find scenario-based config examples: read the [Component Usage Guide](./development.md) or open [Config Examples](/examples/).
 - Inspect interactive behavior directly: open the [Demo Showcase](/playground/).
 - Add custom components, render hooks, or business handlers: read [Rendering and UI Extensions](./rendering-and-ui.md) and [Effects and Handlers](./effects-and-handlers.md).
-- For domain modules, JsonSchema, OpenAPI, or metadata inputs, move on to [Compiler Foundation](./compiler-foundation.md), [Adapter Foundation](./adapter-foundation.md), and [Schema Adapters](./schema-adapters.md).
+- For domain modules, recursive containers, JsonSchema, OpenAPI, or metadata inputs, move on to [Compiler Foundation](./compiler-foundation.md), [Adapter Foundation](./adapter-foundation.md), and [Schema Adapters](./schema-adapters.md).

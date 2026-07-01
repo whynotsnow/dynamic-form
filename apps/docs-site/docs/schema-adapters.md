@@ -1,6 +1,6 @@
 # Schema Adapters
 
-DynamicForm 3.0 在 Adapter Foundation 之上提供具体 schema adapters：
+DynamicForm 在 Adapter Foundation 之上提供具体 schema adapters：
 
 ```mermaid
 flowchart TD
@@ -45,7 +45,7 @@ const moduleConfigs = adaptModuleConfigs(
 
 字段必须通过 `metadata.module` 或 `x-dynamic-form.module` 显式声明 module type。Adapter 不根据 `string`、`number`、`boolean` 等 schema type 猜测 UI 组件。
 
-3.3 起，字段 metadata 可以显式声明 Field Address `name`，adapter 会把它写入 module config 的 `overrides.name`。这只是在 schema 输入中透传现有 `BaseFieldConfig.name` 能力，不会展开 nested object schema：
+字段 metadata 可以显式声明 Field Address `name`，adapter 会把它写入 module config 的 `overrides.name`。这只是在 schema 输入中透传现有 `BaseFieldConfig.name` 能力，不会展开 nested object schema：
 
 ```ts
 {

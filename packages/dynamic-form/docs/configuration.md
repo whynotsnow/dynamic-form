@@ -1,6 +1,6 @@
 # 配置指南
 
-DynamicForm 通过 `FormConfig` 驱动表单。配置描述字段、分组、组件、初始值、校验、联动关系和 UI 行为。
+DynamicForm 通过 `FormConfig` 驱动表单。4.0 支持 `fields`、`groups` 和统一节点树 `nodes` 三种入口。配置描述字段、container、组件、初始值、校验、联动关系和 UI 行为。
 
 ### 平铺表单
 
@@ -42,7 +42,7 @@ const formConfig: FormConfig = {
 
 ### 混合表单
 
-`FormConfig` 可以同时包含顶层 `fields` 和 `groups`。默认 renderer 先渲染未分组字段，再按声明顺序渲染 groups：
+`FormConfig` 可以同时包含顶层 `fields`、`groups` 和 `nodes`。默认 renderer 会按归一化后的根节点顺序渲染：先渲染 `nodes`，再渲染 `fields`，最后渲染由 `groups` 转换而来的 container。
 
 ```ts
 const formConfig: FormConfig = {
@@ -58,6 +58,73 @@ const formConfig: FormConfig = {
 ```
 
 字段 ID 与 group ID 在整个表单内必须唯一。Group 只影响 UI 和行为作用域。字段可以通过 `name` 声明独立的 Ant Design `NamePath`，详见 [Field Address](./field-address.md)。
+
+### 节点树
+
+4.0 推荐在需要嵌套结构、递归布局或重复项时使用 `nodes`。节点树由 `FieldNode` 和 `ContainerNode` 组成：
+
+```ts
+const formConfig: FormConfig = {
+  nodes: [
+    {
+      nodeType: 'container',
+      id: 'shipping',
+      title: '收货信息',
+      name: 'shipping',
+      children: [
+        {
+          nodeType: 'field',
+          id: 'shippingCity',
+          label: '城市',
+          component: 'TextInput'
+        },
+        {
+          nodeType: 'container',
+          id: 'shippingContact',
+          title: '联系人',
+          name: 'contact',
+          children: [
+            {
+              nodeType: 'field',
+              id: 'shippingContactName',
+              label: '姓名',
+              component: 'TextInput'
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+```
+
+上例会把字段值写入 `{ shipping: { shippingCity, contact: { shippingContactName } } }`。字段 `id` 仍然是 effect、Runtime 和 meta 更新使用的稳定标识；container `name` 只影响 Ant Design 值路径。
+
+需要重复项时，container 可以声明 `repeatable: true`，并且必须声明 `name`：
+
+```ts
+const formConfig: FormConfig = {
+  nodes: [
+    {
+      nodeType: 'container',
+      id: 'contacts',
+      title: '联系人',
+      name: 'contacts',
+      repeatable: true,
+      children: [
+        {
+          nodeType: 'field',
+          id: 'contactName',
+          label: '姓名',
+          component: 'TextInput'
+        }
+      ]
+    }
+  ]
+};
+```
+
+Repeatable container 使用 Ant Design `Form.List` 渲染。当前默认渲染负责读取已有 list items；新增、删除、排序等操作应通过外层业务 UI、render hooks 或自定义容器封装提供。
 
 ### 字段配置
 
@@ -113,6 +180,8 @@ const formConfig: FormConfig = {
 
 ### 分组配置
 
+`groups` 是 4.0 之前的单层分组入口，仍然兼容。配置处理阶段会把每个 group 转换为顶层 container。
+
 | 配置项 | 说明 |
 | --- | --- |
 | `id` | 分组 key。 |
@@ -123,6 +192,22 @@ const formConfig: FormConfig = {
 | `effect` | 分组级 effect。 |
 
 分组可见性会影响子字段的渲染和提交参与。
+
+### Container 配置
+
+| 配置项 | 说明 |
+| --- | --- |
+| `nodeType` | 固定为 `'container'`。 |
+| `id` | 全局唯一 container key，也是 Runtime 和 effect graph 的稳定标识。 |
+| `title` | 默认 `Card` 渲染使用的标题。 |
+| `name` | 可选 Ant Design `NamePath` 前缀；repeatable container 必须声明。 |
+| `children` | 子节点，可以是字段或 container。 |
+| `initialVisible` | 初始是否可见，默认可见。 |
+| `dependents` | container 级依赖声明。 |
+| `effect` | container 级 effect。 |
+| `repeatable` | 是否通过 Ant Design `Form.List` 渲染重复项。 |
+
+Container 可见性会递归影响所有后代字段和子 container 的渲染、提交和校验参与。
 
 ### UI 配置
 
@@ -172,4 +257,3 @@ const formConfig: FormConfig = {
 ### `values` 初始数据
 
 `values` prop 适用于编辑或详情回显场景。它会在 store 初始化时合并并同步到 Ant Design Form。初始化后，Ant Design Form 仍然是运行时值来源。
-

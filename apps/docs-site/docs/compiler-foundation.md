@@ -1,6 +1,6 @@
 # Compiler Foundation
 
-DynamicForm 3.0 在现有 `FormConfig` 管线之前新增字段模块和配置编译层。
+DynamicForm 在现有 `FormConfig` 管线之前提供字段模块和配置编译层。4.0 的 compiler 同时支持 flat fields、legacy groups 和递归 `nodes`。
 
 ```mermaid
 flowchart TD
@@ -75,14 +75,14 @@ import { DynamicForm, compileFormConfig } from '@whynotsnow/dynamic-form';
 const compiled = compileFormConfig(
   {
     fields: [
-      {
-        type: 'UserSelector',
-        id: 'ownerId',
-        options: { label: 'Owner' },
-        overrides: {
-          required: true
-        }
+    {
+      type: 'UserSelector',
+      id: 'ownerId',
+      options: { label: 'Owner' },
+      overrides: {
+        required: true
       }
+    }
     ]
   },
   { registry }
@@ -124,7 +124,7 @@ import { CompiledDynamicForm } from '@whynotsnow/dynamic-form';
 
 ### Mixed Fields 与 Groups
 
-Compiler 输入统一为 `ModuleFormConfig`。字段保持 flat 声明，通过 `groupId` 加入 group；未声明 `groupId` 的字段保留在顶层。Group rules 只支持 `show` 和 `hide`，手工 `effect` 先执行，rules 后执行并覆盖同名结果键。
+Compiler 输入统一为 `ModuleFormConfig`。字段可以通过 flat `fields` 声明，并用 `groupId` 加入 legacy group；也可以通过 `nodes` 声明递归节点树。Group/container rules 只支持 `show` 和 `hide`，手工 `effect` 先执行，rules 后执行并覆盖同名结果键。
 
 ```ts
 compileFormConfig({
@@ -144,6 +144,36 @@ compileFormConfig({
 ```
 
 Compiler 会校验全局 ID 唯一、group 引用有效且 group 非空。
+
+### Nodes 与 Container
+
+`ModuleFormConfig.nodes` 用于声明递归模块树。字段节点使用 `nodeType: 'field'`，container 节点使用 `nodeType: 'container'`：
+
+```ts
+const compiled = compileFormConfig({
+  nodes: [
+    {
+      nodeType: 'container',
+      id: 'shipping',
+      title: '收货信息',
+      name: 'shipping',
+      rules: [{ when: { field: 'hasShipping', equals: true }, then: { action: 'show' } }],
+      children: [
+        {
+          nodeType: 'field',
+          type: 'TextInput',
+          id: 'shippingCity',
+          options: { label: '城市' }
+        }
+      ]
+    }
+  ]
+});
+```
+
+Compiler 会把字段模块展开为 `FieldNode`，把 container 展开为 `ContainerNode`。模块组件仍会进入 `componentRegistry`，因此 `CompiledDynamicForm` 是渲染 compiler 产物的推荐入口。
+
+Container 可以声明 `name`，运行时配置处理会把它作为子字段 Ant Design `NamePath` 前缀。`repeatable: true` 的 container 必须声明 `name`，默认 renderer 通过 Ant Design `Form.List` 渲染已有重复项。
 
 ### Hooks
 
@@ -168,5 +198,6 @@ hooks 只操作编译上下文，不应该修改 Ant Design Form 实例或 React
 - `compileFormConfig()` 负责生成 `FormConfig`。
 - `processFormConfig()` 继续负责准备运行时数据。
 - `DynamicForm` props 不变。
-- `compileFormConfig()` 支持 flat、grouped 和 mixed 输出；group 不改变字段值路径。
+- `compileFormConfig()` 支持 flat、grouped、mixed 和 recursive nodes 输出。
+- Group 不改变字段值路径；container `name` 会作为后代字段的值路径前缀。
 - Ant Design Form 仍然是 values 和 validation state 的唯一真实来源。

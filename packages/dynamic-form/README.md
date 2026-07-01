@@ -5,8 +5,9 @@
 ### 项目能力
 
 - 🚀 通过 `formConfig` 配置化渲染 Ant Design 表单。
-- 🗂️ 支持平铺表单和分组表单。
-- 🔗 支持字段和分组级 `dependents` + `effect` 联动。
+- 🗂️ 支持平铺表单、分组表单和 4.0 统一节点树 `nodes`。
+- 🧱 支持递归 container、container `name` 前缀和 repeatable container。
+- 🔗 支持字段、分组和 container 级 `dependents` + `effect` 联动。
 - 🧩 支持静态初始值和函数式初始值。
 - 🛠️ 内置 effect 结果处理器，可处理字段值、字段行为、分组可见性、字段渲染 props 和全局 UI 配置。
 - 🎨 支持通过 `componentRegistry` 注册自定义字段组件。
@@ -17,7 +18,7 @@
 - 🪝 支持从字段项到整个表单体的分层 render hooks。
 - 🧠 使用 Runtime Layer 统一解析 `rendered`、`submitable`、`editable`、`readonly`、`disabled`、`validatable` 等能力。
 - 🧱 Ant Design Form 仍然是真实表单值和校验运行时状态的唯一来源。
-- 🧭 3.2 支持通过 `name: NamePath` 分离稳定字段 `id` 与嵌套值路径，旧配置默认继续使用 `id`。
+- 🧭 支持通过 `name: NamePath` 分离稳定字段 `id` 与嵌套值路径，旧配置默认继续使用 `id`。
 
 ### 安装
 
@@ -121,7 +122,7 @@ export function Example() {
 
 ### Rule Engine
 
-DynamicForm 3.0 包含声明式 Rule Engine，用于模块化表单的同步联动规则。规则会被编译成标准 effects，因此渲染层和 runtime provider 不需要变化。
+DynamicForm 包含声明式 Rule Engine，用于模块化表单的同步联动规则。规则会被编译成标准 effects，因此渲染层和 runtime provider 不需要变化。
 
 ```tsx
 import { compileFormConfig, ModuleRegistryManager } from '@whynotsnow/dynamic-form';
@@ -160,7 +161,7 @@ const compiled = compileFormConfig(
 );
 ```
 
-当前规则支持同步联动动作：`show`、`hide`、`enable`、`disable`、`readonly`、`editable`、`setValue` 和 `clearValue`。Group rules 仅支持 `show` 和 `hide`。
+当前规则支持同步联动动作：`show`、`hide`、`enable`、`disable`、`readonly`、`editable`、`setValue` 和 `clearValue`。Group/container rules 仅支持 `show` 和 `hide`。
 
 Rule 是字段所属的 per-field 规则，不支持 `target` 配置。一个源字段影响多个字段时，应在每个被影响字段上分别声明 rule；compiler 会从 `when` 条件推导相同的 `dependents`，再由 `form-chain-effect-engine` 触发这些字段各自的 effect。
 
@@ -193,9 +194,11 @@ Rule 是字段所属的 per-field 规则，不支持 `target` 配置。一个源
 - 扩展优先于分叉：通过自定义组件、effect 结果处理器和 render hooks 覆盖业务差异。
 - 默认渲染保持简单：默认使用 Ant Design `Form`、`Row`、`Col`、`Card` 和 `Button`。
 
-### 3.0 可选配置管线
+### 4.0 配置管线
 
-3.0 在现有运行时主流程之前提供可选的 Adapter、Rule 和 Compiler 管线。JsonSchema、OpenAPI 和 metadata 输入会先归一化为结构化 `ModuleFormConfig`，再编译成标准 `FormConfig`。字段通过 `groupId` 加入 group，支持未分组字段与分组字段共存；Schema 无法携带的函数 effect 可通过 `groupOverrides` 在编译前注入。
+当前版本在现有运行时主流程之前提供可选的 Adapter、Rule 和 Compiler 管线。JsonSchema、OpenAPI 和 metadata 输入会先归一化为结构化 `ModuleFormConfig`，再编译成标准 `FormConfig`。字段可以通过 `groupId` 加入 legacy group，也可以通过 `nodes` 声明递归 `FieldNode` / `ContainerNode` 树；Schema 无法携带的函数 effect 可通过 `groupOverrides` 在编译前注入。
+
+`FormConfig.nodes` 是 4.0 的结构性入口。`ContainerNode.name` 会成为后代字段 Ant Design `NamePath` 前缀；`repeatable: true` 的 container 通过 Ant Design `Form.List` 渲染已有重复项。旧的 `fields`、`groups` 和 mixed 配置继续兼容。
 
 ### 项目结构
 
@@ -228,7 +231,7 @@ pnpm run build       # 构建库产物
 
 ### Schema Adapters
 
-DynamicForm 3.0 提供 `JsonSchemaAdapter`、`OpenApiAdapter` 和 `MetadataAdapter`。
+DynamicForm 提供 `JsonSchemaAdapter`、`OpenApiAdapter` 和 `MetadataAdapter`。
 
 ```tsx
 import { adaptModuleConfigs } from '@whynotsnow/dynamic-form';

@@ -1,8 +1,8 @@
 # Runtime Layer
 
-Runtime Layer 从 reducer state 解析字段和分组的最终运行时能力。它是存储 meta 和 UI 行为之间的策略边界。
+Runtime Layer 从 reducer state 解析字段、分组和 container 的最终运行时能力。它是存储 meta 和 UI 行为之间的策略边界。
 
-3.3 起，包根入口导出 `FieldCapability`、`GroupCapability` 和 `RuntimeState` 类型，方便自定义 render hooks 或业务封装复用 Runtime snapshot 的类型约束。
+包根入口导出 `FieldCapability`、`GroupCapability`、`NodeCapability` 和 `RuntimeState` 类型，方便自定义 render hooks 或业务封装复用 Runtime snapshot 的类型约束。
 
 ### 为什么需要 Runtime
 
@@ -24,28 +24,28 @@ flowchart TD
 
 每个字段会解析出：
 
-| 能力          | 含义                                                   |
-| ------------- | ------------------------------------------------------ |
-| `rendered`    | 字段是否应该渲染，字段可见性和分组可见性都会影响结果。 |
-| `submitable`  | 字段是否参与提交数据，当前策略跟随 `rendered`。        |
-| `disabled`    | 字段是否被行为 meta 禁用。                             |
-| `readonly`    | 字段是否被行为 meta 标记为只读。                       |
-| `editable`    | 字段已渲染，且不是 disabled，也不是 readonly。         |
-| `validatable` | 字段是否参与校验，当前策略是已渲染且未 disabled。      |
+| 能力 | 含义 |
+| --- | --- |
+| `rendered` | 字段是否应该渲染，字段自身可见性和所有父级 container 可见性都会影响结果。 |
+| `submitable` | 字段是否参与提交数据，当前策略跟随 `rendered`。 |
+| `disabled` | 字段是否被行为 meta 禁用。 |
+| `readonly` | 字段是否被行为 meta 标记为只读。 |
+| `editable` | 字段已渲染，且不是 disabled，也不是 readonly。 |
+| `validatable` | 字段是否参与校验，当前策略是已渲染且未 disabled。 |
 
 当前策略中，readonly 字段仍然参与校验。
 
 ### 分组能力
 
-每个分组会解析出：
+每个分组或 container 会解析出：
 
-| 能力       | 含义               |
-| ---------- | ------------------ |
-| `rendered` | 分组是否应该渲染。 |
+| 能力 | 含义 |
+| --- | --- |
+| `rendered` | 分组或 container 是否应该渲染。 |
 
-分组可见性会影响所有子字段的渲染和提交参与。
+分组/container 可见性会影响所有后代字段的渲染、提交和校验参与。
 
-3.2 只支持当前 `groups -> fields` 的单层分组模型。Runtime 只解析 field/group 能力，并把 group 可见性传递给直接子字段；它不会解析 nested group、container 子树、递归节点树或跨层级节点能力。这些结构性能力属于后续统一节点树规划，不是当前 public API。
+4.0 支持递归 container 子树。Runtime 会沿父链解析 container 可见性，父级隐藏时，所有后代 container 和字段都会被视为不可渲染。
 
 ### Meta 输入
 
@@ -77,7 +77,7 @@ const runtimeState = useRuntimeState(state);
 字段变更校验会先通过 runtime 过滤：
 
 ```ts
-runtimeState.fields[fieldId]?.validatable === true;
+runtimeState.fields[fieldId]?.validatable === true
 ```
 
 提交校验也用同样策略过滤所有 runtime 字段，然后从 Ant Design Form 读取提交数据。
@@ -88,7 +88,7 @@ runtimeState.fields[fieldId]?.validatable === true;
 form.validateFields(Object.keys(changedValues));
 ```
 
-这会忽略隐藏字段、分组隐藏字段、禁用字段和后续 Runtime 策略扩展。
+这会忽略隐藏字段、父级 container 隐藏字段、禁用字段和后续 Runtime 策略扩展。
 
 ### 隐藏字段参与策略
 
@@ -96,7 +96,7 @@ form.validateFields(Object.keys(changedValues));
 
 这样默认能避免隐藏字段进入提交数据，同时给需要保留值的业务场景留出配置能力。
 
-该策略同样适用于因 group 隐藏而离开 submit participation 的字段。`preserveValueOnHide` 和 `restoreValueOnShow` 都是字段级配置，不会被 group 自动覆盖。
+该策略同样适用于因 group 或 container 隐藏而离开 submit participation 的字段。`preserveValueOnHide` 和 `restoreValueOnShow` 都是字段级配置，不会被父级 container 自动覆盖。
 
 ### 扩展建议
 

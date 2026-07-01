@@ -86,6 +86,33 @@ const formConfig: FormConfig = {
 
 字段和 group 的详细配置见 [配置指南](./configuration.md)。
 
+### 使用 4.0 节点树
+
+需要嵌套区块、嵌套提交值或重复项时，可以使用 `nodes`。`nodes` 中的 container 会渲染为默认 `Card`，并把自己的 `name` 作为子字段的 Ant Design 值路径前缀：
+
+```ts
+const formConfig: FormConfig = {
+  nodes: [
+    {
+      nodeType: 'container',
+      id: 'profile',
+      title: '资料',
+      name: 'profile',
+      children: [
+        {
+          nodeType: 'field',
+          id: 'profileName',
+          label: '姓名',
+          component: 'TextInput'
+        }
+      ]
+    }
+  ]
+};
+```
+
+提交值形状为 `{ profile: { profileName: string } }`。`profileName` 这个 `id` 仍然用于 Runtime、effect graph 和 meta 更新。
+
 ### 加一个简单联动
 
 通过 `dependents` 声明依赖字段，通过 `effect` 返回字段状态或 UI 更新。
@@ -120,4 +147,4 @@ const formConfig: FormConfig = {
 - 继续配置字段、分组、内置组件和 UI 外壳：阅读 [配置指南](./configuration.md)。
 - 查找按场景组织的配置示例：阅读 [组件使用指南](./development.md)。
 - 接入自定义组件、render hooks 或业务 handler：阅读 [渲染与 UI 扩展](./rendering-and-ui.md) 和 [Effect 与处理器](./effects-and-handlers.md)。
-- 需要领域模块、JsonSchema、OpenAPI 或 metadata 输入时，再进入 [Compiler Foundation](./compiler-foundation.md)、[Adapter Foundation](./adapter-foundation.md) 和 [Schema Adapters](./schema-adapters.md)。
+- 需要领域模块、递归 container、JsonSchema、OpenAPI 或 metadata 输入时，再进入 [Compiler Foundation](./compiler-foundation.md)、[Adapter Foundation](./adapter-foundation.md) 和 [Schema Adapters](./schema-adapters.md)。
