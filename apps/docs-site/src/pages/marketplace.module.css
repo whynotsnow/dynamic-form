@@ -26,65 +26,6 @@
   line-height: 1.75;
 }
 
-.installSummary {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-  margin-bottom: 22px;
-}
-
-.installSummary div {
-  min-width: 0;
-  padding: 16px;
-  border: 1px solid var(--df-border-subtle);
-  border-radius: 8px;
-  background: var(--df-background-panel);
-}
-
-.installSummary strong {
-  display: block;
-  margin-bottom: 6px;
-  color: var(--df-text-strong);
-  letter-spacing: 0;
-}
-
-.installSummary span {
-  display: block;
-  color: var(--df-text-muted);
-  font-size: 0.92rem;
-  line-height: 1.6;
-}
-
-.previewPanel {
-  margin-bottom: 26px;
-  border: 1px solid var(--df-border-subtle);
-  border-radius: 8px;
-  background: var(--df-background-panel);
-}
-
-.previewHeader {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 18px;
-  border-bottom: 1px solid var(--df-border-muted);
-}
-
-.previewHeader span {
-  display: block;
-  margin-bottom: 6px;
-  color: var(--df-text-soft);
-  font-size: 0.82rem;
-}
-
-.previewHeader h2 {
-  margin: 0;
-  color: var(--df-text-strong);
-  font-size: 1.25rem;
-  letter-spacing: 0;
-}
-
 .previewBody {
   min-height: 180px;
   padding: 18px;
@@ -129,22 +70,40 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
   gap: 18px;
 }
 
 .card {
   display: flex;
   min-width: 0;
+  min-height: 300px;
   flex-direction: column;
-  padding: 20px;
+  padding: 22px;
   border: 1px solid var(--df-border-subtle);
   border-radius: 8px;
   background: var(--df-background-panel);
+  color: inherit;
+  text-decoration: none;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 4%);
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
 }
 
-.cardActive {
+.card:hover,
+.card:focus-visible {
   border-color: var(--ifm-color-primary);
-  box-shadow: 0 0 0 1px var(--ifm-color-primary);
+  color: inherit;
+  text-decoration: none;
+  box-shadow: 0 10px 24px rgb(0 0 0 / 8%);
+  transform: translateY(-2px);
+}
+
+.card:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 3px;
 }
 
 .cardTopline {
@@ -156,6 +115,7 @@
 
 .installBadge,
 .kind {
+  position: relative;
   display: inline-flex;
   max-width: 100%;
   padding: 3px 8px;
@@ -163,6 +123,39 @@
   border-radius: 6px;
   font-size: 0.78rem;
   line-height: 1.35;
+}
+
+.card .installBadge::after {
+  position: absolute;
+  z-index: 2;
+  top: calc(100% + 8px);
+  left: 0;
+  width: min(320px, 76vw);
+  padding: 8px 10px;
+  border: 1px solid var(--df-border-subtle);
+  border-radius: 8px;
+  background: var(--df-background-panel);
+  box-shadow: 0 10px 24px rgb(0 0 0 / 12%);
+  color: var(--df-text-main);
+  content: attr(data-tooltip);
+  font-size: 0.78rem;
+  line-height: 1.55;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease;
+}
+
+.card .installBadge:hover::after,
+.card .installBadge:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.detailBadge::after {
+  display: none;
 }
 
 .builtin {
@@ -188,15 +181,10 @@
   letter-spacing: 0;
 }
 
-.description,
-.installNote {
+.description {
   margin: 0 0 12px;
   color: var(--df-text-muted);
   line-height: 1.65;
-}
-
-.installNote {
-  font-size: 0.9rem;
 }
 
 .dependencies {
@@ -230,10 +218,31 @@
   margin-bottom: 14px;
 }
 
-.codeList {
-  display: grid;
-  gap: 12px;
+.codeSummary {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
   margin-top: auto;
+  color: var(--df-text-soft);
+  font-size: 0.82rem;
+}
+
+.codeSummary strong {
+  flex-basis: 100%;
+  color: var(--df-text-main);
+}
+
+.codeSummary span {
+  max-width: 100%;
+  padding: 3px 7px;
+  overflow-wrap: anywhere;
+  border: 1px solid var(--df-border-muted);
+  border-radius: 6px;
+  background: var(--df-background-muted);
+  color: var(--df-text-soft);
+  line-height: 1.35;
 }
 
 .actions {
@@ -243,18 +252,256 @@
   margin-top: 16px;
 }
 
+.backLink {
+  display: inline-flex;
+  margin-bottom: 18px;
+  color: var(--df-text-soft);
+  font-size: 0.92rem;
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: var(--ifm-color-primary);
+  text-decoration: none;
+}
+
+.detailHero {
+  margin-bottom: 22px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--df-border-muted);
+}
+
+.detailHeroMain {
+  max-width: 860px;
+}
+
+.detailLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 40px;
+  align-items: start;
+  margin-bottom: 24px;
+}
+
+.detailHero h1 {
+  margin: 0 0 12px;
+  color: var(--df-text-strong);
+  font-size: 2rem;
+  letter-spacing: 0;
+}
+
+.detailHero p {
+  max-width: 760px;
+  margin: 0 0 16px;
+  color: var(--df-text-muted);
+  font-size: 1.02rem;
+  line-height: 1.75;
+}
+
+.detailMain {
+  min-width: 0;
+}
+
+.docSection {
+  margin-bottom: 34px;
+  scroll-margin-top: calc(var(--ifm-navbar-height) + 20px);
+}
+
+.docSection h2 {
+  margin: 0 0 14px;
+  color: var(--df-text-strong);
+  font-size: 1.45rem;
+  letter-spacing: 0;
+}
+
+.docSection p {
+  max-width: 800px;
+  margin: 0 0 16px;
+  color: var(--df-text-muted);
+  line-height: 1.75;
+}
+
+.usageMeta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.usageMeta div {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--df-border-muted);
+  border-radius: 8px;
+  background: var(--df-background-muted);
+}
+
+.usageMeta span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--df-text-soft);
+  font-size: 0.78rem;
+}
+
+.usageMeta strong {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--df-text-main);
+  font-size: 0.92rem;
+}
+
+.detailAside {
+  position: sticky;
+  top: calc(var(--ifm-navbar-height) + 18px);
+  align-self: start;
+  min-width: 0;
+  padding-left: 16px;
+  border-left: 1px solid var(--df-border-muted);
+}
+
+.detailDependencies {
+  margin-bottom: 0;
+}
+
+.detailSideGroup,
+.detailAnchorNav {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.detailSideGroup > span,
+.detailAnchorNav > span {
+  color: var(--df-text-soft);
+  font-size: 0.78rem;
+}
+
+.detailSideGroup strong {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--df-text-main);
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.detailSideGroup a,
+.detailAnchorNav a {
+  color: var(--df-text-main);
+  font-size: 0.9rem;
+  line-height: 1.45;
+  text-decoration: none;
+}
+
+.detailSideGroup a:hover,
+.detailAnchorNav a:hover {
+  color: var(--ifm-color-primary);
+  text-decoration: none;
+}
+
+.detailSection {
+  margin-bottom: 24px;
+  scroll-margin-top: calc(var(--ifm-navbar-height) + 20px);
+  border: 1px solid var(--df-border-subtle);
+  border-radius: 8px;
+  background: var(--df-background-panel);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 4%);
+}
+
+.detailSectionHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px;
+  border-bottom: 1px solid var(--df-border-muted);
+}
+
+.detailSectionHeader span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--df-text-soft);
+  font-size: 0.82rem;
+}
+
+.detailSectionHeader h2 {
+  margin: 0;
+  color: var(--df-text-strong);
+  font-size: 1.25rem;
+  letter-spacing: 0;
+}
+
+.codeTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--df-border-muted);
+}
+
+.codeTabs button {
+  padding: 7px 10px;
+  border: 1px solid var(--df-border-subtle);
+  border-radius: 8px;
+  background: var(--df-background-muted);
+  color: var(--df-text-main);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.codeTabs button:hover {
+  background: var(--df-hover-muted);
+}
+
+.codeTabActive {
+  border-color: var(--ifm-color-primary) !important;
+  background: var(--df-active-background) !important;
+  color: var(--df-active-text) !important;
+}
+
+.detailNotFound {
+  max-width: 680px;
+  padding: 28px;
+  border: 1px solid var(--df-border-subtle);
+  border-radius: 8px;
+  background: var(--df-background-panel);
+}
+
+.detailNotFound h1 {
+  margin: 0 0 12px;
+  color: var(--df-text-strong);
+}
+
+.detailNotFound p {
+  margin: 0 0 18px;
+  color: var(--df-text-muted);
+  line-height: 1.7;
+}
+
 :global(.field-highlight) {
   border-color: var(--ifm-color-primary) !important;
   box-shadow: 0 0 0 2px var(--df-active-background);
 }
 
 @media (max-width: 996px) {
-  .installSummary,
+  .detailLayout,
   .grid {
     grid-template-columns: 1fr;
   }
 
-  .previewHeader {
+  .usageMeta {
+    grid-template-columns: 1fr;
+  }
+
+  .detailAside {
+    position: static;
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .detailSectionHeader {
     flex-direction: column;
   }
 }

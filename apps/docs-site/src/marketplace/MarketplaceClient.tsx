@@ -2,10 +2,8 @@ import React, { useMemo, useState } from 'react';
 import Link from '@docusaurus/Link';
 import Translate, { translate } from '@docusaurus/Translate';
 import Heading from '@theme/Heading';
-import SiteCodeBlock from '../components/SiteCodeBlock';
 import { marketplaceFilters, marketplaceItems } from './marketplaceData';
 import type { MarketplaceItem, MarketplaceKind } from './marketplaceData';
-import { previewRegistry } from './previews/previewRegistry';
 import styles from '../pages/marketplace.module.css';
 
 type ActiveFilter = 'all' | MarketplaceKind;
@@ -27,19 +25,19 @@ const installModeDescription = {
   })
 };
 
-function MarketplaceCard({
-  item,
-  active,
-  onPreview
-}: {
-  item: MarketplaceItem;
-  active: boolean;
-  onPreview: (item: MarketplaceItem) => void;
-}) {
+function MarketplaceCard({ item }: { item: MarketplaceItem }) {
   return (
-    <article className={`${styles.card} ${active ? styles.cardActive : ''}`}>
+    <Link
+      aria-label={`${item.title} ${translate({ id: 'marketplace.card.openDetail', message: '查看详情' })}`}
+      className={styles.card}
+      to={`/marketplace/detail?id=${item.id}`}
+    >
       <div className={styles.cardTopline}>
-        <span className={`${styles.installBadge} ${styles[item.installMode]}`}>
+        <span
+          aria-label={installModeDescription[item.installMode]}
+          className={`${styles.installBadge} ${styles[item.installMode]}`}
+          data-tooltip={installModeDescription[item.installMode]}
+        >
           {installModeText[item.installMode]}
         </span>
         <span className={styles.kind}>
@@ -48,7 +46,6 @@ function MarketplaceCard({
       </div>
       <Heading as="h2">{item.title}</Heading>
       <p className={styles.description}>{item.description}</p>
-      <p className={styles.installNote}>{installModeDescription[item.installMode]}</p>
       {item.dependencies && item.dependencies.length > 0 ? (
         <div className={styles.dependencies}>
           <strong>
@@ -64,39 +61,26 @@ function MarketplaceCard({
           <span key={tag}>{tag}</span>
         ))}
       </div>
-      <div className={styles.codeList}>
+      <div className={styles.codeSummary}>
+        <strong>
+          {item.installMode === 'builtin' ? (
+            <Translate id="marketplace.card.builtinSummary">内置能力</Translate>
+          ) : (
+            <Translate id="marketplace.card.codeSummary" values={{ count: item.codeBlocks.length }}>
+              {'{count} 个代码片段'}
+            </Translate>
+          )}
+        </strong>
         {item.codeBlocks.map((block) => (
-          <SiteCodeBlock
-            code={block.code}
-            copyCode={block.code}
-            key={`${item.id}-${block.title}`}
-            language={block.language}
-            title={block.title}
-          />
+          <span key={`${item.id}-${block.title}`}>{block.title}</span>
         ))}
       </div>
-      <div className={styles.actions}>
-        <button
-          className="button button--primary button--sm"
-          onClick={() => onPreview(item)}
-          type="button"
-        >
-          <Translate id="marketplace.card.preview">预览</Translate>
-        </button>
-        {item.docsPath ? (
-          <Link className="button button--secondary button--sm" to={item.docsPath}>
-            <Translate id="marketplace.card.docs">文档</Translate>
-          </Link>
-        ) : null}
-      </div>
-    </article>
+    </Link>
   );
 }
 
 export default function MarketplaceClient(): React.JSX.Element {
   const [activeFilter, setActiveFilter] = useState<ActiveFilter>('all');
-  const [activeItem, setActiveItem] = useState<MarketplaceItem | undefined>();
-  const [previewKey, setPreviewKey] = useState(0);
 
   const filteredItems = useMemo(() => {
     if (activeFilter === 'all') {
@@ -105,13 +89,6 @@ export default function MarketplaceClient(): React.JSX.Element {
 
     return marketplaceItems.filter((item) => item.kind === activeFilter);
   }, [activeFilter]);
-
-  const ActivePreview = activeItem ? previewRegistry[activeItem.previewId] : undefined;
-
-  const handlePreview = (item: MarketplaceItem) => {
-    setActiveItem(item);
-    setPreviewKey((current) => current + 1);
-  };
 
   return (
     <div className="container">
@@ -126,55 +103,6 @@ export default function MarketplaceClient(): React.JSX.Element {
             componentRegistry 或 useInitHandlers 注册到 DynamicForm。
           </Translate>
         </p>
-      </section>
-
-      <section className={styles.installSummary}>
-        <div>
-          <strong>{installModeText.builtin}</strong>
-          <span>{installModeDescription.builtin}</span>
-        </div>
-        <div>
-          <strong>{installModeText.copy}</strong>
-          <span>{installModeDescription.copy}</span>
-        </div>
-      </section>
-
-      <section className={styles.previewPanel} aria-live="polite">
-        <div className={styles.previewHeader}>
-          <div>
-            <span>
-              <Translate id="marketplace.preview.label">按需预览</Translate>
-            </span>
-            <Heading as="h2">
-              {activeItem?.title ??
-                translate({
-                  id: 'marketplace.preview.emptyTitle',
-                  message: '选择一个条目开始预览'
-                })}
-            </Heading>
-          </div>
-          {activeItem ? (
-            <button
-              className="button button--secondary button--sm"
-              onClick={() => setPreviewKey((current) => current + 1)}
-              type="button"
-            >
-              <Translate id="marketplace.preview.reset">重置预览</Translate>
-            </button>
-          ) : null}
-        </div>
-        <div className={styles.previewBody}>
-          {ActivePreview ? (
-            <ActivePreview key={`${activeItem?.previewId}-${previewKey}`} />
-          ) : (
-            <p>
-              <Translate id="marketplace.preview.emptyDescription">
-                页面默认不挂载所有预览。点击任意条目的“预览”按钮后，这里才会渲染对应的真实
-                DynamicForm 示例。
-              </Translate>
-            </p>
-          )}
-        </div>
       </section>
 
       <nav
@@ -196,12 +124,7 @@ export default function MarketplaceClient(): React.JSX.Element {
 
       <section className={styles.grid}>
         {filteredItems.map((item) => (
-          <MarketplaceCard
-            active={activeItem?.id === item.id}
-            item={item}
-            key={item.id}
-            onPreview={handlePreview}
-          />
+          <MarketplaceCard item={item} key={item.id} />
         ))}
       </section>
     </div>
