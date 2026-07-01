@@ -90,6 +90,43 @@
   background: var(--df-background-panel);
 }
 
+.demoSandbox {
+  min-width: 720px;
+  color: #1f2937;
+  font-size: 14px;
+  line-height: 1.5715;
+}
+
+.demoSandbox :global(h1),
+.demoSandbox :global(h2),
+.demoSandbox :global(h3),
+.demoSandbox :global(h4),
+.demoSandbox :global(h5),
+.demoSandbox :global(h6) {
+  margin: 0 0 16px;
+  color: #1f2937;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.demoSandbox :global(h2) {
+  font-size: 22px;
+}
+
+.demoSandbox :global(p) {
+  margin: 0 0 12px;
+}
+
+.demoSandbox :global(ul),
+.demoSandbox :global(ol) {
+  margin: 0 0 16px 20px;
+  padding: 0;
+}
+
+.demoSandbox :global(li) {
+  margin: 0 0 6px;
+}
+
 .demoFrame :global(.ant-card),
 .demoFrame :global(.ant-form),
 .demoFrame :global(.ant-form-item) {
@@ -98,6 +135,34 @@
 
 .demoFrame :global(.ant-col) {
   min-width: 0;
+}
+
+.demoError {
+  padding: 16px;
+  border: 1px solid #ffccc7;
+  border-radius: 8px;
+  background: #fff2f0;
+  color: #a8071a;
+}
+
+.demoError h3 {
+  margin: 0 0 8px;
+  color: #820014;
+  font-size: 18px;
+}
+
+.demoError p {
+  margin: 0 0 12px;
+}
+
+.demoError pre {
+  margin: 0;
+  padding: 12px;
+  overflow-x: auto;
+  border-radius: 6px;
+  background: #fff1f0;
+  color: #5c0011;
+  white-space: pre-wrap;
 }
 
 @media (max-width: 996px) {

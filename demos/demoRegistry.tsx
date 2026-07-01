@@ -54,9 +54,8 @@ export const DEMO_COMPONENTS = {
   },
   compilerFoundation: {
     name: 'CompilerFoundationDemo',
-    title: 'Compiler Foundation 编译器基础演示 / Compiler Foundation Demo',
-    description:
-      '演示如何把字段模块编译为标准 FormConfig，再交给 DynamicForm 渲染。 / Compiles field modules into standard FormConfig before rendering with DynamicForm.',
+    title: '编译器基础演示',
+    description: '演示如何把字段模块编译为标准 FormConfig，再交给 DynamicForm 渲染。',
     component: CompilerFoundationDemo
   },
   nodeModel4: {

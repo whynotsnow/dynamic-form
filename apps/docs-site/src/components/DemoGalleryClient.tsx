@@ -71,7 +71,7 @@ const DEMO_TEXT: Record<DemoType, { title: string; description: string }> = {
   compilerFoundation: {
     title: translate({
       id: 'demos.items.compilerFoundation.title',
-      message: 'Compiler Foundation 编译器基础演示'
+      message: '编译器基础演示'
     }),
     description: translate({
       id: 'demos.items.compilerFoundation.description',
@@ -120,6 +120,54 @@ const writeDemoToUrl = (demoKey: DemoType) => {
   url.searchParams.set('demo', demoKey);
   window.history.pushState(null, '', url);
 };
+
+interface DemoErrorBoundaryProps {
+  children: React.ReactNode;
+  demoTitle: string;
+}
+
+interface DemoErrorBoundaryState {
+  error: Error | null;
+}
+
+class DemoErrorBoundary extends React.Component<DemoErrorBoundaryProps, DemoErrorBoundaryState> {
+  state: DemoErrorBoundaryState = { error: null };
+
+  static getDerivedStateFromError(error: Error): DemoErrorBoundaryState {
+    return { error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('[DemoGalleryClient] demo render failed:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.error) {
+      return (
+        <div className={styles.demoError} role="alert">
+          <h3>
+            {translate({
+              id: 'demos.error.title',
+              message: '当前 demo 渲染失败'
+            })}
+          </h3>
+          <p>
+            {translate(
+              {
+                id: 'demos.error.description',
+                message: '{demoTitle} 抛出了运行时错误，其他 demo 仍可继续查看。'
+              },
+              { demoTitle: this.props.demoTitle }
+            )}
+          </p>
+          <pre>{this.state.error.message}</pre>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
 
 export default function DemoGalleryClient(): React.JSX.Element {
   const [currentDemo, setCurrentDemo] = useState<DemoType>(() => readDemoFromUrl());
@@ -196,7 +244,11 @@ export default function DemoGalleryClient(): React.JSX.Element {
           </header>
 
           <div className={styles.demoFrame}>
-            <CurrentDemo />
+            <div className={styles.demoSandbox}>
+              <DemoErrorBoundary demoTitle={currentDemoText.title} key={currentDemo}>
+                <CurrentDemo />
+              </DemoErrorBoundary>
+            </div>
           </div>
         </section>
       </div>

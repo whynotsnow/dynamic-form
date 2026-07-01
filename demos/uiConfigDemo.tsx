@@ -1,8 +1,8 @@
 import React from 'react';
 import DynamicForm from '@/index';
-import { ComponentRegistryConfig, FieldComponentProps, FormConfig, UIConfig } from '@/exports';
-import { Tag, Space, Form, Select } from 'antd';
-import { CheckCircleOutlined, StarOutlined } from '@ant-design/icons';
+import type { ComponentRegistryConfig, FormConfig, FormValues, UIConfig } from '@/exports';
+import { Tag, Space, Form } from 'antd';
+import { CheckCircleOutlined } from '@ant-design/icons';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
 import { PriorityField, priorityEffect } from '../demos/customComponents/PriorityField';
 
@@ -70,7 +70,7 @@ const UIConfigDemo: React.FC = () => {
           const status = allValues.status;
 
           // 新增：测试UIConfig动态配置
-          const uiConfigUpdates: any = {};
+          const uiConfigUpdates: Partial<UIConfig> = {};
 
           if (status === 'active') {
             uiConfigUpdates.formProps = {
@@ -153,12 +153,14 @@ const UIConfigDemo: React.FC = () => {
         componentProps: {
           rows: 3
         },
-        effect: (changedValue) => {
+        effect: (changedValue: unknown) => {
+          const description = typeof changedValue === 'string' ? changedValue : '';
+
           return {
             componentProps: {
-              rows: changedValue?.length > 2 ? 5 : 3,
+              rows: description.length > 2 ? 5 : 3,
               style:
-                changedValue?.length > 2
+                description.length > 2
                   ? { backgroundColor: '#fff2f0', border: '1px solid #ff4d4f' }
                   : {}
             }
@@ -177,7 +179,7 @@ const UIConfigDemo: React.FC = () => {
   };
 
   // 动态表单提交处理
-  const handleDynamicSubmit = (values: any) => {
+  const handleDynamicSubmit = (values: FormValues) => {
     console.log('动态表单提交:', values);
   };
 

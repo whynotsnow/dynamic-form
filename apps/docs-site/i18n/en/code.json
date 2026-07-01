@@ -56,6 +56,12 @@
   "demos.client.description": {
     "message": "Select a demo to inspect the interactive behavior."
   },
+  "demos.error.title": {
+    "message": "Current demo failed to render"
+  },
+  "demos.error.description": {
+    "message": "{demoTitle} threw a runtime error. Other demos are still available."
+  },
   "api.groups.components.description": {
     "message": "Primary React entry points for rendering standard config or compiler/adapter output."
   },
