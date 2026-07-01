@@ -77,6 +77,17 @@ const DEMO_TEXT: Record<DemoType, { title: string; description: string }> = {
       id: 'playground.demos.compilerFoundation.description',
       message: '演示如何把字段模块编译为标准 FormConfig，再交给 DynamicForm 渲染。'
     })
+  },
+  nodeModel4: {
+    title: translate({
+      id: 'playground.demos.nodeModel4.title',
+      message: '4.0 Node Model / Container 演示'
+    }),
+    description: translate({
+      id: 'playground.demos.nodeModel4.description',
+      message:
+        '演示 4.0 nodes、普通 container、嵌套 container、repeatable container、级联字段联动和跨层级 effect graph。'
+    })
   }
 };
 

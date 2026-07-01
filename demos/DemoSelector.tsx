@@ -4,16 +4,25 @@ import { DEMO_COMPONENTS, DemoType } from './demoRegistry';
 
 const { Title, Paragraph } = Typography;
 const { Option } = Select;
+const DEFAULT_DEMO: DemoType = 'storeBoundary';
 
 interface DemoSelectorProps {
   defaultDemo?: DemoType;
 }
 
-const DemoSelector: React.FC<DemoSelectorProps> = ({ defaultDemo = 'storeBoundary' }) => {
-  const [currentDemo, setCurrentDemo] = useState<DemoType>(defaultDemo);
+const isDemoType = (value: string): value is DemoType => {
+  return Object.prototype.hasOwnProperty.call(DEMO_COMPONENTS, value);
+};
+
+const resolveDemoType = (value: DemoType): DemoType => {
+  return isDemoType(value) ? value : DEFAULT_DEMO;
+};
+
+const DemoSelector: React.FC<DemoSelectorProps> = ({ defaultDemo = DEFAULT_DEMO }) => {
+  const [currentDemo, setCurrentDemo] = useState<DemoType>(() => resolveDemoType(defaultDemo));
 
   const getCurrentDemoInfo = () => {
-    return DEMO_COMPONENTS[currentDemo];
+    return DEMO_COMPONENTS[resolveDemoType(currentDemo)];
   };
 
   const CurrentDemo = getCurrentDemoInfo().component;

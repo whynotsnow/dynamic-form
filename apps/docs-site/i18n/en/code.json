@@ -41,6 +41,12 @@
   "playground.demos.compilerFoundation.description": {
     "message": "Shows how field modules compile into standard FormConfig before rendering with DynamicForm."
   },
+  "playground.demos.nodeModel4.title": {
+    "message": "4.0 Node Model / Container Demo"
+  },
+  "playground.demos.nodeModel4.description": {
+    "message": "Shows 4.0 nodes, standard containers, nested containers, repeatable containers, cascading field interactions, and cross-level effect graphs."
+  },
   "playground.client.sidebarLabel": {
     "message": "DynamicForm demos"
   },
