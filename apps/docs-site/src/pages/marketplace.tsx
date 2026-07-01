@@ -1,10 +1,11 @@
+import type React from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import Translate, { translate } from '@docusaurus/Translate';
 import Layout from '@theme/Layout';
 import MarketplaceClient from '../marketplace/MarketplaceClient';
 import styles from './marketplace.module.css';
 
-export default function Marketplace(): JSX.Element {
+export default function Marketplace(): React.JSX.Element {
   return (
     <Layout
       title={translate({ id: 'marketplace.layout.title', message: '扩展市场' })}

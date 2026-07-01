@@ -15,3 +15,12 @@ else
   echo "${RED}❌ lint-staged failed! Commit aborted.${RESET}"
   exit 1
 fi
+
+echo "${YELLOW}⚡ Running type-check...${RESET}"
+
+if pnpm run type-check; then
+  echo "${GREEN}✅ type-check finished successfully!${RESET}"
+else
+  echo "${RED}❌ type-check failed! Commit aborted.${RESET}"
+  exit 1
+fi

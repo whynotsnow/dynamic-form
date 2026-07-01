@@ -1,3 +1,4 @@
+import type React from 'react';
 import clsx from 'clsx';
 import Heading from '@theme/Heading';
 import Layout from '@theme/Layout';
@@ -113,7 +114,7 @@ const paths = [
   }
 ];
 
-export default function Home(): JSX.Element {
+export default function Home(): React.JSX.Element {
   const workflowImage = useBaseUrl('/img/dynamic-form-workflow.png');
 
   return (

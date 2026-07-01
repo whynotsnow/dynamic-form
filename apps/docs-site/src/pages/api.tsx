@@ -1,3 +1,4 @@
+import type React from 'react';
 import Heading from '@theme/Heading';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
@@ -103,7 +104,7 @@ const apiGroups = [
   }
 ];
 
-export default function Api(): JSX.Element {
+export default function Api(): React.JSX.Element {
   return (
     <Layout
       title={translate({

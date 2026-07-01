@@ -121,7 +121,7 @@ const writeDemoToUrl = (demoKey: DemoType) => {
   window.history.pushState(null, '', url);
 };
 
-export default function DemoGalleryClient(): JSX.Element {
+export default function DemoGalleryClient(): React.JSX.Element {
   const [currentDemo, setCurrentDemo] = useState<DemoType>(() => readDemoFromUrl());
   const demoEntries = useMemo(
     () => Object.entries(DEMO_COMPONENTS) as Array<[DemoType, (typeof DEMO_COMPONENTS)[DemoType]]>,

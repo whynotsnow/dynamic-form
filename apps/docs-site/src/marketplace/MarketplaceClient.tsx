@@ -112,7 +112,7 @@ function MarketplaceCard({
   );
 }
 
-export default function MarketplaceClient(): JSX.Element {
+export default function MarketplaceClient(): React.JSX.Element {
   const [activeFilter, setActiveFilter] = useState<ActiveFilter>('all');
   const [activeItem, setActiveItem] = useState<MarketplaceItem | undefined>();
   const [previewKey, setPreviewKey] = useState(0);

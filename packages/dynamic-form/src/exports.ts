@@ -101,6 +101,13 @@ export type {
 export { useFormChainContext } from './shared/context/FormChainContext';
 export { useStoreInit } from './state';
 export { useInitHandlers } from './consumer/hooks/useInitHandlers';
+export type {
+  CustomEffectResultHandler,
+  EffectResultHandler,
+  HandlerRegistrationOptions,
+  InitConfig,
+  InitResult
+} from './consumer/effects';
 
 export { getDefaultConfig } from './config/defaultConfig';
 export { processFormConfig } from './config';

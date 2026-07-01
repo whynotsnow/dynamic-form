@@ -1,10 +1,11 @@
+import type React from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import Translate, { translate } from '@docusaurus/Translate';
 import Layout from '@theme/Layout';
 import DemoGalleryClient from '../components/DemoGalleryClient';
 import styles from './demos.module.css';
 
-export default function Demos(): JSX.Element {
+export default function Demos(): React.JSX.Element {
   return (
     <Layout
       title={translate({

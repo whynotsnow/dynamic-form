@@ -35,7 +35,7 @@
     "release:publish": "node scripts/publish-dynamic-form.mjs",
     "lint": "eslint \"packages/dynamic-form/src/**/*.{ts,tsx,js,jsx}\" \"demos/**/*.{ts,tsx,js,jsx}\" --fix",
     "lint:check": "eslint \"packages/dynamic-form/src/**/*.{ts,tsx,js,jsx}\" \"demos/**/*.{ts,tsx,js,jsx}\"",
-    "type-check": "pnpm --filter @whynotsnow/dynamic-form type-check && tsc --noEmit",
+    "type-check": "pnpm --filter @whynotsnow/dynamic-form type-check && tsc --noEmit && pnpm --filter @whynotsnow/dynamic-form-site type-check",
     "format": "prettier --write \"packages/dynamic-form/src/**/*.{ts,tsx,js,jsx}\" \"demos/**/*.{ts,tsx,js,jsx}\""
   },
   "lint-staged": {

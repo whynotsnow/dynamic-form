@@ -1,3 +1,4 @@
+import type React from 'react';
 import Heading from '@theme/Heading';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
@@ -104,7 +105,7 @@ const examples = [
   }
 ];
 
-export default function Examples(): JSX.Element {
+export default function Examples(): React.JSX.Element {
   return (
     <Layout
       title={translate({
