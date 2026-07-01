@@ -35,6 +35,17 @@ flowchart TD
 
 `FieldComponentRenderer` 负责解析组件、应用 `Form.Item` props、应用 runtime disabled/readonly 状态，并在字段不可校验时移除 `Form.Item` rules。字段 `required: true` 会在默认 Ant Design renderer 中自动合并为 required rule；显式 `rules` 中的 required rule 优先。
 
+### Nodes 与 container 渲染契约
+
+4.0 的 `nodes` 入口会把 root nodes 按顺序渲染为“字段连续段”和“container 块”：
+
+- 连续字段段统一交给 `renderFields`，默认结构仍是 `Row -> Col -> FieldComponentRenderer`。
+- container 是块级边界，会切断前后的字段段；container 默认渲染为 `Card`，内部 children 继续按同一规则递归分段。
+- 普通 container 使用 `renderGroupItem` 时，`defaultRender` 包含完整 children 渲染，包括嵌套 container。
+- repeatable container 使用 `Form.List`，每个 list item 内部也按连续字段段渲染，并把字段 name 改写为 list item 相对路径。
+
+因此 `renderFields` 不只作用于旧的 flat fields 或 group 内字段，也会作用于顶层连续字段、混合 root nodes 中被 container 切开的字段段、嵌套 container 内字段段，以及 repeatable item 内字段段。
+
 ### 组件注册
 
 通过 `componentRegistry` 注册业务字段组件。

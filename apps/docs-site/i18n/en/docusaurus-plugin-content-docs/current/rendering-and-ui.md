@@ -29,6 +29,17 @@ Default rendering uses `Form`, `Row`, `Col`, `Card`, and `Button`.
 
 `FieldComponentRenderer` resolves the component, applies `Form.Item` props, maps runtime disabled/readonly state, and suppresses rules when a field is not runtime-validatable. Field-level `required: true` is automatically merged into a required rule by the default Ant Design renderer, while explicit required rules take precedence.
 
+### Nodes and Container Rendering Contract
+
+The 4.0 `nodes` entry renders root nodes in order as continuous field segments and container blocks:
+
+- Continuous field segments are rendered through `renderFields`. The default structure remains `Row -> Col -> FieldComponentRenderer`.
+- A container is a block boundary and splits adjacent field segments. By default, a container renders as a `Card`, and its children are segmented recursively with the same rule.
+- When a normal container uses `renderGroupItem`, `defaultRender` includes the complete children rendering, including nested containers.
+- A repeatable container uses `Form.List`. Each list item also renders its children as continuous field segments and rewrites field names to list-item-relative paths.
+
+As a result, `renderFields` applies not only to legacy flat fields or fields inside groups, but also to top-level continuous fields, field segments split by containers in mixed root nodes, nested container field segments, and repeatable item field segments.
+
 ### Component Registry
 
 Use `componentRegistry` to register business-specific field components. Custom components receive `field`, `value`, `onChange`, and `form`.

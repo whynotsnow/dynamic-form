@@ -100,8 +100,8 @@ const FormContent: React.FC<FormContentProps> = (props) => {
   };
 
   /** 单字段渲染（最小单元，必须兜底） */
-  const internalRenderFieldItem = (field: FieldState) => {
-    const defaultRender = renderFieldRenderer(field);
+  const internalRenderFieldItem = (field: FieldState, name?: NamePath) => {
+    const defaultRender = renderFieldRenderer(field, name);
 
     if (defaultRender === null) {
       return null;
@@ -111,7 +111,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
       return renderFieldItem({
         field,
         form,
-        fieldValue: form.getFieldValue(getFieldName(field)),
+        fieldValue: form.getFieldValue(name ?? getFieldName(field)),
         renderField: internalRenderFieldItem,
         defaultRender
       });
@@ -121,7 +121,11 @@ const FormContent: React.FC<FormContentProps> = (props) => {
   };
 
   /** 一组字段渲染（提供 renderFieldItem 能力） */
-  const internalRenderFields = (fieldsArr: FieldState[]) => {
+  const internalRenderFields = (
+    fieldsArr: FieldState[],
+    listPrefix?: NamePath,
+    schemaPrefix?: NamePath
+  ) => {
     const defaultRender = (
       <Row {...effectiveUIConfig.rowProps}>
         {fieldsArr.map((field) => {
@@ -130,13 +134,16 @@ const FormContent: React.FC<FormContentProps> = (props) => {
           if (!capability?.rendered) {
             return null;
           }
+          const renderedName = listPrefix
+            ? [...toNamePath(listPrefix), ...stripNamePrefix(getFieldName(field), schemaPrefix)]
+            : undefined;
           return (
             <Col
               key={field.id}
               {...effectiveUIConfig.colProps}
               span={field.span || effectiveUIConfig.colProps?.span}
             >
-              {internalRenderFieldItem(field)}
+              {internalRenderFieldItem(field, renderedName)}
             </Col>
           );
         })}
@@ -191,6 +198,49 @@ const FormContent: React.FC<FormContentProps> = (props) => {
       : defaultRender;
   };
 
+  const renderNodeChildren = (
+    childNodeIds: string[],
+    listPrefix?: NamePath,
+    schemaPrefix?: NamePath
+  ): React.ReactNode => {
+    const blocks: React.ReactNode[] = [];
+    let fieldNodes: FieldState[] = [];
+
+    const flushFieldNodes = (key: React.Key) => {
+      if (fieldNodes.length === 0) return;
+
+      blocks.push(
+        <React.Fragment key={`fields-${key}`}>
+          {internalRenderFields(fieldNodes, listPrefix, schemaPrefix)}
+        </React.Fragment>
+      );
+      fieldNodes = [];
+    };
+
+    childNodeIds.forEach((nodeId, index) => {
+      const entry = configProcessInfo.nodeRegistry[nodeId];
+      const node = nodes[nodeId];
+
+      if (!entry || !node) {
+        return;
+      }
+
+      if (entry.nodeType === 'field') {
+        fieldNodes.push(node as FieldState);
+        return;
+      }
+
+      flushFieldNodes(index);
+      blocks.push(
+        <React.Fragment key={nodeId}>{renderNode(nodeId, listPrefix, schemaPrefix)}</React.Fragment>
+      );
+    });
+
+    flushFieldNodes('tail');
+
+    return <>{blocks}</>;
+  };
+
   const renderNode = (
     nodeId: string,
     listPrefix?: NamePath,
@@ -204,20 +254,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
     }
 
     if (entry.nodeType === 'field') {
-      const field = node as FieldState;
-      const renderedName = listPrefix
-        ? [...toNamePath(listPrefix), ...stripNamePrefix(getFieldName(field), schemaPrefix)]
-        : undefined;
-
-      return (
-        <Col
-          key={field.id}
-          {...effectiveUIConfig.colProps}
-          span={field.span || effectiveUIConfig.colProps?.span}
-        >
-          {renderedName ? renderFieldRenderer(field, renderedName) : internalRenderFieldItem(field)}
-        </Col>
-      );
+      return internalRenderFields([node as FieldState], listPrefix, schemaPrefix);
     }
 
     const container = node as ContainerState;
@@ -234,11 +271,8 @@ const FormContent: React.FC<FormContentProps> = (props) => {
         ? [...toNamePath(listPrefix), ...toNamePath(container.name)]
         : listPrefix;
 
-    const renderChildren = (renderPrefix?: NamePath, nextSchemaPrefix?: NamePath) => (
-      <Row {...effectiveUIConfig.rowProps}>
-        {container.children.map((childId) => renderNode(childId, renderPrefix, nextSchemaPrefix))}
-      </Row>
-    );
+    const renderChildren = (renderPrefix?: NamePath, nextSchemaPrefix?: NamePath) =>
+      renderNodeChildren(container.children, renderPrefix, nextSchemaPrefix);
 
     if (container.repeatable) {
       return (
@@ -261,11 +295,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
     }
 
     const group = groupFields[container.id];
-    if (group && renderGroupItem) {
-      return internalRenderGroupItem(group);
-    }
-
-    return (
+    const defaultRender = (
       <Card
         key={container.id}
         title={container.title ?? container.id}
@@ -274,6 +304,18 @@ const FormContent: React.FC<FormContentProps> = (props) => {
         {renderChildren(containerRenderPrefix, containerSchemaPrefix)}
       </Card>
     );
+
+    if (group && renderGroupItem) {
+      return renderGroupItem({
+        group,
+        dynamicUIConfig: effectiveUIConfig,
+        renderFields: internalRenderFields,
+        renderFieldItem: internalRenderFieldItem,
+        defaultRender
+      });
+    }
+
+    return defaultRender;
   };
 
   /** 提交区渲染 */
@@ -287,38 +329,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
 
   const renderRootNodes = () => {
     if (rootNodeIds.length === 0) return null;
-
-    const blocks: React.ReactNode[] = [];
-    let fieldNodes: React.ReactNode[] = [];
-
-    const flushFieldNodes = (key: React.Key) => {
-      if (fieldNodes.length === 0) return;
-
-      blocks.push(
-        <Row key={`root-fields-${key}`} {...effectiveUIConfig.rowProps}>
-          {fieldNodes}
-        </Row>
-      );
-      fieldNodes = [];
-    };
-
-    rootNodeIds.forEach((nodeId, index) => {
-      const renderedNode = renderNode(nodeId);
-      if (!renderedNode) return;
-
-      const entry = configProcessInfo.nodeRegistry[nodeId];
-      if (entry?.nodeType === 'field') {
-        fieldNodes.push(renderedNode);
-        return;
-      }
-
-      flushFieldNodes(index);
-      blocks.push(renderedNode);
-    });
-
-    flushFieldNodes('tail');
-
-    return <>{blocks}</>;
+    return renderNodeChildren(rootNodeIds);
   };
 
   const fieldsBlock = renderRootNodes();
