@@ -6,6 +6,7 @@ import FormValidationDemo from './formValidationDemo';
 import UIConfigDemo from './uiConfigDemo';
 import RenderExtensionDemo from './renderExtensionDemo';
 import CompilerFoundationDemo from './compilerFoundationDemo';
+import NodeModel4Demo from './nodeModel4Demo';
 
 export interface DemoDefinition {
   name: string;
@@ -57,6 +58,13 @@ export const DEMO_COMPONENTS = {
     description:
       '演示如何把字段模块编译为标准 FormConfig，再交给 DynamicForm 渲染。 / Compiles field modules into standard FormConfig before rendering with DynamicForm.',
     component: CompilerFoundationDemo
+  },
+  nodeModel4: {
+    name: 'NodeModel4Demo',
+    title: '4.0 Node Model / Container 演示',
+    description:
+      '演示 4.0 nodes、普通 container、嵌套 container、repeatable container、级联字段联动和跨层级 effect graph。',
+    component: NodeModel4Demo
   }
 } satisfies Record<string, DemoDefinition>;
 

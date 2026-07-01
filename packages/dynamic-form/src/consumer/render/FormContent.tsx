@@ -183,7 +183,11 @@ const FormContent: React.FC<FormContentProps> = (props) => {
       : defaultRender;
   };
 
-  const renderNode = (nodeId: string, listPrefix?: NamePath): React.ReactNode => {
+  const renderNode = (
+    nodeId: string,
+    listPrefix?: NamePath,
+    schemaPrefix?: NamePath
+  ): React.ReactNode => {
     const node = nodes[nodeId];
     const entry = configProcessInfo.nodeRegistry[nodeId];
 
@@ -194,7 +198,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
     if (entry.nodeType === 'field') {
       const field = node as FieldState;
       const renderedName = listPrefix
-        ? [...toNamePath(listPrefix), ...stripNamePrefix(getFieldName(field), listPrefix)]
+        ? [...toNamePath(listPrefix), ...stripNamePrefix(getFieldName(field), schemaPrefix)]
         : undefined;
 
       return (
@@ -214,9 +218,17 @@ const FormContent: React.FC<FormContentProps> = (props) => {
       return null;
     }
 
-    const renderChildren = (prefix?: NamePath) => (
+    const containerSchemaPrefix = container.name
+      ? [...toNamePath(schemaPrefix), ...toNamePath(container.name)]
+      : schemaPrefix;
+    const containerRenderPrefix =
+      listPrefix && container.name
+        ? [...toNamePath(listPrefix), ...toNamePath(container.name)]
+        : listPrefix;
+
+    const renderChildren = (renderPrefix?: NamePath, nextSchemaPrefix?: NamePath) => (
       <Row {...dynamicUIConfig.rowProps}>
-        {container.children.map((childId) => renderNode(childId, prefix))}
+        {container.children.map((childId) => renderNode(childId, renderPrefix, nextSchemaPrefix))}
       </Row>
     );
 
@@ -231,7 +243,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
             {(items) => (
               <>
                 {items.map((item) => (
-                  <div key={item.key}>{renderChildren([item.name])}</div>
+                  <div key={item.key}>{renderChildren([item.name], containerSchemaPrefix)}</div>
                 ))}
               </>
             )}
@@ -251,7 +263,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
         title={container.title ?? container.id}
         {...dynamicUIConfig.cardProps}
       >
-        {renderChildren(container.name)}
+        {renderChildren(containerRenderPrefix, containerSchemaPrefix)}
       </Card>
     );
   };
