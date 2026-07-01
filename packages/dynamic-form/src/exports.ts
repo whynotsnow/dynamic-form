@@ -9,6 +9,11 @@ export type {
   DynamicFormProps,
   FormValues,
   FieldAddress,
+  FieldNode,
+  ContainerNode,
+  FormNode,
+  NodeRegistryEntry,
+  ContainerRegistryEntry,
   FormConfig,
   FlatFormConfig,
   GroupedFormConfig,
@@ -26,7 +31,7 @@ export type {
   RenderFormParams
 } from './shared/types';
 
-export type { FieldCapability, GroupCapability, RuntimeState } from './runtime';
+export type { FieldCapability, GroupCapability, NodeCapability, RuntimeState } from './runtime';
 
 export { getFieldName, resolveFieldAddress } from './shared/utils';
 
@@ -42,7 +47,10 @@ export type {
   CompileHookContext,
   CompilerHooks,
   GroupModuleConfig,
+  ModuleContainerNode,
+  ModuleFieldNode,
   ModuleFormConfig,
+  ModuleFormNode,
   ModuleConfig
 } from './compiler';
 

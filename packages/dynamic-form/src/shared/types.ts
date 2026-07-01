@@ -50,6 +50,10 @@ export interface GroupMeta {
   [key: string]: any;
 }
 
+export type NodeBehaviorMeta = GroupBehaviorMeta;
+
+export type NodeMeta = GroupMeta;
+
 export interface BaseFieldConfig {
   id: string;
   /** Ant Design Form 值路径；未提供时保持兼容，默认使用 id。 */
@@ -85,6 +89,24 @@ export interface GroupField {
   initialVisible?: boolean;
 }
 
+export type FieldNode = BaseFieldConfig & {
+  nodeType: 'field';
+};
+
+export interface ContainerNode {
+  nodeType: 'container';
+  id: string;
+  title?: string;
+  name?: NamePath;
+  children: FormNode[];
+  initialVisible?: boolean;
+  dependents?: string[];
+  effect?: EffectFn;
+  repeatable?: boolean;
+}
+
+export type FormNode = FieldNode | ContainerNode;
+
 // export type FieldComponentType = keyof typeof DefaultRegistryFieldComponents;
 export type FieldComponentType =
   | 'Password'
@@ -110,9 +132,18 @@ export type GroupFieldState = Omit<GroupField, 'fields'> & {
   meta: GroupMeta;
   fields: Record<string, FieldState>;
 };
+
+export type ContainerState = Omit<ContainerNode, 'children'> & {
+  meta: NodeMeta;
+  children: string[];
+};
+
 export interface FormState {
   fields: Record<string, FieldState>;
   groupFields: Record<string, GroupFieldState>;
+  nodes: Record<string, FieldState | ContainerState>;
+  rootNodeIds: string[];
+  containerFields: Record<string, Record<string, FieldState>>;
   initialized: boolean;
   configProcessInfo: ConfigProcessInfo;
   dynamicUIConfig: UIConfig;
@@ -130,11 +161,13 @@ export type FormAction =
       payload: { fieldId: string; meta: FieldMeta };
     }
   | { type: 'SET_GROUP_META'; payload: { groupId: string; meta: GroupMeta } }
+  | { type: 'SET_CONTAINER_META'; payload: { containerId: string; meta: NodeMeta } }
   | { type: 'UPDATE_DYNAMIC_UICONFIG'; payload: { config: Partial<UIConfig> & object } };
 
 /** 非分组模式下的表单配置 */
 export interface FormConfig {
   id?: string | number;
+  nodes?: FormNode[];
   fields?: BaseFieldConfig[];
   groups?: GroupField[];
 }
@@ -280,6 +313,7 @@ export interface FieldRendererProps {
   field: FieldState;
   form: FormInstance;
   fieldValue?: FieldValue;
+  name?: NamePath;
   // 新增：组件注册器
   componentRegistry?: ComponentRegistryResolver | null;
   // 新增：Form.Item组件配置 - 支持函数化值
@@ -305,13 +339,33 @@ export interface FieldRegistry {
   config: BaseFieldConfig | GroupField;
 }
 
+export interface NodeRegistryEntry {
+  id: string;
+  nodeType: FormNode['nodeType'];
+  parentId?: string;
+  config: FormNode;
+  path: string[];
+}
+
+export interface ContainerRegistryEntry {
+  id: string;
+  parentId?: string;
+  config: ContainerNode;
+  path: string[];
+}
+
 export interface ConfigProcessInfo {
   effectMap: Record<string, Fieldchain>;
+  nodeRegistry: Record<string, NodeRegistryEntry>;
+  containerRegistry: Record<string, ContainerRegistryEntry>;
   fieldRegistry: Record<string, FieldRegistry>;
   fieldAddressRegistry: Record<string, FieldAddress>;
   initialValues: FormValues;
   initializedFields: Record<string, FieldState>;
   initializedGroupFields: Record<string, GroupFieldState>;
+  initializedNodes: Record<string, FieldState | ContainerState>;
+  initializedContainerFields: Record<string, Record<string, FieldState>>;
+  rootNodeIds: string[];
 }
 
 export interface ComponentRegistryResolver {

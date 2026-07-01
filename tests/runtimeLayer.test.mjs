@@ -61,9 +61,73 @@ function createState() {
         }
       }
     },
+    nodes: {
+      accountType,
+      companyInfo: {
+        id: 'companyInfo',
+        nodeType: 'container',
+        title: 'Company',
+        meta: { behavior: { visible: false } },
+        children: ['companyName', 'taxNo']
+      },
+      companyName,
+      taxNo
+    },
+    rootNodeIds: ['accountType', 'companyInfo'],
+    containerFields: {
+      companyInfo: {
+        companyName,
+        taxNo
+      }
+    },
     initialized: true,
     configProcessInfo: {
       effectMap: {},
+      nodeRegistry: {
+        accountType: {
+          id: 'accountType',
+          nodeType: 'field',
+          config: accountType,
+          path: ['0']
+        },
+        companyInfo: {
+          id: 'companyInfo',
+          nodeType: 'container',
+          config: {
+            id: 'companyInfo',
+            nodeType: 'container',
+            title: 'Company',
+            children: []
+          },
+          path: ['1']
+        },
+        companyName: {
+          id: 'companyName',
+          nodeType: 'field',
+          parentId: 'companyInfo',
+          config: companyName,
+          path: ['1', '0']
+        },
+        taxNo: {
+          id: 'taxNo',
+          nodeType: 'field',
+          parentId: 'companyInfo',
+          config: taxNo,
+          path: ['1', '1']
+        }
+      },
+      containerRegistry: {
+        companyInfo: {
+          id: 'companyInfo',
+          config: {
+            id: 'companyInfo',
+            nodeType: 'container',
+            title: 'Company',
+            children: []
+          },
+          path: ['1']
+        }
+      },
       fieldRegistry: {
         accountType: { id: 'accountType', isGroupField: false, config: accountType },
         companyInfo: {
@@ -87,7 +151,10 @@ function createState() {
       fieldAddressRegistry: {},
       initialValues: {},
       initializedFields: {},
-      initializedGroupFields: {}
+      initializedGroupFields: {},
+      initializedNodes: {},
+      initializedContainerFields: {},
+      rootNodeIds: ['accountType', 'companyInfo']
     },
     dynamicUIConfig: {}
   };
@@ -108,6 +175,7 @@ test('RuntimeState keeps disabled grouped fields non-editable and non-validatabl
   const { runtimeState } = await modulePromise;
   const state = createState();
   state.groupFields.companyInfo.meta.behavior.visible = true;
+  state.nodes.companyInfo.meta.behavior.visible = true;
 
   const result = runtimeState.resolveRuntimeState(state);
 
@@ -116,6 +184,57 @@ test('RuntimeState keeps disabled grouped fields non-editable and non-validatabl
   assert.equal(result.fields.taxNo.disabled, true);
   assert.equal(result.fields.taxNo.editable, false);
   assert.equal(result.fields.taxNo.validatable, false);
+});
+
+test('RuntimeState inherits visibility from ancestor containers', async () => {
+  const { runtimeState } = await modulePromise;
+  const state = createState();
+  const city = {
+    id: 'city',
+    component: 'TextInput',
+    meta: { behavior: { visible: true } }
+  };
+
+  state.nodes.companyInfo.meta.behavior.visible = false;
+  state.nodes.address = {
+    id: 'address',
+    nodeType: 'container',
+    meta: { behavior: { visible: true } },
+    children: ['city']
+  };
+  state.nodes.city = city;
+  state.containerFields.address = { city };
+  state.configProcessInfo.nodeRegistry.address = {
+    id: 'address',
+    nodeType: 'container',
+    parentId: 'companyInfo',
+    config: { id: 'address', nodeType: 'container', children: [] },
+    path: ['1', '2']
+  };
+  state.configProcessInfo.nodeRegistry.city = {
+    id: 'city',
+    nodeType: 'field',
+    parentId: 'address',
+    config: city,
+    path: ['1', '2', '0']
+  };
+  state.configProcessInfo.containerRegistry.address = {
+    id: 'address',
+    parentId: 'companyInfo',
+    config: { id: 'address', nodeType: 'container', children: [] },
+    path: ['1', '2']
+  };
+  state.configProcessInfo.fieldRegistry.city = {
+    id: 'city',
+    isGroupField: true,
+    groupId: 'address',
+    config: city
+  };
+
+  const result = runtimeState.resolveRuntimeState(state);
+
+  assert.equal(result.groups.address.rendered, false);
+  assert.equal(result.fields.city.rendered, false);
 });
 
 test('field participation policy preserves hidden values only when explicitly requested and restores by default', async () => {

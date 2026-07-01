@@ -1,6 +1,12 @@
 import React, { useMemo } from 'react';
 import { Form, Button, Card, Row, Col } from 'antd';
-import type { FormContentProps, FieldState, GroupFieldState } from '../../shared/types';
+import type {
+  FormContentProps,
+  FieldState,
+  GroupFieldState,
+  ContainerState
+} from '../../shared/types';
+import type { NamePath } from 'antd/es/form/interface';
 import { useFormRuntimeEvents } from '../hooks/useFormRuntimeEvents';
 import { useFieldParticipation } from '../hooks/useFieldParticipation';
 import { useFormChainContext } from '../../shared/context/FormChainContext';
@@ -8,7 +14,21 @@ import { ComponentRegistryManager } from './componentRegistry';
 import FieldComponentRenderer from './FieldComponentRenderer';
 
 import { useRuntimeState } from '../../runtime';
-import { getFieldName } from '../../shared/utils';
+import { getFieldName, normalizeFieldName } from '../../shared/utils';
+
+type NameSegment = string | number;
+
+function toNamePath(name: NamePath | undefined): NameSegment[] {
+  if (name === undefined) return [];
+  return normalizeFieldName(name);
+}
+
+function stripNamePrefix(name: NamePath, prefix: NamePath | undefined): NameSegment[] {
+  const namePath = toNamePath(name);
+  const prefixPath = toNamePath(prefix);
+
+  return namePath.slice(prefixPath.length);
+}
 
 const FormContent: React.FC<FormContentProps> = (props) => {
   const {
@@ -22,9 +42,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
     renderGroups,
     form
   } = props;
-  // 获取默认配置
 
-  // 合并用户配置和默认配置
   const finalSubmitButtonText = submitButtonText ?? '提交';
 
   const { state } = useFormChainContext();
@@ -34,11 +52,18 @@ const FormContent: React.FC<FormContentProps> = (props) => {
     onSubmit,
     runtimeState
   });
-  const { dynamicUIConfig, initialized, fields, groupFields, configProcessInfo } = state;
+  const {
+    dynamicUIConfig,
+    initialized,
+    fields,
+    groupFields,
+    configProcessInfo,
+    nodes,
+    rootNodeIds
+  } = state;
 
   useFieldParticipation(form, state, runtimeState);
 
-  // 创建组件注册器实例
   const registryManager = useMemo(() => {
     if (componentRegistry) {
       return new ComponentRegistryManager(componentRegistry);
@@ -46,24 +71,33 @@ const FormContent: React.FC<FormContentProps> = (props) => {
     return null;
   }, [componentRegistry]);
 
-  /** 单字段渲染（最小单元，必须兜底） */
-  const internalRenderFieldItem = (field: FieldState) => {
+  const renderFieldRenderer = (field: FieldState, name?: NamePath) => {
     const capability = runtimeState.fields[field.id];
 
     if (!initialized || !capability?.rendered) {
       return null;
     }
 
-    const defaultRender = (
+    return (
       <FieldComponentRenderer
         key={field.id}
         field={field}
         form={form}
+        name={name}
         componentRegistry={registryManager}
         dynamicUIConfig={dynamicUIConfig}
         runtimeCapability={capability}
       />
     );
+  };
+
+  /** 单字段渲染（最小单元，必须兜底） */
+  const internalRenderFieldItem = (field: FieldState) => {
+    const defaultRender = renderFieldRenderer(field);
+
+    if (defaultRender === null) {
+      return null;
+    }
 
     if (renderFieldItem) {
       return renderFieldItem({
@@ -149,6 +183,79 @@ const FormContent: React.FC<FormContentProps> = (props) => {
       : defaultRender;
   };
 
+  const renderNode = (nodeId: string, listPrefix?: NamePath): React.ReactNode => {
+    const node = nodes[nodeId];
+    const entry = configProcessInfo.nodeRegistry[nodeId];
+
+    if (!node || !entry) {
+      return null;
+    }
+
+    if (entry.nodeType === 'field') {
+      const field = node as FieldState;
+      const renderedName = listPrefix
+        ? [...toNamePath(listPrefix), ...stripNamePrefix(getFieldName(field), listPrefix)]
+        : undefined;
+
+      return (
+        <Col
+          key={field.id}
+          {...dynamicUIConfig.colProps}
+          span={field.span || dynamicUIConfig.colProps?.span}
+        >
+          {renderedName ? renderFieldRenderer(field, renderedName) : internalRenderFieldItem(field)}
+        </Col>
+      );
+    }
+
+    const container = node as ContainerState;
+    const capability = runtimeState.containers[container.id];
+    if (!capability?.rendered) {
+      return null;
+    }
+
+    const renderChildren = (prefix?: NamePath) => (
+      <Row {...dynamicUIConfig.rowProps}>
+        {container.children.map((childId) => renderNode(childId, prefix))}
+      </Row>
+    );
+
+    if (container.repeatable) {
+      return (
+        <Card
+          key={container.id}
+          title={container.title ?? container.id}
+          {...dynamicUIConfig.cardProps}
+        >
+          <Form.List name={container.name!}>
+            {(items) => (
+              <>
+                {items.map((item) => (
+                  <div key={item.key}>{renderChildren([item.name])}</div>
+                ))}
+              </>
+            )}
+          </Form.List>
+        </Card>
+      );
+    }
+
+    const group = groupFields[container.id];
+    if (group && renderGroupItem) {
+      return internalRenderGroupItem(group);
+    }
+
+    return (
+      <Card
+        key={container.id}
+        title={container.title ?? container.id}
+        {...dynamicUIConfig.cardProps}
+      >
+        {renderChildren(container.name)}
+      </Card>
+    );
+  };
+
   /** 提交区渲染 */
   const internalRenderSubmit = () => (
     <div style={{ textAlign: 'center', marginTop: 24 }} {...dynamicUIConfig.submitAreaProps}>
@@ -158,18 +265,10 @@ const FormContent: React.FC<FormContentProps> = (props) => {
     </div>
   );
 
-  /** 最终组装：未分组字段在前，分组字段在后。 */
   const fieldsBlock =
-    Object.keys(fields).length > 0 ? internalRenderFields(Object.values(fields)) : null;
-  const groupsBlock =
-    Object.keys(groupFields).length > 0 ? internalRenderGroups(groupFields) : null;
+    rootNodeIds.length > 0 ? rootNodeIds.map((nodeId) => renderNode(nodeId)) : null;
   const formBlocks = {
-    fieldsArea: (
-      <>
-        {fieldsBlock}
-        {groupsBlock}
-      </>
-    ),
+    fieldsArea: <>{fieldsBlock}</>,
     submitArea: internalRenderSubmit()
   };
 

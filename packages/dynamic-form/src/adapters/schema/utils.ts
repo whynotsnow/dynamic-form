@@ -1,5 +1,5 @@
 import type { AdapterContext } from '../types';
-import type { GroupModuleConfig, ModuleConfig, ModuleFormConfig } from '../../compiler';
+import type { GroupModuleConfig, ModuleFormConfig, ModuleFormNode } from '../../compiler';
 import { assertValidGroupRule } from '../../rules';
 import type {
   JsonSchemaAdapterInput,
@@ -42,17 +42,6 @@ function getFieldMetadata(property: JsonSchemaProperty): SchemaAdapterFieldMetad
   return property['x-dynamic-form'] || property.metadata || {};
 }
 
-function assertSupportedTopLevelProperty(id: string, property: JsonSchemaProperty) {
-  // 3.2 只处理顶层字段，嵌套对象留给后续结构化表单能力。
-  if (property.type === 'object' && property.properties) {
-    throw new Error(`JsonSchemaAdapter: nested object property "${id}" is not supported in 3.2.`);
-  }
-
-  if (property.type === 'array' && property.items && property.items.type === 'object') {
-    throw new Error(`JsonSchemaAdapter: object array property "${id}" is not supported in 3.2.`);
-  }
-}
-
 function getSchemaGroups(schema: JsonSchemaAdapterInput): GroupModuleConfig[] {
   const groups = schema['x-dynamic-form']?.groups || [];
 
@@ -80,15 +69,15 @@ export function jsonSchemaToModuleFormConfig(schema: JsonSchemaAdapterInput): Mo
     throw new Error('JsonSchemaAdapter: schema must be an object schema with properties.');
   }
 
-  const required = new Set(schema.required || []);
-
-  const fields: ModuleConfig[] = Object.entries(schema.properties).map(([id, property]) => {
-    assertSupportedTopLevelProperty(id, property);
-
+  const createLeafNode = (
+    id: string,
+    property: JsonSchemaProperty,
+    required: Set<string>,
+    path: string[]
+  ): ModuleFormNode => {
     const metadata = getFieldMetadata(property);
     const moduleType = metadata.module;
 
-    // 必须由 schema 显式声明模块类型，避免根据 primitive type 猜测 UI。
     if (!moduleType) {
       throw new Error(
         `JsonSchemaAdapter: property "${id}" must declare dynamic form module metadata.`
@@ -110,25 +99,73 @@ export function jsonSchemaToModuleFormConfig(schema: JsonSchemaAdapterInput): Mo
     const overrides = {
       label,
       required: isRequired,
-      ...(metadata.name !== undefined ? { name: metadata.name } : {}),
+      name: metadata.name ?? id,
       ...(property.default !== undefined ? { initialValue: property.default } : {}),
       ...(metadata.overrides || {})
     };
 
     return {
+      nodeType: 'field',
       type: moduleType,
-      id,
+      id: path.join('.'),
       ...(metadata.groupId ? { groupId: metadata.groupId } : {}),
       options,
       rules: metadata.rules,
       overrides
     };
-  });
+  };
+
+  const createPropertyNode = (
+    id: string,
+    property: JsonSchemaProperty,
+    required: Set<string>,
+    path: string[]
+  ): ModuleFormNode => {
+    if (property.type === 'object' && property.properties) {
+      const childRequired = new Set(property.required || []);
+
+      return {
+        nodeType: 'container',
+        id: path.join('.'),
+        title: property.title || id,
+        name: id,
+        children: Object.entries(property.properties).map(([childId, childProperty]) =>
+          createPropertyNode(childId, childProperty, childRequired, [...path, childId])
+        )
+      };
+    }
+
+    if (
+      property.type === 'array' &&
+      property.items?.type === 'object' &&
+      property.items.properties
+    ) {
+      const childRequired = new Set(property.items.required || []);
+
+      return {
+        nodeType: 'container',
+        id: path.join('.'),
+        title: property.title || id,
+        name: id,
+        repeatable: true,
+        children: Object.entries(property.items.properties).map(([childId, childProperty]) =>
+          createPropertyNode(childId, childProperty, childRequired, [...path, childId])
+        )
+      };
+    }
+
+    return createLeafNode(id, property, required, path);
+  };
+
+  const required = new Set(schema.required || []);
+  const nodes = Object.entries(schema.properties).map(([id, property]) =>
+    createPropertyNode(id, property, required, [id])
+  );
 
   const groups = getSchemaGroups(schema);
 
   return {
-    fields,
+    nodes,
     ...(groups.length > 0 ? { groups } : {})
   };
 }

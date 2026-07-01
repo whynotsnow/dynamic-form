@@ -30,6 +30,9 @@ function formReducer(state: FormState, action: FormAction): FormState {
         ...state,
         fields: configProcessInfo.initializedFields,
         groupFields: configProcessInfo.initializedGroupFields,
+        nodes: configProcessInfo.initializedNodes,
+        rootNodeIds: configProcessInfo.rootNodeIds,
+        containerFields: configProcessInfo.initializedContainerFields,
         configProcessInfo,
         initialized: true
       };
@@ -54,14 +57,20 @@ function formReducer(state: FormState, action: FormAction): FormState {
           return state;
         }
 
+        const nextField = {
+          ...field,
+          meta: mergeFieldMetaPatch(field.meta || ({} as FieldMeta), meta)
+        };
+
         return {
           ...state,
           fields: {
             ...state.fields,
-            [fieldId]: {
-              ...field,
-              meta: mergeFieldMetaPatch(field.meta || ({} as FieldMeta), meta)
-            }
+            [fieldId]: nextField
+          },
+          nodes: {
+            ...(state.nodes || {}),
+            [fieldId]: nextField
           }
         };
       }
@@ -73,6 +82,11 @@ function formReducer(state: FormState, action: FormAction): FormState {
         return state;
       }
 
+      const nextField = {
+        ...field,
+        meta: mergeFieldMetaPatch(field.meta || ({} as FieldMeta), meta)
+      };
+
       return {
         ...state,
         groupFields: {
@@ -81,12 +95,20 @@ function formReducer(state: FormState, action: FormAction): FormState {
             ...group,
             fields: {
               ...group.fields,
-              [fieldId]: {
-                ...field,
-                meta: mergeFieldMetaPatch(field.meta || ({} as FieldMeta), meta)
-              }
+              [fieldId]: nextField
             }
           }
+        },
+        containerFields: {
+          ...(state.containerFields || {}),
+          [groupId]: {
+            ...((state.containerFields || {})[groupId] || {}),
+            [fieldId]: nextField
+          }
+        },
+        nodes: {
+          ...(state.nodes || {}),
+          [fieldId]: nextField
         }
       };
     }
@@ -100,15 +122,60 @@ function formReducer(state: FormState, action: FormAction): FormState {
         return state;
       }
 
+      const nextMeta = mergeGroupMetaPatch(group.meta, meta);
+      const node = state.nodes?.[groupId];
+
       return {
         ...state,
         groupFields: {
           ...state.groupFields,
           [groupId]: {
             ...group,
-            meta: mergeGroupMetaPatch(group.meta, meta)
+            meta: nextMeta
           }
-        }
+        },
+        nodes: node
+          ? {
+              ...state.nodes,
+              [groupId]: {
+                ...node,
+                meta: nextMeta
+              }
+            }
+          : state.nodes
+      };
+    }
+
+    case 'SET_CONTAINER_META': {
+      const { containerId, meta } = action.payload;
+      const container = state.nodes?.[containerId];
+      const group = state.groupFields[containerId];
+
+      if (!container || !('children' in container)) {
+        console.error(`SET_CONTAINER_META: 未找到容器 ${containerId}`);
+        return state;
+      }
+
+      const nextMeta = mergeGroupMetaPatch(container.meta, meta);
+
+      return {
+        ...state,
+        nodes: {
+          ...state.nodes,
+          [containerId]: {
+            ...container,
+            meta: nextMeta
+          }
+        },
+        groupFields: group
+          ? {
+              ...state.groupFields,
+              [containerId]: {
+                ...group,
+                meta: nextMeta
+              }
+            }
+          : state.groupFields
       };
     }
 

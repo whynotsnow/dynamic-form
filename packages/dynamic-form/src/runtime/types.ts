@@ -42,3 +42,5 @@ export interface GroupCapability {
    */
   rendered: boolean;
 }
+
+export type NodeCapability = FieldCapability | GroupCapability;

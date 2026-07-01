@@ -19,5 +19,12 @@ export const runtimeState: RuntimeState = {
   },
   groups: {
     profile: groupCapability
+  },
+  containers: {
+    profile: groupCapability
+  },
+  nodes: {
+    name: fieldCapability,
+    profile: groupCapability
   }
 };

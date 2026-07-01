@@ -146,7 +146,7 @@ test('field address registry rejects duplicate name paths across flat and groupe
   );
 });
 
-test('processFormConfig rejects duplicate field and group ids before 4.0 node-tree migration', async () => {
+test('processFormConfig rejects duplicate node ids', async () => {
   const { configParser } = await modulePromise;
 
   assert.throws(
@@ -155,7 +155,99 @@ test('processFormConfig rejects duplicate field and group ids before 4.0 node-tr
         fields: [{ id: 'profile', component: 'TextInput' }],
         groups: [{ id: 'profile', fields: [{ id: 'companyName', component: 'TextInput' }] }]
       }),
-    /duplicate field or group id "profile"/
+    /duplicate node id "profile"/
+  );
+});
+
+test('processFormConfig supports nested container nodes and cross-level dependents', async () => {
+  const { configParser } = await modulePromise;
+  const result = configParser.processFormConfig({
+    nodes: [
+      {
+        nodeType: 'container',
+        id: 'profile',
+        name: 'profile',
+        dependents: ['city'],
+        children: [
+          {
+            nodeType: 'container',
+            id: 'address',
+            name: 'address',
+            children: [
+              {
+                nodeType: 'field',
+                id: 'city',
+                component: 'TextInput',
+                initialValue: 'Shanghai'
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  });
+
+  assert.deepEqual(result.initialValues, {
+    profile: {
+      address: {
+        city: 'Shanghai'
+      }
+    }
+  });
+  assert.deepEqual(result.fieldAddressRegistry.city, {
+    id: 'city',
+    name: ['profile', 'address', 'city']
+  });
+  assert.deepEqual(result.effectMap.profile.dependents, ['city']);
+  assert.deepEqual(result.rootNodeIds, ['profile']);
+  assert.deepEqual(result.initializedNodes.profile.children, ['address']);
+});
+
+test('processFormConfig validates node graph shape', async () => {
+  const { configParser } = await modulePromise;
+
+  assert.throws(
+    () =>
+      configParser.processFormConfig({
+        nodes: [
+          {
+            nodeType: 'container',
+            id: 'empty',
+            children: []
+          }
+        ]
+      }),
+    /container "empty" must contain at least one child/
+  );
+
+  assert.throws(
+    () =>
+      configParser.processFormConfig({
+        nodes: [
+          {
+            nodeType: 'container',
+            id: 'items',
+            repeatable: true,
+            children: [{ nodeType: 'field', id: 'name', component: 'TextInput' }]
+          }
+        ]
+      }),
+    /repeatable container "items" must declare name/
+  );
+
+  assert.throws(
+    () =>
+      configParser.processFormConfig({
+        nodes: [
+          {
+            nodeType: 'field',
+            id: 'source',
+            component: 'TextInput',
+            dependents: ['missing']
+          }
+        ]
+      }),
+    /references unknown dependent "missing"/
   );
 });
 

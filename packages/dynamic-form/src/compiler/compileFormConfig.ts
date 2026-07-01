@@ -2,7 +2,9 @@ import type React from 'react';
 import type {
   BaseFieldConfig,
   ComponentRegistry,
+  ContainerNode,
   FieldComponentProps,
+  FormNode,
   FormConfig,
   GroupField
 } from '../shared/types';
@@ -20,6 +22,7 @@ import type {
   CompilerHooks,
   GroupModuleConfig,
   ModuleFormConfig,
+  ModuleFormNode,
   ModuleConfig
 } from './types';
 
@@ -135,6 +138,65 @@ function expandModule(
   };
 }
 
+function expandModuleNode(
+  node: ModuleFormNode,
+  options: CompileFormConfigOptions,
+  componentRegistry: ComponentRegistry,
+  allIds: Set<string>
+): FormNode {
+  if (!node.id) {
+    throw new Error('compileFormConfig: node id is required.');
+  }
+  if (allIds.has(node.id)) {
+    throw new Error(`compileFormConfig: duplicate node id "${node.id}".`);
+  }
+  allIds.add(node.id);
+
+  if (node.nodeType === 'field') {
+    const registry = options.registry || defaultModuleRegistry;
+    const module = registry.get(node.type);
+
+    if (!module) {
+      throw new Error(
+        `compileFormConfig: module type "${node.type}" is not registered for id "${node.id}".`
+      );
+    }
+
+    const field = expandModule(node, options);
+    if (module.component) {
+      componentRegistry[module.type] = module.component as React.FC<FieldComponentProps>;
+    }
+    return {
+      ...field,
+      nodeType: 'field'
+    };
+  }
+
+  if (!Array.isArray(node.children) || node.children.length === 0) {
+    throw new Error(`compileFormConfig: container "${node.id}" must contain at least one child.`);
+  }
+
+  const groupRules = node.rules || [];
+  groupRules.forEach(assertValidGroupRule);
+  const ruleEffect =
+    groupRules.length > 0 ? compileRulesToEffect(groupRules, { fieldId: node.id }) : undefined;
+  const container: ContainerNode = {
+    nodeType: 'container',
+    id: node.id,
+    title: node.title,
+    name: node.name,
+    initialVisible: node.initialVisible,
+    repeatable: node.repeatable,
+    dependents: mergeDependents(node.dependents, inferRulesDependencies(groupRules)),
+    effect: ruleEffect,
+    children: node.children.map((child) =>
+      expandModuleNode(child, options, componentRegistry, allIds)
+    )
+  };
+
+  return container;
+}
+
 export function compileFormConfig(
   moduleFormConfig: ModuleFormConfig,
   options: CompileFormConfigOptions = {}
@@ -151,8 +213,11 @@ export function compileFormConfig(
     groups
   };
 
-  if (!Array.isArray(moduleFormConfig.fields)) {
+  if (moduleFormConfig.fields !== undefined && !Array.isArray(moduleFormConfig.fields)) {
     throw new Error('compileFormConfig: fields must be an array.');
+  }
+  if (moduleFormConfig.nodes !== undefined && !Array.isArray(moduleFormConfig.nodes)) {
+    throw new Error('compileFormConfig: nodes must be an array.');
   }
 
   runHook(options.hooks, 'beforeCompile', context);
@@ -172,7 +237,7 @@ export function compileFormConfig(
     allIds.add(groupConfig.id);
   });
 
-  const compiledFields = context.moduleFormConfig.fields.map((moduleConfig) => {
+  const compiledFields = (context.moduleFormConfig.fields || []).map((moduleConfig) => {
     if (!moduleConfig.id) {
       throw new Error('compileFormConfig: field id is required.');
     }
@@ -272,14 +337,22 @@ export function compileFormConfig(
   });
 
   const formConfig: FormConfig = { id: context.moduleFormConfig.id };
+  const nodes =
+    context.moduleFormConfig.nodes?.map((node) =>
+      expandModuleNode(node, { ...options, registry }, componentRegistry, allIds)
+    ) || [];
+
+  if (nodes.length > 0) {
+    formConfig.nodes = nodes;
+  }
   if (fields.length > 0) {
     formConfig.fields = fields;
   }
   if (groups.length > 0) {
     formConfig.groups = groups;
   }
-  if (!formConfig.fields && !formConfig.groups) {
-    throw new Error('compileFormConfig: at least one field or group is required.');
+  if (!formConfig.nodes && !formConfig.fields && !formConfig.groups) {
+    throw new Error('compileFormConfig: at least one node, field, or group is required.');
   }
 
   context.formConfig = formConfig;
