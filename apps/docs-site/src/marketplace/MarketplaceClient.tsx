@@ -2,8 +2,9 @@ import React, { useMemo, useState } from 'react';
 import Link from '@docusaurus/Link';
 import Translate, { translate } from '@docusaurus/Translate';
 import Heading from '@theme/Heading';
+import SiteCodeBlock from '../components/SiteCodeBlock';
 import { marketplaceFilters, marketplaceItems } from './marketplaceData';
-import type { MarketplaceCodeBlock, MarketplaceItem, MarketplaceKind } from './marketplaceData';
+import type { MarketplaceItem, MarketplaceKind } from './marketplaceData';
 import { previewRegistry } from './previews/previewRegistry';
 import styles from '../pages/marketplace.module.css';
 
@@ -25,32 +26,6 @@ const installModeDescription = {
     message: '复制源码、注册代码和使用示例到你的项目，再通过 DynamicForm 的注册入口接入。'
   })
 };
-
-function CodeBlock({ block }: { block: MarketplaceCodeBlock }) {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(block.code);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1600);
-  };
-
-  return (
-    <div className={styles.codeBlock}>
-      <div className={styles.codeHeader}>
-        <span>{block.title}</span>
-        <button onClick={handleCopy} type="button">
-          {copied
-            ? translate({ id: 'marketplace.code.copied', message: '已复制' })
-            : translate({ id: 'marketplace.code.copy', message: '复制' })}
-        </button>
-      </div>
-      <pre>
-        <code>{block.code}</code>
-      </pre>
-    </div>
-  );
-}
 
 function MarketplaceCard({
   item,
@@ -91,7 +66,13 @@ function MarketplaceCard({
       </div>
       <div className={styles.codeList}>
         {item.codeBlocks.map((block) => (
-          <CodeBlock block={block} key={`${item.id}-${block.title}`} />
+          <SiteCodeBlock
+            code={block.code}
+            copyCode={block.code}
+            key={`${item.id}-${block.title}`}
+            language={block.language}
+            title={block.title}
+          />
         ))}
       </div>
       <div className={styles.actions}>

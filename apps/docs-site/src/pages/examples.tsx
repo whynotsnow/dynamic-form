@@ -3,6 +3,7 @@ import Heading from '@theme/Heading';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import Translate, { translate } from '@docusaurus/Translate';
+import SiteCodeBlock from '../components/SiteCodeBlock';
 import styles from './examples.module.css';
 
 const examples = [
@@ -135,9 +136,12 @@ export default function Examples(): React.JSX.Element {
               <article className={styles.card} key={example.title}>
                 <Heading as="h2">{example.title}</Heading>
                 <p>{example.description}</p>
-                <pre className={styles.code}>
-                  <code>{example.code}</code>
-                </pre>
+                <SiteCodeBlock
+                  className={styles.code}
+                  code={example.code}
+                  language="tsx"
+                  showCopy={false}
+                />
                 <div className={styles.links}>
                   <Link className="button button--primary button--sm" to={example.docs}>
                     <Translate id="examples.card.docsLink">文档</Translate>

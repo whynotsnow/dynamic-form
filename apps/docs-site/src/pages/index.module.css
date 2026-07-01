@@ -59,12 +59,11 @@
 .install {
   max-width: 640px;
   margin: 0;
-  padding: 16px 18px;
-  overflow-x: auto;
-  border: 1px solid var(--df-border-subtle);
-  border-radius: 8px;
   background: var(--df-background-panel);
-  color: var(--df-text-main);
+}
+
+.install pre {
+  padding: 16px 18px;
 }
 
 .section {

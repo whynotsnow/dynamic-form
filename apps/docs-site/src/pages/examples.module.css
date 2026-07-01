@@ -55,14 +55,12 @@
   flex: 1;
   min-height: 150px;
   margin: 0 0 16px;
+}
+
+.code pre {
+  min-height: 150px;
   padding: 14px;
-  overflow-x: auto;
-  border: 1px solid var(--df-border-muted);
-  border-radius: 8px;
-  background: var(--df-background-muted);
-  color: var(--df-text-main);
   font-size: 0.85rem;
-  line-height: 1.55;
 }
 
 .links {

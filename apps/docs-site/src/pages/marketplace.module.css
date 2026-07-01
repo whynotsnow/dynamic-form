@@ -236,49 +236,6 @@
   margin-top: auto;
 }
 
-.codeBlock {
-  min-width: 0;
-  border: 1px solid var(--df-border-muted);
-  border-radius: 8px;
-  background: var(--df-background-muted);
-}
-
-.codeHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 9px 10px;
-  border-bottom: 1px solid var(--df-border-muted);
-  color: var(--df-text-soft);
-  font-size: 0.82rem;
-}
-
-.codeHeader button {
-  flex: 0 0 auto;
-  padding: 4px 8px;
-  border: 1px solid var(--df-border-subtle);
-  border-radius: 6px;
-  background: var(--df-background-panel);
-  color: var(--df-text-main);
-  cursor: pointer;
-  font: inherit;
-}
-
-.codeHeader button:hover {
-  background: var(--df-hover-muted);
-}
-
-.codeBlock pre {
-  max-height: 260px;
-  margin: 0;
-  padding: 12px;
-  overflow: auto;
-  color: var(--df-text-main);
-  font-size: 0.8rem;
-  line-height: 1.55;
-}
-
 .actions {
   display: flex;
   flex-wrap: wrap;

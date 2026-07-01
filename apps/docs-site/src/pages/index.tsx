@@ -5,6 +5,7 @@ import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import Translate, { translate } from '@docusaurus/Translate';
 import useBaseUrl from '@docusaurus/useBaseUrl';
+import SiteCodeBlock from '../components/SiteCodeBlock';
 import styles from './index.module.css';
 
 const features = [
@@ -157,9 +158,12 @@ export default function Home(): React.JSX.Element {
                   alt="DynamicForm configuration, runtime, and rendering workflow"
                   src={workflowImage}
                 />
-                <pre className={styles.install}>
-                  <code>pnpm add @whynotsnow/dynamic-form antd react react-dom</code>
-                </pre>
+                <SiteCodeBlock
+                  className={styles.install}
+                  code="pnpm add @whynotsnow/dynamic-form antd react react-dom"
+                  language="bash"
+                  title={<Translate id="homepage.install.title">安装命令</Translate>}
+                />
               </div>
             </div>
           </div>
