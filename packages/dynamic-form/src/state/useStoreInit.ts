@@ -56,7 +56,8 @@ export const useStoreInit = ({ formConfig, form, values, uiConfig }: useStoreIni
     containerFields: configProcessInfo.initializedContainerFields,
     configProcessInfo,
     initialized: false,
-    dynamicUIConfig: initDynamicUIConfig(uiConfig)
+    staticUIConfig: initDynamicUIConfig(uiConfig),
+    dynamicUIConfig: {}
   });
 
   // 3. 执行表单初始化 - 只在组件挂载时执行一次

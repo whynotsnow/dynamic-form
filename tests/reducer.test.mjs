@@ -56,10 +56,11 @@ function createState() {
       initializedGroupFields: {},
       computedInitialValues: {}
     },
-    dynamicUIConfig: {
+    staticUIConfig: {
       rowProps: { gutter: 16, align: 'top' },
       buttonProps: { type: 'primary' }
-    }
+    },
+    dynamicUIConfig: {}
   };
 }
 
@@ -81,6 +82,7 @@ test('INIT replaces processed state branches without mutating the previous state
   assert.strictEqual(next.groupFields, initializedGroupFields);
   assert.strictEqual(next.configProcessInfo, configProcessInfo);
   assert.equal(next.initialized, true);
+  assert.strictEqual(next.staticUIConfig, state.staticUIConfig);
   assert.strictEqual(next.dynamicUIConfig, state.dynamicUIConfig);
   assert.equal(state.initialized, false);
 });
@@ -157,22 +159,24 @@ test('UPDATE_DYNAMIC_UICONFIG shallow-merges each config section without mutatio
     payload: {
       config: {
         rowProps: { gutter: 24 },
-        buttonProps: undefined,
+        buttonProps: { danger: true },
         submitAreaProps: { className: 'actions' }
       }
     }
   });
 
   assert.deepEqual(next.dynamicUIConfig, {
-    rowProps: { gutter: 24, align: 'top' },
-    buttonProps: undefined,
+    rowProps: { gutter: 24 },
+    buttonProps: { danger: true },
     submitAreaProps: { className: 'actions' }
   });
   assert.notStrictEqual(next.dynamicUIConfig, state.dynamicUIConfig);
-  assert.deepEqual(state.dynamicUIConfig, {
+  assert.strictEqual(next.staticUIConfig, state.staticUIConfig);
+  assert.deepEqual(state.staticUIConfig, {
     rowProps: { gutter: 16, align: 'top' },
     buttonProps: { type: 'primary' }
   });
+  assert.deepEqual(state.dynamicUIConfig, {});
 });
 
 test('invalid or empty updates return the original state reference', async (t) => {

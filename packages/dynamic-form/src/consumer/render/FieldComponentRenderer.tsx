@@ -5,12 +5,14 @@ import { defaultRegistryManager } from './componentRegistry';
 import { shallowEqual } from '../../shared/utils/utils';
 import { resolveFieldRequired, resolveFieldRules } from './fieldValidation';
 import { getFieldName } from '../../shared/utils';
+import { resolveMergedFormItemProps } from '../../shared/utils/uiConfig';
 
 const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
   function FieldRenderer({
     field,
     form,
     componentRegistry,
+    staticUIConfig,
     dynamicUIConfig,
     runtimeCapability,
     name
@@ -28,13 +30,12 @@ const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
     }, [field, name, runtimeCapability?.validatable]);
     // 解析字段级别配置
     const resolvedConfigs = useMemo(() => {
-      // 合并 formItemProps（外层）
-      const mergedFormItemProps = {
-        ...baseFormItemProps,
-        ...(field.formItemProps || {}),
-        ...(dynamicUIConfig?.formItemProps || {}),
-        ...(field.meta?.formItemProps || {})
-      };
+      const mergedFormItemProps = resolveMergedFormItemProps({
+        baseFormItemProps,
+        field,
+        staticUIConfig,
+        dynamicUIConfig
+      });
 
       // 合并 componentProps（内层）
       const mergedComponentProps = {
@@ -50,13 +51,11 @@ const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
       };
     }, [
       baseFormItemProps,
-      field.formItemProps,
-      field.meta?.formItemProps,
-      field.meta?.componentProps,
-      field.componentProps,
+      field,
       runtimeCapability?.disabled,
       runtimeCapability?.readonly,
-      dynamicUIConfig?.formItemProps
+      staticUIConfig,
+      dynamicUIConfig
     ]);
 
     // 使用组件注册器获取组件
@@ -88,7 +87,33 @@ const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
       return false;
     }
 
+    if (!shallowEqual(prevField.formItemProps, nextField.formItemProps)) {
+      return false;
+    }
+
+    if (!shallowEqual(prevField.componentProps, nextField.componentProps)) {
+      return false;
+    }
+
     if (!shallowEqual(prevProps.runtimeCapability, nextProps.runtimeCapability)) {
+      return false;
+    }
+
+    if (
+      !shallowEqual(
+        prevProps.staticUIConfig?.formItemProps,
+        nextProps.staticUIConfig?.formItemProps
+      )
+    ) {
+      return false;
+    }
+
+    if (
+      !shallowEqual(
+        prevProps.dynamicUIConfig?.formItemProps,
+        nextProps.dynamicUIConfig?.formItemProps
+      )
+    ) {
       return false;
     }
 

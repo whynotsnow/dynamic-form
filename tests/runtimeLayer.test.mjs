@@ -156,6 +156,7 @@ function createState() {
       initializedContainerFields: {},
       rootNodeIds: ['accountType', 'companyInfo']
     },
+    staticUIConfig: {},
     dynamicUIConfig: {}
   };
 }

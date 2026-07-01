@@ -146,6 +146,7 @@ export interface FormState {
   containerFields: Record<string, Record<string, FieldState>>;
   initialized: boolean;
   configProcessInfo: ConfigProcessInfo;
+  staticUIConfig: UIConfig;
   dynamicUIConfig: UIConfig;
 }
 
@@ -316,7 +317,9 @@ export interface FieldRendererProps {
   name?: NamePath;
   // 新增：组件注册器
   componentRegistry?: ComponentRegistryResolver | null;
-  // 新增：Form.Item组件配置 - 支持函数化值
+  // 静态全局 UI 配置，来自 props.uiConfig 和默认值
+  staticUIConfig?: UIConfig;
+  // 动态全局 UI 配置，来自 effect 返回值
   dynamicUIConfig?: UIConfig;
   runtimeCapability?: FieldCapability;
 }

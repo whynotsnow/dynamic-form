@@ -15,6 +15,7 @@ import FieldComponentRenderer from './FieldComponentRenderer';
 
 import { useRuntimeState } from '../../runtime';
 import { getFieldName, normalizeFieldName } from '../../shared/utils';
+import { mergeUIConfig } from '../../shared/utils/uiConfig';
 
 type NameSegment = string | number;
 
@@ -53,6 +54,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
     runtimeState
   });
   const {
+    staticUIConfig,
     dynamicUIConfig,
     initialized,
     fields,
@@ -63,6 +65,11 @@ const FormContent: React.FC<FormContentProps> = (props) => {
   } = state;
 
   useFieldParticipation(form, state, runtimeState);
+
+  const effectiveUIConfig = useMemo(
+    () => mergeUIConfig(staticUIConfig, dynamicUIConfig),
+    [staticUIConfig, dynamicUIConfig]
+  );
 
   const registryManager = useMemo(() => {
     if (componentRegistry) {
@@ -85,6 +92,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
         form={form}
         name={name}
         componentRegistry={registryManager}
+        staticUIConfig={staticUIConfig}
         dynamicUIConfig={dynamicUIConfig}
         runtimeCapability={capability}
       />
@@ -115,7 +123,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
   /** 一组字段渲染（提供 renderFieldItem 能力） */
   const internalRenderFields = (fieldsArr: FieldState[]) => {
     const defaultRender = (
-      <Row {...dynamicUIConfig.rowProps}>
+      <Row {...effectiveUIConfig.rowProps}>
         {fieldsArr.map((field) => {
           const capability = runtimeState.fields[field.id];
 
@@ -125,8 +133,8 @@ const FormContent: React.FC<FormContentProps> = (props) => {
           return (
             <Col
               key={field.id}
-              {...dynamicUIConfig.colProps}
-              span={field.span || dynamicUIConfig.colProps?.span}
+              {...effectiveUIConfig.colProps}
+              span={field.span || effectiveUIConfig.colProps?.span}
             >
               {internalRenderFieldItem(field)}
             </Col>
@@ -152,7 +160,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
     }
 
     const defaultRender = (
-      <Card key={group.id} title={group.title ?? group.id} {...dynamicUIConfig.cardProps}>
+      <Card key={group.id} title={group.title ?? group.id} {...effectiveUIConfig.cardProps}>
         {internalRenderFields(Object.values(group.fields))}
       </Card>
     );
@@ -160,7 +168,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
     return renderGroupItem
       ? renderGroupItem({
           group,
-          dynamicUIConfig,
+          dynamicUIConfig: effectiveUIConfig,
           renderFields: internalRenderFields,
           renderFieldItem: internalRenderFieldItem,
           defaultRender
@@ -204,8 +212,8 @@ const FormContent: React.FC<FormContentProps> = (props) => {
       return (
         <Col
           key={field.id}
-          {...dynamicUIConfig.colProps}
-          span={field.span || dynamicUIConfig.colProps?.span}
+          {...effectiveUIConfig.colProps}
+          span={field.span || effectiveUIConfig.colProps?.span}
         >
           {renderedName ? renderFieldRenderer(field, renderedName) : internalRenderFieldItem(field)}
         </Col>
@@ -227,7 +235,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
         : listPrefix;
 
     const renderChildren = (renderPrefix?: NamePath, nextSchemaPrefix?: NamePath) => (
-      <Row {...dynamicUIConfig.rowProps}>
+      <Row {...effectiveUIConfig.rowProps}>
         {container.children.map((childId) => renderNode(childId, renderPrefix, nextSchemaPrefix))}
       </Row>
     );
@@ -237,7 +245,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
         <Card
           key={container.id}
           title={container.title ?? container.id}
-          {...dynamicUIConfig.cardProps}
+          {...effectiveUIConfig.cardProps}
         >
           <Form.List name={container.name!}>
             {(items) => (
@@ -261,7 +269,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
       <Card
         key={container.id}
         title={container.title ?? container.id}
-        {...dynamicUIConfig.cardProps}
+        {...effectiveUIConfig.cardProps}
       >
         {renderChildren(containerRenderPrefix, containerSchemaPrefix)}
       </Card>
@@ -270,8 +278,8 @@ const FormContent: React.FC<FormContentProps> = (props) => {
 
   /** 提交区渲染 */
   const internalRenderSubmit = () => (
-    <div style={{ textAlign: 'center', marginTop: 24 }} {...dynamicUIConfig.submitAreaProps}>
-      <Button type="primary" htmlType="submit" {...dynamicUIConfig.buttonProps}>
+    <div style={{ textAlign: 'center', marginTop: 24 }} {...effectiveUIConfig.submitAreaProps}>
+      <Button type="primary" htmlType="submit" {...effectiveUIConfig.buttonProps}>
         {finalSubmitButtonText}
       </Button>
     </div>
@@ -287,7 +295,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
       if (fieldNodes.length === 0) return;
 
       blocks.push(
-        <Row key={`root-fields-${key}`} {...dynamicUIConfig.rowProps}>
+        <Row key={`root-fields-${key}`} {...effectiveUIConfig.rowProps}>
           {fieldNodes}
         </Row>
       );
@@ -324,7 +332,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
       form,
       fields,
       groupFields,
-      dynamicUIConfig,
+      dynamicUIConfig: effectiveUIConfig,
       renderGroups: internalRenderGroups,
       renderGroupItem: internalRenderGroupItem,
       renderFields: internalRenderFields,
@@ -345,7 +353,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
       initialValues={configProcessInfo.initialValues}
       style={{ marginTop: 24 }}
       scrollToFirstError
-      {...dynamicUIConfig.formProps}
+      {...effectiveUIConfig.formProps}
     >
       {finalFormBody}
     </Form>
