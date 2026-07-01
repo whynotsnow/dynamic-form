@@ -87,7 +87,7 @@ const config: Config = {
           label: '文档'
         },
         {
-          to: '/playground',
+          to: '/demos',
           label: 'demo演示',
           position: 'left'
         },
@@ -129,7 +129,7 @@ const config: Config = {
             },
             {
               label: 'demo演示',
-              to: '/playground'
+              to: '/demos'
             },
             {
               label: '配置示例',

@@ -146,6 +146,6 @@ Default handlers support result keys such as `value`, `visible`, `disabled`, `re
 
 - Configure fields, groups, built-in components, and the UI shell: read the [Configuration Guide](./configuration.md).
 - Find scenario-based config examples: read the [Component Usage Guide](./development.md) or open [Config Examples](/examples/).
-- Inspect interactive behavior directly: open the [Demo Showcase](/playground/).
+- Inspect interactive behavior directly: open the [Demo Showcase](/demos/).
 - Add custom components, render hooks, or business handlers: read [Rendering and UI Extensions](./rendering-and-ui.md) and [Effects and Handlers](./effects-and-handlers.md).
 - For domain modules, recursive containers, JsonSchema, OpenAPI, or metadata inputs, move on to [Compiler Foundation](./compiler-foundation.md), [Adapter Foundation](./adapter-foundation.md), and [Schema Adapters](./schema-adapters.md).

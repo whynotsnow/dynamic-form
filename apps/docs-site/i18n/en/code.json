@@ -1,59 +1,59 @@
 {
-  "playground.demos.storeBoundary.title": {
+  "demos.items.storeBoundary.title": {
     "message": "Store Boundary Validation"
   },
-  "playground.demos.storeBoundary.description": {
+  "demos.items.storeBoundary.description": {
     "message": "Verifies that field values are managed by Ant Design Form, while effects only update field values or DynamicForm meta."
   },
-  "playground.demos.customHandlers.title": {
+  "demos.items.customHandlers.title": {
     "message": "Custom Handlers Demo"
   },
-  "playground.demos.customHandlers.description": {
+  "demos.items.customHandlers.description": {
     "message": "Shows how custom EffectResultHandler implementations update values, field meta, and dynamic styles."
   },
-  "playground.demos.customComponents.title": {
+  "demos.items.customComponents.title": {
     "message": "Custom Component Registry Demo"
   },
-  "playground.demos.customComponents.description": {
+  "demos.items.customComponents.description": {
     "message": "Shows how to register custom components and display the form in detail-view mode."
   },
-  "playground.demos.formValidation.title": {
+  "demos.items.formValidation.title": {
     "message": "Form.Item Validation Integration Demo"
   },
-  "playground.demos.formValidation.description": {
+  "demos.items.formValidation.description": {
     "message": "Shows how standard fields and complex Form.List components share Ant Design Form validation."
   },
-  "playground.demos.uiConfig.title": {
+  "demos.items.uiConfig.title": {
     "message": "UI Config Demo"
   },
-  "playground.demos.uiConfig.description": {
+  "demos.items.uiConfig.description": {
     "message": "Shows how static uiConfig merges with dynamic UI config returned by effects."
   },
-  "playground.demos.renderExtension.title": {
+  "demos.items.renderExtension.title": {
     "message": "Render Extension Demo"
   },
-  "playground.demos.renderExtension.description": {
+  "demos.items.renderExtension.description": {
     "message": "Shows render extension parameters and custom component registration extension points."
   },
-  "playground.demos.compilerFoundation.title": {
+  "demos.items.compilerFoundation.title": {
     "message": "Compiler Foundation Demo"
   },
-  "playground.demos.compilerFoundation.description": {
+  "demos.items.compilerFoundation.description": {
     "message": "Shows how field modules compile into standard FormConfig before rendering with DynamicForm."
   },
-  "playground.demos.nodeModel4.title": {
+  "demos.items.nodeModel4.title": {
     "message": "4.0 Node Model / Container Demo"
   },
-  "playground.demos.nodeModel4.description": {
+  "demos.items.nodeModel4.description": {
     "message": "Shows 4.0 nodes, standard containers, nested containers, repeatable containers, cascading field interactions, and cross-level effect graphs."
   },
-  "playground.client.sidebarLabel": {
+  "demos.client.sidebarLabel": {
     "message": "DynamicForm demos"
   },
-  "playground.client.title": {
+  "demos.client.title": {
     "message": "Demo Showcase"
   },
-  "playground.client.description": {
+  "demos.client.description": {
     "message": "Select a demo to inspect the interactive behavior."
   },
   "api.groups.components.description": {
@@ -146,7 +146,7 @@
   "examples.card.docsLink": {
     "message": "Docs"
   },
-  "examples.card.playgroundLink": {
+  "examples.card.demosLink": {
     "message": "Demo Showcase"
   },
   "marketplace.loading": {
@@ -329,10 +329,10 @@
   "homepage.paths.examples.description": {
     "message": "Find examples for minimal forms, groups, effects, custom components, and the compiler pipeline."
   },
-  "homepage.paths.playground.title": {
+  "homepage.paths.demos.title": {
     "message": "Demo Showcase"
   },
-  "homepage.paths.playground.description": {
+  "homepage.paths.demos.description": {
     "message": "Run existing demos directly to inspect form effects, validation, render hooks, and extension behavior."
   },
   "homepage.paths.api.title": {
@@ -350,7 +350,7 @@
   "homepage.hero.readDocs": {
     "message": "Quick Start"
   },
-  "homepage.hero.viewPlayground": {
+  "homepage.hero.viewDemos": {
     "message": "Demo Showcase"
   },
   "homepage.hero.browseExamples": {
@@ -368,13 +368,13 @@
   "homepage.paths.description": {
     "message": "The site is organized around quick start, config examples, demo showcase, and exported APIs."
   },
-  "playground.layout.title": {
+  "demos.layout.title": {
     "message": "Demo Showcase"
   },
-  "playground.layout.description": {
+  "demos.layout.description": {
     "message": "Interactive DynamicForm demos powered by the shared demo registry."
   },
-  "playground.loading": {
+  "demos.loading": {
     "message": "Loading demo showcase..."
   },
   "theme.ErrorPageContent.title": {

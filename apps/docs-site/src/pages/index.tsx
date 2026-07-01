@@ -91,14 +91,14 @@ const paths = [
   },
   {
     title: translate({
-      id: 'homepage.paths.playground.title',
+      id: 'homepage.paths.demos.title',
       message: 'demo演示'
     }),
     description: translate({
-      id: 'homepage.paths.playground.description',
+      id: 'homepage.paths.demos.description',
       message: '直接运行现有 demos，观察表单联动、校验、render hooks 和扩展行为。'
     }),
-    to: '/playground'
+    to: '/demos'
   },
   {
     title: translate({
@@ -143,8 +143,8 @@ export default function Home(): JSX.Element {
                   <Link className="button button--primary button--lg" to="/docs/quick-start">
                     <Translate id="homepage.hero.readDocs">快速开始</Translate>
                   </Link>
-                  <Link className="button button--secondary button--lg" to="/playground">
-                    <Translate id="homepage.hero.viewPlayground">demo演示</Translate>
+                  <Link className="button button--secondary button--lg" to="/demos">
+                    <Translate id="homepage.hero.viewDemos">demo演示</Translate>
                   </Link>
                   <Link className="button button--secondary button--lg" to="/examples">
                     <Translate id="homepage.hero.browseExamples">配置示例</Translate>

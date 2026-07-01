@@ -20,7 +20,7 @@ const examples = [
   ]
 };`,
     docs: '/docs/development',
-    playground: '/playground?demo=storeBoundary'
+    demoUrl: '/demos?demo=storeBoundary'
   },
   {
     title: translate({
@@ -37,7 +37,7 @@ const examples = [
   ]
 };`,
     docs: '/docs/configuration',
-    playground: '/playground?demo=uiConfig'
+    demoUrl: '/demos?demo=uiConfig'
   },
   {
     title: translate({
@@ -54,7 +54,7 @@ const examples = [
   effect: (_value, allValues) => ({ visible: allValues.hasCompany === true })
 }`,
     docs: '/docs/effects-and-handlers',
-    playground: '/playground?demo=customHandlers'
+    demoUrl: '/demos?demo=customHandlers'
   },
   {
     title: translate({
@@ -70,7 +70,7 @@ const examples = [
   formConfig={formConfig}
 />`,
     docs: '/docs/rendering-and-ui',
-    playground: '/playground?demo=customComponents'
+    demoUrl: '/demos?demo=customComponents'
   },
   {
     title: translate({
@@ -87,7 +87,7 @@ const examples = [
   handle: (context, enabled) => context.updateFieldMeta({ componentProps: { enabled } })
 };`,
     docs: '/docs/effects-and-handlers',
-    playground: '/playground?demo=customHandlers'
+    demoUrl: '/demos?demo=customHandlers'
   },
   {
     title: 'Compiler / Adapter',
@@ -100,7 +100,7 @@ const examples = [
   moduleRegistry
 });`,
     docs: '/docs/compiler-foundation',
-    playground: '/playground?demo=compilerFoundation'
+    demoUrl: '/demos?demo=compilerFoundation'
   }
 ];
 
@@ -141,8 +141,8 @@ export default function Examples(): JSX.Element {
                   <Link className="button button--primary button--sm" to={example.docs}>
                     <Translate id="examples.card.docsLink">文档</Translate>
                   </Link>
-                  <Link className="button button--secondary button--sm" to={example.playground}>
-                    <Translate id="examples.card.playgroundLink">demo演示</Translate>
+                  <Link className="button button--secondary button--sm" to={example.demoUrl}>
+                    <Translate id="examples.card.demosLink">demo演示</Translate>
                   </Link>
                 </div>
               </article>

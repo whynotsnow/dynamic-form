@@ -75,7 +75,7 @@
 
 - 仓库已调整为 private pnpm workspace root，唯一 npm 发布包保留在 `packages/dynamic-form/`。
 - 新增 Docusaurus docs-site workspace：`apps/docs-site/`，站点中文文档与英文 i18n 文档独立维护。
-- 根 `demos/` 作为 Vite demo 和 docs-site playground 复用的业务 demo 来源，避免在站点复制 demo 逻辑。
+- 根 `demos/` 作为 Vite demo 和 docs-site 的 demos 页面复用的业务 demo 来源，避免在站点复制 demo 逻辑。
 - 根 `docs/` 只维护 monorepo 级架构、维护、发布和站点规划文档；库权威文档保留在 `packages/dynamic-form/docs/`。
 
 ### 文档与能力基线

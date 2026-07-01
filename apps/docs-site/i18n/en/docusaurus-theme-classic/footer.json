@@ -13,7 +13,7 @@
   },
   "link.item.label.demo演示": {
     "message": "Demo Showcase",
-    "description": "The label of footer link with label=demo演示 linking to /playground"
+    "description": "The label of footer link with label=demo演示 linking to /demos"
   },
   "link.item.label.配置示例": {
     "message": "Config Examples",

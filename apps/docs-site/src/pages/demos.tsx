@@ -1,18 +1,18 @@
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import Translate, { translate } from '@docusaurus/Translate';
 import Layout from '@theme/Layout';
-import DemoPlaygroundClient from '../components/DemoPlaygroundClient';
-import styles from './playground.module.css';
+import DemoGalleryClient from '../components/DemoGalleryClient';
+import styles from './demos.module.css';
 
-export default function Playground(): JSX.Element {
+export default function Demos(): JSX.Element {
   return (
     <Layout
       title={translate({
-        id: 'playground.layout.title',
+        id: 'demos.layout.title',
         message: 'demo演示'
       })}
       description={translate({
-        id: 'playground.layout.description',
+        id: 'demos.layout.description',
         message: '由共享 demo registry 驱动的 DynamicForm 交互演示。'
       })}
     >
@@ -21,12 +21,12 @@ export default function Playground(): JSX.Element {
           fallback={
             <div className="container">
               <div className={styles.loading}>
-                <Translate id="playground.loading">正在加载 demo演示...</Translate>
+                <Translate id="demos.loading">正在加载 demo演示...</Translate>
               </div>
             </div>
           }
         >
-          {() => <DemoPlaygroundClient />}
+          {() => <DemoGalleryClient />}
         </BrowserOnly>
       </main>
     </Layout>

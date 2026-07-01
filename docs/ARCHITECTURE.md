@@ -32,4 +32,4 @@ scripts/                 发布和维护脚本
 
 ### Demo 职责
 
-`demos/` 是 demo 业务逻辑和 `demoRegistry` 的唯一来源。Vite demo 和 docs-site playground 都应复用这里的组件，不应把 demo 业务逻辑复制到站点目录。
+`demos/` 是 demo 业务逻辑和 `demoRegistry` 的唯一来源。Vite demo 和 docs-site 的 demos 页面都应复用这里的组件，不应把 demo 业务逻辑复制到站点目录。
