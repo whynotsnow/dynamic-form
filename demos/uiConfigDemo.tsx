@@ -172,9 +172,12 @@ const UIConfigDemo: React.FC = () => {
 
   // 动态label UI配置
   const dynamicUIConfig: UIConfig = {
+    colProps: {
+      span: 8
+    },
     formItemProps: {
-      labelCol: { span: 12 },
-      wrapperCol: { span: 12 }
+      labelCol: { span: 24 },
+      wrapperCol: { span: 24 }
     }
   };
 

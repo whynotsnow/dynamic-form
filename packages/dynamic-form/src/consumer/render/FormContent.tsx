@@ -277,8 +277,43 @@ const FormContent: React.FC<FormContentProps> = (props) => {
     </div>
   );
 
-  const fieldsBlock =
-    rootNodeIds.length > 0 ? rootNodeIds.map((nodeId) => renderNode(nodeId)) : null;
+  const renderRootNodes = () => {
+    if (rootNodeIds.length === 0) return null;
+
+    const blocks: React.ReactNode[] = [];
+    let fieldNodes: React.ReactNode[] = [];
+
+    const flushFieldNodes = (key: React.Key) => {
+      if (fieldNodes.length === 0) return;
+
+      blocks.push(
+        <Row key={`root-fields-${key}`} {...dynamicUIConfig.rowProps}>
+          {fieldNodes}
+        </Row>
+      );
+      fieldNodes = [];
+    };
+
+    rootNodeIds.forEach((nodeId, index) => {
+      const renderedNode = renderNode(nodeId);
+      if (!renderedNode) return;
+
+      const entry = configProcessInfo.nodeRegistry[nodeId];
+      if (entry?.nodeType === 'field') {
+        fieldNodes.push(renderedNode);
+        return;
+      }
+
+      flushFieldNodes(index);
+      blocks.push(renderedNode);
+    });
+
+    flushFieldNodes('tail');
+
+    return <>{blocks}</>;
+  };
+
+  const fieldsBlock = renderRootNodes();
   const formBlocks = {
     fieldsArea: <>{fieldsBlock}</>,
     submitArea: internalRenderSubmit()
