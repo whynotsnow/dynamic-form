@@ -7,16 +7,18 @@ import type {
   FieldComponentProps,
   FlatFormConfig,
   FormConfig,
-  GroupedFormConfig
+  GroupedFormConfig,
+  UIConfig
 } from '@whynotsnow/dynamic-form';
 import { DynamicForm, useInitHandlers } from '@whynotsnow/dynamic-form';
+import styles from '../../pages/marketplace.module.css';
 
 export type MarketplacePreviewComponent = React.FC;
 
 const baseFormProps = {
   formProps: { layout: 'vertical' as const },
   submitAreaProps: { style: { display: 'none' } }
-};
+} satisfies UIConfig;
 
 const previewShellStyle: React.CSSProperties = {
   maxWidth: 720
@@ -26,11 +28,13 @@ function DynamicFormPreview({
   formConfig,
   componentRegistry,
   handlers,
+  uiConfig,
   values
 }: {
   formConfig: FormConfig;
   componentRegistry?: ComponentRegistryConfig;
   handlers?: CustomEffectResultHandler[];
+  uiConfig?: UIConfig;
   values?: Record<string, unknown>;
 }) {
   const [form] = Form.useForm();
@@ -46,7 +50,7 @@ function DynamicFormPreview({
         form={form}
         formConfig={formConfig}
         submitButtonText="提交"
-        uiConfig={baseFormProps}
+        uiConfig={{ ...baseFormProps, ...uiConfig }}
         values={values}
       />
     </div>
@@ -269,26 +273,53 @@ interface LineItem {
 }
 
 const editableColumns: ProColumns<LineItem>[] = [
-  { title: '项目', dataIndex: 'name', formItemProps: { rules: [{ required: true }] } },
-  { title: '数量', dataIndex: 'quantity', valueType: 'digit' },
-  { title: '单价', dataIndex: 'price', valueType: 'money' },
-  { title: '操作', valueType: 'option' }
+  {
+    title: '项目',
+    dataIndex: 'name',
+    width: 160,
+    formItemProps: { rules: [{ required: true }] },
+    fieldProps: { placeholder: '项目名称' }
+  },
+  {
+    title: '数量',
+    dataIndex: 'quantity',
+    valueType: 'digit',
+    width: 92,
+    fieldProps: { min: 1, precision: 0 }
+  },
+  {
+    title: '单价',
+    dataIndex: 'price',
+    valueType: 'money',
+    width: 112,
+    fieldProps: { min: 0 }
+  },
+  { title: '操作', valueType: 'option', width: 72 }
 ];
 
 const EditableTableField: React.FC<FieldComponentProps> = ({ value, onChange }) => {
   return (
-    <EditableProTable<LineItem>
-      columns={editableColumns}
-      editable={{
-        type: 'multiple',
-        onValuesChange: (_, rows) => onChange(rows)
-      }}
-      recordCreatorProps={{
-        record: () => ({ id: String(Date.now()) })
-      }}
-      rowKey="id"
-      value={Array.isArray(value) ? value : []}
-    />
+    <div className={styles.editableTablePreview}>
+      <EditableProTable<LineItem>
+        bordered
+        columns={editableColumns}
+        editable={{
+          type: 'multiple',
+          onValuesChange: (_, rows) => onChange(rows)
+        }}
+        options={false}
+        pagination={false}
+        recordCreatorProps={{
+          creatorButtonText: '添加明细',
+          record: () => ({ id: String(Date.now()) })
+        }}
+        rowKey="id"
+        search={false}
+        size="small"
+        tableLayout="fixed"
+        value={Array.isArray(value) ? value : []}
+      />
+    </div>
   );
 };
 
@@ -351,7 +382,7 @@ function ComponentSnippetPreview({ component }: { component: string }) {
       fields: [{ id: 'owner', label: '负责人', component: 'UserPickerField' }]
     },
     EditableTableField: {
-      fields: [{ id: 'items', label: '明细', component: 'EditableTableField' }]
+      fields: [{ id: 'items', label: '明细', component: 'EditableTableField', span: 24 }]
     }
   };
 
@@ -359,6 +390,7 @@ function ComponentSnippetPreview({ component }: { component: string }) {
     <DynamicFormPreview
       componentRegistry={componentRegistry}
       formConfig={componentConfig[component]}
+      uiConfig={component === 'EditableTableField' ? { colProps: { span: 24 } } : undefined}
       values={{
         items: [{ id: '1', name: '设计评审', quantity: 1, price: 800 }]
       }}

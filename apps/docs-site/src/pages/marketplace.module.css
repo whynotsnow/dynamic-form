@@ -39,6 +39,56 @@
   line-height: 1.7;
 }
 
+.editableTablePreview {
+  width: 100%;
+  max-width: 560px;
+  min-width: 0;
+}
+
+.editableTablePreview :global(.ant-pro-card),
+.editableTablePreview :global(.ant-pro-card-body) {
+  min-width: 0;
+}
+
+.editableTablePreview :global(.ant-pro-card-body) {
+  padding: 0;
+}
+
+.editableTablePreview :global(.ant-table-wrapper),
+.editableTablePreview :global(.ant-table),
+.editableTablePreview :global(.ant-table-container) {
+  min-width: 0;
+}
+
+.editableTablePreview :global(.ant-table-cell) {
+  padding: 7px 8px;
+  vertical-align: middle;
+}
+
+.editableTablePreview :global(.ant-table-cell .ant-form-item) {
+  margin-bottom: 0;
+}
+
+.editableTablePreview :global(.ant-input-number),
+.editableTablePreview :global(.ant-input-affix-wrapper),
+.editableTablePreview :global(.ant-input) {
+  width: 100%;
+  min-width: 0;
+}
+
+.editableTablePreview :global(.ant-empty-normal) {
+  margin: 12px 0;
+}
+
+.editableTablePreview :global(.ant-pro-table-list-toolbar-container) {
+  padding: 8px 0 0;
+}
+
+.editableTablePreview :global(.ant-btn) {
+  max-width: 100%;
+  white-space: normal;
+}
+
 .filters {
   display: flex;
   flex-wrap: wrap;
