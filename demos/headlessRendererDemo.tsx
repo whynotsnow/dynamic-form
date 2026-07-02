@@ -10,6 +10,14 @@ import {
 
 const { Paragraph, Text } = Typography;
 
+type HeadlessFormValues = {
+  profile?: {
+    name?: string;
+    email?: string;
+  };
+  internalNote?: string;
+};
+
 const HeadlessInput: React.FC<FieldComponentProps> & { wrapWithFormItem?: boolean } = ({
   field,
   formAdapter
@@ -81,7 +89,7 @@ const HeadlessRendererDemo: React.FC = () => {
       }),
     []
   );
-  const [submittedValues, setSubmittedValues] = useState<Record<string, unknown> | null>(null);
+  const [submittedValues, setSubmittedValues] = useState<HeadlessFormValues | null>(null);
 
   return (
     <Card title="Headless Renderer / Memory Adapter 演示" size="small">

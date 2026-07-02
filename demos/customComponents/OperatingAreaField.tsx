@@ -87,7 +87,7 @@ type OperatingAreaFieldProps = FieldComponentProps & {
  */
 
 export const OperatingAreaField: React.FC<OperatingAreaFieldProps> = (connect) => {
-  const { field, value, onChange, options = [] } = connect;
+  const { value, onChange, options = [] } = connect;
   console.log(connect, 'connect');
   return (
     <Space direction="vertical" size={4} style={{ width: '100%' }}>

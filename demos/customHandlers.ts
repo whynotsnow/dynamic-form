@@ -1,4 +1,10 @@
 import type { CustomEffectResultHandler } from '@/consumer/effects';
+import type { CSSProperties } from 'react';
+
+type ChainedEffectItem = {
+  type: string;
+  value: CSSProperties | string | number | boolean | null | undefined;
+};
 
 // 示例2: 条件显示处理器
 export const conditionalDisplayHandler: CustomEffectResultHandler = {
@@ -64,7 +70,7 @@ export const chainedHandler: CustomEffectResultHandler = {
   validate: (value) => Array.isArray(value) && value.length > 0,
   handle: (context, value) => {
     // 执行多个处理器
-    value.forEach((item: { type: string; value: any }) => {
+    (value as ChainedEffectItem[]).forEach((item) => {
       // 根据 item 的类型执行不同的处理逻辑逻辑
       if (item.type === 'style') {
         context.updateFieldMeta({

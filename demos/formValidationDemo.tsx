@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Typography, Space, Button, message, Form, Spin } from 'antd';
+import type { RuleObject } from 'antd/es/form';
 import DynamicForm from '@/index';
 import { customComponents } from './customComponents';
 import { FormConfig } from '@/exports';
@@ -8,6 +9,47 @@ import { mockFetchFormData } from '../packages/dynamic-form/src/shared/utils';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
 
 const { Title, Paragraph } = Typography;
+
+type ProjectMemberValue = {
+  name: string;
+  role: string;
+  email: string;
+};
+
+type ProjectTaskValue = {
+  title: string;
+  description: string;
+  assignee: string;
+  status: string;
+  priority: string;
+  dueDate: string;
+};
+
+type ProjectValue = {
+  name: string;
+  description: string;
+  members: ProjectMemberValue[];
+  tasks: ProjectTaskValue[];
+  fruit: string[];
+  multipleSelect: string[];
+};
+
+type UserTableRowValue = {
+  key: string;
+  name: string;
+  age: string;
+  address: string;
+  email: string;
+  phone: string;
+  status: string;
+};
+
+type DemoFormValues = {
+  name: string;
+  email: string;
+  projects: ProjectValue[];
+  userTable: UserTableRowValue[];
+};
 
 const FormValidationDemo: React.FC = () => {
   const [form] = Form.useForm();
@@ -51,19 +93,18 @@ const FormValidationDemo: React.FC = () => {
             rules: [
               { required: true, message: '至少需要添加一个项目' },
               {
-                validator: async (_rule: any, value: any) => {
+                validator: async (_rule: RuleObject, value: ProjectValue[] | undefined) => {
                   // 这里可以添加更复杂的校验逻辑
                   const errors: string[] = [];
-                  (value || []).forEach(
-                    (project: { name: string; members: string | any[] }, index: number) => {
-                      if (!project.name?.trim()) {
-                        errors.push(`项目${index + 1}名称不能为空`);
-                      }
-                      if (!project.members?.length) {
-                        errors.push(`项目${index + 1}至少需要一个成员`);
-                      }
+                  const projects = value ?? [];
+                  projects.forEach((project, index) => {
+                    if (!project.name?.trim()) {
+                      errors.push(`项目${index + 1}名称不能为空`);
                     }
-                  );
+                    if (!project.members?.length) {
+                      errors.push(`项目${index + 1}至少需要一个成员`);
+                    }
+                  });
 
                   if (errors.length > 0) {
                     return Promise.reject(errors.join('\n')); // 换行分隔更清晰
@@ -93,7 +134,7 @@ const FormValidationDemo: React.FC = () => {
 
   useDemoInitHandlers({ handlers: exampleHandlers });
 
-  const handleSubmit = (values: any) => {
+  const handleSubmit = (values: DemoFormValues) => {
     console.log('表单数据:', values);
     message.success('表单提交成功！');
   };
@@ -109,7 +150,7 @@ const FormValidationDemo: React.FC = () => {
     }
   };
 
-  const [initialValues, setInitialValues] = useState<Record<string, any>>();
+  const [initialValues, setInitialValues] = useState<DemoFormValues>();
   useEffect(() => {
     async function fetchData() {
       const testData = {
@@ -206,7 +247,7 @@ const FormValidationDemo: React.FC = () => {
           }
         ]
       };
-      const data = await mockFetchFormData(testData);
+      const data = (await mockFetchFormData(testData)) as DemoFormValues;
       setInitialValues(data);
     }
     fetchData();
@@ -245,7 +286,7 @@ const FormValidationDemo: React.FC = () => {
             form={form}
             // values={initialValues}
             formConfig={formConfig}
-            onSubmit={handleSubmit}
+            onSubmit={(values) => handleSubmit(values as DemoFormValues)}
             componentRegistry={componentRegistryConfig}
             submitButtonText="提交表单"
           />

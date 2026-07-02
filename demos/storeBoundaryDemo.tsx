@@ -4,8 +4,13 @@ import { supplierFormConfig } from '../tests/testData';
 import { DynamicForm } from '@/exports';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
 import OperatingAreaField from '../demos/customComponents/OperatingAreaField';
+
+type StoreBoundaryFormValues = {
+  [fieldName: string]: string | number | boolean | string[] | undefined;
+};
+
 const StoreBoundaryDemo: React.FC = () => {
-  const handleSubmit = (values: any) => {
+  const handleSubmit = (values: StoreBoundaryFormValues) => {
     console.log('[StoreBoundaryDemo] 表单提交:', values);
   };
 
@@ -31,7 +36,7 @@ const StoreBoundaryDemo: React.FC = () => {
         </Space>
       </Card>
       <DynamicForm
-        onSubmit={handleSubmit}
+        onSubmit={(values) => handleSubmit(values as StoreBoundaryFormValues)}
         form={form}
         submitButtonText="提交表单"
         formConfig={supplierFormConfig}

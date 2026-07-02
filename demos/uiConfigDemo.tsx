@@ -6,6 +6,77 @@ import { CheckCircleOutlined } from '@ant-design/icons';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
 import { PriorityField, priorityEffect } from '../demos/customComponents/PriorityField';
 
+type DynamicUIFormValues = {
+  username?: string;
+  email?: string;
+  status?: 'active' | 'pending' | 'disabled';
+  priority?: string;
+  description?: string;
+};
+
+const getStatusUIEffect = (
+  _changedValue: DynamicUIFormValues['status'],
+  allValues: DynamicUIFormValues
+) => {
+  const status = allValues.status;
+
+  // 新增：测试UIConfig动态配置
+  const uiConfigUpdates: Partial<UIConfig> = {};
+
+  if (status === 'active') {
+    uiConfigUpdates.formProps = {
+      style: { backgroundColor: '#f6ffed', border: '2px solid #52c41a' }
+    };
+    uiConfigUpdates.buttonProps = {
+      type: 'primary',
+      style: { backgroundColor: '#52c41a', borderColor: '#52c41a' }
+    };
+    uiConfigUpdates.cardProps = {
+      style: { borderColor: '#52c41a', backgroundColor: '#f6ffed' }
+    };
+  } else if (status === 'pending') {
+    uiConfigUpdates.formProps = {
+      style: { backgroundColor: '#fffbe6', border: '2px solid #faad14' }
+    };
+    uiConfigUpdates.buttonProps = {
+      type: 'default',
+      style: { backgroundColor: '#faad14', borderColor: '#faad14', color: 'white' }
+    };
+    uiConfigUpdates.cardProps = {
+      style: { borderColor: '#faad14', backgroundColor: '#fffbe6' }
+    };
+  } else if (status === 'disabled') {
+    uiConfigUpdates.formProps = {
+      style: { backgroundColor: '#fff2f0', border: '2px solid #ff4d4f' }
+    };
+    uiConfigUpdates.buttonProps = {
+      type: 'default',
+      style: { backgroundColor: '#ff4d4f', borderColor: '#ff4d4f', color: 'white' }
+    };
+    uiConfigUpdates.cardProps = {
+      style: { borderColor: '#ff4d4f', backgroundColor: '#fff2f0' }
+    };
+  }
+  return {
+    formProps: uiConfigUpdates.formProps,
+    buttonProps: uiConfigUpdates.buttonProps
+    // 不是分组没有card组件
+    // cardProps: uiConfigUpdates.cardProps
+  };
+};
+
+const getDescriptionUIEffect = (changedValue: DynamicUIFormValues['description']) => {
+  const description = changedValue ?? '';
+
+  return {
+    componentProps: {
+      rows: description.length > 2 ? 5 : 3,
+      style:
+        description.length > 2 ? { backgroundColor: '#fff2f0', border: '1px solid #ff4d4f' } : {}
+    }
+  };
+};
+
 const UIConfigDemo: React.FC = () => {
   const [dynamicForm] = Form.useForm();
   // 动态label表单配置 - 展示useInitHandlers处理effect返回值的功能
@@ -66,53 +137,8 @@ const UIConfigDemo: React.FC = () => {
           ),
           style: { borderLeft: '4px solid #52c41a', paddingLeft: '12px' }
         },
-        effect: (_changedValue, allValues) => {
-          const status = allValues.status;
-
-          // 新增：测试UIConfig动态配置
-          const uiConfigUpdates: Partial<UIConfig> = {};
-
-          if (status === 'active') {
-            uiConfigUpdates.formProps = {
-              style: { backgroundColor: '#f6ffed', border: '2px solid #52c41a' }
-            };
-            uiConfigUpdates.buttonProps = {
-              type: 'primary',
-              style: { backgroundColor: '#52c41a', borderColor: '#52c41a' }
-            };
-            uiConfigUpdates.cardProps = {
-              style: { borderColor: '#52c41a', backgroundColor: '#f6ffed' }
-            };
-          } else if (status === 'pending') {
-            uiConfigUpdates.formProps = {
-              style: { backgroundColor: '#fffbe6', border: '2px solid #faad14' }
-            };
-            uiConfigUpdates.buttonProps = {
-              type: 'default',
-              style: { backgroundColor: '#faad14', borderColor: '#faad14', color: 'white' }
-            };
-            uiConfigUpdates.cardProps = {
-              style: { borderColor: '#faad14', backgroundColor: '#fffbe6' }
-            };
-          } else if (status === 'disabled') {
-            uiConfigUpdates.formProps = {
-              style: { backgroundColor: '#fff2f0', border: '2px solid #ff4d4f' }
-            };
-            uiConfigUpdates.buttonProps = {
-              type: 'default',
-              style: { backgroundColor: '#ff4d4f', borderColor: '#ff4d4f', color: 'white' }
-            };
-            uiConfigUpdates.cardProps = {
-              style: { borderColor: '#ff4d4f', backgroundColor: '#fff2f0' }
-            };
-          }
-          return {
-            formProps: uiConfigUpdates.formProps,
-            buttonProps: uiConfigUpdates.buttonProps
-            // 不是分组没有card组件
-            // cardProps: uiConfigUpdates.cardProps
-          };
-        }
+        effect: (changedValue, allValues) =>
+          getStatusUIEffect(changedValue, allValues as DynamicUIFormValues)
       },
       {
         id: 'priority',
@@ -153,19 +179,7 @@ const UIConfigDemo: React.FC = () => {
         componentProps: {
           rows: 3
         },
-        effect: (changedValue: unknown) => {
-          const description = typeof changedValue === 'string' ? changedValue : '';
-
-          return {
-            componentProps: {
-              rows: description.length > 2 ? 5 : 3,
-              style:
-                description.length > 2
-                  ? { backgroundColor: '#fff2f0', border: '1px solid #ff4d4f' }
-                  : {}
-            }
-          };
-        }
+        effect: (changedValue) => getDescriptionUIEffect(changedValue)
       }
     ]
   };

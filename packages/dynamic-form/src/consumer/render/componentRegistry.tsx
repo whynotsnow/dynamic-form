@@ -1,18 +1,16 @@
 import React from 'react';
-import { Input, InputNumber, Select, DatePicker, Switch, Rate, Typography, Checkbox } from 'antd';
+import { Input, InputNumber, Select, DatePicker, Switch, Rate, Checkbox } from 'antd';
 import type {
   FieldComponentProps,
   ComponentRegistry,
   ComponentRegistryConfig
 } from '../../shared/types';
 
-const { Text } = Typography;
-
 type RegisteredFieldComponent<P = string> = React.ComponentType<FieldComponentProps & P>;
 
 // 测试组件：直接使用 Ant Design 组件
 const TestInput: React.FC<FieldComponentProps> = (props) => {
-  const { field, value, onChange, form, ...restProps } = props;
+  const { field: _field, value, onChange, form: _form, ...restProps } = props;
   return <Input value={value} onChange={onChange} {...restProps} />;
 };
 
@@ -28,54 +26,54 @@ const TextDisplay: React.FC<FieldComponentProps> = ({ value }) => {
 // 默认组件注册表
 export const DefaultRegistryFieldComponents = {
   Password: (props) => {
-    const { field, value, onChange, form, ...restProps } = props;
+    const { field: _field, value, onChange, form: _form, ...restProps } = props;
     return <Input.Password value={value} onChange={onChange} {...restProps} />;
   },
   ConfirmPassword: (props) => {
-    const { field, value, onChange, form, ...restProps } = props;
+    const { field: _field, value, onChange, form: _form, ...restProps } = props;
     return <Input.Password value={value} onChange={onChange} {...restProps} />;
   },
   TextInput: (props) => {
-    const { field, value, onChange, form, ...restProps } = props;
+    const { field: _field, value, onChange, form: _form, ...restProps } = props;
     return <Input value={value} onChange={onChange} {...restProps} />;
   },
   NumberInput: (props) => {
-    const { field, value, onChange, form, ...restProps } = props;
+    const { field: _field, value, onChange, form: _form, ...restProps } = props;
     return (
       <InputNumber style={{ width: '100%' }} value={value} onChange={onChange} {...restProps} />
     );
   },
   SelectField: (props) => {
-    const { field, value, onChange, form, ...restProps } = props;
+    const { field, value, onChange, form: _form, ...restProps } = props;
     return (
       <Select options={(field as any).options} value={value} onChange={onChange} {...restProps} />
     );
   },
   DatePicker: (props) => {
-    const { field, value, onChange, form, ...restProps } = props;
+    const { field: _field, value, onChange, form: _form, ...restProps } = props;
     return (
       <DatePicker style={{ width: '100%' }} value={value} onChange={onChange} {...restProps} />
     );
   },
   Switch: (props) => {
-    const { field, value, onChange, form, ...restProps } = props;
+    const { field: _field, value, onChange, form: _form, ...restProps } = props;
     return <Switch checked={!!value} onChange={onChange} {...restProps} />;
   },
   Rate: (props) => {
-    const { field, value, onChange, form, ...restProps } = props;
+    const { field: _field, value, onChange, form: _form, ...restProps } = props;
     return <Rate value={value} onChange={onChange} {...restProps} />;
   },
   TextDisplay,
   CheckboxGroup: (props) => {
-    const { field, value, onChange, form, ...restProps } = props;
+    const { field: _field, value, onChange, form: _form, ...restProps } = props;
     return <Checkbox.Group value={value} onChange={onChange} {...restProps} />;
   },
   Select: (props) => {
-    const { field, value, onChange, form, ...restProps } = props;
+    const { field: _field, value, onChange, form: _form, ...restProps } = props;
     return <Select value={value} onChange={onChange} {...restProps} />;
   },
   TextArea: (props) => {
-    const { field, value, onChange, form, ...restProps } = props;
+    const { field: _field, value, onChange, form: _form, ...restProps } = props;
     return <Input.TextArea value={value} onChange={onChange} {...restProps} />;
   }
 } as const satisfies Record<string, React.FC<FieldComponentProps>>;

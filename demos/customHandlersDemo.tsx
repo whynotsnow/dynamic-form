@@ -1,11 +1,74 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Card, Space, Typography, Alert, Spin, SelectProps, Form } from 'antd';
 import { exampleHandlers } from './customHandlers';
-import { FlatFormConfig } from '@/exports';
+import { FlatFormConfig, FormValues } from '@/exports';
 import { DynamicForm } from '@/exports';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
 
 const { Title, Paragraph } = Typography;
+
+type DemoFormValues = {
+  name: string;
+  status: string;
+  age: number | string;
+  email: string;
+  emailNote?: string;
+  fruit: string[];
+  multipleSelect: string[];
+};
+
+const getNameStyleEffect = (changedValue: DemoFormValues['name'], _allValues: DemoFormValues) => {
+  // 使用自定义样式处理器
+  return {
+    formItemProps: {
+      style: {
+        backgroundColor: changedValue === 'admin' ? '#ff4d4f' : '#52c41a',
+        color: changedValue === 'admin' ? '#ff4d4f' : '#52c41a',
+        fontSize: '16px'
+      }
+    }
+  };
+};
+
+const getAgeTransformEffect = (changedValue: DemoFormValues['age'], _allValues: DemoFormValues) => {
+  // 使用数据转换处理器
+  return {
+    dataTransform: changedValue
+  };
+};
+
+const getEmailNoteDisplayEffect = (
+  _changedValue: DemoFormValues['email'],
+  allValues: DemoFormValues
+) => ({
+  conditionalDisplay: {
+    condition: !allValues.email || allValues.email.includes('@'),
+    message: '请输入有效的邮箱地址'
+  }
+});
+
+const getStatusChainedEffect = (
+  changedValue: DemoFormValues['status'],
+  _allValues: DemoFormValues
+) => {
+  // 使用链式处理器
+  return {
+    chained: [
+      {
+        type: 'style',
+        value: {
+          backgroundColor: changedValue === 'active' ? '#52c41a' : '#ff4d4f',
+          textColor: 'white',
+          fontSize: '14px'
+        }
+      },
+      {
+        type: 'transform',
+        value: changedValue.toUpperCase()
+      }
+    ]
+  };
+};
 
 const options: SelectProps['options'] = [];
 
@@ -16,7 +79,7 @@ for (let i = 10; i < 36; i++) {
   });
 }
 
-const getConfig = (initialValues: Record<string, any>): FlatFormConfig => {
+const getConfig = (initialValues: DemoFormValues): FlatFormConfig => {
   const demoFormConfig = {
     fields: [
       {
@@ -36,30 +99,16 @@ const getConfig = (initialValues: Record<string, any>): FlatFormConfig => {
             }
           };
         },
-        effect: (changedValue: any, allValues: any) => {
-          // 使用自定义样式处理器
-          return {
-            formItemProps: {
-              style: {
-                backgroundColor: changedValue === 'admin' ? '#ff4d4f' : '#52c41a',
-                color: changedValue === 'admin' ? '#ff4d4f' : '#52c41a',
-                fontSize: '16px'
-              }
-            }
-          };
-        }
+        effect: (changedValue: DemoFormValues['name'], allValues: FormValues) =>
+          getNameStyleEffect(changedValue, allValues as DemoFormValues)
       },
       {
         id: 'age',
         label: '年龄',
         component: 'TextInput',
         span: 24,
-        effect: (changedValue: any, allValues: any) => {
-          // 使用数据转换处理器
-          return {
-            dataTransform: changedValue
-          };
-        }
+        effect: (changedValue: DemoFormValues['age'], allValues: FormValues) =>
+          getAgeTransformEffect(changedValue, allValues as DemoFormValues)
       },
       {
         id: 'email',
@@ -74,12 +123,8 @@ const getConfig = (initialValues: Record<string, any>): FlatFormConfig => {
         component: 'TextInput',
         span: 24,
         initialValue: '邮箱有效时显示；隐藏时不会提交旧值，再显示时会恢复。',
-        effect: (_changedValue: any, allValues: any) => ({
-          conditionalDisplay: {
-            condition: !allValues.email || allValues.email.includes('@'),
-            message: '请输入有效的邮箱地址'
-          }
-        })
+        effect: (changedValue: DemoFormValues['email'], allValues: FormValues) =>
+          getEmailNoteDisplayEffect(changedValue, allValues as DemoFormValues)
       },
       {
         id: 'status',
@@ -100,25 +145,8 @@ const getConfig = (initialValues: Record<string, any>): FlatFormConfig => {
             }
           };
         },
-        effect: (changedValue: any, allValues: any) => {
-          // 使用链式处理器
-          return {
-            chained: [
-              {
-                type: 'style',
-                value: {
-                  backgroundColor: changedValue === 'active' ? '#52c41a' : '#ff4d4f',
-                  textColor: 'white',
-                  fontSize: '14px'
-                }
-              },
-              {
-                type: 'transform',
-                value: changedValue?.toUpperCase()
-              }
-            ]
-          };
-        }
+        effect: (changedValue: DemoFormValues['status'], allValues: FormValues) =>
+          getStatusChainedEffect(changedValue, allValues as DemoFormValues)
       },
       {
         id: 'fruit',
@@ -151,7 +179,7 @@ const getConfig = (initialValues: Record<string, any>): FlatFormConfig => {
   return demoFormConfig;
 };
 
-const mockFetchFormData = (): Promise<Record<string, any>> => {
+const mockFetchFormData = (): Promise<DemoFormValues> => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve({
@@ -170,11 +198,11 @@ const mockFetchFormData = (): Promise<Record<string, any>> => {
 const CustomHandlersDemo: React.FC = () => {
   const { registeredCount } = useDemoInitHandlers({ handlers: exampleHandlers });
 
-  const handleSubmit = (values: any) => {
+  const handleSubmit = (values: DemoFormValues) => {
     console.log('表单提交:', values);
   };
 
-  const [initialValues, setInitialValues] = useState<Record<string, any>>();
+  const [initialValues, setInitialValues] = useState<DemoFormValues>();
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -243,7 +271,7 @@ const CustomHandlersDemo: React.FC = () => {
           formConfig={memoConfig as FlatFormConfig}
           values={initialValues}
           form={form}
-          onSubmit={handleSubmit}
+          onSubmit={(values) => handleSubmit(values as DemoFormValues)}
           submitButtonText="提交表单"
         />
       </div>

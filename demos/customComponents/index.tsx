@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FieldComponentProps, ComponentRegistry } from '@/exports';
 import { Input, Slider, Upload, Button, message, InputNumber, Select, Switch } from 'antd';
+import type { UploadProps } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import CustomProjectList from '../../demos/customComponents/CustomProjectList';
 import CustomEditTable from '../../demos/customComponents/CustomEditTable';
@@ -21,8 +22,8 @@ const CustomSlider: React.FC<FieldComponentProps> = ({ field, value, onChange })
 };
 
 // 2. 文件上传组件
-const CustomUpload: React.FC<FieldComponentProps> = ({ field, value, onChange }) => {
-  const handleUpload = (info: any) => {
+const CustomUpload: React.FC<FieldComponentProps> = ({ onChange }) => {
+  const handleUpload: UploadProps['onChange'] = (info) => {
     if (info.file.status === 'done') {
       message.success(`${info.file.name} 上传成功`);
       onChange?.(info.file.response?.url || info.file.name);
@@ -39,7 +40,7 @@ const CustomUpload: React.FC<FieldComponentProps> = ({ field, value, onChange })
 };
 
 // 3. 颜色选择器组件
-const CustomColorPicker: React.FC<FieldComponentProps> = ({ field, value, onChange }) => {
+const CustomColorPicker: React.FC<FieldComponentProps> = ({ value, onChange }) => {
   return (
     <Input
       type="color"

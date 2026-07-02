@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import type {
   ComponentRegistryConfig,
   FieldState,
+  FormValues,
   GroupedFormConfig,
   RenderFieldItemParams
 } from '@/exports';
@@ -12,13 +13,41 @@ import { Button, Form, message, Space, Spin } from 'antd';
 import { mockFetchFormData } from '../packages/dynamic-form/src/shared/utils/utils';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
 
+type DemoFieldValue = string | number | boolean | undefined;
+
+type DemoFormValues = {
+  name: string;
+  age: number;
+  password: string;
+  category: string;
+  showExtra: boolean;
+  extraInfo?: string;
+  quantity: number;
+  email: string;
+  satisfaction: number;
+  themeColor: string;
+  avatar?: string;
+  description: string;
+};
+
+const getExtraInfoVisibilityEffect = (
+  _changedValue: DemoFormValues['showExtra'],
+  allValues: DemoFormValues
+) => {
+  const showExtra = allValues.showExtra;
+  return { visible: showExtra === true };
+};
+
 // 组件注册器配置
 const componentRegistryConfig: ComponentRegistryConfig = {
   customComponents,
   allowOverride: false // 不允许覆盖默认组件
 };
 
-const ReadOnlyField: React.FC<{ field: FieldState; value: any }> = ({ field, value }) => {
+const ReadOnlyField: React.FC<{ field: FieldState; value: DemoFieldValue }> = ({
+  field,
+  value
+}) => {
   return (
     <div style={{ padding: '4px 0' }}>
       <strong>{field.label}：</strong>
@@ -27,7 +56,7 @@ const ReadOnlyField: React.FC<{ field: FieldState; value: any }> = ({ field, val
   );
 };
 
-const getConfig = (initialValues: Record<string, any>): GroupedFormConfig => {
+const getConfig = (initialValues: DemoFormValues): GroupedFormConfig => {
   const formConfig = {
     groups: [
       {
@@ -92,10 +121,8 @@ const getConfig = (initialValues: Record<string, any>): GroupedFormConfig => {
                 visible: initialValues.showExtra === true
               };
             },
-            effect: (_changedValue: any, allValues: Record<string, any>) => {
-              const showExtra = allValues.showExtra;
-              return { visible: showExtra === true };
-            },
+            effect: (changedValue: DemoFormValues['showExtra'], allValues: FormValues) =>
+              getExtraInfoVisibilityEffect(changedValue, allValues as DemoFormValues),
             span: 12
           },
           {
@@ -155,19 +182,19 @@ const getConfig = (initialValues: Record<string, any>): GroupedFormConfig => {
 };
 
 const CustomComponentsDemo: React.FC = () => {
-  const handleSubmit = (values: Record<string, any>) => {
+  const handleSubmit = (values: DemoFormValues) => {
     console.log('表单提交:', values);
     message.success('表单提交成功！');
   };
 
   useDemoInitHandlers({ handlers: exampleHandlers });
 
-  const [initialValues, setInitialValues] = useState<Record<string, any>>();
+  const [initialValues, setInitialValues] = useState<DemoFormValues>();
   const [form] = Form.useForm();
 
   useEffect(() => {
     async function fetchData() {
-      const data: Record<string, any> = await mockFetchFormData({
+      const data = (await mockFetchFormData({
         name: 'asdf',
         age: 18,
         password: 'sdfsasdf',
@@ -179,7 +206,7 @@ const CustomComponentsDemo: React.FC = () => {
         themeColor: '#10adaa',
         description: '阿斯顿发阿斯顿发SA',
         extraInfo: '信息'
-      });
+      })) as DemoFormValues;
       setInitialValues(data);
     }
     fetchData();
@@ -233,7 +260,7 @@ const CustomComponentsDemo: React.FC = () => {
         )}
         renderFieldItem={renderFieldItem}
         values={initialValues}
-        onSubmit={handleSubmit}
+        onSubmit={(values) => handleSubmit(values as DemoFormValues)}
         componentRegistry={componentRegistryConfig}
         submitButtonText="提交表单"
       />

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { getFieldName } from '@/exports';
 import type { FieldComponentProps } from '@/exports';
 import { Button, message, Input, Select, Popconfirm } from 'antd';
@@ -6,15 +6,35 @@ import { PlusOutlined } from '@ant-design/icons';
 import { EditableProTable } from '@ant-design/pro-components';
 import type { ProColumns } from '@ant-design/pro-components';
 
+type EditTableRow = {
+  key: React.Key;
+  name: string;
+  age: string;
+  address: string;
+  email: string;
+  phone: string;
+  status: string;
+};
+
+type EditTableAction = {
+  save?: (key: React.Key) => void;
+  cancel?: (key: React.Key) => void;
+  startEditable?: (key: React.Key) => void;
+};
+
+const toEditTableRows = (input: unknown): EditTableRow[] => {
+  return Array.isArray(input) ? (input as EditTableRow[]) : [];
+};
+
 // EditTable 组件 - 使用 Ant Design Pro 的 EditableProTable
 const CustomEditTable: React.FC<FieldComponentProps> = ({ field, value, onChange, form }) => {
-  const [dataSource, setDataSource] = React.useState<any[]>(() => value || []);
+  const [dataSource, setDataSource] = React.useState<EditTableRow[]>(() => toEditTableRows(value));
   const [editableKeys, setEditableKeys] = React.useState<React.Key[]>([]);
 
   // 监听表单值变化，保持 value/onChange 兼容性
   useEffect(() => {
     if (value !== undefined) {
-      setDataSource(value || []);
+      setDataSource(toEditTableRows(value));
     }
   }, [value]);
 
@@ -33,8 +53,8 @@ const CustomEditTable: React.FC<FieldComponentProps> = ({ field, value, onChange
   }, []);
 
   // 受控 onChange
-  const handleValueChange = (newValue: any) => {
-    const valueArray = Array.isArray(newValue) ? newValue : [];
+  const handleValueChange = (newValue: readonly EditTableRow[]) => {
+    const valueArray = [...newValue];
     setDataSource(valueArray);
     onChange?.(valueArray);
     if (form) {
@@ -62,14 +82,14 @@ const CustomEditTable: React.FC<FieldComponentProps> = ({ field, value, onChange
     setEditableKeys((prev) => [...prev, newKey]);
   };
 
-  const handleDelete = (key: string) => {
+  const handleDelete = (key: React.Key) => {
     const newData = dataSource.filter((item) => item.key !== key);
     setDataSource(newData);
     onChange?.(newData);
     message.success('删除成功');
   };
 
-  const columns: ProColumns<any>[] = [
+  const columns: ProColumns<EditTableRow>[] = [
     {
       title: '姓名',
       dataIndex: 'name',
@@ -158,7 +178,7 @@ const CustomEditTable: React.FC<FieldComponentProps> = ({ field, value, onChange
     {
       title: '操作',
       valueType: 'option',
-      render: (text, record, _, action: any) => {
+      render: (_text, record, _index, action?: EditTableAction) => {
         const isEditing = editableKeys.includes(record.key);
         return isEditing
           ? [

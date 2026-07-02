@@ -21,6 +21,14 @@ import { useDemoInitHandlers } from './useDemoInitHandlers';
 
 const { Text } = Typography;
 
+type RenderExtensionFormValues = {
+  username?: string;
+  email?: string;
+  age?: number;
+  city?: string;
+  bio?: string;
+};
+
 /**
  * 自定义用户名字段
  */
@@ -71,7 +79,7 @@ CustomEmailField.wrapWithFormItem = false;
 
 const RenderExtensionDemo: React.FC = () => {
   const [form] = Form.useForm();
-  const [formValues, setFormValues] = useState<Record<string, any>>({});
+  const [formValues, setFormValues] = useState<RenderExtensionFormValues>({});
 
   const formConfig: GroupedFormConfig = {
     groups: [
@@ -136,7 +144,7 @@ const RenderExtensionDemo: React.FC = () => {
   // 初始化处理器
   useDemoInitHandlers();
 
-  const handleSubmit = (values: Record<string, any>) => {
+  const handleSubmit = (values: RenderExtensionFormValues) => {
     console.log('表单提交值:', JSON.stringify(values, null, 2), form.getFieldsValue(true));
     setFormValues(values);
   };
@@ -173,7 +181,11 @@ const RenderExtensionDemo: React.FC = () => {
   );
 
   /** 分组集合覆盖 */
-  const renderGroups = ({ groupFields, renderFields, renderGroupItem }: RenderGroupsParams) => {
+  const renderGroups = ({
+    groupFields,
+    renderFields: _renderFields,
+    renderGroupItem
+  }: RenderGroupsParams) => {
     const items = Object.values(groupFields).map((group) => ({
       key: group.id,
       label: group.title,
@@ -220,7 +232,7 @@ const RenderExtensionDemo: React.FC = () => {
         <DynamicForm
           formConfig={formConfig}
           form={form}
-          onSubmit={handleSubmit}
+          onSubmit={(values) => handleSubmit(values as RenderExtensionFormValues)}
           componentRegistry={componentRegistry}
           renderFieldItem={renderFieldItem}
           renderFields={renderFields}
