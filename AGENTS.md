@@ -14,9 +14,10 @@
 
 ## 仓库概览
 
-本仓库是 `@whynotsnow/dynamic-form` 的 private pnpm workspace root。
+本仓库是 DynamicForm 的 private pnpm workspace root。
 
-- `packages/dynamic-form/`：唯一 npm 发布包。
+- `packages/dynamic-form-core/`：纯 core npm 发布包，包名为 `@whynotsnow/dynamic-form-core`。
+- `packages/dynamic-form/`：React/AntD npm 发布包，包名为 `@whynotsnow/dynamic-form`。
 - `apps/docs-site/`：Docusaurus 文档站。
 - `demos/`：repo-level Vite demos，以及 docs-site 复用的 demo 组件。
 - `tests/`：Node test runner 文件和共享 demo 测试数据。
@@ -69,9 +70,12 @@
 
 ## 发布边界
 
-- 可发布 package 是 `packages/dynamic-form/`。
+- 可发布 package 是 `packages/dynamic-form-core/` 和 `packages/dynamic-form/`。
 - package name、public exports、`main`、`module`、`types` 和 `exports` 兼容性很重要。
-- `npm publish --access public` 必须通过发布脚本在 package workspace 内执行。
+- 根 workspace、`@whynotsnow/dynamic-form-core` 和 `@whynotsnow/dynamic-form` 采用统一版本号策略，三者 `version` 必须一致。
+- `@whynotsnow/dynamic-form` 对 `@whynotsnow/dynamic-form-core` 的依赖版本必须精确等于本次统一版本号，不使用 `workspace:` 协议发布。
+- 调整版本号时使用 `pnpm run version:sync -- <version>` 同步根 package、两个发布包和 lockfile。
+- `npm publish --access public` 必须通过发布脚本在 package workspace 内执行，先发布 core，再发布 React/AntD 包。
 - 根文档和站点文档不是 package 发布输入，除非明确复制到 package 边界。
 
 ## Git 安全

@@ -4,13 +4,15 @@
 
 ## 作用范围
 
-本文适用于 `packages/dynamic-form/`。这里是 monorepo 中唯一 npm 发布包，包名为 `@whynotsnow/dynamic-form`。
+本文适用于 `packages/dynamic-form/`。这里是 monorepo 中的 React/AntD npm 发布包，包名为 `@whynotsnow/dynamic-form`。
 
 DynamicForm 是 React + TypeScript 动态表单库，基于 Ant Design 渲染表单，并通过 `form-chain-effect-engine` 执行字段依赖和 effect chain。
 
 ## Package 边界
 
 - 保持 `name: "@whynotsnow/dynamic-form"`。
+- 版本号必须与根 workspace 和 `@whynotsnow/dynamic-form-core` 保持一致。
+- 对 `@whynotsnow/dynamic-form-core` 的依赖版本必须精确等于本包版本号，不使用 `workspace:` 协议发布。
 - 保持消费者 import 方式不变：
 
 ```ts

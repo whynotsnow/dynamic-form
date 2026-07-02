@@ -142,7 +142,7 @@ importers:
   packages/dynamic-form:
     dependencies:
       '@whynotsnow/dynamic-form-core':
-        specifier: workspace:*
+        specifier: 4.2.0
         version: link:../dynamic-form-core
       form-chain-effect-engine:
         specifier: ^2.0.4

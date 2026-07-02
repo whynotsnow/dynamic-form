@@ -62,7 +62,7 @@
     "react-dom": ">=17"
   },
   "dependencies": {
-    "@whynotsnow/dynamic-form-core": "workspace:*",
+    "@whynotsnow/dynamic-form-core": "4.2.0",
     "form-chain-effect-engine": "^2.0.4"
   },
   "devDependencies": {
