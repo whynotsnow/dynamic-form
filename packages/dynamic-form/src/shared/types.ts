@@ -10,6 +10,17 @@ export type FieldNamePath = string | number | Array<string | number>;
 export type ValidationRule = Record<string, any>;
 export type DynamicFormLegacyForm = any;
 
+export interface DesignerMetadata {
+  title?: string;
+  description?: string;
+  category?: string;
+  icon?: string;
+  order?: number;
+  locked?: boolean;
+  hiddenInDesigner?: boolean;
+  metadata?: Record<string, any>;
+}
+
 export interface DynamicFormFormAdapter {
   rawForm?: DynamicFormLegacyForm;
   getFieldValue: (name: FieldNamePath) => FieldValue;
@@ -65,6 +76,7 @@ export type NodeMeta = GroupMeta;
 
 export interface BaseFieldConfig {
   id: string;
+  designer?: DesignerMetadata;
   /** 表单值路径；未提供时保持兼容，默认使用 id。 */
   name?: FieldNamePath;
   initialValue?:
@@ -90,6 +102,7 @@ export interface BaseFieldConfig {
 }
 
 export interface GroupField {
+  designer?: DesignerMetadata;
   title?: string;
   dependents?: string[];
   effect?: EffectFn;
@@ -105,6 +118,7 @@ export type FieldNode = BaseFieldConfig & {
 export interface ContainerNode {
   nodeType: 'container';
   id: string;
+  designer?: DesignerMetadata;
   title?: string;
   name?: FieldNamePath;
   children: FormNode[];

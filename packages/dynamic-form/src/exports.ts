@@ -12,6 +12,7 @@ export type {
   ValidationRule,
   DynamicFormFormAdapter,
   DynamicFormRendererAdapter,
+  DesignerMetadata,
   FieldAddress,
   FieldNode,
   ContainerNode,
@@ -53,6 +54,12 @@ export { headlessRenderer } from './consumer/render/headlessRenderer';
 export { assertRendererAdapter } from './consumer/render/rendererAdapter';
 
 export type { FieldCapability, GroupCapability, NodeCapability, RuntimeState } from './runtime';
+export {
+  getFieldRuntimeSnapshot,
+  getRenderedFieldIds,
+  getSubmitableFieldIds,
+  getValidatableFieldIds
+} from './runtime';
 
 export { getFieldName, resolveFieldAddress } from './shared/utils';
 
@@ -131,4 +138,10 @@ export type {
 } from './consumer/effects';
 
 export { getDefaultConfig } from './config/defaultConfig';
-export { processFormConfig } from './config';
+export { getFormConfigDiagnostics, processFormConfig, validateFormConfig } from './config';
+export type {
+  FormConfigDiagnostic,
+  FormConfigDiagnosticsOptions,
+  FormConfigDiagnosticSeverity,
+  FormConfigValidationResult
+} from './config';
