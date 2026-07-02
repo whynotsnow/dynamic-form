@@ -149,11 +149,15 @@ const FormContent: React.FC<FormContentProps> = (props) => {
         const renderedName = listPrefix
           ? [...toNamePath(listPrefix), ...stripNamePrefix(getFieldName(field), schemaPrefix)]
           : undefined;
-        return renderer.renderFieldLayout({
-          field,
-          uiConfig: effectiveUIConfig,
-          children: internalRenderFieldItem(field, renderedName)
-        });
+        return (
+          <React.Fragment key={field.id}>
+            {renderer.renderFieldLayout({
+              field,
+              uiConfig: effectiveUIConfig,
+              children: internalRenderFieldItem(field, renderedName)
+            })}
+          </React.Fragment>
+        );
       })
     });
 
