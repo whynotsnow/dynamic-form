@@ -1,7 +1,7 @@
 import type { EffectFn } from 'form-chain-effect-engine';
 import type { Dispatch } from 'react';
+import type { FieldCapability } from '@whynotsnow/dynamic-form-core';
 import type { CustomEffectResultHandler, HandlerRegistrationOptions } from '../consumer/effects';
-import type { FieldCapability } from '../runtime';
 
 export type FieldValue = any;
 export type FormValues = Record<string, FieldValue>;

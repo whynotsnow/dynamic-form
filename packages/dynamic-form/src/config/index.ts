@@ -1,10 +1,15 @@
 export { getDefaultConfig } from './defaultConfig';
-export { processFormConfig } from './processor';
-export { getFormConfigDiagnostics, validateFormConfig } from './diagnostics';
+export {
+  getFormConfigDiagnostics,
+  processFormConfig,
+  validateFormConfig
+} from '@whynotsnow/dynamic-form-core';
 export type {
+  ApplyInitialEffectResultParams,
+  ConfigProcessInfo,
   FormConfigDiagnostic,
   FormConfigDiagnosticsOptions,
   FormConfigDiagnosticSeverity,
-  FormConfigValidationResult
-} from './diagnostics';
-export type { ConfigProcessInfo } from './processor';
+  FormConfigValidationResult,
+  ProcessFormConfigOptions
+} from '@whynotsnow/dynamic-form-core';

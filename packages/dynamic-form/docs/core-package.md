@@ -46,17 +46,17 @@ import { FormConfig, compileFormConfig } from '@whynotsnow/dynamic-form';
 import { FormConfig, validateFormConfig } from '@whynotsnow/dynamic-form-core';
 ```
 
-### 迁移边界
+### 包边界
 
-4.2.0 不删除 `@whynotsnow/dynamic-form` 的现有 public exports，也不强制用户迁移。core 包是新增入口，主要用于设计器、schema 管线、测试和非 React 环境。
+4.2.x 不删除 `@whynotsnow/dynamic-form` 的现有 public exports，也不强制用户迁移。core 包是纯能力的单一实现源，主要用于设计器、schema 管线、测试和非 React 环境。
 
-### 4.2 过渡源码边界
+### Core 单一实现源
 
-4.2 拆包后，`packages/dynamic-form/src` 中仍保留了一批 core 能力的旧源码副本。这是过渡遗留，不是长期设计。public exports 多数已经从 `@whynotsnow/dynamic-form-core` 转导，但 React 包内部仍有少量边界不能直接删除：
+`packages/dynamic-form/src` 不再维护 compiler、adapters、modules、rules、config processor、config diagnostics、field address 或纯 Runtime 的本地实现副本。这些能力统一由 `@whynotsnow/dynamic-form-core` 提供，React 包只负责消费 core 并提供 UI runtime：
 
-- `src/config/processor/`：React 包版本在初始化函数式 `initialValue` 时会调用本包 effect result handlers，用于处理 `formItemProps`、`componentProps`、group visibility 等 UI/effect handler 集成结果；core 版本只保留纯配置处理。
-- `src/runtime/useRuntimeState.ts`：这是 React hook，属于 `dynamic-form`；纯 runtime resolver 应从 core 复用。
-- `src/shared/types.ts` 和部分 `src/shared/utils/`：仍混有 React/AntD renderer、form adapter、effect handler 等包侧类型和工具。
-- `src/config/defaultConfig.ts`：负责 React 包默认配置和 effect handler 集成，属于 `dynamic-form`。
+- `src/state/useStoreInit.ts` 调用 core `processFormConfig`，并通过 `applyInitialEffectResult` 注入本包 effect result handler。
+- `src/runtime/useRuntimeState.ts` 是 React hook，内部复用 core `resolveRuntimeState`。
+- `src/shared/types.ts` 继续承载 React/AntD renderer、form adapter、effect handler 等包侧类型。
+- `src/config/defaultConfig.ts` 继续负责 React 包默认配置和 effect handler 集成。
 
-后续删除本地旧副本前，需要先满足三个条件：纯 core 行为测试已经迁到 `packages/dynamic-form-core`；React 包内部能稳定复用 core 的 import 已经切换；剩余测试只覆盖 React 集成行为，而不是继续直接 bundle 本地 core 副本。
+如果需要调整纯配置、编译、adapter、rule、field address 或 Runtime 规则，应优先修改 `packages/dynamic-form-core`，再通过 `@whynotsnow/dynamic-form` 的兼容 re-export 暴露给旧消费者。

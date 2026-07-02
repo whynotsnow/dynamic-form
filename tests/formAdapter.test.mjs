@@ -19,7 +19,7 @@ const modulePromise = build({
       import { headlessRenderer } from './packages/dynamic-form/src/consumer/render/headlessRenderer';
       import { assertRendererAdapter } from './packages/dynamic-form/src/consumer/render/rendererAdapter';
       import { FormChainContext } from './packages/dynamic-form/src/shared/context/FormChainContext';
-      import { processFormConfig } from './packages/dynamic-form/src/config/processor/configParser';
+      import { processFormConfig } from './packages/dynamic-form-core/src/config/processor/configParser';
 
       const defaultUIConfig = {
         formProps: {},

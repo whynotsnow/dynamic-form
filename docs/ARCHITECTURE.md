@@ -10,7 +10,7 @@ packages/dynamic-form-core/ @whynotsnow/dynamic-form-core 发布包
   docs/                     core package 文档，随包维护和发布
   tsup.config.ts            core 构建配置
 packages/dynamic-form/      @whynotsnow/dynamic-form 发布包
-  src/                      React consumer、Provider、hooks、renderers、component registry 和兼容导出
+  src/                      React consumer、Provider、hooks、renderers、component registry、effect handlers 和兼容导出
   docs/                     库文档，随包维护和发布
   tsup.config.ts            库构建配置
 apps/docs-site/          Docusaurus 文档站

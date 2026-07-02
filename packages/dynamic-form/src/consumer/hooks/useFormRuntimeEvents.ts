@@ -1,6 +1,6 @@
 import { useReducer } from 'react';
+import type { RuntimeState } from '@whynotsnow/dynamic-form-core';
 import type { DynamicFormFormAdapter, FormValues } from '../../shared/types';
-import type { RuntimeState } from '../../runtime';
 import { useFormChainContext } from '../../shared/context/FormChainContext';
 import { getChangedFieldIds } from '../../shared/utils';
 

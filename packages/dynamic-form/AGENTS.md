@@ -52,17 +52,12 @@ package 变更通常还需要关注：
 
 - `src/exports.ts`：package public export surface；tsup entry point。
 - `src/index.tsx`：`DynamicForm` 组件，组合 engine layer 和 UI layer。
-- `src/shared/types.ts`：核心 public/internal types。
-- `src/compiler/`：可选 compiler layer，把 `ModuleConfig[]` 展开为标准 `FormConfig`。
-- `src/modules/`：field module registry 和 default registry。
-- `src/adapters/`：adapter registry、passthrough adapter、schema adapters 和 compile-adapt pipeline。
-- `src/rules/`：声明式同步 rule evaluation 和 rule-to-effect compilation。
+- `src/shared/types.ts`：React/AntD/effect handler 相关 public/internal types；纯 core 类型从 `@whynotsnow/dynamic-form-core` 复用。
 - `src/consumer/provider/DynamicFormProvider.tsx`：provider layer，初始化 store、effect engine、context、初始化告警和 effect result handling。
 - `src/consumer/render/FormContent.tsx`：rendering layer，拥有 Ant Design `Form`、value change、submit、default rendering 和 render extension hooks。
-- `src/runtime/`：Runtime Layer，通过 `resolveRuntimeState()` 从 `FormState` 解析 `RuntimeState`。
+- `src/runtime/useRuntimeState.ts`：React hook，复用 core `resolveRuntimeState()`。
 - `src/state/reducer.ts`：Immer reducer，维护 field/group meta、batched updates 和 dynamic UI config。
-- `src/state/useStoreInit.ts`：初始化 reducer state，并把 initial values 同步到 AntD Form。
-- `src/config/processor/`：把用户 config 转换为 `effectMap`、`fieldRegistry`、initial values、initialized fields 和 initialized groups。
+- `src/state/useStoreInit.ts`：调用 core `processFormConfig` 初始化 reducer state，并把 initial values 同步到 AntD Form。
 - `src/config/defaultConfig.ts`：导出的默认配置 helper。
 - `src/consumer/effects/`：通过已注册 handlers 应用 effect/initialValue 返回对象。
 - `src/consumer/hooks/`：submit/change events、field participation 和 handler initialization hooks。

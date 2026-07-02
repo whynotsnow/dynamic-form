@@ -12,7 +12,7 @@ import { useFormChainContext } from '../../shared/context/FormChainContext';
 import { ComponentRegistryManager } from './componentRegistry';
 import FieldComponentRenderer from './FieldComponentRenderer';
 
-import { useRuntimeState } from '../../runtime';
+import { useRuntimeState } from '../../runtime/useRuntimeState';
 import { getFieldName, normalizeFieldName } from '../../shared/utils';
 import { mergeUIConfig } from '../../shared/utils/uiConfig';
 import { resolveFormAdapter, resolveFormHandle } from '../formAdapter';

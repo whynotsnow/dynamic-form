@@ -20,7 +20,17 @@ export type {
   ValidationRule
 } from './shared/types';
 
-export { getFieldName, resolveFieldAddress } from './shared/utils';
+export {
+  createFieldAddressRegistry,
+  createFieldValueView,
+  getChangedFieldIds,
+  getFieldName,
+  getValueAtNamePath,
+  mergeFormValues,
+  normalizeFieldName,
+  resolveFieldAddress,
+  setValueAtNamePath
+} from './shared/utils';
 
 export { compileFormConfig } from './compiler';
 export type {
@@ -82,10 +92,20 @@ export type {
 
 export type { FieldCapability, GroupCapability, NodeCapability, RuntimeState } from './runtime';
 export {
+  getAllFieldIds,
+  getAllFields,
+  getAllGroupIds,
+  getAllGroups,
+  getContainerById,
+  getFieldById,
+  getFieldGroup,
   getFieldRuntimeSnapshot,
+  getGroupById,
+  getParentContainerId,
   getRenderedFieldIds,
   getSubmitableFieldIds,
   getValidatableFieldIds,
+  isGroupedField,
   resolveFieldCapability,
   resolveGroupCapability,
   resolveRuntimeState

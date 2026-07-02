@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
+import { getAllFields } from '@whynotsnow/dynamic-form-core';
+import type { RuntimeState } from '@whynotsnow/dynamic-form-core';
 import type { DynamicFormFormAdapter, FieldValue, FormState } from '../../shared/types';
-import type { RuntimeState } from '../../runtime';
-import { getAllFields } from '../../runtime/selectors';
 import { getFieldName } from '../../shared/utils';
 import { resolveFieldParticipationPolicy } from './fieldParticipationPolicy';
 

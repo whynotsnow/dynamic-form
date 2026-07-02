@@ -2,7 +2,17 @@
 
 // 通用工具函数
 export * from './utils';
-export * from './fieldAddress';
+export {
+  createFieldAddressRegistry,
+  createFieldValueView,
+  getChangedFieldIds,
+  getFieldName,
+  getValueAtNamePath,
+  mergeFormValues,
+  normalizeFieldName,
+  resolveFieldAddress,
+  setValueAtNamePath
+} from '@whynotsnow/dynamic-form-core';
 
 // 初始化检测工具
 export * from './initializationChecker';
