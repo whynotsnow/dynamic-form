@@ -6,7 +6,7 @@ slug: /
 
 This is the entry point for DynamicForm 4.2 documentation. New users should start with Quick Start to run a minimal form, then use scenario docs for configuration, effects, validation, and extensions. Core Package, Architecture, Runtime, Compiler, Adapter, Renderer, and node tree topics are for deeper understanding and maintenance.
 
-### Recommended Path
+## Recommended Path
 
 1. 🚀 [Quick Start](./quick-start.md): installation, minimal form, submit handling, and local demos.
 2. ⚙️ [Configuration Guide](./configuration.md): fields, groups, node trees, UI config, and built-in components.
@@ -18,11 +18,11 @@ This is the entry point for DynamicForm 4.2 documentation. New users should star
 8. 🧾 [CHANGELOG](./changelog.md): reader-focused release summaries and related topic entry points.
 9. 🛠️ [Maintenance Guide](./maintenance.md): tests, builds, verification, and documentation maintenance.
 
-### Documentation Scope
+## Documentation Scope
 
 The docs describe the current implementation in `src`, not aspirational APIs. When implementation changes, update the closest topic file first, then update the root `README.md` summary or links if needed.
 
-### Public Surface Summary
+## Public Surface Summary
 
 The package exports:
 
@@ -69,7 +69,7 @@ The package exports:
 - Core public types from `packages/dynamic-form/src/shared/types.ts`.
 - Runtime types: `FieldCapability`, `GroupCapability`, and `RuntimeState`.
 
-### Design Summary
+## Design Summary
 
 DynamicForm combines optional preprocessing capabilities with a stable runtime pipeline:
 
@@ -81,15 +81,15 @@ DynamicForm combines optional preprocessing capabilities with a stable runtime p
 - Consumer rendering passes runtime-capable state to a renderer; the default `antdRenderer` renders Ant Design UI.
 - Effects and handlers translate dependency results into semantic form, meta, group, or UI updates.
 
-### 4.2 Core Package
+## 4.2 Core Package
 
 DynamicForm 4.2 adds the `@whynotsnow/dynamic-form-core` workspace/package for config processing, config diagnostics, Compiler, Adapters, Rule Engine, pure Runtime resolvers, Runtime inspection helpers, and shared pure types. `@whynotsnow/dynamic-form` remains the compatible main entry for React/AntD runtime APIs and re-exports core public APIs. See [Core Package](./core-package.md).
 
-### 4.1 Adapter Foundation
+## 4.1 Adapter Foundation
 
 DynamicForm 4.1 adds `formAdapter` and `renderer` extension points. Existing `<DynamicForm form={form} />` usage remains compatible; when adapters are omitted, the default AntD implementation is used. 4.1.1 adds adapter runtime guards, `createMemoryFormAdapter`, and `headlessRenderer` for tests, custom renderer examples, and visual-builder preview mode. 4.1.2 adds config diagnostics, designer metadata, and Runtime inspection helpers so visual builders can reuse the same config contract during save, preview, and debugging flows. 4.2 moves these UI-library agnostic capabilities into `@whynotsnow/dynamic-form-core`, while `@whynotsnow/dynamic-form` continues to re-export the core public APIs.
 
-### 4.0 Configuration Model
+## 4.0 Configuration Model
 
 DynamicForm 4.0 makes `FormConfig.nodes` and `ModuleFormConfig.nodes` part of the current capability baseline. `fields` and `groups` remain compatible, but internally they are normalized into a unified node tree:
 
@@ -100,7 +100,7 @@ DynamicForm 4.0 makes `FormConfig.nodes` and `ModuleFormConfig.nodes` part of th
 
 Existing `fields`, `groups`, and mixed configurations do not need to migrate; they are treated as top-level fields and top-level containers.
 
-### Configuration Pipeline
+## Configuration Pipeline
 
 DynamicForm provides an optional adapter/rule/compiler pipeline before the `FormConfig` runtime pipeline.
 
@@ -110,6 +110,6 @@ DynamicForm provides an optional adapter/rule/compiler pipeline before the `Form
 - [Schema Adapters](./schema-adapters.md): JsonSchema, OpenAPI, and metadata adapters built on Adapter Foundation.
 - Existing `FormConfig` and `DynamicForm` usage remains compatible.
 
-### Field Address
+## Field Address
 
 DynamicForm separates stable field IDs from Ant Design `NamePath` values. Omitting `name` continues to use `id`, preserving existing configurations. Inside containers, field `name` is combined with the parent container `name` prefix. See [Field Address](./field-address.md).

@@ -2,7 +2,7 @@
 
 `FormContent` provides the default rendering pipeline and exposes layered extension points. Starting in 4.1, the default UI is provided by `antdRenderer`; applications can keep using render hooks for local changes or replace the default shell through `renderer`.
 
-### Default Rendering
+## Default Rendering
 
 Flat forms:
 
@@ -29,7 +29,7 @@ The default `antdRenderer` uses `Form`, `Row`, `Col`, `Card`, and `Button`.
 
 `FieldComponentRenderer` resolves the component, applies `Form.Item` props, maps runtime disabled/readonly state, and suppresses rules when a field is not runtime-validatable. Field-level `required: true` is automatically merged into a required rule by the default Ant Design renderer, while explicit required rules take precedence.
 
-### 4.1 Form / Renderer Adapter
+## 4.1 Form / Renderer Adapter
 
 4.1 adds two optional extension points:
 
@@ -68,7 +68,7 @@ A custom component-library renderer can reuse the core Runtime and render hooks 
 - `renderer.renderFieldItem()` must own the field item shell and receive the renderer-generated `defaultRender`; render hooks may wrap or replace it afterward.
 - Custom adapters should pass `assertFormAdapter` / `assertRendererAdapter` before entering preview or production rendering paths.
 
-### Nodes and Container Rendering Contract
+## Nodes and Container Rendering Contract
 
 The 4.0 `nodes` entry renders root nodes in order as continuous field segments and container blocks:
 
@@ -79,13 +79,13 @@ The 4.0 `nodes` entry renders root nodes in order as continuous field segments a
 
 As a result, `renderFields` applies not only to legacy flat fields or fields inside groups, but also to top-level continuous fields, field segments split by containers in mixed root nodes, nested container field segments, and repeatable item field segments.
 
-### Component Registry
+## Component Registry
 
 Use `componentRegistry` to register business-specific field components. Custom components receive `field`, `value`, `onChange`, `form`, and optional `formAdapter`.
 
 By default, custom components do not replace built-ins. Set `allowOverride: true` only when replacement is intentional.
 
-### Render Hooks
+## Render Hooks
 
 Render hooks are layered from smallest to largest scope:
 
@@ -101,7 +101,7 @@ The `renderer` creates the default UI, while render hooks remain the business-si
 
 This priority is unchanged in 4.1.2: a custom renderer decides the default UI, but it cannot suppress business-provided render hooks. If a hook returns a completely new React node, that return value replaces the renderer default for that layer.
 
-### Choosing an Extension Point
+## Choosing an Extension Point
 
 Use `uiConfig` when the default structure is still correct and only Ant Design props need to change. Use `componentRegistry` when the field input itself is business-specific. Use render hooks when the layout structure needs to change. Implement `formAdapter` and `renderer` when another Form runtime or UI shell needs to be connected.
 

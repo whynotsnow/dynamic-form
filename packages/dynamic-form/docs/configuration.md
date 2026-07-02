@@ -2,7 +2,7 @@
 
 DynamicForm 通过 `FormConfig` 驱动表单。4.0 支持 `fields`、`groups` 和统一节点树 `nodes` 三种入口。配置描述字段、container、组件、初始值、校验、联动关系和 UI 行为。
 
-### 平铺表单
+## 平铺表单
 
 ```ts
 import type { FormConfig } from '@whynotsnow/dynamic-form';
@@ -19,7 +19,7 @@ const formConfig: FormConfig = {
 };
 ```
 
-### 分组表单
+## 分组表单
 
 ```ts
 const formConfig: FormConfig = {
@@ -40,7 +40,7 @@ const formConfig: FormConfig = {
 };
 ```
 
-### 混合表单
+## 混合表单
 
 `FormConfig` 可以同时包含顶层 `fields`、`groups` 和 `nodes`。默认 renderer 会按归一化后的根节点顺序渲染：先渲染 `nodes`，再渲染 `fields`，最后渲染由 `groups` 转换而来的 container。
 
@@ -59,7 +59,7 @@ const formConfig: FormConfig = {
 
 字段 ID 与 group ID 在整个表单内必须唯一。Group 只影响 UI 和行为作用域。字段可以通过 `name` 声明独立的 Ant Design `NamePath`，详见 [Field Address](./field-address.md)。
 
-### 节点树
+## 节点树
 
 4.0 推荐在需要嵌套结构、递归布局或重复项时使用 `nodes`。节点树由 `FieldNode` 和 `ContainerNode` 组成：
 
@@ -126,7 +126,7 @@ const formConfig: FormConfig = {
 
 Repeatable container 使用 Ant Design `Form.List` 渲染。当前默认渲染负责读取已有 list items；新增、删除、排序等操作应通过外层业务 UI、render hooks 或自定义容器封装提供。
 
-### 字段配置
+## 字段配置
 
 | 配置项 | 说明 |
 | --- | --- |
@@ -151,7 +151,7 @@ Repeatable container 使用 Ant Design `Form.List` 渲染。当前默认渲染�
 
 `required` 是字段声明属性。默认 Ant Design renderer 会把 `required: true` 合并成真实 `Form.Item.rules`，并显示 required 标记；如果 `rules` 中已经显式声明 required rule，则以显式 rule 为准，不重复生成。
 
-### 函数式初始值
+## 函数式初始值
 
 `initialValue` 可以是函数。函数接收已计算的初始值，可以返回原始值，也可以返回 effect result 对象。
 
@@ -179,7 +179,7 @@ Repeatable container 使用 Ant Design `Form.List` 渲染。当前默认渲染�
 
 函数式初始值返回的对象会进入和运行时 effect 相同的 handler 系统。
 
-### 分组配置
+## 分组配置
 
 `groups` 是 4.0 之前的单层分组入口，仍然兼容。配置处理阶段会把每个 group 转换为顶层 container。
 
@@ -195,7 +195,7 @@ Repeatable container 使用 Ant Design `Form.List` 渲染。当前默认渲染�
 
 分组可见性会影响子字段的渲染和提交参与。
 
-### Container 配置
+## Container 配置
 
 | 配置项 | 说明 |
 | --- | --- |
@@ -212,7 +212,7 @@ Repeatable container 使用 Ant Design `Form.List` 渲染。当前默认渲染�
 
 Container 可见性会递归影响所有后代字段和子 container 的渲染、提交和校验参与。
 
-### Designer Metadata
+## Designer Metadata
 
 4.1.2 起，字段、legacy group 和 container 都可以携带 `designer` 元数据。它只面向可视化配置系统，用来保存设计器标题、说明、分类、图标、排序、锁定状态、设计器内隐藏状态或业务自定义 metadata。
 
@@ -238,7 +238,7 @@ const formConfig: FormConfig = {
 
 `designer` 会随配置透传和保留，但不会进入 Runtime 策略，也不会影响 effect、提交数据、校验、字段参与清理或默认 renderer 行为。设计器如果需要根据这些信息隐藏或锁定画布节点，应在可视化系统内自行消费。
 
-### 配置诊断
+## 配置诊断
 
 4.1.2 新增 `getFormConfigDiagnostics(config, options?)` 和 `validateFormConfig(config, options?)`。它们用于可视化系统保存前检查、导入配置检查和测试断言，不替代 `processFormConfig()`；运行时配置处理仍保持原有抛错行为。
 
@@ -256,7 +256,7 @@ if (!result.valid) {
 
 诊断覆盖重复 field/container/group id、重复 name path、repeatable container 缺少 `name`、空 children、未知 component、无效 group field 结构和未知 dependent。重复标识、无效结构等问题会返回 `error`；未知 component/dependent 更适合作为设计器提示，默认返回 `warning`。
 
-### UI 配置
+## UI 配置
 
 `uiConfig` 用于调整默认 Ant Design 外壳：
 
@@ -282,7 +282,7 @@ if (!result.valid) {
 - `colProps: { span: 8 }`
 - 空的 form、button、card、submit area、form item props
 
-### 内置组件
+## 内置组件
 
 内置组件注册在 `DefaultRegistryFieldComponents`：
 
@@ -301,6 +301,6 @@ if (!result.valid) {
 
 `SelectField` 从字段配置读取 `options`。`Select` 通常通过 `componentProps` 接收 options。
 
-### `values` 初始数据
+## `values` 初始数据
 
 `values` prop 适用于编辑或详情回显场景。它会在 store 初始化时合并并同步到 Ant Design Form。初始化后，Ant Design Form 仍然是运行时值来源。

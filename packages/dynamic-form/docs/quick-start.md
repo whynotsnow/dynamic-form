@@ -2,7 +2,7 @@
 
 本页用于把第一个 DynamicForm 跑起来。先完成安装、最小配置和提交处理；需要更多字段、联动或扩展时，再进入对应专题文档。
 
-### 安装
+## 安装
 
 ```bash
 pnpm add @whynotsnow/dynamic-form antd react react-dom
@@ -16,7 +16,7 @@ pnpm run start
 
 本地 demo server 默认运行在 `http://localhost:3000`。
 
-### 渲染第一个表单
+## 渲染第一个表单
 
 ```tsx
 import { Form } from 'antd';
@@ -65,7 +65,7 @@ export function BasicForm() {
 - `useInitHandlers`：初始化默认 effect handlers。
 - `DynamicForm`：接收 Ant Design `form` 实例和 `formConfig`，并负责渲染与提交。
 
-### 增加分组
+## 增加分组
 
 字段较多时，可以用 `groups` 表达业务区块。默认渲染会把每个 group 放进 Ant Design `Card`。
 
@@ -86,7 +86,7 @@ const formConfig: FormConfig = {
 
 字段和 group 的详细配置见 [配置指南](./configuration.md)。
 
-### 使用 4.0 节点树
+## 使用 4.0 节点树
 
 需要嵌套区块、嵌套提交值或重复项时，可以使用 `nodes`。`nodes` 中的 container 会渲染为默认 `Card`，并把自己的 `name` 作为子字段的 Ant Design 值路径前缀：
 
@@ -113,7 +113,7 @@ const formConfig: FormConfig = {
 
 提交值形状为 `{ profile: { profileName: string } }`。`profileName` 这个 `id` 仍然用于 Runtime、effect graph 和 meta 更新。
 
-### 加一个简单联动
+## 加一个简单联动
 
 通过 `dependents` 声明依赖字段，通过 `effect` 返回字段状态或 UI 更新。
 
@@ -142,7 +142,7 @@ const formConfig: FormConfig = {
 
 默认 handlers 支持 `value`、`visible`、`disabled`、`readonly`、`componentProps`、`formItemProps` 等返回 key。更完整的说明见 [Effect 与处理器](./effects-and-handlers.md)。
 
-### 下一步
+## 下一步
 
 - 继续配置字段、分组、内置组件和 UI 外壳：阅读 [配置指南](./configuration.md)。
 - 查找按场景组织的配置示例：阅读 [组件使用指南](./development.md)。

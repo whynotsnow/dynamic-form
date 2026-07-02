@@ -4,7 +4,7 @@
 
 core 包不发布 React consumer、Provider、hooks、AntD renderer、默认字段组件和 effect result handler runtime。需要完整 React 表单运行时和默认 Ant Design UI 时，使用 `@whynotsnow/dynamic-form`。
 
-### 文档范围
+## 文档范围
 
 core 文档面向直接依赖 `@whynotsnow/dynamic-form-core` 的配置平台、可视化设计器、schema 管线、测试和非 React 环境。它只说明纯核心能力，不复制 React/AntD 包的渲染、Provider、hooks 和 effect handler 文档。
 
@@ -14,7 +14,7 @@ core 文档面向直接依赖 `@whynotsnow/dynamic-form-core` 的配置平台、
 - [Rule Engine](./rule-engine.md)
 - [Runtime 与 inspection](./runtime-and-inspection.md)
 
-### 包关系
+## 包关系
 
 4.2 起，DynamicForm 分为两个 npm 包：
 

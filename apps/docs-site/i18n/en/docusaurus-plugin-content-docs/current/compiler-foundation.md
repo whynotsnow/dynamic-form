@@ -12,7 +12,7 @@ flowchart TD
 
 This is additive. Existing `FormConfig` usage does not need to change.
 
-### Field Modules
+## Field Modules
 
 A field module packages reusable business-field behavior:
 
@@ -46,7 +46,7 @@ Modules describe domain fields. Render components are still resolved by the exis
 
 `FieldModule<TOptions>` and `ModuleConfig<TOptions>` provide module-level option typing. Their default remains `Record<string, unknown>`, so existing callers do not need to migrate. The registry still resolves modules by runtime `type`; this version does not attempt a global type-to-options mapping across heterogeneous config arrays.
 
-### Registry
+## Registry
 
 Use `ModuleRegistryManager` for isolated registries or `defaultModuleRegistry` for shared registration.
 
@@ -64,7 +64,7 @@ registry.unregister('UserSelector');
 
 Duplicate module types are rejected by default. Pass `{ override: true }` when replacement is intentional.
 
-### Compiler
+## Compiler
 
 Compile module config into standard `FormConfig`:
 
@@ -122,7 +122,7 @@ The compiler returns:
 
 `formConfig` can be passed to `processFormConfig()` or `DynamicForm`.
 
-### Mixed Fields And Groups
+## Mixed Fields And Groups
 
 Compiler input is unified as `ModuleFormConfig`. Fields may be declared through flat `fields` and join legacy groups through `groupId`; recursive structure can be declared through `nodes`. Group/container rules only support `show` and `hide`. Manual `effect` runs first, and rules run afterward with matching result keys taking precedence.
 
@@ -145,7 +145,7 @@ compileFormConfig({
 
 The compiler validates globally unique IDs, valid group references, and non-empty groups.
 
-### Nodes And Containers
+## Nodes And Containers
 
 `ModuleFormConfig.nodes` declares recursive module trees. Field nodes use `nodeType: 'field'`; container nodes use `nodeType: 'container'`:
 
@@ -175,7 +175,7 @@ The compiler expands field modules into `FieldNode` and containers into `Contain
 
 Containers may declare `name`; config processing uses it as an Ant Design `NamePath` prefix for descendant fields. Containers with `repeatable: true` must declare `name`; the default renderer uses Ant Design `Form.List` for existing repeated items.
 
-### Hooks
+## Hooks
 
 Compiler hooks allow compile-time extension:
 
@@ -193,7 +193,7 @@ compileFormConfig(moduleFormConfig, {
 
 Hooks operate on compiler context only. They should not mutate Ant Design Form instances or React runtime state.
 
-### Boundaries
+## Boundaries
 
 - `compileFormConfig()` creates `FormConfig`.
 - `processFormConfig()` keeps preparing runtime data.

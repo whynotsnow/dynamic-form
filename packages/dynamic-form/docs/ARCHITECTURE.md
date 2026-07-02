@@ -2,7 +2,7 @@
 
 DynamicForm 4.2 由 `@whynotsnow/dynamic-form-core` 纯核心包和 `@whynotsnow/dynamic-form` React/AntD 兼容包组成。core 承载 Field Address、统一节点树、Adapter / Module / Rule / Compiler 预处理能力、配置处理、配置诊断和纯 Runtime resolver；React/AntD 包承载 `DynamicForm`、Provider、hooks、Form Adapter / Renderer Adapter、component registry、默认 AntD renderer 和 effect handler runtime。核心目标是让字段逻辑标识和值路径分离，并让外部输入归一化、领域模块展开、配置解析、状态维护、运行时策略、表单值读写和 UI 渲染各自保持清晰边界。
 
-### 仓库结构
+## 仓库结构
 
 当前仓库是 monorepo：
 
@@ -13,7 +13,7 @@ DynamicForm 4.2 由 `@whynotsnow/dynamic-form-core` 纯核心包和 `@whynotsnow
 - `apps/docs-site/` 是 Docusaurus 文档站，使用站点自己的 zh-CN docs 和 `i18n/en` 文档内容。
 - `demos/` 保留 Vite demo 和 `demoRegistry`，站点只复用 demo 组件与注册信息，不复制 demo 业务逻辑。
 
-### 模块关系
+## 模块关系
 
 ```mermaid
 flowchart TD
@@ -44,7 +44,7 @@ flowchart TD
 
 4.2 主流程仍然是 `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`。`DynamicForm` 继续接收现有 `FormConfig`；Adapter、Compiler、Rule Engine 和 Schema Adapters 是可选预处理层，最终仍输出标准 `FormConfig`。`fields`、`groups` 和 `nodes` 会在 Config Layer 归一成同一棵节点树。未传 `formAdapter` / `renderer` 时，默认使用 `createAntdFormAdapter(form)` 和 `antdRenderer`。区别在于 UI-library agnostic 的配置、编译、规则和纯 Runtime 能力已归属 core 包，React/AntD 包负责消费这些能力并提供默认渲染运行时。
 
-### 关键文件
+## 关键文件
 
 - `packages/dynamic-form-core/src/adapters/`：把 module-like、JsonSchema、OpenAPI 和 metadata 输入归一化为 `ModuleFormConfig`。
 - `packages/dynamic-form-core/src/modules/`：定义 `FieldModule` 协议和模块注册器。
@@ -63,7 +63,7 @@ flowchart TD
 - `packages/dynamic-form/src/consumer/effects/`：通过 handler 系统应用 effect 返回值。
 - `packages/dynamic-form/src/consumer/render/componentRegistry.tsx`：提供内置组件和自定义组件注册能力。
 
-### 数据流
+## 数据流
 
 1. 可选 Adapter 把外部输入归一化为 `ModuleFormConfig`。
 2. 可选 Compiler 展开字段模块、编译字段/group rules，并生成标准 `FormConfig` 与组件注册表。
@@ -78,7 +78,7 @@ flowchart TD
 11. 用户输入触发 runtime 过滤后的校验，再把变更值交给 effect engine。
 12. effect 返回值进入 `applyEffectResult`，handler 通过 form adapter 更新表单值，或更新字段 meta、分组 meta、动态 UI 配置。
 
-### 状态归属
+## 状态归属
 
 Form runtime 负责；默认实现是 Ant Design Form：
 
@@ -100,7 +100,7 @@ DynamicForm reducer 负责：
 
 reducer 不维护重复的 values store。更新值的 effect handler 应调用上下文提供的 `setFieldValue` 或 `formAdapter`。
 
-### 分层职责
+## 分层职责
 
 - Core Adapter Layer：只负责把外部输入转换为 `ModuleFormConfig`，不决定 renderer 行为。
 - Core Module / Compiler Layer：展开领域字段模块、装配 flat/grouped/mixed/nodes 结构，并输出标准 `FormConfig`。
@@ -111,7 +111,7 @@ reducer 不维护重复的 values store。更新值的 effect handler 应调用�
 - Consumer Layer：连接 Provider、form adapter、renderer adapter、hooks、effect 结果处理和组件注册。
 - Shared Layer：core 存放纯公共类型和工具，React/AntD 包补充 React context、初始化检查和 UI 相关类型。
 
-### 维护约束
+## 维护约束
 
 - 字段查找应使用 `configProcessInfo.fieldRegistry`，因为字段可能是平铺字段，也可能在任意 container 内。
 - `FormContent` 应对每个 state snapshot 只计算一次 Runtime。

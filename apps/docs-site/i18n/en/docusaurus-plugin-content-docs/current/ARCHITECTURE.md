@@ -2,7 +2,7 @@
 
 DynamicForm 4.2 is split into the pure `@whynotsnow/dynamic-form-core` package and the React/AntD-compatible `@whynotsnow/dynamic-form` package. Core owns Field Address, the unified node tree, Adapter / Module / Rule / Compiler preprocessing, config processing, config diagnostics, and pure Runtime resolvers. The React/AntD package owns `DynamicForm`, Provider, hooks, Form Adapter / Renderer Adapter, component registry, the default AntD renderer, and effect handler runtime.
 
-### Repository Layout
+## Repository Layout
 
 The repository is now a monorepo:
 
@@ -13,7 +13,7 @@ The repository is now a monorepo:
 - `apps/docs-site/` is the Docusaurus site, with site-specific zh-CN docs and `i18n/en` content.
 - `demos/` keeps the Vite demos and `demoRegistry`; the site reuses demo components and registry metadata without copying demo business logic.
 
-### Module Map
+## Module Map
 
 ```mermaid
 flowchart TD
@@ -44,7 +44,7 @@ flowchart TD
 
 The 4.2 main flow remains `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`. `DynamicForm` continues to accept the existing `FormConfig`; Adapter, Compiler, Rule Engine, and Schema Adapters are optional preprocessing layers that still output standard `FormConfig`. `fields`, `groups`, and `nodes` are normalized into the same node tree in the Config Layer. When `formAdapter` / `renderer` are omitted, DynamicForm uses `createAntdFormAdapter(form)` and `antdRenderer`. The difference is package ownership: UI-library agnostic config, compiler, rule, and pure Runtime capabilities live in core, while the React/AntD package consumes those capabilities and provides the default rendering runtime.
 
-### Important Files
+## Important Files
 
 - `packages/dynamic-form-core/src/adapters/`: normalizes module-like, JsonSchema, OpenAPI, and metadata input into `ModuleFormConfig`.
 - `packages/dynamic-form-core/src/modules/`: defines the `FieldModule` protocol and module registry.
@@ -63,7 +63,7 @@ The 4.2 main flow remains `FormConfig -> adapter/compiler -> processFormConfig -
 - `packages/dynamic-form/src/consumer/effects/`: applies effect results through handlers.
 - `packages/dynamic-form/src/consumer/render/componentRegistry.tsx`: provides built-in components and custom registration.
 
-### Data Flow
+## Data Flow
 
 1. An optional adapter normalizes external input into `ModuleFormConfig`.
 2. The optional compiler expands field modules, compiles field/group rules, and creates standard `FormConfig` plus a component registry.
@@ -78,7 +78,7 @@ The 4.2 main flow remains `FormConfig -> adapter/compiler -> processFormConfig -
 11. User input triggers runtime-filtered validation and then the effect engine.
 12. Effect results pass through `applyEffectResult`, and handlers update form values through the form adapter or update field meta, group meta, or dynamic UI config.
 
-### State Ownership
+## State Ownership
 
 The form runtime owns values, validation errors and warnings, touched and validating state, and submitted value retrieval. The default form runtime is Ant Design Form.
 
@@ -86,7 +86,7 @@ DynamicForm reducer owns flat field state, container/group field state, node sta
 
 The reducer intentionally does not maintain a duplicate value store. Effect handlers that update values should call the provided `setFieldValue` helper or `formAdapter`.
 
-### Layer Responsibilities
+## Layer Responsibilities
 
 - Core Adapter Layer: converts external input into `ModuleFormConfig` without deciding renderer behavior.
 - Core Module / Compiler Layer: expands domain field modules, assembles flat/grouped/mixed/nodes structure, and outputs standard `FormConfig`.
@@ -97,7 +97,7 @@ The reducer intentionally does not maintain a duplicate value store. Effect hand
 - Consumer Layer: connects provider, form adapter, renderer adapter, hooks, effect results, and component registry.
 - Shared Layer: core contains pure public types and utilities; the React/AntD package adds React context, initialization checks, and UI-related types.
 
-### Maintenance Constraints
+## Maintenance Constraints
 
 - Field lookup should use `configProcessInfo.fieldRegistry` because fields can be flat or inside any container.
 - Runtime should be computed once per state snapshot in `FormContent`.

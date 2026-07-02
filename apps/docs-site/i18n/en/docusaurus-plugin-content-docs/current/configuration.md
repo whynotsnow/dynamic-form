@@ -2,7 +2,7 @@
 
 DynamicForm is driven by `FormConfig`. Version 4.0 supports three entry points: `fields`, `groups`, and the unified node tree `nodes`. Configuration describes fields, containers, components, initial values, validation, dependencies, and UI behavior.
 
-### Flat Config
+## Flat Config
 
 ```ts
 import type { FormConfig } from '@whynotsnow/dynamic-form';
@@ -19,7 +19,7 @@ const formConfig: FormConfig = {
 };
 ```
 
-### Grouped Config
+## Grouped Config
 
 ```ts
 const formConfig: FormConfig = {
@@ -34,7 +34,7 @@ const formConfig: FormConfig = {
 };
 ```
 
-### Mixed Config
+## Mixed Config
 
 `FormConfig` may contain top-level `fields`, `groups`, and `nodes` at the same time. The default renderer renders normalized root nodes in order: `nodes` first, then `fields`, then `groups` converted into containers.
 
@@ -53,7 +53,7 @@ const formConfig: FormConfig = {
 
 Field IDs and group IDs must be globally unique. Groups affect UI and behavior scope. A field may declare an independent Ant Design `NamePath` through `name`; see [Field Address](./field-address.md).
 
-### Node Tree
+## Node Tree
 
 Use `nodes` when you need nested sections, recursive layout, or repeated items. A node tree is composed of `FieldNode` and `ContainerNode`:
 
@@ -96,7 +96,7 @@ This writes values as `{ shipping: { shippingCity, contact: { shippingContactNam
 
 For repeated items, set `repeatable: true` on a container. Repeatable containers must declare `name`. Repeatable containers use Ant Design `Form.List`. The current default renderer reads existing list items; add, remove, and reorder controls should be supplied by business UI, render hooks, or a custom container wrapper.
 
-### Field Config
+## Field Config
 
 Common options include `id`, optional `name`, `component`, `label`, `rules`, `required`, `span`, `style`, `initialValue`, `initialVisible`, `initialDisabled`, `preserveValueOnHide`, `restoreValueOnShow`, `dependents`, `effect`, `formItemProps`, `componentProps`, and `designer`. `id` remains the stable runtime/effect identity, while `name` is the Ant Design value path.
 
@@ -104,19 +104,19 @@ Common options include `id`, optional `name`, `component`, `label`, `rules`, `re
 
 `initialValue` may be static or a function. Function initial values can return a raw value or an effect result object, which is routed through the same handler system used by runtime effects.
 
-### Group Config
+## Group Config
 
 `groups` is the pre-4.0 single-level grouping entry point and remains compatible. Config processing converts each group into a top-level container.
 
 Groups support `id`, `title`, `fields`, `initialVisible`, `dependents`, `effect`, and `designer`. Group visibility affects child field rendering and submit participation.
 
-### Container Config
+## Container Config
 
 Containers support `nodeType: 'container'`, globally unique `id`, optional `title`, optional Ant Design `NamePath` prefix `name`, recursive `children`, `initialVisible`, `dependents`, `effect`, `repeatable`, and `designer`. Repeatable containers must declare `name` and render through Ant Design `Form.List`.
 
 Container visibility recursively affects rendering, submission, and validation participation for all descendant fields and containers.
 
-### Designer Metadata
+## Designer Metadata
 
 Starting in 4.1.2, fields, legacy groups, and containers may carry `designer` metadata. It is intended only for visual builders, such as designer title, description, category, icon, order, locked state, designer-only visibility, or custom metadata.
 
@@ -142,7 +142,7 @@ const formConfig: FormConfig = {
 
 `designer` is preserved with the config but ignored by Runtime, effects, submission, validation, field participation cleanup, and the default renderer. If a visual builder needs to hide or lock canvas nodes, it should consume this metadata in the builder layer.
 
-### Config Diagnostics
+## Config Diagnostics
 
 4.1.2 adds `getFormConfigDiagnostics(config, options?)` and `validateFormConfig(config, options?)`. They are intended for visual-builder save checks, imported config checks, and tests. They do not replace `processFormConfig()`, which keeps its existing runtime error behavior.
 
@@ -160,14 +160,14 @@ if (!result.valid) {
 
 Diagnostics cover duplicate field/container/group ids, duplicate name paths, repeatable containers without `name`, empty children, unknown components, invalid group field structures, and unknown dependents. Structural problems are returned as `error`; unknown components or dependents are returned as `warning` by default.
 
-### UI Config
+## UI Config
 
 `uiConfig` customizes the default Ant Design shell, including `formProps`, `buttonProps`, `cardProps`, `rowProps`, `colProps`, `submitAreaProps`, and `formItemProps`.
 
-### Built-In Components
+## Built-In Components
 
 Built-in components include `Password`, `ConfirmPassword`, `TextInput`, `NumberInput`, `SelectField`, `DatePicker`, `Switch`, `Rate`, `TextDisplay`, `CheckboxGroup`, `Select`, and `TextArea`.
 
-### Initial Values From `values`
+## Initial Values From `values`
 
 The optional `values` prop is intended for edit/detail scenarios. It is merged during store initialization and synchronized into the Ant Design Form instance. Ant Design Form remains the runtime source of truth afterward.

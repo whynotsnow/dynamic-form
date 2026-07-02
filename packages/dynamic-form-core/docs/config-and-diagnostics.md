@@ -2,7 +2,7 @@
 
 core 包提供 `processFormConfig`、`getFormConfigDiagnostics` 和 `validateFormConfig`，用于把用户配置归一化为 Runtime 输入，并在保存、导入或测试阶段提前发现配置问题。
 
-### `processFormConfig`
+## `processFormConfig`
 
 `processFormConfig(config)` 是运行时配置处理入口。它接受 `FormConfig`，并输出 effect graph、字段和 container registry、field address registry、initial values、初始化后的字段状态和 container/group 状态。
 
@@ -14,7 +14,7 @@ core 包提供 `processFormConfig`、`getFormConfigDiagnostics` 和 `validateFor
 
 处理阶段会保持字段 `id` 作为 Runtime、effect 和 meta 更新的稳定标识；字段或 container 的 `name` 只影响表单值路径。
 
-### 诊断 API
+## 诊断 API
 
 `getFormConfigDiagnostics(config, options?)` 返回诊断列表，适合可视化配置系统保存前检查、导入检查和测试断言。
 
@@ -32,7 +32,7 @@ if (!result.valid) {
 }
 ```
 
-### 诊断边界
+## 诊断边界
 
 诊断 API 不替代 `processFormConfig()`。运行时配置处理遇到结构性错误仍会抛错；诊断 API 用于在运行前给设计器或导入流程提供更友好的错误列表。
 
@@ -48,7 +48,7 @@ if (!result.valid) {
 
 重复标识和无效结构属于 `error`。未知 component 或 dependent 更适合作为设计器提示，默认属于 `warning`。
 
-### 不包含的职责
+## 不包含的职责
 
 core 配置处理不负责：
 

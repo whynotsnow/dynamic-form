@@ -12,7 +12,7 @@ flowchart TD
 
 这是增量能力。现有 `FormConfig` 用法不需要迁移。
 
-### Field Modules
+## Field Modules
 
 字段模块用于封装可复用的业务字段能力：
 
@@ -46,7 +46,7 @@ export const UserSelectorModule: FieldModule<UserSelectorOptions> = {
 
 `FieldModule<TOptions>` 和 `ModuleConfig<TOptions>` 支持模块级 options 类型约束。默认泛型仍是 `Record<string, unknown>`，因此现有调用无需迁移。Registry 继续按运行时 `type` 管理模块；当前版本不尝试在一个异构配置数组中建立 `type` 与 options 的全局类型映射。
 
-### Registry
+## Registry
 
 使用 `ModuleRegistryManager` 创建隔离注册器，或使用 `defaultModuleRegistry` 做共享注册。
 
@@ -64,7 +64,7 @@ registry.unregister('UserSelector');
 
 重复模块类型默认会被拒绝。只有明确传入 `{ override: true }` 时才允许覆盖。
 
-### Compiler
+## Compiler
 
 把模块配置编译成标准 `FormConfig`：
 
@@ -122,7 +122,7 @@ import { CompiledDynamicForm } from '@whynotsnow/dynamic-form';
 
 `formConfig` 可以继续传给 `processFormConfig()` 或 `DynamicForm`。
 
-### Mixed Fields 与 Groups
+## Mixed Fields 与 Groups
 
 Compiler 输入统一为 `ModuleFormConfig`。字段可以通过 flat `fields` 声明，并用 `groupId` 加入 legacy group；也可以通过 `nodes` 声明递归节点树。Group/container rules 只支持 `show` 和 `hide`，手工 `effect` 先执行，rules 后执行并覆盖同名结果键。
 
@@ -145,7 +145,7 @@ compileFormConfig({
 
 Compiler 会校验全局 ID 唯一、group 引用有效且 group 非空。
 
-### Nodes 与 Container
+## Nodes 与 Container
 
 `ModuleFormConfig.nodes` 用于声明递归模块树。字段节点使用 `nodeType: 'field'`，container 节点使用 `nodeType: 'container'`：
 
@@ -175,7 +175,7 @@ Compiler 会把字段模块展开为 `FieldNode`，把 container 展开为 `Cont
 
 Container 可以声明 `name`，运行时配置处理会把它作为子字段 Ant Design `NamePath` 前缀。`repeatable: true` 的 container 必须声明 `name`，默认 renderer 通过 Ant Design `Form.List` 渲染已有重复项。
 
-### Hooks
+## Hooks
 
 编译器支持编译期扩展点：
 
@@ -193,7 +193,7 @@ compileFormConfig(moduleFormConfig, {
 
 hooks 只操作编译上下文，不应该修改 Ant Design Form 实例或 React 运行时状态。
 
-### Boundaries
+## Boundaries
 
 - `compileFormConfig()` 负责生成 `FormConfig`。
 - `processFormConfig()` 继续负责准备运行时数据。

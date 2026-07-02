@@ -2,7 +2,7 @@
 
 `@whynotsnow/dynamic-form` 是一个基于 React 和 TypeScript 的配置驱动动态表单引擎，默认提供 Ant Design renderer。它用配置描述表单结构，用 `form-chain-effect-engine` 执行字段联动，并通过 Runtime Layer 统一处理字段是否渲染、是否提交、是否可编辑、是否校验等运行时策略。4.2 起，UI-library agnostic 的配置、编译、规则和纯 Runtime 能力归属 `@whynotsnow/dynamic-form-core`，本包继续作为 React/AntD 兼容主入口并 re-export core 公共 API。
 
-### 项目能力
+## 项目能力
 
 - 🚀 通过 `formConfig` 配置化渲染表单，默认使用 Ant Design renderer。
 - 🗂️ 支持平铺表单、分组表单和 4.0 统一节点树 `nodes`。
@@ -22,7 +22,7 @@
 - 🧭 支持通过 `name: NamePath` 分离稳定字段 `id` 与嵌套值路径，旧配置默认继续使用 `id`。
 - 📦 4.2 新增 `@whynotsnow/dynamic-form-core`，用于直接消费配置诊断、Compiler、Adapters、Rules 和 Runtime inspection helpers。
 
-### 安装
+## 安装
 
 ```bash
 pnpm add @whynotsnow/dynamic-form antd react react-dom
@@ -34,7 +34,7 @@ Peer dependencies（对等依赖）：
 - `react-dom >= 17`
 - `antd >= 5`
 
-### 基础用法
+## 基础用法
 
 ```tsx
 import { Form } from 'antd';
@@ -91,7 +91,7 @@ export function Example() {
 }
 ```
 
-### 核心 API
+## 核心 API
 
 主要导出定义在 `packages/dynamic-form/src/exports.ts`：
 
@@ -134,7 +134,7 @@ export function Example() {
 - `getValidatableFieldIds`
 - `DynamicFormProps`、`FormConfig`、compiler、adapter、rule、render hook 和组件注册相关公共类型。
 
-### Rule Engine
+## Rule Engine
 
 DynamicForm 包含声明式 Rule Engine，用于模块化表单的同步联动规则。规则会被编译成标准 effects，因此渲染层和 runtime provider 不需要变化。
 
@@ -184,7 +184,7 @@ Rule 是字段所属的 per-field 规则，不支持 `target` 配置。一个源
 - 引擎层 props：`formConfig`、`form`、可选 `formAdapter`、`values`、`uiConfig`、`enableInitializationCheck`、`checkDelay`。
 - UI 层 props：可选 `renderer`、`onSubmit`、`submitButtonText`、`componentRegistry`、`renderFormInner`、`renderGroups`、`renderGroupItem`、`renderFields`、`renderFieldItem`。
 
-### 文档入口
+## 文档入口
 
 - 📚 [文档索引](./docs/README.md)
 - 📦 [Core Package](./docs/core-package.md)
@@ -201,7 +201,7 @@ Rule 是字段所属的 per-field 规则，不支持 `target` 配置。一个源
 - 🧭 [组件使用指南](./docs/development.md)
 - 🛠️ [维护指南](./docs/maintenance.md)
 
-### 设计理念
+## 设计理念
 
 - 配置优先：业务表单通过字段、分组、依赖和 UI 配置描述。
 - 值归 Ant Design Form：reducer 不维护重复的 values、errors、touched 或 validating 状态。
@@ -209,7 +209,7 @@ Rule 是字段所属的 per-field 规则，不支持 `target` 配置。一个源
 - 扩展优先于分叉：通过自定义组件、effect 结果处理器和 render hooks 覆盖业务差异。
 - 默认渲染保持简单：默认使用 `antdRenderer`，其他组件库可通过 Renderer Adapter 接入；4.1 不内置第二套组件库 renderer。
 
-### 4.1 Adapter 边界
+## 4.1 Adapter 边界
 
 4.1 新增 Form Adapter 和 Renderer Adapter，并保持旧 API 兼容。4.2 起这些 UI-library agnostic 能力中的配置处理、Compiler、Adapters、Rules 和纯 Runtime helper 已分离到 `@whynotsnow/dynamic-form-core`；本包仍继续 re-export core 公共 API。未传 `formAdapter` 或 `renderer` 时，`DynamicForm` 会把旧的 AntD `form` 实例转换为 `createAntdFormAdapter(form)`，并使用默认 `antdRenderer`。
 
@@ -224,13 +224,13 @@ Rule 是字段所属的 per-field 规则，不支持 `target` 配置。一个源
 - Runtime inspection helpers 可读取当前 rendered、submitable 和 validatable 字段集合，适合设计器预览、调试面板和测试断言。
 - 4.1 不承诺内置 Arco、Semi 或其他组件库适配器；业务侧可以基于新增接口自定义 renderer。
 
-### 4.0 配置管线
+## 4.0 配置管线
 
 当前版本在现有运行时主流程之前提供可选的 Adapter、Rule 和 Compiler 管线。JsonSchema、OpenAPI 和 metadata 输入会先归一化为结构化 `ModuleFormConfig`，再编译成标准 `FormConfig`。字段可以通过 `groupId` 加入 legacy group，也可以通过 `nodes` 声明递归 `FieldNode` / `ContainerNode` 树；Schema 无法携带的函数 effect 可通过 `groupOverrides` 在编译前注入。
 
 `FormConfig.nodes` 是 4.0 的结构性入口。`ContainerNode.name` 会成为后代字段 Ant Design `NamePath` 前缀；`repeatable: true` 的 container 通过 Ant Design `Form.List` 渲染已有重复项。旧的 `fields`、`groups` 和 mixed 配置继续兼容。
 
-### 项目结构
+## 项目结构
 
 ```text
 packages/dynamic-form/   npm 发布包、源码和构建配置
@@ -246,7 +246,7 @@ tests/                   Node test 文件和 demo 测试数据
 docs/                    monorepo 级文档
 ```
 
-### 开发命令
+## 开发命令
 
 ```bash
 pnpm run start       # 启动 Vite demos
@@ -258,11 +258,11 @@ pnpm run build       # 构建库产物
 
 当前仓库存在 `pnpm-lock.yaml`，默认使用 pnpm。
 
-### 当前说明
+## 当前说明
 
 项目当前面向基于 Ant Design 的 React 应用。内置字段组件包括 `TextInput`、`Password`、`NumberInput`、`Select`、`SelectField`、`DatePicker`、`Switch`、`Rate`、`TextDisplay`、`CheckboxGroup` 和 `TextArea`。
 
-### Schema Adapters
+## Schema Adapters
 
 DynamicForm 提供 `JsonSchemaAdapter`、`OpenApiAdapter` 和 `MetadataAdapter`。
 

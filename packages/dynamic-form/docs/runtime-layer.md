@@ -4,7 +4,7 @@ Runtime Layer 从 reducer state 解析字段、分组和 container 的最终运�
 
 包根入口导出 `FieldCapability`、`GroupCapability`、`NodeCapability` 和 `RuntimeState` 类型，方便自定义 render hooks 或业务封装复用 Runtime snapshot 的类型约束。
 
-### 为什么需要 Runtime
+## 为什么需要 Runtime
 
 字段是否显示、是否参与提交、是否禁用、是否只读、是否需要校验，这些判断彼此关联。如果每个组件各自计算，很容易产生行为不一致。Runtime Layer 把这些策略集中到同一次解析中。
 
@@ -20,7 +20,7 @@ flowchart TD
   runtimeState --> participation["field participation"]
 ```
 
-### 字段能力
+## 字段能力
 
 每个字段会解析出：
 
@@ -35,7 +35,7 @@ flowchart TD
 
 当前策略中，readonly 字段仍然参与校验。
 
-### 分组能力
+## 分组能力
 
 每个分组或 container 会解析出：
 
@@ -47,7 +47,7 @@ flowchart TD
 
 4.0 支持递归 container 子树。Runtime 会沿父链解析 container 可见性，父级隐藏时，所有后代 container 和字段都会被视为不可渲染。
 
-### Meta 输入
+## Meta 输入
 
 Runtime 通过工具函数读取行为 meta：
 
@@ -56,7 +56,7 @@ Runtime 通过工具函数读取行为 meta：
 
 这样可以兼容旧的 flat meta key，同时让新逻辑聚焦在 `meta.behavior`。
 
-### Runtime 消费者
+## Runtime 消费者
 
 `FormContent` 只计算一次 runtime snapshot：
 
@@ -72,7 +72,7 @@ const runtimeState = useRuntimeState(state);
 
 这避免了不同消费者对同一份 state 重复、分散地解析能力。
 
-### 校验策略
+## 校验策略
 
 字段变更校验会先通过 runtime 过滤：
 
@@ -90,7 +90,7 @@ form.validateFields(Object.keys(changedValues));
 
 这会忽略隐藏字段、父级 container 隐藏字段、禁用字段和后续 Runtime 策略扩展。
 
-### Runtime Inspection Helpers
+## Runtime Inspection Helpers
 
 4.1.2 新增一组只读 inspection helpers，用于设计器预览、调试面板和测试断言：
 
@@ -101,7 +101,7 @@ form.validateFields(Object.keys(changedValues));
 
 这些 helper 只消费已经解析好的 `runtimeState`，不会重新计算 Runtime，也不会改变隐藏字段清理、提交过滤或校验策略。
 
-### 隐藏字段参与策略
+## 隐藏字段参与策略
 
 `useFieldParticipation` 会在字段离开 submit participation 时清空字段值，除非 `preserveValueOnHide` 为 true。如果 `restoreValueOnShow` 不是 false，会缓存隐藏前的值，并在字段重新可提交时恢复。
 
@@ -109,7 +109,7 @@ form.validateFields(Object.keys(changedValues));
 
 该策略同样适用于因 group 或 container 隐藏而离开 submit participation 的字段。`preserveValueOnHide` 和 `restoreValueOnShow` 都是字段级配置，不会被父级 container 自动覆盖。
 
-### 扩展建议
+## 扩展建议
 
 - 新行为只有会影响运行时策略时，才应进入 behavior meta。
 - 渲染专用配置应留在 `formItemProps` 或 `componentProps`。

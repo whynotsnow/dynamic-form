@@ -16,7 +16,7 @@ Schema adapters convert input into structured `ModuleFormConfig`. Module expansi
 
 Schema `required` is mapped to field-level `required` semantics. Adapters do not generate Ant Design `rules` directly; the default Ant Design renderer merges `required` into final validation rules.
 
-### JsonSchemaAdapter
+## JsonSchemaAdapter
 
 Supports top-level object schemas:
 
@@ -72,7 +72,7 @@ compileAdaptedFormConfig(schema, {
 
 `groupOverrides` deduplicates merged `dependents`, appends override rules after schema rules, and replaces the adapter effect. Unknown group IDs fail immediately.
 
-### OpenApiAdapter
+## OpenApiAdapter
 
 Supports OpenAPI `components.schemas`:
 
@@ -87,7 +87,7 @@ const moduleConfigs = adaptModuleConfigs(openApiDocument, {
 
 If the OpenAPI document contains only one schema, `schemaName` may be omitted. If multiple schemas exist, `schemaName` is required.
 
-### MetadataAdapter
+## MetadataAdapter
 
 Supports project-specific metadata:
 
@@ -112,7 +112,7 @@ Each field must provide `id` and `type`, with optional `name`, `options`, `rules
 
 External schema input should declare `module`, `name`, `groupId`, `rules`, and `overrides` explicitly through metadata. Adapters normalize input only; they do not infer UI from primitive types and do not expand nested structures.
 
-### Boundaries
+## Boundaries
 
 - No nested object schema expansion.
 - No object array item schema expansion.

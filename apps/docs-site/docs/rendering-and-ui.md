@@ -2,7 +2,7 @@
 
 `FormContent` 提供默认渲染流水线，并暴露分层扩展点。4.1 起默认 UI 由 `antdRenderer` 提供，业务侧可以继续使用 render hooks 局部扩展，也可以通过 `renderer` 替换默认外壳。
 
-### 默认渲染结构
+## 默认渲染结构
 
 平铺表单：
 
@@ -35,7 +35,7 @@ flowchart TD
 
 `FieldComponentRenderer` 负责解析组件、应用 `Form.Item` props、应用 runtime disabled/readonly 状态，并在字段不可校验时移除 `Form.Item` rules。字段 `required: true` 会在默认 Ant Design renderer 中自动合并为 required rule；显式 `rules` 中的 required rule 优先。
 
-### 4.1 Form / Renderer Adapter
+## 4.1 Form / Renderer Adapter
 
 4.1 新增两个可选扩展入口：
 
@@ -74,7 +74,7 @@ flowchart TD
 - `renderer.renderFieldItem()` 必须负责字段项外壳，并接收 renderer 生成的 `defaultRender`；render hooks 会在它之后继续包装或替换。
 - 自定义 adapter 应先通过 `assertFormAdapter` / `assertRendererAdapter` 校验，再进入预览或生产渲染路径。
 
-### Nodes 与 container 渲染契约
+## Nodes 与 container 渲染契约
 
 4.0 的 `nodes` 入口会把 root nodes 按顺序渲染为“字段连续段”和“container 块”：
 
@@ -85,7 +85,7 @@ flowchart TD
 
 因此 `renderFields` 不只作用于旧的 flat fields 或 group 内字段，也会作用于顶层连续字段、混合 root nodes 中被 container 切开的字段段、嵌套 container 内字段段，以及 repeatable item 内字段段。
 
-### 组件注册
+## 组件注册
 
 通过 `componentRegistry` 注册业务字段组件。
 
@@ -114,7 +114,7 @@ interface FieldComponentProps {
 
 默认情况下，自定义组件不会覆盖内置组件。只有明确需要替换内置组件时，才设置 `allowOverride: true`。
 
-### Render Hooks
+## Render Hooks
 
 render hooks 按作用范围从小到大排列：
 
@@ -132,7 +132,7 @@ render hooks 按作用范围从小到大排列：
 
 这个优先级在 4.1.2 保持不变：自定义 renderer 只能决定默认 UI，不能屏蔽业务传入的 render hooks。业务侧如果通过 hook 返回全新的 React 节点，该返回值会覆盖对应层级的 renderer defaultRender。
 
-### 字段项扩展
+## 字段项扩展
 
 ```tsx
 <DynamicForm
@@ -151,7 +151,7 @@ render hooks 按作用范围从小到大排列：
 />
 ```
 
-### 分组扩展
+## 分组扩展
 
 ```tsx
 <DynamicForm
@@ -169,7 +169,7 @@ render hooks 按作用范围从小到大排列：
 />
 ```
 
-### 整体表单扩展
+## 整体表单扩展
 
 ```tsx
 <DynamicForm
@@ -184,7 +184,7 @@ render hooks 按作用范围从小到大排列：
 />
 ```
 
-### 扩展方式选择
+## 扩展方式选择
 
 - 只改默认 Ant Design props：使用 `uiConfig`。
 - 字段控件本身有业务逻辑：使用 `componentRegistry`。

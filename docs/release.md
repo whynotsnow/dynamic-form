@@ -2,7 +2,7 @@
 
 本文记录 monorepo 中 `@whynotsnow/dynamic-form-core` 和 `@whynotsnow/dynamic-form` 的发布边界和验证流程。
 
-### 发布边界
+## 发布边界
 
 当前 npm 发布包有两个。根目录 `package.json` 是 private workspace root，不执行 npm 发布。
 
@@ -25,7 +25,7 @@ React/AntD 兼容包：
 - `exports["."]` 的 `types`、`import`、`require` 路径不变
 - 依赖 `@whynotsnow/dynamic-form-core`，并继续 re-export core 公共 API
 
-### 统一版本策略
+## 统一版本策略
 
 本仓库采用 lockstep version。根 workspace、`@whynotsnow/dynamic-form-core` 和 `@whynotsnow/dynamic-form` 必须使用同一个版本号；`@whynotsnow/dynamic-form` 对 core 的依赖版本必须精确等于该版本号。
 
@@ -37,7 +37,7 @@ pnpm run version:sync -- 4.2.1
 
 该脚本会同步根 `package.json`、两个发布包的 `package.json`、`@whynotsnow/dynamic-form` 对 core 的依赖版本和 `pnpm-lock.yaml` 中对应 specifier。
 
-### 发布前验证
+## 发布前验证
 
 ```bash
 pnpm run type-check
@@ -50,7 +50,7 @@ pnpm --filter @whynotsnow/dynamic-form exec npm pack --dry-run
 
 `npm pack --dry-run` 应包含 `dist/`、`docs/`、`README.md`、`LICENSE` 和 package manifest。
 
-### 发布脚本
+## 发布脚本
 
 使用：
 
@@ -69,6 +69,6 @@ pnpm run release:publish
 
 确认发布前，脚本会在仓库根运行验证命令，并按当前发布计划执行 `npm pack --dry-run` 与 `npm publish --access public`。
 
-### Tag
+## Tag
 
 版本 tag 采用 `v` 前缀，例如 `v3.2.0`。

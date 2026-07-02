@@ -2,7 +2,7 @@
 
 DynamicForm delegates dependency execution to `form-chain-effect-engine`, while DynamicForm owns how effect results are applied through its handler system.
 
-### Async Boundary
+## Async Boundary
 
 DynamicForm core does not support library-level async effects. It also does not provide async validation compilation, cancellation, race handling, debounce, loading, error, or cache lifecycle management. The current roadmap does not commit to supporting those capabilities later.
 
@@ -10,7 +10,7 @@ Remote requests, remote option loading, search suggestions, server-side validati
 
 DynamicForm only routes and applies synchronous effect results. Custom `EffectResultHandler` implementations should stay synchronous and should not host async task scheduling, request lifecycle, or race handling.
 
-### Initialization Contract
+## Initialization Contract
 
 Forms that rely on default or custom effect result handlers should call `useInitHandlers` before rendering.
 
@@ -31,7 +31,7 @@ return <DynamicForm form={form} formConfig={formConfig} />;
 
 `useInitHandlers({ debug: true })` enables handler-initialization diagnostics and reports unmatched effect result keys. With the default `debug: false`, normal rendering, reducer updates, submission, and effect execution do not emit process logs. Invalid configuration, missing components, and initialization-contract problems still use `warn` or `error`.
 
-### Effect Config
+## Effect Config
 
 Fields and groups can declare `dependents` and `effect`. Config processing creates an `effectMap` and passes it to `form-chain-effect-engine`.
 
@@ -39,26 +39,26 @@ Effect graph nodes reference stable `id` values, not Ant Design `NamePath` value
 
 Declarative rules and handwritten effects both stay synchronous. When one source field affects multiple fields, keep declaring rules on each affected field. Do not put remote request lifecycle, loading/error/cache, or race state into effect result handlers.
 
-### Default Result Keys
+## Default Result Keys
 
 Default handlers are defined in `packages/dynamic-form/src/config/defaultConfig.ts`. Supported keys include `value`, `visible`, `disabled`, `readonly`, `groupsVisible`, `formItemProps`, `componentProps`, `formProps`, `buttonProps`, `cardProps`, `rowProps`, `colProps`, and `submitAreaProps`.
 
 Unknown keys are not applied and are only reported through warning logs.
 
-### Meta Boundaries
+## Meta Boundaries
 
 Behavior meta belongs to Runtime and should be stored under `meta.behavior`. Render-only meta belongs to the render layer under `formItemProps` or `componentProps`. Legacy flat keys such as `visible`, `disabled`, and `readonly` remain compatible, but new code should prefer `meta.behavior`.
 
-### Custom Handlers
+## Custom Handlers
 
 Custom handlers implement `CustomEffectResultHandler`. Handlers receive semantic APIs such as `setFieldValue`, `updateFieldMeta`, `updateFieldMetaById`, `setGroupVisible`, and `updateDynamicUIConfig`.
 
 Use those APIs instead of maintaining duplicate value, error, touched, or validating state.
 
-### Value Updates
+## Value Updates
 
 The reducer does not store values, errors, warnings, touched state, or validating state. The `value` handler updates Ant Design Form directly. Submit validation is runtime-filtered, then values are read with `form.getFieldsValue(true)`.
 
-### Initial Value Results
+## Initial Value Results
 
 Function-style `initialValue` can return effect result objects. The same handler routing is used during initialization, so initial values can also configure field meta or UI props.

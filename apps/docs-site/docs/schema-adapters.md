@@ -16,7 +16,7 @@ Schema adapters 把输入转换成结构化 `ModuleFormConfig`。字段模块展
 
 Schema `required` 会映射为字段 `required` 语义，不会在 adapter 层直接生成 Ant Design `rules`。默认 Ant Design renderer 会统一把 `required` 合并成最终校验规则。
 
-### JsonSchemaAdapter
+## JsonSchemaAdapter
 
 支持顶层 object schema：
 
@@ -72,7 +72,7 @@ compileAdaptedFormConfig(schema, {
 
 `groupOverrides` 会去重合并 `dependents`、将 override rules 追加到 schema rules 后，并用 override effect 替换 adapter effect。未知 group ID 会直接报错。
 
-### OpenApiAdapter
+## OpenApiAdapter
 
 支持 OpenAPI document 的 `components.schemas`：
 
@@ -87,7 +87,7 @@ const moduleConfigs = adaptModuleConfigs(openApiDocument, {
 
 如果 OpenAPI document 只包含一个 schema，可以省略 `schemaName`。如果包含多个 schema，必须显式传入 `schemaName`。
 
-### MetadataAdapter
+## MetadataAdapter
 
 支持项目自定义 metadata：
 
@@ -112,7 +112,7 @@ const moduleConfigs = adaptModuleConfigs(
 
 外部 schema 输入应通过 metadata 显式声明 `module`、`name`、`groupId`、`rules` 和 `overrides`。Adapter 只负责归一化输入，不通过 primitive type 猜测 UI，也不展开嵌套结构。
 
-### Boundaries
+## Boundaries
 
 - 不展开 nested object schema。
 - 不展开 object array item schema。

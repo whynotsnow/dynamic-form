@@ -2,7 +2,7 @@
 
 Use this page to get your first DynamicForm running. Start with installation, minimal config, and submit handling; then move to the topic docs when you need more fields, effects, or extension points.
 
-### Install
+## Install
 
 ```bash
 pnpm add @whynotsnow/dynamic-form antd react react-dom
@@ -16,7 +16,7 @@ pnpm run start
 
 The local demo server runs at `http://localhost:3000` by default.
 
-### Render Your First Form
+## Render Your First Form
 
 ```tsx
 import { Form } from 'antd';
@@ -65,7 +65,7 @@ This introduces the three common entry points:
 - `useInitHandlers`: initializes the default effect handlers.
 - `DynamicForm`: receives the Ant Design `form` instance and `formConfig`, then handles rendering and submit.
 
-### Add Groups
+## Add Groups
 
 Use `groups` when a form has clear business sections. The default renderer wraps each group in an Ant Design `Card`.
 
@@ -86,7 +86,7 @@ const formConfig: FormConfig = {
 
 See the [Configuration Guide](./configuration.md) for all field and group options.
 
-### Use the 4.0 Node Tree
+## Use the 4.0 Node Tree
 
 Use `nodes` when you need nested sections, nested submitted values, or repeated items. A container in `nodes` renders as the default `Card`, and its `name` prefixes descendant Ant Design value paths:
 
@@ -113,7 +113,7 @@ const formConfig: FormConfig = {
 
 The submitted value shape is `{ profile: { profileName: string } }`. The `profileName` id is still used by Runtime, the effect graph, and meta updates.
 
-### Add a Simple Effect
+## Add a Simple Effect
 
 Use `dependents` to declare dependent fields and `effect` to return field state or UI updates.
 
@@ -142,7 +142,7 @@ const formConfig: FormConfig = {
 
 Default handlers support result keys such as `value`, `visible`, `disabled`, `readonly`, `componentProps`, and `formItemProps`. See [Effects and Handlers](./effects-and-handlers.md) for details.
 
-### Next Steps
+## Next Steps
 
 - Configure fields, groups, built-in components, and the UI shell: read the [Configuration Guide](./configuration.md).
 - Find scenario-based config examples: read the [Component Usage Guide](./development.md) or open [Config Examples](/examples/).

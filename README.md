@@ -4,7 +4,7 @@
 
 DynamicForm 是配置驱动的动态表单引擎，默认提供 Ant Design renderer。4.2 起，配置、编译、规则和纯 Runtime 能力由 `@whynotsnow/dynamic-form-core` 承载；`@whynotsnow/dynamic-form` 继续提供 React/AntD 运行时、默认渲染和兼容主入口。
 
-### 工作区结构
+## 工作区结构
 
 ```text
 packages/dynamic-form-core/  纯 core npm 发布包、源码、构建配置和文档
@@ -15,7 +15,7 @@ tests/                   Node test 文件和 demo 测试数据
 docs/                    monorepo 级架构、维护、发布和站点规划文档
 ```
 
-### 主要入口
+## 主要入口
 
 - 📦 [Core README](./packages/dynamic-form-core/README.md)
 - 🧩 [Core 文档索引](./packages/dynamic-form-core/docs/README.md)
@@ -25,7 +25,7 @@ docs/                    monorepo 级架构、维护、发布和站点规划文�
 - 🌐 [文档站说明](./apps/docs-site/README.md)
 - 🧪 [Demo 说明](./demos/README.md)
 
-### 常用命令
+## 常用命令
 
 ```bash
 pnpm run start       # 启动 Vite demos
@@ -39,7 +39,7 @@ pnpm run site:build  # 构建文档站
 
 当前仓库存在 `pnpm-lock.yaml`，默认使用 pnpm。
 
-### 维护边界
+## 维护边界
 
 - 根目录不作为 npm 发布包；`packages/dynamic-form-core/` 和 `packages/dynamic-form/` 是发布边界。
 - 根 workspace、core 包和 React/AntD 包采用统一版本号策略。

@@ -15,7 +15,7 @@ flowchart TD
 
 Adapters only convert input. Rule merging, dependency inference, component registration, and `FormConfig` generation remain owned by the existing compiler.
 
-### Adapter
+## Adapter
 
 ```ts
 import type { ModuleConfigAdapter } from '@whynotsnow/dynamic-form';
@@ -33,7 +33,7 @@ const adapter: ModuleConfigAdapter<{ fields: Array<{ name: string; type: string 
 };
 ```
 
-### Registry
+## Registry
 
 ```ts
 import { AdapterRegistryManager } from '@whynotsnow/dynamic-form';
@@ -49,7 +49,7 @@ registry.unregister('custom-metadata');
 
 Duplicate adapter types are rejected by default. Pass `{ override: true }` when replacement is intentional.
 
-### Pipeline
+## Pipeline
 
 ```ts
 import { adaptModuleConfigs, compileAdaptedFormConfig } from '@whynotsnow/dynamic-form';
@@ -68,7 +68,7 @@ const compiled = compileAdaptedFormConfig(input, {
 When `adapterType` is not specified, the pipeline picks the first registered adapter whose `supports()` method matches the input.
 The default order is passthrough, JsonSchema, OpenAPI, then Metadata. A single object schema therefore resolves to JsonSchema first; pass `adapterType: 'openapi'` when the OpenAPI adapter's single-schema compatibility path is required.
 
-### Boundaries
+## Boundaries
 
 - Adapter Foundation itself does not own concrete JsonSchema, OpenAPI, or Metadata mappings.
 - Adapter Foundation does not change the responsibilities of `compileFormConfig()`, `processFormConfig()`, runtime, or renderer.

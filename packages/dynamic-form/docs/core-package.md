@@ -4,7 +4,7 @@
 
 `@whynotsnow/dynamic-form` 仍是兼容主入口：它继续导出 `DynamicForm`、`CompiledDynamicForm`、Provider、hooks、component registry、默认 AntD renderer、headless renderer 和 form adapters，同时 re-export core 公共 API。旧代码不需要迁移 import。
 
-### 适合直接使用 core 的场景
+## 适合直接使用 core 的场景
 
 - 可视化配置系统保存前校验配置。
 - 后端或构建阶段把 schema/metadata 转换为标准 `FormConfig`。
@@ -12,7 +12,7 @@
 - 设计器预览、调试面板或测试中读取 Runtime inspection helpers。
 - 独立维护领域字段 module registry、schema adapter 或配置诊断。
 
-### core 包包含的 API
+## core 包包含的 API
 
 - 配置处理：`processFormConfig`
 - 配置诊断：`getFormConfigDiagnostics`、`validateFormConfig`
@@ -23,7 +23,7 @@
 - Runtime inspection：`getFieldRuntimeSnapshot`、`getRenderedFieldIds`、`getSubmitableFieldIds`、`getValidatableFieldIds`
 - 共享纯类型：`FormConfig`、`BaseFieldConfig`、`FieldNamePath`、`DesignerMetadata`、Field Address 和 Runtime 类型
 
-### 仍属于 dynamic-form 的 API
+## 仍属于 dynamic-form 的 API
 
 - React 组件：`DynamicForm`、`CompiledDynamicForm`
 - Provider / hooks：`DynamicFormProvider`、`useInitHandlers`、`useFormChainContext`、`useStoreInit`
@@ -32,7 +32,7 @@
 - Component registry：`ComponentRegistryManager`、`DefaultRegistryFieldComponents`
 - 默认 effect handler runtime 和 `getDefaultConfig`
 
-### Import 方式
+## Import 方式
 
 旧 import 保持可用：
 
@@ -46,11 +46,11 @@ import { FormConfig, compileFormConfig } from '@whynotsnow/dynamic-form';
 import { FormConfig, validateFormConfig } from '@whynotsnow/dynamic-form-core';
 ```
 
-### 包边界
+## 包边界
 
 4.2.x 不删除 `@whynotsnow/dynamic-form` 的现有 public exports，也不强制用户迁移。core 包是纯能力的单一实现源，主要用于设计器、schema 管线、测试和非 React 环境。
 
-### Core 单一实现源
+## Core 单一实现源
 
 `packages/dynamic-form/src` 不再维护 compiler、adapters、modules、rules、config processor、config diagnostics、field address 或纯 Runtime 的本地实现副本。这些能力统一由 `@whynotsnow/dynamic-form-core` 提供，React 包只负责消费 core 并提供 UI runtime：
 

@@ -18,7 +18,7 @@ Nested values can use `name: ['shipping', 'city']` while effects continue refere
 
 JsonSchema, OpenAPI, and Metadata adapters can explicitly pass `name` through metadata. The value still lands on the existing `BaseFieldConfig.name`, which is useful when external schema input needs nested values without changing the rule that effect graph nodes reference stable `id` values.
 
-### Container Prefixes
+## Container Prefixes
 
 In 4.0, `ContainerNode.name` becomes the Ant Design value path prefix for descendant fields:
 
@@ -43,7 +43,7 @@ const formConfig: FormConfig = {
 
 The final `NamePath` for field `city` is `['shipping', 'city']`. If the field explicitly declares `name: 'addressCity'`, the final path becomes `['shipping', 'addressCity']`.
 
-### Stable Boundaries
+## Stable Boundaries
 
 Field, group, and container IDs must remain globally unique. Two fields should not use the same final `name` path, otherwise Ant Design Form value reads and writes will conflict.
 

@@ -2,7 +2,7 @@
 
 本文面向 DynamicForm 的使用者，说明常见配置如何组合使用，并给出对应 demo 链接。这里提供的是最小示例；更完整的场景请阅读对应 demo 源码。
 
-### Demo 入口
+## Demo 入口
 
 运行本地 demo：
 
@@ -21,7 +21,7 @@ pnpm run start
 | 静态和动态 UI 配置 | [`demos/uiConfigDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/uiConfigDemo.tsx) |
 | render hooks 渲染扩展 | [`demos/renderExtensionDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/renderExtensionDemo.tsx) |
 
-### 最小使用
+## 最小使用
 
 ```tsx
 import { Form } from 'antd';
@@ -55,7 +55,7 @@ export function BasicForm() {
 }
 ```
 
-### 平铺字段配置
+## 平铺字段配置
 
 平铺表单适合字段数量较少、没有明显业务分区的场景。
 
@@ -82,7 +82,7 @@ const formConfig: FormConfig = {
 
 更多字段配置说明见 [`configuration.md`](./configuration.md)。
 
-### 分组配置
+## 分组配置
 
 分组表单适合有业务区块的表单。默认渲染中，每个 group 会使用 Ant Design `Card`。
 
@@ -103,7 +103,7 @@ const formConfig: FormConfig = {
 
 如果要把分组改成 tabs 或其他布局，优先查看 [`demos/renderExtensionDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/renderExtensionDemo.tsx)。
 
-### UI 配置
+## UI 配置
 
 `uiConfig` 用于调整默认 Ant Design 外壳，不改变整体渲染结构。
 
@@ -123,7 +123,7 @@ const formConfig: FormConfig = {
 
 完整示例见 [`demos/uiConfigDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/uiConfigDemo.tsx)。
 
-### 字段联动 effect
+## 字段联动 effect
 
 字段通过 `dependents` 声明依赖，通过 `effect` 返回更新结果。默认 handler 可以处理 `value`、`visible`、`disabled`、`readonly`、`componentProps`、`formItemProps` 等 key。
 
@@ -155,7 +155,7 @@ const formConfig: FormConfig = {
 
 更完整的 effect 和 handler 说明见 [`effects-and-handlers.md`](./effects-and-handlers.md)，运行时行为边界见 [`runtime-layer.md`](./runtime-layer.md)。跨字段复杂更新建议使用自定义 handler，参考 [`demos/customHandlersDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/customHandlersDemo.tsx)。
 
-### 注册自定义组件
+## 注册自定义组件
 
 当字段输入 UI 有业务特性时，使用 `componentRegistry` 注册自定义组件。
 
@@ -202,7 +202,7 @@ const formConfig: FormConfig = {
 
 完整示例见 [`demos/customComponentsDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/customComponentsDemo.tsx)。
 
-### 自定义 Effect Handlers
+## 自定义 Effect Handlers
 
 当 effect 返回值需要表达业务语义时，可以注册自定义 handler。handler 应使用上下文提供的语义化 API，不要直接维护表单值副本。
 
@@ -247,7 +247,7 @@ const { isInitialized } = useInitHandlers({
 
 完整示例见 [`demos/customHandlersDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/customHandlersDemo.tsx) 和 [`demos/customHandlers.ts`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/customHandlers.ts)。
 
-### 渲染扩展
+## 渲染扩展
 
 当默认 `Form -> Row -> Col` 或 `Card -> Row -> Col` 结构不满足业务布局时，使用 render hooks。
 
@@ -270,7 +270,7 @@ const { isInitialized } = useInitHandlers({
 
 完整示例见 [`demos/renderExtensionDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/renderExtensionDemo.tsx)，系统说明见 [`rendering-and-ui.md`](./rendering-and-ui.md)。
 
-### 校验配置
+## 校验配置
 
 普通字段直接使用 Ant Design Form `rules`。
 
@@ -290,7 +290,7 @@ const { isInitialized } = useInitHandlers({
 
 DynamicForm 不提供 async validation compile。需要远程校验时，优先在自定义字段组件或业务容器中处理请求生命周期；如果只是接入 Ant Design 校验，可以直接使用 Ant Design `rules.validator`，异步取消和竞态策略由业务代码负责。
 
-### 使用建议
+## 使用建议
 
 - 只调整 Ant Design props：使用 `uiConfig`。
 - 字段组件本身有业务交互：使用 `componentRegistry`。
