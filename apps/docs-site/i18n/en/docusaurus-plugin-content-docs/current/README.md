@@ -4,7 +4,7 @@ slug: /
 
 # DynamicForm Documentation
 
-This is the entry point for DynamicForm 4.1 documentation. New users should start with Quick Start to run a minimal form, then use scenario docs for configuration, effects, validation, and extensions. Architecture, Runtime, Compiler, Adapter, Renderer, and node tree topics are for deeper understanding and maintenance.
+This is the entry point for DynamicForm 4.2 documentation. New users should start with Quick Start to run a minimal form, then use scenario docs for configuration, effects, validation, and extensions. Core Package, Architecture, Runtime, Compiler, Adapter, Renderer, and node tree topics are for deeper understanding and maintenance.
 
 ### Recommended Path
 
@@ -14,7 +14,7 @@ This is the entry point for DynamicForm 4.1 documentation. New users should star
 4. 🎨 [Rendering and UI Extensions](./rendering-and-ui.md): default rendering, component registry, and layered render hooks.
 5. 🧭 [Component Usage Guide](./development.md): scenario-based demos, configuration combinations, custom components, and custom handlers.
 6. 🧩 [Advanced Configuration Pipeline](./core-package.md): read Core Package, Compiler, Rule, Adapter, and Schema Adapter topics when you need field modules, recursive containers, rules, external schema inputs, or the standalone core package.
-7. 🧠 [Deep Dive](./ARCHITECTURE.md): understand runtime boundaries and the 4.1 structure model through Architecture, Runtime Layer, Renderer Adapter, and Field Address.
+7. 🧠 [Deep Dive](./ARCHITECTURE.md): understand runtime boundaries and the 4.2 two-package structure through Architecture, Runtime Layer, Renderer Adapter, and Field Address.
 8. 🧾 [CHANGELOG](./changelog.md): reader-focused release summaries and related topic entry points.
 9. 🛠️ [Maintenance Guide](./maintenance.md): tests, builds, verification, and documentation maintenance.
 
@@ -87,7 +87,7 @@ DynamicForm 4.2 adds the `@whynotsnow/dynamic-form-core` workspace/package for c
 
 ### 4.1 Adapter Foundation
 
-DynamicForm 4.1 adds `formAdapter` and `renderer` extension points. Existing `<DynamicForm form={form} />` usage remains compatible; when adapters are omitted, the default AntD implementation is used. 4.1.1 adds adapter runtime guards, `createMemoryFormAdapter`, and `headlessRenderer` for tests, custom renderer examples, and visual-builder preview mode. 4.1.2 adds config diagnostics, designer metadata, and Runtime inspection helpers so visual builders can reuse the same config contract during save, preview, and debugging flows. 4.1 keeps the single package shape and does not include a second built-in component-library renderer.
+DynamicForm 4.1 adds `formAdapter` and `renderer` extension points. Existing `<DynamicForm form={form} />` usage remains compatible; when adapters are omitted, the default AntD implementation is used. 4.1.1 adds adapter runtime guards, `createMemoryFormAdapter`, and `headlessRenderer` for tests, custom renderer examples, and visual-builder preview mode. 4.1.2 adds config diagnostics, designer metadata, and Runtime inspection helpers so visual builders can reuse the same config contract during save, preview, and debugging flows. 4.2 moves these UI-library agnostic capabilities into `@whynotsnow/dynamic-form-core`, while `@whynotsnow/dynamic-form` continues to re-export the core public APIs.
 
 ### 4.0 Configuration Model
 

@@ -4,11 +4,27 @@ This page is a reader-focused release summary for the docs site. Use it to quick
 
 ### Current Version
 
-The current documentation baseline is DynamicForm 4.0. It includes the unified node tree, recursive containers, container `name` prefixes, and repeatable containers while keeping `fields`, `groups`, and mixed configurations compatible.
+The current documentation baseline is DynamicForm 4.2. It builds on the 4.0 unified node tree and the 4.1 Form/Renderer Adapter foundation by adding the pure `@whynotsnow/dynamic-form-core` package. `@whynotsnow/dynamic-form` remains the React/AntD-compatible main entry and re-exports core public APIs.
 
-The main flow remains `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`. `fields`, `groups`, and `nodes` are normalized into a node tree in the Config Layer.
+The main flow remains `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`. Config processing, Compiler, Adapters, Rules, and pure Runtime resolvers belong to core; React Provider, hooks, form adapters, renderers, component registry, and effect handler runtime belong to `@whynotsnow/dynamic-form`.
 
 ### Release Timeline
+
+#### 4.2.0 - 2026-07-02
+
+- Adds `@whynotsnow/dynamic-form-core` for config processing, config diagnostics, Compiler, Adapters, Rule Engine, pure Runtime resolvers, and Runtime inspection helpers.
+- Keeps `@whynotsnow/dynamic-form` compatible for existing imports while it continues to export React/AntD runtime APIs and re-export core public APIs.
+- Changes the release flow so core publishes before the React/AntD package, with a unified version strategy.
+
+Related topic: [Core Package](./core-package.md).
+
+#### 4.1.0 - 4.1.2 - 2026-07-01
+
+- 4.1 adds `formAdapter` and `renderer` extension points while keeping the existing AntD `form` usage compatible.
+- 4.1.1 adds `createMemoryFormAdapter`, `headlessRenderer`, and adapter runtime guards for tests, custom renderer examples, and visual-builder previews.
+- 4.1.2 adds config diagnostics, designer metadata, and Runtime inspection helpers, and clarifies the minimum contract for custom form adapters and renderers.
+
+Related topics: [Rendering and UI](./rendering-and-ui.md), [Configuration Guide](./configuration.md), [Runtime Layer](./runtime-layer.md).
 
 #### 4.0.0 - 2026-07-01
 
@@ -40,7 +56,7 @@ Related topics: [Architecture](./ARCHITECTURE.md), [Field Address](./field-addre
 
 #### 3.2.0 - 2026-06-30
 
-- Converts the repository into a private pnpm workspace root while keeping `packages/dynamic-form/` as the only npm package.
+- Converts the repository into a private pnpm workspace root while `packages/dynamic-form/` was the npm package at that time.
 - Adds the Docusaurus docs-site workspace with separate zh-CN docs and English i18n content.
 - Clarifies that DynamicForm core does not support library-level async effects or async validation compilation.
 

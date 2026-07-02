@@ -4,7 +4,7 @@ slug: /
 
 # DynamicForm 文档索引
 
-这里是 DynamicForm 4.1 的文档入口。首次使用建议先从快速开始跑通最小表单，再按业务场景查找配置、联动、校验和扩展方式；架构、Runtime、Compiler、Adapter、Renderer 和节点树等专题用于深入理解和维护。
+这里是 DynamicForm 4.2 的文档入口。首次使用建议先从快速开始跑通最小表单，再按业务场景查找配置、联动、校验和扩展方式；Core Package、架构、Runtime、Compiler、Adapter、Renderer 和节点树等专题用于深入理解和维护。
 
 ### 推荐路径
 
@@ -14,7 +14,7 @@ slug: /
 4. 🎨 [渲染与 UI 扩展](./rendering-and-ui.md)：学习默认渲染结构、组件注册和分层 render hooks。
 5. 🧭 [组件使用指南](./development.md)：按使用场景查找 demo、配置组合、自定义组件和自定义 handlers。
 6. 🧩 [高级配置管线](./core-package.md)：需要字段模块、递归 container、规则、外部 schema 输入或独立 core 包时，再阅读 Core Package、Compiler、Rule、Adapter 和 Schema Adapters 专题。
-7. 🧠 [深入理解](./ARCHITECTURE.md)：通过架构、Runtime Layer、Renderer Adapter 和 Field Address 理解运行时边界与 4.1 结构模型。
+7. 🧠 [深入理解](./ARCHITECTURE.md)：通过架构、Runtime Layer、Renderer Adapter 和 Field Address 理解运行时边界与 4.2 双包结构模型。
 8. 🛠️ [维护指南](./maintenance.md)：了解测试、构建、验证和文档维护规则。
 
 ### 文档范围
@@ -86,7 +86,7 @@ DynamicForm 4.2 新增 `@whynotsnow/dynamic-form-core` workspace/package，承�
 
 ### 4.1 Adapter 基础
 
-DynamicForm 4.1 新增 `formAdapter` 和 `renderer` 扩展入口。旧的 `<DynamicForm form={form} />` 用法保持兼容；未传 adapter 时使用 AntD 默认实现。4.1.1 增加 adapter runtime guard、`createMemoryFormAdapter` 和 `headlessRenderer`，用于测试、自定义 renderer 示例和可视化预览态。4.1.2 补充配置诊断、designer metadata 和 Runtime inspection helpers，让可视化配置系统可以在保存、预览和调试阶段复用同一套配置契约。4.1 不拆包，也不内置第二套组件库 renderer。
+DynamicForm 4.1 新增 `formAdapter` 和 `renderer` 扩展入口。旧的 `<DynamicForm form={form} />` 用法保持兼容；未传 adapter 时使用 AntD 默认实现。4.1.1 增加 adapter runtime guard、`createMemoryFormAdapter` 和 `headlessRenderer`，用于测试、自定义 renderer 示例和可视化预览态。4.1.2 补充配置诊断、designer metadata 和 Runtime inspection helpers，让可视化配置系统可以在保存、预览和调试阶段复用同一套配置契约。4.2 将这些 UI-library agnostic 能力分离到 `@whynotsnow/dynamic-form-core`，但 `@whynotsnow/dynamic-form` 继续 re-export core 公共 API。
 
 ### 4.0 配置模型
 

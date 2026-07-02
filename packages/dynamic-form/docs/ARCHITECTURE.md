@@ -1,13 +1,14 @@
 # 架构说明
 
-DynamicForm 4.1 由 Field Address、统一节点树、可选的 Adapter / Module / Rule / Compiler 预处理能力、Form Adapter / Renderer Adapter，以及稳定的 Config / State / Runtime / Consumer / Shared 运行时主线组成。核心目标是让字段逻辑标识和值路径分离，并让外部输入归一化、领域模块展开、配置解析、状态维护、运行时策略、表单值读写和 UI 渲染各自保持清晰边界。默认实现仍使用 Ant Design Form 和 `antdRenderer`。
+DynamicForm 4.2 由 `@whynotsnow/dynamic-form-core` 纯核心包和 `@whynotsnow/dynamic-form` React/AntD 兼容包组成。core 承载 Field Address、统一节点树、Adapter / Module / Rule / Compiler 预处理能力、配置处理、配置诊断和纯 Runtime resolver；React/AntD 包承载 `DynamicForm`、Provider、hooks、Form Adapter / Renderer Adapter、component registry、默认 AntD renderer 和 effect handler runtime。核心目标是让字段逻辑标识和值路径分离，并让外部输入归一化、领域模块展开、配置解析、状态维护、运行时策略、表单值读写和 UI 渲染各自保持清晰边界。
 
 ### 仓库结构
 
 当前仓库是 monorepo：
 
-- `packages/dynamic-form/` 是唯一 npm 发布包边界，包含库源码、`tsup` 配置和 package manifest。
-- `packages/dynamic-form/docs/` 是 DynamicForm 库文档的维护源，随 npm 包一起维护和发布。
+- `packages/dynamic-form-core/` 是纯 core npm 发布包边界，包含配置、compiler、adapters、rules、纯 Runtime 和共享纯类型。
+- `packages/dynamic-form/` 是 React/AntD npm 发布包边界，依赖 core 并继续 re-export core 公共 API。
+- `packages/dynamic-form/docs/` 是 React/AntD 兼容入口文档的维护源，随 npm 包一起维护和发布。
 - 根 `docs/` 只维护 monorepo 级文档，例如 workspace 结构、发布流程、站点规划和仓库维护规则。
 - `apps/docs-site/` 是 Docusaurus 文档站，使用站点自己的 zh-CN docs 和 `i18n/en` 文档内容。
 - `demos/` 保留 Vite demo 和 `demoRegistry`，站点只复用 demo 组件与注册信息，不复制 demo 业务逻辑。
@@ -20,6 +21,14 @@ flowchart TD
   adapter --> compiler["Rule + Config Compiler (optional)"]
   compiler --> formConfig["FormConfig"]
 
+  subgraph core["@whynotsnow/dynamic-form-core"]
+    adapter
+    compiler
+    formConfig --> process["processFormConfig"]
+    process --> runtimePure["resolveRuntimeState / inspection helpers"]
+  end
+
+  subgraph react["@whynotsnow/dynamic-form"]
   entry["packages/dynamic-form/src/index.tsx"] --> provider["DynamicFormProvider"]
   provider --> storeInit["useStoreInit"]
   provider --> effectEngine["form-chain-effect-engine"]
@@ -30,24 +39,25 @@ flowchart TD
   content --> events["useFormRuntimeEvents"]
   content --> participation["useFieldParticipation"]
   content --> renderer["Renderer Adapter + FieldComponentRenderer"]
+  end
 ```
 
-4.1 主流程仍然是 `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`。`DynamicForm` 继续接收现有 `FormConfig`；Adapter、Compiler、Rule Engine 和 Schema Adapters 是可选预处理层，最终仍输出标准 `FormConfig`。`fields`、`groups` 和 `nodes` 会在 Config Layer 归一成同一棵节点树。未传 `formAdapter` / `renderer` 时，默认使用 `createAntdFormAdapter(form)` 和 `antdRenderer`。
+4.2 主流程仍然是 `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`。`DynamicForm` 继续接收现有 `FormConfig`；Adapter、Compiler、Rule Engine 和 Schema Adapters 是可选预处理层，最终仍输出标准 `FormConfig`。`fields`、`groups` 和 `nodes` 会在 Config Layer 归一成同一棵节点树。未传 `formAdapter` / `renderer` 时，默认使用 `createAntdFormAdapter(form)` 和 `antdRenderer`。区别在于 UI-library agnostic 的配置、编译、规则和纯 Runtime 能力已归属 core 包，React/AntD 包负责消费这些能力并提供默认渲染运行时。
 
 ### 关键文件
 
-- `packages/dynamic-form/src/adapters/`：把 module-like、JsonSchema、OpenAPI 和 metadata 输入归一化为 `ModuleFormConfig`。
-- `packages/dynamic-form/src/modules/`：定义 `FieldModule` 协议和模块注册器。
-- `packages/dynamic-form/src/rules/`：校验、求值声明式规则，并把规则编译为标准 effects。
-- `packages/dynamic-form/src/compiler/compileFormConfig.ts`：把 `ModuleFormConfig` 编译为标准 `FormConfig` 和组件注册表。
+- `packages/dynamic-form-core/src/adapters/`：把 module-like、JsonSchema、OpenAPI 和 metadata 输入归一化为 `ModuleFormConfig`。
+- `packages/dynamic-form-core/src/modules/`：定义 `FieldModule` 协议和模块注册器。
+- `packages/dynamic-form-core/src/rules/`：校验、求值声明式规则，并把规则编译为标准 effects。
+- `packages/dynamic-form-core/src/compiler/compileFormConfig.ts`：把 `ModuleFormConfig` 编译为标准 `FormConfig` 和组件注册表。
+- `packages/dynamic-form-core/src/config/processor/configParser.ts`：归一化节点树，生成 `effectMap`、`nodeRegistry`、`containerRegistry`、`fieldRegistry`、`initialValues`、初始化后的字段和 container 状态。
+- `packages/dynamic-form-core/src/runtime/`：解析字段、container 和 group 的纯运行时能力，并提供 inspection helpers。
 - `packages/dynamic-form/src/CompiledDynamicForm.tsx`：把 compiler 产物及其组件注册表接入 `DynamicForm`。
 - `packages/dynamic-form/src/index.tsx`：拆分 `DynamicFormProps`，把引擎层 props 交给 Provider，把 UI 层 props 交给 FormContent。
 - `packages/dynamic-form/src/consumer/provider/DynamicFormProvider.tsx`：初始化 store、effect engine 和 React context。
 - `packages/dynamic-form/src/consumer/formAdapter.ts`：提供默认 AntD form adapter，并把旧 `form` 实例转换为中立 `DynamicFormFormAdapter`。
 - `packages/dynamic-form/src/state/useStoreInit.ts`：处理配置、创建 reducer state、合并初始值并通过 form adapter 同步到表单运行时。
-- `packages/dynamic-form/src/config/processor/configParser.ts`：归一化节点树，生成 `effectMap`、`nodeRegistry`、`containerRegistry`、`fieldRegistry`、`initialValues`、初始化后的字段和 container 状态。
 - `packages/dynamic-form/src/state/reducer.ts`：用 Immer 处理字段 meta、分组 meta 和动态 UI 配置更新。
-- `packages/dynamic-form/src/runtime/resolver.ts`：解析字段和 container 运行时能力。
 - `packages/dynamic-form/src/consumer/render/FormContent.tsx`：遍历 Runtime 节点，调用 renderer adapter，并连接提交、变更事件。
 - `packages/dynamic-form/src/consumer/render/antdRenderer.tsx`：默认 AntD renderer，负责 `Form`、`Form.Item`、`Form.List`、`Row`、`Col`、`Card` 和 `Button` 外壳。
 - `packages/dynamic-form/src/consumer/effects/`：通过 handler 系统应用 effect 返回值。
@@ -92,14 +102,14 @@ reducer 不维护重复的 values store。更新值的 effect handler 应调用�
 
 ### 分层职责
 
-- Adapter Layer：只负责把外部输入转换为 `ModuleFormConfig`，不决定 Runtime 或 renderer 行为。
-- Module / Compiler Layer：展开领域字段模块、装配 flat/grouped/mixed/nodes 结构，并输出标准 `FormConfig`。
-- Rule Layer：把同步声明式规则编译为标准 effects，不替代 effect engine 或 Ant Design validation。
-- Config Layer：把 flat/grouped/mixed/nodes `FormConfig` 归一化为节点树和标准化运行时输入。
-- State Layer：保存初始化后的字段/container 结构和 meta，并兼容旧的 flat meta key。
-- Runtime Layer：统一解析 rendered、submitable、editable、readonly、disabled、validatable 等策略。
+- Core Adapter Layer：只负责把外部输入转换为 `ModuleFormConfig`，不决定 renderer 行为。
+- Core Module / Compiler Layer：展开领域字段模块、装配 flat/grouped/mixed/nodes 结构，并输出标准 `FormConfig`。
+- Core Rule Layer：把同步声明式规则编译为标准 effects，不替代 effect engine 或 Ant Design validation。
+- Core Config Layer：把 flat/grouped/mixed/nodes `FormConfig` 归一化为节点树和标准化运行时输入。
+- State Layer：在 React/AntD 包中保存初始化后的字段/container 结构和 meta，并兼容旧的 flat meta key。
+- Runtime Layer：core 提供纯 resolver，React/AntD 包通过 `useRuntimeState` 为 UI 消费同一份 Runtime snapshot。
 - Consumer Layer：连接 Provider、form adapter、renderer adapter、hooks、effect 结果处理和组件注册。
-- Shared Layer：存放公共类型、上下文、工具函数和 meta 归一化逻辑。
+- Shared Layer：core 存放纯公共类型和工具，React/AntD 包补充 React context、初始化检查和 UI 相关类型。
 
 ### 维护约束
 

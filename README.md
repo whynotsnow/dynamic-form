@@ -1,13 +1,14 @@
 # DynamicForm Monorepo
 
-这是 `@whynotsnow/dynamic-form` 的 monorepo。仓库根目录只作为 private workspace root，真正的 npm 发布包位于 `packages/dynamic-form/`，Docusaurus 文档站位于 `apps/docs-site/`，可复用 demo 业务逻辑保留在根目录 `demos/`。
+这是 DynamicForm 的 monorepo。仓库根目录只作为 private workspace root，npm 发布包位于 `packages/dynamic-form-core/` 和 `packages/dynamic-form/`，Docusaurus 文档站位于 `apps/docs-site/`，可复用 demo 业务逻辑保留在根目录 `demos/`。
 
-DynamicForm 是配置驱动的动态表单引擎，默认提供 Ant Design renderer。4.1 开始提供 Form Adapter 和 Renderer Adapter 扩展基础，可作为可视化表单设计器或低代码系统的表单运行时内核。
+DynamicForm 是配置驱动的动态表单引擎，默认提供 Ant Design renderer。4.2 起，配置、编译、规则和纯 Runtime 能力由 `@whynotsnow/dynamic-form-core` 承载；`@whynotsnow/dynamic-form` 继续提供 React/AntD 运行时、默认渲染和兼容主入口。
 
 ### 工作区结构
 
 ```text
-packages/dynamic-form/   npm 发布包、源码、构建配置和库文档
+packages/dynamic-form-core/  纯 core npm 发布包、源码、构建配置和文档
+packages/dynamic-form/       React/AntD npm 发布包、源码、构建配置和库文档
 apps/docs-site/          Docusaurus 文档站
 demos/                   Vite demos 和 docs-site 复用的 demo 组件
 tests/                   Node test 文件和 demo 测试数据
@@ -16,6 +17,8 @@ docs/                    monorepo 级架构、维护、发布和站点规划文�
 
 ### 主要入口
 
+- 📦 [Core README](./packages/dynamic-form-core/README.md)
+- 🧩 [Core 文档索引](./packages/dynamic-form-core/docs/README.md)
 - 📦 [库 README](./packages/dynamic-form/README.md)
 - 📚 [库文档索引](./packages/dynamic-form/docs/README.md)
 - 🧱 [Monorepo 文档索引](./docs/README.md)
@@ -30,7 +33,7 @@ pnpm run site:start  # 启动 Docusaurus 文档站
 pnpm run type-check  # TypeScript 检查
 pnpm run lint:check  # ESLint 检查，不自动修复
 pnpm run test        # Node test runner
-pnpm run build       # 构建 @whynotsnow/dynamic-form
+pnpm run build       # 构建 core 和 React/AntD 发布包
 pnpm run site:build  # 构建文档站
 ```
 
@@ -38,8 +41,10 @@ pnpm run site:build  # 构建文档站
 
 ### 维护边界
 
-- 根目录不作为 npm 发布包；`packages/dynamic-form/` 是唯一发布边界。
-- `packages/dynamic-form/docs/` 是库文档的权威位置，并随 npm 包发布。
+- 根目录不作为 npm 发布包；`packages/dynamic-form-core/` 和 `packages/dynamic-form/` 是发布边界。
+- 根 workspace、core 包和 React/AntD 包采用统一版本号策略。
+- `packages/dynamic-form/docs/` 是 React/AntD 兼容入口文档的权威位置，并随 npm 包发布。
+- `packages/dynamic-form-core/docs/` 是 core package 文档，并随 core npm 包发布。
 - 根 `docs/` 只维护 monorepo 级文档，例如仓库结构、发布流程、站点规划和维护策略。
 - `apps/docs-site/` 维护站点布局、Docusaurus 配置和站点内容，不复制 `demos/` 的业务逻辑。
 - `demos/` 继续作为 repo-level demo 来源，同时被 Vite demo 和 docs-site 复用。

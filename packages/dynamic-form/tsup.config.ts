@@ -9,5 +9,5 @@ export default defineConfig({
   sourcemap: true, // 方便调试
   clean: true, // 每次打包清理 dist
   minify: true, // 压缩
-  external: ['react', 'react-dom', 'antd', '@whynotsnow/dynamic-form-core'] // 不打包 peerDependencies 和 workspace dependency
+  external: ['react', 'react-dom', 'antd', '@whynotsnow/dynamic-form-core'] // 不打包 peerDependencies 和外部 core package
 });

@@ -20,6 +20,10 @@ pnpm add @whynotsnow/dynamic-form-core
 - Runtime pure logic：`resolveRuntimeState` 和 inspection helpers
 - 共享纯类型：`FormConfig`、`BaseFieldConfig`、`FieldNamePath`、field address、designer metadata
 
+### 文档
+
+core 包的技术文档位于 [`docs/`](./docs/README.md)，覆盖配置处理与诊断、Compiler、Adapters、Rule Engine、Runtime 和 inspection helpers。
+
 ### 兼容入口
 
 `@whynotsnow/dynamic-form` 会继续 re-export core 公共 API，旧 import 不需要迁移：

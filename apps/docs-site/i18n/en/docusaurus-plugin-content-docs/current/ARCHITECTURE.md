@@ -1,13 +1,14 @@
 # Architecture
 
-DynamicForm 4.1 combines Field Address, the unified node tree, optional Adapter / Module / Rule / Compiler preprocessing, Form Adapter / Renderer Adapter, and a stable Config / State / Runtime / Consumer / Shared runtime pipeline. It separates logical field identity, value paths, value access, runtime policy, and UI rendering. The default implementation still uses Ant Design Form and `antdRenderer`.
+DynamicForm 4.2 is split into the pure `@whynotsnow/dynamic-form-core` package and the React/AntD-compatible `@whynotsnow/dynamic-form` package. Core owns Field Address, the unified node tree, Adapter / Module / Rule / Compiler preprocessing, config processing, config diagnostics, and pure Runtime resolvers. The React/AntD package owns `DynamicForm`, Provider, hooks, Form Adapter / Renderer Adapter, component registry, the default AntD renderer, and effect handler runtime.
 
 ### Repository Layout
 
 The repository is now a monorepo:
 
-- `packages/dynamic-form/` is the only npm package boundary. It contains the library source, `tsup` config, and package manifest.
-- `packages/dynamic-form/docs/` is the maintained source for DynamicForm library documentation and is published with the npm package.
+- `packages/dynamic-form-core/` is the pure core npm package boundary for config, compiler, adapters, rules, pure Runtime, and shared pure types.
+- `packages/dynamic-form/` is the React/AntD npm package boundary. It depends on core and continues to re-export core public APIs.
+- `packages/dynamic-form/docs/` is the maintained source for the React/AntD-compatible entry documentation and is published with the npm package.
 - Root `docs/` only maintains monorepo-level documentation such as workspace layout, release flow, site planning, and repository maintenance rules.
 - `apps/docs-site/` is the Docusaurus site, with site-specific zh-CN docs and `i18n/en` content.
 - `demos/` keeps the Vite demos and `demoRegistry`; the site reuses demo components and registry metadata without copying demo business logic.
@@ -20,6 +21,14 @@ flowchart TD
   adapter --> compiler["Rule + Config Compiler (optional)"]
   compiler --> formConfig["FormConfig"]
 
+  subgraph core["@whynotsnow/dynamic-form-core"]
+    adapter
+    compiler
+    formConfig --> process["processFormConfig"]
+    process --> runtimePure["resolveRuntimeState / inspection helpers"]
+  end
+
+  subgraph react["@whynotsnow/dynamic-form"]
   entry["packages/dynamic-form/src/index.tsx"] --> provider["DynamicFormProvider"]
   provider --> storeInit["useStoreInit"]
   provider --> effectEngine["form-chain-effect-engine"]
@@ -30,24 +39,25 @@ flowchart TD
   content --> events["useFormRuntimeEvents"]
   content --> participation["useFieldParticipation"]
   content --> renderer["Renderer Adapter + FieldComponentRenderer"]
+  end
 ```
 
-The 4.1 main flow remains `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`. `DynamicForm` continues to accept the existing `FormConfig`; Adapter, Compiler, Rule Engine, and Schema Adapters are optional preprocessing layers that still output standard `FormConfig`. `fields`, `groups`, and `nodes` are normalized into the same node tree in the Config Layer. When `formAdapter` / `renderer` are omitted, DynamicForm uses `createAntdFormAdapter(form)` and `antdRenderer`.
+The 4.2 main flow remains `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`. `DynamicForm` continues to accept the existing `FormConfig`; Adapter, Compiler, Rule Engine, and Schema Adapters are optional preprocessing layers that still output standard `FormConfig`. `fields`, `groups`, and `nodes` are normalized into the same node tree in the Config Layer. When `formAdapter` / `renderer` are omitted, DynamicForm uses `createAntdFormAdapter(form)` and `antdRenderer`. The difference is package ownership: UI-library agnostic config, compiler, rule, and pure Runtime capabilities live in core, while the React/AntD package consumes those capabilities and provides the default rendering runtime.
 
 ### Important Files
 
-- `packages/dynamic-form/src/adapters/`: normalizes module-like, JsonSchema, OpenAPI, and metadata input into `ModuleFormConfig`.
-- `packages/dynamic-form/src/modules/`: defines the `FieldModule` protocol and module registry.
-- `packages/dynamic-form/src/rules/`: validates and evaluates declarative rules and compiles them into standard effects.
-- `packages/dynamic-form/src/compiler/compileFormConfig.ts`: compiles `ModuleFormConfig` into standard `FormConfig` and a component registry.
+- `packages/dynamic-form-core/src/adapters/`: normalizes module-like, JsonSchema, OpenAPI, and metadata input into `ModuleFormConfig`.
+- `packages/dynamic-form-core/src/modules/`: defines the `FieldModule` protocol and module registry.
+- `packages/dynamic-form-core/src/rules/`: validates and evaluates declarative rules and compiles them into standard effects.
+- `packages/dynamic-form-core/src/compiler/compileFormConfig.ts`: compiles `ModuleFormConfig` into standard `FormConfig` and a component registry.
+- `packages/dynamic-form-core/src/config/processor/configParser.ts`: normalizes the node tree and creates `effectMap`, `nodeRegistry`, `containerRegistry`, `fieldRegistry`, `initialValues`, and initialized field/container state.
+- `packages/dynamic-form-core/src/runtime/`: resolves pure field, container, and group runtime capabilities and exposes inspection helpers.
 - `packages/dynamic-form/src/CompiledDynamicForm.tsx`: wires compiler output and its component registry into `DynamicForm`.
 - `packages/dynamic-form/src/index.tsx`: splits `DynamicFormProps` into engine props and UI props.
 - `packages/dynamic-form/src/consumer/provider/DynamicFormProvider.tsx`: initializes store, effect engine, and React context.
 - `packages/dynamic-form/src/consumer/formAdapter.ts`: provides the default AntD form adapter and converts the legacy `form` instance into the neutral `DynamicFormFormAdapter`.
 - `packages/dynamic-form/src/state/useStoreInit.ts`: processes config, creates reducer state, merges initial values, and syncs them to the form runtime through the form adapter.
-- `packages/dynamic-form/src/config/processor/configParser.ts`: normalizes the node tree and creates `effectMap`, `nodeRegistry`, `containerRegistry`, `fieldRegistry`, `initialValues`, and initialized field/container state.
 - `packages/dynamic-form/src/state/reducer.ts`: handles field meta, group meta, and dynamic UI config updates with Immer.
-- `packages/dynamic-form/src/runtime/resolver.ts`: resolves field and container runtime capabilities.
 - `packages/dynamic-form/src/consumer/render/FormContent.tsx`: walks Runtime nodes, calls the renderer adapter, and wires submit/change events.
 - `packages/dynamic-form/src/consumer/render/antdRenderer.tsx`: the default AntD renderer for `Form`, `Form.Item`, `Form.List`, `Row`, `Col`, `Card`, and `Button` shells.
 - `packages/dynamic-form/src/consumer/effects/`: applies effect results through handlers.
@@ -78,14 +88,14 @@ The reducer intentionally does not maintain a duplicate value store. Effect hand
 
 ### Layer Responsibilities
 
-- Adapter Layer: converts external input into `ModuleFormConfig` without deciding Runtime or renderer behavior.
-- Module / Compiler Layer: expands domain field modules, assembles flat/grouped/mixed/nodes structure, and outputs standard `FormConfig`.
-- Rule Layer: compiles synchronous declarative rules into standard effects without replacing the effect engine or Ant Design validation.
-- Config Layer: normalizes flat/grouped/mixed/nodes `FormConfig` into a node tree and runtime inputs.
-- State Layer: stores initialized field/container structure and meta while normalizing legacy flat meta keys.
-- Runtime Layer: resolves rendered, submitable, editable, readonly, disabled, and validatable policy.
+- Core Adapter Layer: converts external input into `ModuleFormConfig` without deciding renderer behavior.
+- Core Module / Compiler Layer: expands domain field modules, assembles flat/grouped/mixed/nodes structure, and outputs standard `FormConfig`.
+- Core Rule Layer: compiles synchronous declarative rules into standard effects without replacing the effect engine or Ant Design validation.
+- Core Config Layer: normalizes flat/grouped/mixed/nodes `FormConfig` into a node tree and runtime inputs.
+- State Layer: lives in the React/AntD package and stores initialized field/container structure and meta while normalizing legacy flat meta keys.
+- Runtime Layer: core provides pure resolvers, and the React/AntD package uses `useRuntimeState` to consume one Runtime snapshot for UI behavior.
 - Consumer Layer: connects provider, form adapter, renderer adapter, hooks, effect results, and component registry.
-- Shared Layer: contains types, context, utilities, and meta normalization helpers.
+- Shared Layer: core contains pure public types and utilities; the React/AntD package adds React context, initialization checks, and UI-related types.
 
 ### Maintenance Constraints
 

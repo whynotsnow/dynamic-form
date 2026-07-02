@@ -1,6 +1,6 @@
 # DynamicForm
 
-`@whynotsnow/dynamic-form` 是一个基于 React 和 TypeScript 的配置驱动动态表单引擎，默认提供 Ant Design renderer。它用配置描述表单结构，用 `form-chain-effect-engine` 执行字段联动，并通过 Runtime Layer 统一处理字段是否渲染、是否提交、是否可编辑、是否校验等运行时策略。4.1 开始提供 Form Adapter 和 Renderer Adapter 扩展基础，可作为可视化表单设计器或低代码系统的运行时内核。
+`@whynotsnow/dynamic-form` 是一个基于 React 和 TypeScript 的配置驱动动态表单引擎，默认提供 Ant Design renderer。它用配置描述表单结构，用 `form-chain-effect-engine` 执行字段联动，并通过 Runtime Layer 统一处理字段是否渲染、是否提交、是否可编辑、是否校验等运行时策略。4.2 起，UI-library agnostic 的配置、编译、规则和纯 Runtime 能力归属 `@whynotsnow/dynamic-form-core`，本包继续作为 React/AntD 兼容主入口并 re-export core 公共 API。
 
 ### 项目能力
 
@@ -211,7 +211,7 @@ Rule 是字段所属的 per-field 规则，不支持 `target` 配置。一个源
 
 ### 4.1 Adapter 边界
 
-4.1 保持单包发布和旧 API 兼容。未传 `formAdapter` 或 `renderer` 时，`DynamicForm` 会把旧的 AntD `form` 实例转换为 `createAntdFormAdapter(form)`，并使用默认 `antdRenderer`。
+4.1 新增 Form Adapter 和 Renderer Adapter，并保持旧 API 兼容。4.2 起这些 UI-library agnostic 能力中的配置处理、Compiler、Adapters、Rules 和纯 Runtime helper 已分离到 `@whynotsnow/dynamic-form-core`；本包仍继续 re-export core 公共 API。未传 `formAdapter` 或 `renderer` 时，`DynamicForm` 会把旧的 AntD `form` 实例转换为 `createAntdFormAdapter(form)`，并使用默认 `antdRenderer`。
 
 - Form Adapter 负责值读写、批量赋值和校验：`getFieldValue`、`getFieldsValue`、`setFieldValue`、`setFieldsValue`、`validateFields`。
 - Renderer Adapter 负责默认 UI 外壳：form、字段项、字段布局、分组容器、repeatable container 和提交按钮。
@@ -237,6 +237,9 @@ packages/dynamic-form/   npm 发布包、源码和构建配置
   src/                   库源码
   docs/                  库文档
   dist/                  构建产物
+packages/dynamic-form-core/
+  src/                   配置、compiler、adapters、rules 和纯 runtime 源码
+  docs/                  core package 文档
 apps/docs-site/          Docusaurus 文档站
 demos/                   Vite demos 和可复用 demo 组件
 tests/                   Node test 文件和 demo 测试数据

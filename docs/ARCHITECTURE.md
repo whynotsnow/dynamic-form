@@ -26,7 +26,7 @@ scripts/                 发布和维护脚本
 
 - 根 `package.json`：声明 `packages/*` 和 `apps/*` workspaces，提供统一的 build、type-check、test、site build 和 release 命令。
 - `packages/dynamic-form-core/package.json`：保留 core npm 包名、`exports`、`main`、`module`、`types` 和发布文件清单。
-- `packages/dynamic-form/package.json`：保留 React/AntD npm 包名、`exports`、`main`、`module`、`types`、peer dependencies、对 core 的 workspace dependency 和发布文件清单。
+- `packages/dynamic-form/package.json`：保留 React/AntD npm 包名、`exports`、`main`、`module`、`types`、peer dependencies、对 core 的精确版本依赖和发布文件清单。
 - `apps/docs-site/package.json`：只负责 Docusaurus 站点构建与本地预览。
 
 ### 文档职责

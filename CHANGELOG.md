@@ -1,5 +1,129 @@
 # Changelog
 
+## 4.2.0 - 2026-07-02
+
+### 版本概览
+
+- 新增 `@whynotsnow/dynamic-form-core` npm 包，承载配置处理、配置诊断、Compiler、Adapters、Rule Engine、纯 Runtime resolver、Runtime inspection helpers 和共享纯类型。
+- `@whynotsnow/dynamic-form` 继续作为 React/AntD 兼容主入口，保留 `DynamicForm`、`CompiledDynamicForm`、Provider、hooks、默认 renderer、form adapters、component registry 和 effect handler runtime，并 re-export core 公共 API。
+- 发布策略调整为 core 先发布、React/AntD 包后发布，并采用 lockstep version。
+
+### 发布边界
+
+- 当前 npm 发布包为 `@whynotsnow/dynamic-form-core` 和 `@whynotsnow/dynamic-form`。
+- 根 workspace、core 包和 React/AntD 包版本号必须一致。
+- `@whynotsnow/dynamic-form` 对 core 的依赖使用精确版本号，不使用 `workspace:` 协议进入 npm tarball。
+- 新增 `pnpm run version:sync -- <version>` 用于同步根 package、两个发布包和 lockfile 中的版本声明。
+
+## 4.1.2 - 2026-07-01
+
+### 版本概览
+
+- 补充面向可视化配置系统的配置诊断、designer metadata 和 Runtime inspection helpers。
+- 收紧 Form Adapter 与 Renderer Adapter 的最低契约，明确自定义 adapter 在初始化阶段应被提前校验。
+- 保持 4.1 的 Form/Renderer Adapter 兼容模型不变。
+
+### 配置诊断与设计器元数据
+
+- 新增 `getFormConfigDiagnostics(config, options?)` 和 `validateFormConfig(config, options?)`。
+- 诊断覆盖重复 field/container/group id、重复 name path、repeatable container 缺少 `name`、空 children、未知 component、无效 group field 结构和未知 dependent。
+- 字段、legacy group 和 container 支持 `designer` 元数据，用于可视化设计器保存标题、说明、分类、图标、排序、锁定状态、设计器内隐藏状态或业务自定义 metadata。
+- `designer` 元数据只透传和保留，不进入 Runtime、effect、提交、校验或默认 renderer 行为。
+
+### Runtime 与 Adapter 契约
+
+- 新增只读 Runtime inspection helpers，用于设计器预览、调试面板和测试断言。
+- 明确 `formAdapter.validateFields(names)` 应接受 `FieldNamePath[]` 并只校验传入字段。
+- 明确 `formAdapter.getFieldsValue(true)` 应返回包含嵌套路径的完整 values。
+- 明确 `renderer.renderForm()` 和 `renderer.renderFieldItem()` 的必需行为。
+- 自定义 adapter 可通过 `assertFormAdapter` / `assertRendererAdapter` 在初始化阶段提前校验。
+
+### Package
+
+- 根 workspace 和 `@whynotsnow/dynamic-form` package 版本升级到 `4.1.2`。
+
+## 4.1.1 - 2026-07-01
+
+### 版本概览
+
+- 在 4.1 Form/Renderer Adapter 基础上补充无组件库依赖的 reference 实现和 runtime guard。
+- 提供适合测试、自定义 renderer 示例和可视化预览态的内存表单运行时。
+
+### Form / Renderer Adapter
+
+- 新增 `createMemoryFormAdapter(initialValues)`，维护内存 values store，并提供 no-op `validateFields`。
+- 新增 `headlessRenderer`，使用原生 HTML 元素渲染最小表单外壳。
+- 新增 `assertFormAdapter` 和 `assertRendererAdapter`，用于校验自定义 adapter 的必需方法。
+- `headlessRenderer` 仅作为 reference implementation，不定位为生产级组件库 renderer。
+
+### Package
+
+- 根 workspace 和 `@whynotsnow/dynamic-form` package 版本升级到 `4.1.1`。
+
+## 4.1.0 - 2026-07-01
+
+### 版本概览
+
+- 新增 Form Adapter 和 Renderer Adapter 扩展入口，让 DynamicForm 的值读写、校验和默认 UI 外壳从 Ant Design 默认实现中抽象出来。
+- 旧的 `<DynamicForm form={form} />` AntD 用法保持兼容；未传 adapter 时默认转换为 `createAntdFormAdapter(form)`，未传 renderer 时使用 `antdRenderer`。
+- 4.1 不内置 Arco、Semi 或其他组件库 renderer，只提供 AntD 默认实现和扩展接口。
+
+### Form Adapter
+
+- 新增中立表单运行时接口，封装 `getFieldValue`、`getFieldsValue`、`setFieldValue`、`setFieldsValue` 和 `validateFields`。
+- 新增 `createAntdFormAdapter(form)`，将 Ant Design Form 实例转换为中立 adapter。
+- effect result handlers、提交、隐藏字段参与策略和运行时校验改为通过 form adapter 读写 values 和执行校验。
+
+### Renderer Adapter
+
+- 新增 `renderer` 扩展入口，负责默认 form、字段项、字段集合布局、字段布局、分组容器、repeatable container 和提交按钮外壳。
+- 默认 `antdRenderer` 继续使用 Ant Design `Form`、`Form.Item`、`Form.List`、`Row`、`Col`、`Card` 和 `Button`。
+- render hooks 保持更靠近业务侧的覆盖层；renderer 生成 `defaultRender` 后，仍可被 `renderFieldItem`、`renderFields`、`renderGroupItem`、`renderGroups` 或 `renderFormInner` 包装或替换。
+
+### Package
+
+- 根 workspace 和 `@whynotsnow/dynamic-form` package 版本升级到 `4.1.0`。
+
+## 4.0.0 - 2026-07-01
+
+### 版本概览
+
+- 新增统一节点树 `FormConfig.nodes` 和 `ModuleFormConfig.nodes`，支持递归 `FieldNode` / `ContainerNode`。
+- 引入 container 作为通用结构边界，覆盖嵌套布局、父级可见性传递和 repeatable container 场景。
+- `fields`、`groups`、mixed 配置和 `CompiledDynamicForm` 继续兼容，原有单层表单用法不需要立即迁移。
+
+### 统一节点树
+
+- `FormConfig` 可以同时包含 `nodes`、`fields` 和 `groups`。
+- 配置处理阶段会把三种入口归一化为同一棵节点树，并生成 node registry、container registry、field registry 和 field address registry。
+- legacy `groups` 会转换为顶层 container。
+- 字段 `id` 继续作为 Runtime、effect graph 和 meta 更新使用的稳定标识。
+- 字段和 container 的 `name` 用于组成 Ant Design `NamePath`，不替代稳定 `id`。
+
+### Container 与 Repeatable
+
+- 新增 `ContainerNode`，支持 `children` 递归嵌套字段和子 container。
+- `ContainerNode.name` 可作为后代字段值路径前缀。
+- `repeatable: true` 的 container 必须声明 `name`，默认 renderer 通过 Ant Design `Form.List` 渲染已有重复项。
+- 新增、删除、排序等 repeatable 操作不由默认 renderer 内置，应由业务 UI、render hooks 或自定义容器封装提供。
+
+### Runtime 与渲染
+
+- Runtime 沿父级 container 可见性解析字段、group 和 container 能力。
+- 隐藏父级会影响所有后代字段的渲染、提交和校验参与。
+- 默认 renderer 会按归一化 root nodes 顺序渲染节点树，并在 container 边界内递归渲染字段段。
+- Field Address、effect graph 和运行时 meta 更新继续使用稳定字段 `id`，提交值继续保留 Ant Design `NamePath` 对应的嵌套结构。
+
+### Compiler、Adapter 与 Rules
+
+- Compiler 支持输出 `nodes` 结构。
+- Rule Engine 支持字段、group 和 container 上的规则，并在 compiler 阶段转换为标准 effect。
+- Schema / metadata adapter 可以继续输出 flat/grouped 配置，也可以通过模块配置进入节点树编译路径。
+
+### Package
+
+- 根 workspace 和 `@whynotsnow/dynamic-form` package 版本升级到 `4.0.0`。
+
 ## 3.4.0 - 2026-06-30
 
 ### 版本概览
@@ -73,7 +197,7 @@
 
 ### Monorepo 与发布边界
 
-- 仓库已调整为 private pnpm workspace root，唯一 npm 发布包保留在 `packages/dynamic-form/`。
+- 仓库已调整为 private pnpm workspace root，当时 npm 发布包为 `packages/dynamic-form/`。
 - 新增 Docusaurus docs-site workspace：`apps/docs-site/`，站点中文文档与英文 i18n 文档独立维护。
 - 根 `demos/` 作为 Vite demo 和 docs-site 的 demos 页面复用的业务 demo 来源，避免在站点复制 demo 逻辑。
 - 根 `docs/` 只维护 monorepo 级架构、维护、发布和站点规划文档；库权威文档保留在 `packages/dynamic-form/docs/`。

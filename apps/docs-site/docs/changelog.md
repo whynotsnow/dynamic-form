@@ -4,11 +4,27 @@
 
 ### 当前版本
 
-当前文档基线是 DynamicForm 4.0。它把统一节点树、递归 container、container `name` 前缀和 repeatable container 纳入当前实现，同时保持 `fields`、`groups` 和 mixed 配置兼容。
+当前文档基线是 DynamicForm 4.2。它在 4.0 统一节点树和 4.1 Form/Renderer Adapter 基础上，新增 `@whynotsnow/dynamic-form-core` 纯核心包；`@whynotsnow/dynamic-form` 继续作为 React/AntD 兼容主入口并 re-export core 公共 API。
 
-当前主流程仍是 `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`。`fields`、`groups` 和 `nodes` 会在 Config Layer 归一化为节点树。
+当前主流程仍是 `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`。其中配置处理、Compiler、Adapters、Rules 和纯 Runtime resolver 归属 core；React Provider、hooks、form adapters、renderers、component registry 和 effect handler runtime 归属 `@whynotsnow/dynamic-form`。
 
 ### 版本时间线
+
+#### 4.2.0 - 2026-07-02
+
+- 新增 `@whynotsnow/dynamic-form-core` 包，承载配置处理、配置诊断、Compiler、Adapters、Rule Engine、纯 Runtime resolver 和 Runtime inspection helpers。
+- `@whynotsnow/dynamic-form` 保持旧 import 兼容，继续导出 React/AntD 运行时能力，并 re-export core 公共 API。
+- 发布流程调整为 core 先发布、React/AntD 包后发布，并采用统一版本号策略。
+
+相关专题：[Core Package](./core-package.md)。
+
+#### 4.1.0 - 4.1.2 - 2026-07-01
+
+- 4.1 新增 `formAdapter` 和 `renderer` 扩展入口，旧的 AntD `form` 用法继续兼容。
+- 4.1.1 增加 `createMemoryFormAdapter`、`headlessRenderer` 和 adapter runtime guard，便于测试、自定义 renderer 示例和可视化预览。
+- 4.1.2 增加配置诊断、designer metadata 和 Runtime inspection helpers，并明确自定义 form adapter / renderer 的最低契约。
+
+相关专题：[渲染与 UI 扩展](./rendering-and-ui.md)、[配置指南](./configuration.md)、[Runtime Layer](./runtime-layer.md)。
 
 #### 4.0.0 - 2026-07-01
 
@@ -40,7 +56,7 @@
 
 #### 3.2.0 - 2026-06-30
 
-- 将仓库调整为 private pnpm workspace root，并保留 `packages/dynamic-form/` 作为唯一 npm 发布包。
+- 将仓库调整为 private pnpm workspace root，当时 npm 发布包为 `packages/dynamic-form/`。
 - 新增 Docusaurus docs-site workspace，中文站点文档和英文 i18n 文档独立维护。
 - 明确 DynamicForm 核心不支持库级异步 effect 或 async validation compile。
 
