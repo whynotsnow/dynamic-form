@@ -7,6 +7,7 @@ import UIConfigDemo from './uiConfigDemo';
 import RenderExtensionDemo from './renderExtensionDemo';
 import CompilerFoundationDemo from './compilerFoundationDemo';
 import NodeModel4Demo from './nodeModel4Demo';
+import HeadlessRendererDemo from './headlessRendererDemo';
 
 export interface DemoDefinition {
   name: string;
@@ -64,6 +65,13 @@ export const DEMO_COMPONENTS = {
     description:
       '演示 4.0 nodes、普通 container、嵌套 container、repeatable container、级联字段联动和跨层级 effect graph。',
     component: NodeModel4Demo
+  },
+  headlessRenderer: {
+    name: 'HeadlessRendererDemo',
+    title: 'Headless Renderer / Memory Adapter 演示',
+    description:
+      '演示 createMemoryFormAdapter、headlessRenderer、嵌套 name、隐藏字段和 render hooks 覆盖 defaultRender。',
+    component: HeadlessRendererDemo
   }
 } satisfies Record<string, DemoDefinition>;
 

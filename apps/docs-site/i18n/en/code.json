@@ -47,6 +47,12 @@
   "demos.items.nodeModel4.description": {
     "message": "Shows 4.0 nodes, standard containers, nested containers, repeatable containers, cascading field interactions, and cross-level effect graphs."
   },
+  "demos.items.headlessRenderer.title": {
+    "message": "Headless Renderer / Memory Adapter Demo"
+  },
+  "demos.items.headlessRenderer.description": {
+    "message": "Shows createMemoryFormAdapter, headlessRenderer, nested names, hidden fields, and render hooks overriding defaultRender."
+  },
   "demos.client.sidebarLabel": {
     "message": "DynamicForm demos"
   },
@@ -71,6 +77,9 @@
   "api.groups.configTypes.description": {
     "message": "Describe form config, field config, UI config, render hook parameters, and core value types."
   },
+  "api.groups.formRendererAdapters.description": {
+    "message": "Adapter contracts and default implementations for connecting different Form runtimes or UI shells."
+  },
   "api.groups.componentRegistry.description": {
     "message": "Register or extend field components and access the default Ant Design component set."
   },
@@ -85,6 +94,9 @@
   },
   "api.groups.fieldAddress.description": {
     "message": "Separates stable field ids from Ant Design NamePath and supports nested value paths."
+  },
+  "api.groups.runtimeInspection.description": {
+    "message": "Read rendered, submit, and validation participation from Runtime snapshots for debugging and designer previews."
   },
   "api.groups.utilities.description": {
     "message": "Default config and config processing entry points for advanced integrations and tests."

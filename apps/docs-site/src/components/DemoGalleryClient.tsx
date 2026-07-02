@@ -88,6 +88,17 @@ const DEMO_TEXT: Record<DemoType, { title: string; description: string }> = {
       message:
         '演示 4.0 nodes、普通 container、嵌套 container、repeatable container、级联字段联动和跨层级 effect graph。'
     })
+  },
+  headlessRenderer: {
+    title: translate({
+      id: 'demos.items.headlessRenderer.title',
+      message: 'Headless Renderer / Memory Adapter 演示'
+    }),
+    description: translate({
+      id: 'demos.items.headlessRenderer.description',
+      message:
+        '演示 createMemoryFormAdapter、headlessRenderer、嵌套 name、隐藏字段和 render hooks 覆盖 defaultRender。'
+    })
   }
 };
 

@@ -8,6 +8,7 @@ export { default as UIConfigDemo } from './uiConfigDemo';
 export { default as RenderExtensionDemo } from './renderExtensionDemo';
 export { default as CompilerFoundationDemo } from './compilerFoundationDemo';
 export { default as NodeModel4Demo } from './nodeModel4Demo';
+export { default as HeadlessRendererDemo } from './headlessRendererDemo';
 export { nodeModel4DemoConfig, nodeModel4DemoValues } from './nodeModel4DemoConfig';
 export { DEMO_COMPONENTS } from './demoRegistry';
 export type { DemoType, DemoDefinition } from './demoRegistry';

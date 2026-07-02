@@ -35,8 +35,31 @@ const apiGroups = [
       id: 'api.groups.configTypes.description',
       message: '描述表单配置、字段配置、UI 配置、render hooks 参数和核心值类型。'
     }),
-    exports: ['FormConfig', 'BaseFieldConfig', 'DynamicFormProps', 'UIConfig', 'FormValues'],
+    exports: [
+      'FormConfig',
+      'BaseFieldConfig',
+      'DynamicFormProps',
+      'UIConfig',
+      'FormValues',
+      'DesignerMetadata'
+    ],
     docs: '/docs/configuration'
+  },
+  {
+    title: 'Form / Renderer Adapters',
+    description: translate({
+      id: 'api.groups.formRendererAdapters.description',
+      message: '接入不同 Form runtime 或 UI 外壳的 adapter contract 与默认实现。'
+    }),
+    exports: [
+      'assertFormAdapter',
+      'createAntdFormAdapter',
+      'createMemoryFormAdapter',
+      'assertRendererAdapter',
+      'antdRenderer',
+      'headlessRenderer'
+    ],
+    docs: '/docs/rendering-and-ui'
   },
   {
     title: 'Component Registry',
@@ -94,12 +117,31 @@ const apiGroups = [
     docs: '/docs/field-address'
   },
   {
+    title: 'Runtime Inspection',
+    description: translate({
+      id: 'api.groups.runtimeInspection.description',
+      message: '读取 Runtime 快照中的渲染、提交和校验参与状态，用于调试和设计器预览。'
+    }),
+    exports: [
+      'getFieldRuntimeSnapshot',
+      'getRenderedFieldIds',
+      'getSubmitableFieldIds',
+      'getValidatableFieldIds'
+    ],
+    docs: '/docs/runtime-layer'
+  },
+  {
     title: 'Utilities',
     description: translate({
       id: 'api.groups.utilities.description',
       message: '默认配置和配置处理入口，主要服务高级集成与测试场景。'
     }),
-    exports: ['getDefaultConfig', 'processFormConfig'],
+    exports: [
+      'getDefaultConfig',
+      'processFormConfig',
+      'getFormConfigDiagnostics',
+      'validateFormConfig'
+    ],
     docs: '/docs/ARCHITECTURE'
   }
 ];
