@@ -147,6 +147,7 @@ Repeatable container 使用 Ant Design `Form.List` 渲染。当前默认渲染�
 | `effect` | 依赖触发后的 effect 函数。 |
 | `formItemProps` | 静态 `Form.Item` props。 |
 | `componentProps` | 传给字段组件的静态 props。 |
+| `designer` | 可视化设计器专用元数据，不参与 Runtime、effect、提交或校验。 |
 
 `required` 是字段声明属性。默认 Ant Design renderer 会把 `required: true` 合并成真实 `Form.Item.rules`，并显示 required 标记；如果 `rules` 中已经显式声明 required rule，则以显式 rule 为准，不重复生成。
 
@@ -190,6 +191,7 @@ Repeatable container 使用 Ant Design `Form.List` 渲染。当前默认渲染�
 | `initialVisible` | 初始是否可见，默认可见。 |
 | `dependents` | 分组级依赖声明。 |
 | `effect` | 分组级 effect。 |
+| `designer` | 可视化设计器专用元数据。 |
 
 分组可见性会影响子字段的渲染和提交参与。
 
@@ -206,8 +208,53 @@ Repeatable container 使用 Ant Design `Form.List` 渲染。当前默认渲染�
 | `dependents` | container 级依赖声明。 |
 | `effect` | container 级 effect。 |
 | `repeatable` | 是否通过 Ant Design `Form.List` 渲染重复项。 |
+| `designer` | 可视化设计器专用元数据。 |
 
 Container 可见性会递归影响所有后代字段和子 container 的渲染、提交和校验参与。
+
+### Designer Metadata
+
+4.1.2 起，字段、legacy group 和 container 都可以携带 `designer` 元数据。它只面向可视化配置系统，用来保存设计器标题、说明、分类、图标、排序、锁定状态、设计器内隐藏状态或业务自定义 metadata。
+
+```ts
+const formConfig: FormConfig = {
+  fields: [
+    {
+      id: 'customerName',
+      label: '客户名称',
+      component: 'TextInput',
+      designer: {
+        title: '客户名称',
+        category: '基础信息',
+        icon: 'text',
+        order: 10,
+        locked: false,
+        metadata: { source: 'designer' }
+      }
+    }
+  ]
+};
+```
+
+`designer` 会随配置透传和保留，但不会进入 Runtime 策略，也不会影响 effect、提交数据、校验、字段参与清理或默认 renderer 行为。设计器如果需要根据这些信息隐藏或锁定画布节点，应在可视化系统内自行消费。
+
+### 配置诊断
+
+4.1.2 新增 `getFormConfigDiagnostics(config, options?)` 和 `validateFormConfig(config, options?)`。它们用于可视化系统保存前检查、导入配置检查和测试断言，不替代 `processFormConfig()`；运行时配置处理仍保持原有抛错行为。
+
+```ts
+import { validateFormConfig } from '@whynotsnow/dynamic-form';
+
+const result = validateFormConfig(formConfig, {
+  knownComponents: ['TextInput', 'Select']
+});
+
+if (!result.valid) {
+  console.log(result.diagnostics);
+}
+```
+
+诊断覆盖重复 field/container/group id、重复 name path、repeatable container 缺少 `name`、空 children、未知 component、无效 group field 结构和未知 dependent。重复标识、无效结构等问题会返回 `error`；未知 component/dependent 更适合作为设计器提示，默认返回 `warning`。
 
 ### UI 配置
 

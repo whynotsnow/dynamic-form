@@ -105,6 +105,8 @@ export function Example() {
 - `DefaultRegistryFieldComponents`
 - `getDefaultConfig`
 - `processFormConfig`
+- `getFormConfigDiagnostics`
+- `validateFormConfig`
 - `compileFormConfig`
 - `ModuleRegistryManager`
 - `defaultModuleRegistry`
@@ -125,6 +127,10 @@ export function Example() {
 - `assertRendererAdapter`
 - `antdRenderer`
 - `headlessRenderer`
+- `getFieldRuntimeSnapshot`
+- `getRenderedFieldIds`
+- `getSubmitableFieldIds`
+- `getValidatableFieldIds`
 - `DynamicFormProps`、`FormConfig`、compiler、adapter、rule、render hook 和组件注册相关公共类型。
 
 ### Rule Engine
@@ -211,6 +217,9 @@ Rule 是字段所属的 per-field 规则，不支持 `target` 配置。一个源
 - `assertFormAdapter` 和 `assertRendererAdapter` 会提前校验自定义 adapter 的必需方法。
 - `createMemoryFormAdapter` 提供无 UI 组件库依赖的内存 values runtime，适合测试、自定义 renderer 示例和可视化预览态。
 - `headlessRenderer` 提供基于原生元素的最小 reference renderer，不定位为生产级 UI。
+- `getFormConfigDiagnostics` / `validateFormConfig` 提供保存前和导入时配置检查，不替代 `processFormConfig()` 的运行时抛错行为。
+- 字段、legacy group 和 container 可携带 `designer` 元数据；该数据只供可视化系统消费，不参与 Runtime、effect、提交或校验。
+- Runtime inspection helpers 可读取当前 rendered、submitable 和 validatable 字段集合，适合设计器预览、调试面板和测试断言。
 - 4.1 不承诺内置 Arco、Semi 或其他组件库适配器；业务侧可以基于新增接口自定义 renderer。
 
 ### 4.0 配置管线

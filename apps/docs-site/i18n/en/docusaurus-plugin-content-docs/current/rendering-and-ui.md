@@ -60,6 +60,14 @@ A custom component-library renderer can reuse the core Runtime and render hooks 
 
 4.1 provides the AntD default implementation, headless reference implementations, and extension interfaces. It does not include built-in Arco, Semi, or other component-library renderers.
 
+4.1.2 clarifies the minimum adapter contract:
+
+- `formAdapter.validateFields(names)` must accept `FieldNamePath[]` and validate only those fields. If the underlying form library does not support partial validation, the adapter should provide the compatibility layer.
+- `formAdapter.getFieldsValue(true)` must return the complete values object including nested paths. DynamicForm applies submit filtering later through Runtime.
+- `renderer.renderForm()` must wire the supplied `onFinish`, `onValuesChange`, and `children` into the underlying form shell.
+- `renderer.renderFieldItem()` must own the field item shell and receive the renderer-generated `defaultRender`; render hooks may wrap or replace it afterward.
+- Custom adapters should pass `assertFormAdapter` / `assertRendererAdapter` before entering preview or production rendering paths.
+
 ### Nodes and Container Rendering Contract
 
 The 4.0 `nodes` entry renders root nodes in order as continuous field segments and container blocks:
@@ -90,6 +98,8 @@ Render hooks are layered from smallest to largest scope:
 Each hook receives lower-level render functions and `defaultRender`, so callers can wrap or replace only the part they need.
 
 The `renderer` creates the default UI, while render hooks remain the business-side override layer. In other words, `renderer` creates `defaultRender` first, then `renderFieldItem`, `renderFields`, `renderGroupItem`, `renderGroups`, or `renderFormInner` can wrap or replace it.
+
+This priority is unchanged in 4.1.2: a custom renderer decides the default UI, but it cannot suppress business-provided render hooks. If a hook returns a completely new React node, that return value replaces the renderer default for that layer.
 
 ### Choosing an Extension Point
 

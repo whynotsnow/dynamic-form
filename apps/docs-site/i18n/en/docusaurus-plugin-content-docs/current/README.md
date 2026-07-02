@@ -37,6 +37,8 @@ The package exports:
 - `DefaultRegistryFieldComponents`
 - `getDefaultConfig`
 - `processFormConfig`
+- `getFormConfigDiagnostics`
+- `validateFormConfig`
 - `compileFormConfig`
 - `ModuleRegistryManager`
 - `defaultModuleRegistry`
@@ -60,6 +62,10 @@ The package exports:
 - `assertRendererAdapter`
 - `antdRenderer`
 - `headlessRenderer`
+- `getFieldRuntimeSnapshot`
+- `getRenderedFieldIds`
+- `getSubmitableFieldIds`
+- `getValidatableFieldIds`
 - Core public types from `packages/dynamic-form/src/shared/types.ts`.
 - Runtime types: `FieldCapability`, `GroupCapability`, and `RuntimeState`.
 
@@ -77,7 +83,7 @@ DynamicForm combines optional preprocessing capabilities with a stable runtime p
 
 ### 4.1 Adapter Foundation
 
-DynamicForm 4.1 adds `formAdapter` and `renderer` extension points. Existing `<DynamicForm form={form} />` usage remains compatible; when adapters are omitted, the default AntD implementation is used. 4.1.1 adds adapter runtime guards, `createMemoryFormAdapter`, and `headlessRenderer` for tests, custom renderer examples, and visual-builder preview mode. 4.1 keeps the single package shape and does not include a second built-in component-library renderer.
+DynamicForm 4.1 adds `formAdapter` and `renderer` extension points. Existing `<DynamicForm form={form} />` usage remains compatible; when adapters are omitted, the default AntD implementation is used. 4.1.1 adds adapter runtime guards, `createMemoryFormAdapter`, and `headlessRenderer` for tests, custom renderer examples, and visual-builder preview mode. 4.1.2 adds config diagnostics, designer metadata, and Runtime inspection helpers so visual builders can reuse the same config contract during save, preview, and debugging flows. 4.1 keeps the single package shape and does not include a second built-in component-library renderer.
 
 ### 4.0 Configuration Model
 

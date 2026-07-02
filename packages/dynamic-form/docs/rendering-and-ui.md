@@ -66,6 +66,14 @@ flowchart TD
 
 4.1 只提供 AntD 默认实现、headless reference implementation 和扩展接口，不内置 Arco、Semi 或其他组件库 renderer。
 
+4.1.2 明确 adapter 最低契约：
+
+- `formAdapter.validateFields(names)` 必须接受 `FieldNamePath[]`，并只校验传入字段；如果底层表单库不支持局部校验，应在 adapter 内做兼容。
+- `formAdapter.getFieldsValue(true)` 必须返回包含嵌套路径的完整 values；提交过滤由 DynamicForm 根据 Runtime 再处理。
+- `renderer.renderForm()` 必须把 DynamicForm 提供的 `onFinish`、`onValuesChange` 和 `children` 接入底层表单外壳。
+- `renderer.renderFieldItem()` 必须负责字段项外壳，并接收 renderer 生成的 `defaultRender`；render hooks 会在它之后继续包装或替换。
+- 自定义 adapter 应先通过 `assertFormAdapter` / `assertRendererAdapter` 校验，再进入预览或生产渲染路径。
+
 ### Nodes 与 container 渲染契约
 
 4.0 的 `nodes` 入口会把 root nodes 按顺序渲染为“字段连续段”和“container 块”：
@@ -125,6 +133,8 @@ render hooks 按作用范围从小到大排列：
 每个 hook 都会收到下层 render 函数和 `defaultRender`，可以只包装需要扩展的部分。
 
 `renderer` 负责生成默认 UI，render hooks 仍然是更靠近业务侧的覆盖层。也就是说，`renderer` 先生成 `defaultRender`，再由 `renderFieldItem`、`renderFields`、`renderGroupItem`、`renderGroups` 或 `renderFormInner` 包装或替换它。
+
+这个优先级在 4.1.2 保持不变：自定义 renderer 只能决定默认 UI，不能屏蔽业务传入的 render hooks。业务侧如果通过 hook 返回全新的 React 节点，该返回值会覆盖对应层级的 renderer defaultRender。
 
 ### 字段项扩展
 

@@ -36,6 +36,8 @@ slug: /
 - `DefaultRegistryFieldComponents`
 - `getDefaultConfig`
 - `processFormConfig`
+- `getFormConfigDiagnostics`
+- `validateFormConfig`
 - `compileFormConfig`
 - `ModuleRegistryManager`
 - `defaultModuleRegistry`
@@ -59,6 +61,10 @@ slug: /
 - `assertRendererAdapter`
 - `antdRenderer`
 - `headlessRenderer`
+- `getFieldRuntimeSnapshot`
+- `getRenderedFieldIds`
+- `getSubmitableFieldIds`
+- `getValidatableFieldIds`
 - 来自 `packages/dynamic-form/src/shared/types.ts` 的核心公共类型。
 - Runtime 类型：`FieldCapability`、`GroupCapability`、`RuntimeState`。
 
@@ -76,7 +82,7 @@ DynamicForm 由可选预处理能力和稳定运行时主线组成：
 
 ### 4.1 Adapter 基础
 
-DynamicForm 4.1 新增 `formAdapter` 和 `renderer` 扩展入口。旧的 `<DynamicForm form={form} />` 用法保持兼容；未传 adapter 时使用 AntD 默认实现。4.1.1 增加 adapter runtime guard、`createMemoryFormAdapter` 和 `headlessRenderer`，用于测试、自定义 renderer 示例和可视化预览态。4.1 不拆包，也不内置第二套组件库 renderer。
+DynamicForm 4.1 新增 `formAdapter` 和 `renderer` 扩展入口。旧的 `<DynamicForm form={form} />` 用法保持兼容；未传 adapter 时使用 AntD 默认实现。4.1.1 增加 adapter runtime guard、`createMemoryFormAdapter` 和 `headlessRenderer`，用于测试、自定义 renderer 示例和可视化预览态。4.1.2 补充配置诊断、designer metadata 和 Runtime inspection helpers，让可视化配置系统可以在保存、预览和调试阶段复用同一套配置契约。4.1 不拆包，也不内置第二套组件库 renderer。
 
 ### 4.0 配置模型
 

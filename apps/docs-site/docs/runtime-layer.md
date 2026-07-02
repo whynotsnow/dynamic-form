@@ -90,6 +90,17 @@ form.validateFields(Object.keys(changedValues));
 
 这会忽略隐藏字段、父级 container 隐藏字段、禁用字段和后续 Runtime 策略扩展。
 
+### Runtime Inspection Helpers
+
+4.1.2 新增一组只读 inspection helpers，用于设计器预览、调试面板和测试断言：
+
+- `getFieldRuntimeSnapshot(runtimeState, fieldId)`：读取单个字段的 runtime 能力快照。
+- `getRenderedFieldIds(runtimeState)`：读取当前会渲染的字段 id。
+- `getSubmitableFieldIds(runtimeState)`：读取当前会进入提交数据的字段 id。
+- `getValidatableFieldIds(runtimeState)`：读取当前需要参与校验的字段 id。
+
+这些 helper 只消费已经解析好的 `runtimeState`，不会重新计算 Runtime，也不会改变隐藏字段清理、提交过滤或校验策略。
+
 ### 隐藏字段参与策略
 
 `useFieldParticipation` 会在字段离开 submit participation 时清空字段值，除非 `preserveValueOnHide` 为 true。如果 `restoreValueOnShow` 不是 false，会缓存隐藏前的值，并在字段重新可提交时恢复。

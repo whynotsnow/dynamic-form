@@ -98,7 +98,7 @@ For repeated items, set `repeatable: true` on a container. Repeatable containers
 
 ### Field Config
 
-Common options include `id`, optional `name`, `component`, `label`, `rules`, `required`, `span`, `style`, `initialValue`, `initialVisible`, `initialDisabled`, `preserveValueOnHide`, `restoreValueOnShow`, `dependents`, `effect`, `formItemProps`, and `componentProps`. `id` remains the stable runtime/effect identity, while `name` is the Ant Design value path.
+Common options include `id`, optional `name`, `component`, `label`, `rules`, `required`, `span`, `style`, `initialValue`, `initialVisible`, `initialDisabled`, `preserveValueOnHide`, `restoreValueOnShow`, `dependents`, `effect`, `formItemProps`, `componentProps`, and `designer`. `id` remains the stable runtime/effect identity, while `name` is the Ant Design value path.
 
 `required` is a field declaration. The default Ant Design renderer merges `required: true` into real `Form.Item.rules` and shows the required marker. If `rules` already declares a required rule, the explicit rule wins and no duplicate rule is generated.
 
@@ -108,13 +108,57 @@ Common options include `id`, optional `name`, `component`, `label`, `rules`, `re
 
 `groups` is the pre-4.0 single-level grouping entry point and remains compatible. Config processing converts each group into a top-level container.
 
-Groups support `id`, `title`, `fields`, `initialVisible`, `dependents`, and `effect`. Group visibility affects child field rendering and submit participation.
+Groups support `id`, `title`, `fields`, `initialVisible`, `dependents`, `effect`, and `designer`. Group visibility affects child field rendering and submit participation.
 
 ### Container Config
 
-Containers support `nodeType: 'container'`, globally unique `id`, optional `title`, optional Ant Design `NamePath` prefix `name`, recursive `children`, `initialVisible`, `dependents`, `effect`, and `repeatable`. Repeatable containers must declare `name` and render through Ant Design `Form.List`.
+Containers support `nodeType: 'container'`, globally unique `id`, optional `title`, optional Ant Design `NamePath` prefix `name`, recursive `children`, `initialVisible`, `dependents`, `effect`, `repeatable`, and `designer`. Repeatable containers must declare `name` and render through Ant Design `Form.List`.
 
 Container visibility recursively affects rendering, submission, and validation participation for all descendant fields and containers.
+
+### Designer Metadata
+
+Starting in 4.1.2, fields, legacy groups, and containers may carry `designer` metadata. It is intended only for visual builders, such as designer title, description, category, icon, order, locked state, designer-only visibility, or custom metadata.
+
+```ts
+const formConfig: FormConfig = {
+  fields: [
+    {
+      id: 'customerName',
+      label: 'Customer Name',
+      component: 'TextInput',
+      designer: {
+        title: 'Customer Name',
+        category: 'Basic Info',
+        icon: 'text',
+        order: 10,
+        locked: false,
+        metadata: { source: 'designer' }
+      }
+    }
+  ]
+};
+```
+
+`designer` is preserved with the config but ignored by Runtime, effects, submission, validation, field participation cleanup, and the default renderer. If a visual builder needs to hide or lock canvas nodes, it should consume this metadata in the builder layer.
+
+### Config Diagnostics
+
+4.1.2 adds `getFormConfigDiagnostics(config, options?)` and `validateFormConfig(config, options?)`. They are intended for visual-builder save checks, imported config checks, and tests. They do not replace `processFormConfig()`, which keeps its existing runtime error behavior.
+
+```ts
+import { validateFormConfig } from '@whynotsnow/dynamic-form';
+
+const result = validateFormConfig(formConfig, {
+  knownComponents: ['TextInput', 'Select']
+});
+
+if (!result.valid) {
+  console.log(result.diagnostics);
+}
+```
+
+Diagnostics cover duplicate field/container/group ids, duplicate name paths, repeatable containers without `name`, empty children, unknown components, invalid group field structures, and unknown dependents. Structural problems are returned as `error`; unknown components or dependents are returned as `warning` by default.
 
 ### UI Config
 

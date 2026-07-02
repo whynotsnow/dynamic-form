@@ -44,6 +44,17 @@ Runtime reads behavior meta through `getFieldBehaviorMeta` and `getGroupBehavior
 
 Changed-field validation and submit validation both filter fields through `runtimeState.fields[fieldId]?.validatable === true`. Avoid direct validation against changed keys because it ignores hidden, parent-container-hidden, disabled, and future runtime policies.
 
+### Runtime Inspection Helpers
+
+4.1.2 adds read-only inspection helpers for visual-builder previews, debug panels, and tests:
+
+- `getFieldRuntimeSnapshot(runtimeState, fieldId)`: reads one field capability snapshot.
+- `getRenderedFieldIds(runtimeState)`: reads field ids that currently render.
+- `getSubmitableFieldIds(runtimeState)`: reads field ids that currently participate in submitted data.
+- `getValidatableFieldIds(runtimeState)`: reads field ids that currently participate in validation.
+
+These helpers only consume an already resolved `runtimeState`. They do not recompute Runtime or change hidden-field cleanup, submit filtering, or validation policy.
+
 ### Hidden Field Participation
 
 `useFieldParticipation` clears a field value when it leaves submit participation unless `preserveValueOnHide` is true. If `restoreValueOnShow` is not false, the old value is cached and restored when the field becomes submitable again.
