@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { useFormChainEffectEngine } from 'form-chain-effect-engine';
+import type { FormInstance } from 'antd';
 import type { DynamicFormProviderProps, FormValues } from '../../shared/types';
 import { useStoreInit } from '../../state';
 import { applyEffectResult } from '../effects';
@@ -67,7 +68,7 @@ const DynamicFormProvider: React.FC<DynamicFormProviderProps> = ({
   );
 
   const { onValuesChange: onEffectValuesChange, manualTrigger } = useFormChainEffectEngine({
-    form: effectEngineForm as any,
+    form: effectEngineForm as unknown as FormInstance,
     config: configProcessInfo.effectMap || {},
     options: {
       enableAdvancedControl: true,

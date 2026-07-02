@@ -6,13 +6,28 @@ type ChainedEffectItem = {
   value: CSSProperties | string | number | boolean | null | undefined;
 };
 
+type ConditionalDisplayValue = {
+  condition: boolean | (() => boolean);
+  fieldId?: string;
+};
+
+function isConditionalDisplayValue(value: unknown): value is ConditionalDisplayValue {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'condition' in value &&
+    (typeof value.condition === 'boolean' || typeof value.condition === 'function')
+  );
+}
+
 // 示例2: 条件显示处理器
 export const conditionalDisplayHandler: CustomEffectResultHandler = {
   name: 'conditionalDisplay',
   description: '根据条件控制字段显示',
   canHandle: (key) => key === 'conditionalDisplay',
-  validate: (value) => typeof value === 'object' && 'condition' in value,
+  validate: isConditionalDisplayValue,
   handle: (context, value) => {
+    if (!isConditionalDisplayValue(value)) return;
     const { condition, fieldId } = value;
     const shouldShow = typeof condition === 'function' ? condition() : condition;
 

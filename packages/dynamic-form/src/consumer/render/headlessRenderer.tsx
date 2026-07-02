@@ -18,7 +18,7 @@ export const headlessRenderer: DynamicFormRendererAdapter = {
   renderFieldItem({ formItemProps, children }) {
     return (
       <label data-field-name={JSON.stringify(formItemProps.name)}>
-        {formItemProps.label ? <span>{formItemProps.label}</span> : null}
+        {formItemProps.label ? <span>{formItemProps.label as React.ReactNode}</span> : null}
         {children}
       </label>
     );

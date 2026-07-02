@@ -5,12 +5,13 @@ import type {
   GroupBehaviorMeta,
   GroupMeta
 } from '../types';
+import { isRecord, type UnknownRecord } from './is';
 
 // 浅比较
-export function shallowEqual(objA: any, objB: any) {
+export function shallowEqual(objA: unknown, objB: unknown) {
   if (objA === objB) return true;
 
-  if (typeof objA !== 'object' || objA === null || typeof objB !== 'object' || objB === null) {
+  if (!isRecord(objA) || !isRecord(objB)) {
     return false;
   }
 
@@ -39,8 +40,9 @@ export function isGroupedConfig(config: FormConfig) {
  *
  * 如需支持结构级数组 diff，必须使用 keyed array
  */
-export function mergeIntoDraft(draft: any, source: any) {
+export function mergeIntoDraft(draft: unknown, source: unknown) {
   if (Array.isArray(source)) {
+    if (!Array.isArray(draft)) return;
     draft.length = 0;
     source.forEach((item) => {
       if (typeof item === 'object' && item !== null) {
@@ -53,7 +55,7 @@ export function mergeIntoDraft(draft: any, source: any) {
     });
     return;
   }
-  if (typeof source === 'object' && source !== null) {
+  if (isRecord(source) && isRecord(draft)) {
     Object.entries(source).forEach(([key, value]) => {
       if (typeof value === 'object' && value !== null) {
         if (!draft[key]) draft[key] = Array.isArray(value) ? [] : {};
@@ -65,45 +67,58 @@ export function mergeIntoDraft(draft: any, source: any) {
   }
 }
 
-export function arraysEqual(a: any[], b: any[]) {
+export function arraysEqual<T>(a: T[], b: T[]) {
   if (a.length !== b.length) return false;
   return a.every((item, index) => item === b[index]);
 }
 
 // 原生实现 get，支持类似 "projects[0].members[1].name" 路径
-export function getValueByPath(obj: any, path: string): any {
+export function getValueByPath<T = unknown>(obj: unknown, path: string): T | undefined {
   if (!obj || !path) return undefined;
   // 把类似 'projects[0].members[1].name' 转成 ['projects', '0', 'members', '1', 'name']
   const keys = path.replace(/\[(\d+)\]/g, '.$1').split('.');
   let cur = obj;
   for (const key of keys) {
     if (cur == null) return undefined;
-    cur = cur[key];
+    if (!isRecord(cur) && !Array.isArray(cur)) return undefined;
+    cur = Array.isArray(cur) ? cur[Number(key)] : cur[key];
   }
-  return cur;
+  return cur as T;
 }
 
 // 原生实现 set，支持嵌套路径，自动创建对象/数组
-export function setValueByPath(obj: any, path: string, value: any) {
-  if (!obj || !path) return;
+export function setValueByPath(obj: unknown, path: string, value: unknown) {
+  if (!isRecord(obj) || !path) return;
   const keys = path.replace(/\[(\d+)\]/g, '.$1').split('.');
-  let cur = obj;
+  let cur: UnknownRecord | unknown[] = obj;
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
     if (i === keys.length - 1) {
-      cur[key] = value;
-    } else {
-      if (cur[key] == null) {
-        // 判断下一个 key 是数字就创建数组，否则对象
-        cur[key] = /^\d+$/.test(keys[i + 1]) ? [] : {};
+      if (Array.isArray(cur)) {
+        cur[Number(key)] = value;
+      } else {
+        cur[key] = value;
       }
-      cur = cur[key];
+    } else {
+      const next = Array.isArray(cur) ? cur[Number(key)] : cur[key];
+      if (next == null) {
+        // 判断下一个 key 是数字就创建数组，否则对象
+        const container = /^\d+$/.test(keys[i + 1]) ? [] : {};
+        if (Array.isArray(cur)) {
+          cur[Number(key)] = container;
+        } else {
+          cur[key] = container;
+        }
+      }
+      const updated: unknown = Array.isArray(cur) ? cur[Number(key)] : cur[key];
+      if (!isRecord(updated) && !Array.isArray(updated)) return;
+      cur = updated;
     }
   }
 }
 
 // 原生深度比较，简单版（只比较基础类型、数组、对象）
-export function deepEqual(a: any, b: any): boolean {
+export function deepEqual(a: unknown, b: unknown): boolean {
   if (a === b) return true;
 
   if (typeof a !== typeof b) return false;
@@ -117,7 +132,7 @@ export function deepEqual(a: any, b: any): boolean {
     return true;
   }
 
-  if (typeof a === 'object' && typeof b === 'object') {
+  if (isRecord(a) && isRecord(b)) {
     const keysA = Object.keys(a);
     const keysB = Object.keys(b);
     if (keysA.length !== keysB.length) return false;
@@ -130,37 +145,38 @@ export function deepEqual(a: any, b: any): boolean {
   return false;
 }
 
-export function deepMerge(target: Record<string, any>, source: Record<string, any>) {
+export function deepMerge<T extends UnknownRecord>(target: T, source: UnknownRecord): T {
+  const writableTarget: UnknownRecord = target;
   for (const key in source) {
     const srcVal = source[key];
 
     // 跳过 undefined 和 null
     if (srcVal == null) continue;
 
-    const srcIsObj = typeof srcVal === 'object' && !Array.isArray(srcVal);
-    const tgtVal = target[key];
-    const tgtIsObj = typeof tgtVal === 'object' && !Array.isArray(tgtVal);
+    const srcIsObj = isRecord(srcVal);
+    const tgtVal = writableTarget[key];
+    const tgtIsObj = isRecord(tgtVal);
 
     if (srcIsObj) {
       // 如果目标不是对象，初始化为空对象
       if (!tgtIsObj) {
-        target[key] = {};
+        writableTarget[key] = {};
       }
       // 如果引用相同，跳过
-      if (target[key] !== srcVal) {
-        deepMerge(target[key], srcVal);
+      if (writableTarget[key] !== srcVal) {
+        deepMerge(writableTarget[key] as UnknownRecord, srcVal);
       }
     } else {
       // 如果值没有变化，跳过赋值
       if (tgtVal !== srcVal) {
-        target[key] = srcVal;
+        writableTarget[key] = srcVal;
       }
     }
   }
   return target;
 }
 
-export const mockFetchFormData = (data: any): Promise<Record<string, any>> => {
+export const mockFetchFormData = <T>(data: T): Promise<T> => {
   return new Promise((resolve) => setTimeout(() => resolve(data), 800));
 };
 

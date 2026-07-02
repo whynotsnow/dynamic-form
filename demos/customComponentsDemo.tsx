@@ -222,7 +222,7 @@ const CustomComponentsDemo: React.FC = () => {
     // 这里可以写你的自定义组件的查看模式时的显示
     if (viewMode === 'customRender') {
       if (field.component === 'CustomUpload') return defaultRender;
-      return <ReadOnlyField field={field} value={fieldValue} />;
+      return <ReadOnlyField field={field} value={fieldValue as DemoFieldValue} />;
     }
     return defaultRender;
   };

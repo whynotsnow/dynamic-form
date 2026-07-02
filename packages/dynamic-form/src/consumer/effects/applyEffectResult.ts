@@ -35,7 +35,7 @@ export function applyEffectResult(result: EffectResult | undefined, context: Eff
 
   const handlers = getEffectResultHandlerRegistry();
   // 收集未处理的键值对，用于调试和日志记录
-  const unhandledEntries: [string, any][] = [];
+  const unhandledEntries: [string, unknown][] = [];
 
   Object.entries(result).forEach(([key, value]) => {
     if (value === undefined) {
@@ -88,7 +88,7 @@ export function applyEffectResult(result: EffectResult | undefined, context: Eff
             acc[key] = value;
             return acc;
           },
-          {} as Record<string, any>
+          {} as Record<string, unknown>
         )
       }
     );

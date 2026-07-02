@@ -24,6 +24,31 @@ const previewShellStyle: React.CSSProperties = {
   maxWidth: 720
 };
 
+type ToastPayload = {
+  content?: string;
+};
+
+type FormWithSetFields = {
+  setFields: (fields: Array<{ name: string; errors: string[] }>) => void;
+};
+
+function isToastPayload(value: unknown): value is ToastPayload {
+  return typeof value === 'object' && value !== null && 'content' in value;
+}
+
+function hasSetFields(value: unknown): value is FormWithSetFields {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'setFields' in value &&
+    typeof value.setFields === 'function'
+  );
+}
+
+function isFieldErrorMap(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
 function DynamicFormPreview({
   formConfig,
   componentRegistry,
@@ -328,7 +353,7 @@ const toastHandler: CustomEffectResultHandler = {
   description: '展示轻量反馈消息',
   canHandle: (key) => key === 'toast',
   handle: (_context, value) => {
-    message.info(typeof value === 'string' ? value : value?.content);
+    message.info(typeof value === 'string' ? value : isToastPayload(value) ? value.content : '');
   }
 };
 
@@ -353,6 +378,7 @@ const fieldErrorsHandler: CustomEffectResultHandler = {
   description: '把服务端字段错误写入 Ant Design Form',
   canHandle: (key) => key === 'fieldErrors',
   handle: (context, errors) => {
+    if (!hasSetFields(context.form) || !isFieldErrorMap(errors)) return;
     context.form.setFields(
       Object.entries(errors).map(([name, errorMessage]) => ({
         name,

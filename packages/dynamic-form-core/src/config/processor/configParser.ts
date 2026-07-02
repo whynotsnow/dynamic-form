@@ -8,6 +8,7 @@ import type {
   FieldState,
   Fieldchain,
   FormConfig,
+  FormValues,
   FormNode,
   GroupField,
   GroupFieldState,
@@ -23,6 +24,7 @@ import {
   createFieldAddressRegistry,
   createFieldValueView,
   getFieldName,
+  isRecord,
   setValueAtNamePath
 } from '../../shared/utils';
 
@@ -263,7 +265,7 @@ export function hydrateFormConfig(
   options: ProcessFormConfigOptions = {}
 ): HydratedConfigResult {
   const { fieldRegistry, nodeRegistry, containerRegistry } = analysisConfig;
-  const initialValues: Record<string, any> = {};
+  const initialValues: FormValues = {};
   const initializedFields: Record<string, FieldState> = {};
   const initializedGroupFields: Record<string, GroupFieldState> = {};
   const initializedNodes: Record<string, FieldState | ContainerState> = {};
@@ -291,17 +293,18 @@ export function hydrateFormConfig(
     return initializedContainerFields[entry.groupId]?.[fieldId];
   };
 
-  const processInitialValueResult = (field: BaseFieldConfig, result: any) => {
+  const processInitialValueResult = (field: BaseFieldConfig, result: unknown) => {
     if (!result || typeof result !== 'object') {
       setValueAtNamePath(initialValues, getFieldName(field), result);
       return;
     }
+    const resultRecord = result as Record<string, unknown>;
 
     if (options.applyInitialEffectResult) {
       options.applyInitialEffectResult({
         ...hydratedConfig,
         field,
-        result,
+        result: resultRecord,
         fieldRegistry,
         fieldAddressRegistry: analysisConfig.fieldAddressRegistry
       });
@@ -310,28 +313,32 @@ export function hydrateFormConfig(
 
     const fieldState = findFieldState(field.id);
 
-    if ('value' in result) {
-      setValueAtNamePath(initialValues, getFieldName(field), result.value);
+    if ('value' in resultRecord) {
+      setValueAtNamePath(initialValues, getFieldName(field), resultRecord.value);
     }
 
     if (fieldState) {
       const behavior = {
         ...fieldState.meta.behavior,
-        ...('visible' in result ? { visible: result.visible } : {}),
-        ...('disabled' in result ? { disabled: result.disabled } : {}),
-        ...('readonly' in result ? { readonly: result.readonly } : {})
+        ...('visible' in resultRecord ? { visible: resultRecord.visible === true } : {}),
+        ...('disabled' in resultRecord ? { disabled: resultRecord.disabled === true } : {}),
+        ...('readonly' in resultRecord ? { readonly: resultRecord.readonly === true } : {})
       };
 
       fieldState.meta = {
         ...fieldState.meta,
         behavior,
-        ...('formItemProps' in result ? { formItemProps: result.formItemProps } : {}),
-        ...('componentProps' in result ? { componentProps: result.componentProps } : {})
+        ...('formItemProps' in resultRecord && isRecord(resultRecord.formItemProps)
+          ? { formItemProps: resultRecord.formItemProps }
+          : {}),
+        ...('componentProps' in resultRecord && isRecord(resultRecord.componentProps)
+          ? { componentProps: resultRecord.componentProps }
+          : {})
       };
     }
 
-    if (result.groupsVisible && typeof result.groupsVisible === 'object') {
-      Object.entries(result.groupsVisible).forEach(([groupId, visible]) => {
+    if (resultRecord.groupsVisible && typeof resultRecord.groupsVisible === 'object') {
+      Object.entries(resultRecord.groupsVisible).forEach(([groupId, visible]) => {
         const group = initializedGroupFields[groupId];
         const node = initializedNodes[groupId];
 

@@ -102,7 +102,7 @@ export function initializeEffectResultHandlers(config: InitConfig): InitResult {
     const result: InitResult = {
       success: true,
       registeredCount,
-      registeredHandlers: allHandlers.map((h: any) => h.name),
+      registeredHandlers: allHandlers.map((handler) => handler.name),
       message: `成功注册 ${registeredCount} 个处理器`
     };
 

@@ -1,4 +1,5 @@
 import { CustomEffectResultHandler } from '../consumer/effects';
+import { isBoolean, isRecord } from '../shared/utils';
 
 /**
  * DynamicForm 默认配置接口
@@ -36,8 +37,9 @@ const baseHandlers: CustomEffectResultHandler[] = [
   {
     name: 'visible',
     description: '处理字段可见性状态',
-    canHandle: (key) => key === 'visible',
+    canHandle: (key, value) => key === 'visible' && isBoolean(value),
     handle: (context, visible) => {
+      if (!isBoolean(visible)) return;
       // 使用语义化的 API
       context.updateFieldMeta({ behavior: { visible } });
     }
@@ -45,8 +47,9 @@ const baseHandlers: CustomEffectResultHandler[] = [
   {
     name: 'disabled',
     description: '处理字段禁用状态',
-    canHandle: (key) => key === 'disabled',
+    canHandle: (key, value) => key === 'disabled' && isBoolean(value),
     handle: (context, disabled) => {
+      if (!isBoolean(disabled)) return;
       // 使用语义化的 API
       context.updateFieldMeta({ behavior: { disabled } });
     }
@@ -54,18 +57,22 @@ const baseHandlers: CustomEffectResultHandler[] = [
   {
     name: 'readonly',
     description: '处理字段只读状态',
-    canHandle: (key) => key === 'readonly',
+    canHandle: (key, value) => key === 'readonly' && isBoolean(value),
     handle: (context, readonly) => {
+      if (!isBoolean(readonly)) return;
       context.updateFieldMeta({ behavior: { readonly } });
     }
   },
   {
     name: 'groupsVisible',
     description: '处理分组可见性状态',
-    canHandle: (key) => key === 'groupsVisible',
+    canHandle: (key, value) => key === 'groupsVisible' && isRecord(value),
     handle: (context, groupsVisible) => {
+      if (!isRecord(groupsVisible)) return;
       Object.entries(groupsVisible).forEach(([groupId, visible]) => {
-        context.setGroupVisible(groupId, visible as boolean);
+        if (isBoolean(visible)) {
+          context.setGroupVisible(groupId, visible);
+        }
       });
     }
   },
@@ -74,8 +81,9 @@ const baseHandlers: CustomEffectResultHandler[] = [
   {
     name: 'formItemProps',
     description: '处理Form.Item组件配置，存储到字段meta.formItemProps',
-    canHandle: (key) => key === 'formItemProps',
+    canHandle: (key, value) => key === 'formItemProps' && isRecord(value),
     handle: (context, value) => {
+      if (!isRecord(value)) return;
       context.updateFieldMeta({ formItemProps: value });
     }
   },
@@ -83,8 +91,9 @@ const baseHandlers: CustomEffectResultHandler[] = [
   {
     name: 'componentProps',
     description: '处理组件属性配置，合并存储到 meta.componentProps',
-    canHandle: (key) => key === 'componentProps',
+    canHandle: (key, value) => key === 'componentProps' && isRecord(value),
     handle: (context, value) => {
+      if (!isRecord(value)) return;
       context.updateFieldMeta({
         componentProps: value
       });
@@ -95,8 +104,9 @@ const baseHandlers: CustomEffectResultHandler[] = [
   {
     name: 'formProps',
     description: '处理Form组件配置，存储到全局dynamicUIConfig',
-    canHandle: (key) => key === 'formProps',
+    canHandle: (key, value) => key === 'formProps' && isRecord(value),
     handle: (context, value) => {
+      if (!isRecord(value)) return;
       // 直接dispatch到store，更新全局配置
       context.updateDynamicUIConfig({ formProps: value });
     }
@@ -104,40 +114,45 @@ const baseHandlers: CustomEffectResultHandler[] = [
   {
     name: 'buttonProps',
     description: '处理Button组件配置，存储到全局dynamicUIConfig',
-    canHandle: (key) => key === 'buttonProps',
+    canHandle: (key, value) => key === 'buttonProps' && isRecord(value),
     handle: (context, value) => {
+      if (!isRecord(value)) return;
       context.updateDynamicUIConfig({ buttonProps: value });
     }
   },
   {
     name: 'cardProps',
     description: '处理Card组件配置，存储到全局dynamicUIConfig',
-    canHandle: (key) => key === 'cardProps',
+    canHandle: (key, value) => key === 'cardProps' && isRecord(value),
     handle: (context, value) => {
+      if (!isRecord(value)) return;
       context.updateDynamicUIConfig({ cardProps: value });
     }
   },
   {
     name: 'rowProps',
     description: '处理Row组件配置，存储到全局dynamicUIConfig',
-    canHandle: (key) => key === 'rowProps',
+    canHandle: (key, value) => key === 'rowProps' && isRecord(value),
     handle: (context, value) => {
+      if (!isRecord(value)) return;
       context.updateDynamicUIConfig({ rowProps: value });
     }
   },
   {
     name: 'colProps',
     description: '处理Col组件配置，存储到全局dynamicUIConfig',
-    canHandle: (key) => key === 'colProps',
+    canHandle: (key, value) => key === 'colProps' && isRecord(value),
     handle: (context, value) => {
+      if (!isRecord(value)) return;
       context.updateDynamicUIConfig({ colProps: value });
     }
   },
   {
     name: 'submitAreaProps',
     description: '处理提交区域配置，存储到全局dynamicUIConfig',
-    canHandle: (key) => key === 'submitAreaProps',
+    canHandle: (key, value) => key === 'submitAreaProps' && isRecord(value),
     handle: (context, value) => {
+      if (!isRecord(value)) return;
       context.updateDynamicUIConfig({ submitAreaProps: value });
     }
   }

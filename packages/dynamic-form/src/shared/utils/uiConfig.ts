@@ -25,11 +25,11 @@ export function resolveMergedFormItemProps({
   staticUIConfig,
   dynamicUIConfig
 }: {
-  baseFormItemProps: Record<string, any>;
+  baseFormItemProps: Record<string, unknown>;
   field: FieldState;
   staticUIConfig?: UIConfig;
   dynamicUIConfig?: UIConfig;
-}): Record<string, any> {
+}): Record<string, unknown> {
   return {
     ...baseFormItemProps,
     ...(staticUIConfig?.formItemProps || {}),

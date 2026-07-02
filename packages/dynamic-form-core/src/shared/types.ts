@@ -3,12 +3,12 @@ import type React from 'react';
 import type { Dispatch } from 'react';
 import type { FieldCapability } from '../runtime';
 
-export type FieldValue = any;
+export type FieldValue = unknown;
 export type FormValues = Record<string, FieldValue>;
-export type FieldComponentRuntimeProps = Record<string, any>;
+export type FieldComponentRuntimeProps = Record<string, unknown>;
 export type FieldNamePath = string | number | Array<string | number>;
-export type ValidationRule = Record<string, any>;
-export type DynamicFormLegacyForm = any;
+export type ValidationRule = Record<string, unknown>;
+export type DynamicFormLegacyForm = unknown;
 
 export interface DesignerMetadata {
   title?: string;
@@ -18,7 +18,7 @@ export interface DesignerMetadata {
   order?: number;
   locked?: boolean;
   hiddenInDesigner?: boolean;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface DynamicFormFormAdapter {
@@ -55,7 +55,7 @@ export interface FieldMeta {
   /** @deprecated Use behavior.readonly instead. Kept for backward-compatible effect results. */
   readonly?: boolean;
 
-  formItemProps?: Record<string, any>;
+  formItemProps?: Record<string, unknown>;
   componentProps?: FieldComponentRuntimeProps;
 }
 
@@ -67,7 +67,7 @@ export interface GroupMeta {
   behavior?: GroupBehaviorMeta;
   /** @deprecated Use behavior.visible instead. */
   visible?: boolean;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export type NodeBehaviorMeta = GroupBehaviorMeta;
@@ -81,7 +81,7 @@ export interface BaseFieldConfig {
   name?: FieldNamePath;
   initialValue?:
     | FieldValue
-    | ((allValues: FormValues) => FieldValue | { value: FieldValue; [key: string]: any });
+    | ((allValues: FormValues) => FieldValue | { value: FieldValue; [key: string]: unknown });
   initialVisible?: boolean;
   initialDisabled?: boolean;
   preserveValueOnHide?: boolean;
@@ -90,7 +90,8 @@ export interface BaseFieldConfig {
   dependents?: string[];
   effect?: EffectFn;
 
-  formItemProps?: Record<string, any>;
+  formItemProps?: Record<string, unknown>;
+  options?: unknown;
   label?: string;
   required?: boolean;
   style?: React.CSSProperties;
@@ -214,7 +215,7 @@ export interface CustomEffectResultHandlerConfig {
   handlers?: unknown[];
 
   // 处理器配置选项
-  options?: Record<string, any>;
+  options?: Record<string, unknown>;
 }
 
 // 组件注册器接口
@@ -233,19 +234,19 @@ export interface ComponentRegistryConfig {
 //UI组件配置项
 export interface UIConfig {
   // Form组件配置
-  formProps?: Record<string, any>;
+  formProps?: Record<string, unknown>;
   // Button组件配置
-  buttonProps?: Record<string, any>;
+  buttonProps?: Record<string, unknown>;
   // Card组件配置
-  cardProps?: Record<string, any>;
+  cardProps?: Record<string, unknown>;
   // Row组件配置
-  rowProps?: Record<string, any>;
+  rowProps?: Record<string, unknown>;
   // Col组件配置
-  colProps?: Record<string, any>;
+  colProps?: Record<string, unknown>;
   // 提交按钮区域配置
   submitAreaProps?: object;
   // 字段外壳配置 - 默认 AntD renderer 会作为 Form.Item props 使用
-  formItemProps?: Record<string, any>;
+  formItemProps?: Record<string, unknown>;
 }
 
 export interface RendererFormParams {
@@ -261,7 +262,7 @@ export interface RendererFormParams {
 export interface RendererFieldItemParams {
   form: DynamicFormLegacyForm;
   formAdapter: DynamicFormFormAdapter;
-  formItemProps: Record<string, any>;
+  formItemProps: Record<string, unknown>;
   children: React.ReactNode;
 }
 

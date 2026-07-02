@@ -42,6 +42,7 @@ export function createAntdFormAdapter(form: DynamicFormLegacyForm): DynamicFormF
   if (!form) {
     throw new Error('createAntdFormAdapter: form is required when formAdapter is not provided.');
   }
+  assertFormAdapter(form);
 
   const adapter: DynamicFormFormAdapter = {
     rawForm: form,

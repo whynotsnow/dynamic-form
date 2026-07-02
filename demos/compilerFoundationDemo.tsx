@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { Card, Form, Select, Space, Typography } from 'antd';
+import type { SelectProps } from 'antd';
 import {
   DynamicForm,
   ModuleRegistryManager,
@@ -22,12 +23,13 @@ const toBoolean = (value: unknown, fallback = false) => {
 };
 
 const DepartmentPicker: React.FC<FieldComponentProps> = ({ value, onChange, field }) => {
+  const componentProps = field.componentProps as SelectProps | undefined;
   return (
     <Select
-      value={value}
+      value={value as SelectProps['value']}
       onChange={onChange}
-      {...field.componentProps}
-      style={{ width: '100%', ...field.componentProps?.style }}
+      {...componentProps}
+      style={{ width: '100%', ...componentProps?.style }}
     />
   );
 };

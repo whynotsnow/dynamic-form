@@ -23,7 +23,7 @@ const HeadlessInput: React.FC<FieldComponentProps> & { wrapWithFormItem?: boolea
   formAdapter
 }) => {
   const name = field.name ?? field.id;
-  const [value, setValue] = useState(() => formAdapter?.getFieldValue(name) ?? '');
+  const [value, setValue] = useState(() => String(formAdapter?.getFieldValue(name) ?? ''));
 
   return (
     <input

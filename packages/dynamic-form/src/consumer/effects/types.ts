@@ -25,7 +25,7 @@ export interface EffectResult {
   visible?: boolean;
   disabled?: boolean;
   readonly?: boolean;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 /**
@@ -113,14 +113,14 @@ export interface EffectResultHandler {
    * @param value 要处理的值
    * @returns 是否能够处理
    */
-  canHandle: (key: string, value: any) => boolean;
+  canHandle: (key: string, value: unknown) => boolean;
 
   /**
    * 处理具体的逻辑
    * @param context 处理上下文，提供语义化的 API
    * @param value 要处理的值
    */
-  handle: (context: ExportEffectContext, value: any) => void;
+  handle: (context: ExportEffectContext, value: unknown) => void;
 }
 
 /**
@@ -137,7 +137,7 @@ export interface CustomEffectResultHandler extends EffectResultHandler {
    * @param value 要验证的值
    * @returns 是否有效
    */
-  validate?: (value: any) => boolean;
+  validate?: (value: unknown) => boolean;
 }
 
 /**

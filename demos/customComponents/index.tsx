@@ -1,21 +1,42 @@
 import React, { useState } from 'react';
 import { FieldComponentProps, ComponentRegistry } from '@/exports';
 import { Input, Slider, Upload, Button, message, InputNumber, Select, Switch } from 'antd';
-import type { UploadProps } from 'antd';
+import type {
+  InputNumberProps,
+  InputProps,
+  SelectProps,
+  SliderSingleProps,
+  UploadProps
+} from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import CustomProjectList from '../../demos/customComponents/CustomProjectList';
 import CustomEditTable from '../../demos/customComponents/CustomEditTable';
 import OperatingAreaField from './OperatingAreaField';
 
+type DemoComponentProps = {
+  min?: number;
+  max?: number;
+  rows?: number;
+  placeholder?: string;
+  disabled?: boolean;
+  options?: SelectProps['options'];
+  unit?: React.ReactNode;
+};
+
+const getDemoComponentProps = (field: FieldComponentProps['field']): DemoComponentProps => {
+  return field.componentProps as DemoComponentProps;
+};
+
 // 自定义受控组件用于测试
 
 // 1. 滑块组件
 const CustomSlider: React.FC<FieldComponentProps> = ({ field, value, onChange }) => {
+  const componentProps = getDemoComponentProps(field);
   return (
     <Slider
-      min={field.componentProps?.min || 0}
-      max={field.componentProps?.max || 100}
-      value={value}
+      min={componentProps.min || 0}
+      max={componentProps.max || 100}
+      value={value as SliderSingleProps['value']}
       onChange={onChange}
     />
   );
@@ -44,7 +65,7 @@ const CustomColorPicker: React.FC<FieldComponentProps> = ({ value, onChange }) =
   return (
     <Input
       type="color"
-      value={value}
+      value={value as InputProps['value']}
       onChange={(e) => onChange?.(e.target.value)}
       style={{ width: '100%', height: 40 }}
     />
@@ -53,12 +74,13 @@ const CustomColorPicker: React.FC<FieldComponentProps> = ({ value, onChange }) =
 
 // 4. 自定义文本域组件
 const CustomTextArea: React.FC<FieldComponentProps> = ({ field, value, onChange }) => {
+  const componentProps = getDemoComponentProps(field);
   return (
     <Input.TextArea
-      value={value}
+      value={value as InputProps['value']}
       onChange={(e) => onChange?.(e.target.value)}
-      rows={field.componentProps?.rows || 4}
-      placeholder={field.componentProps?.placeholder || '请输入内容'}
+      rows={componentProps.rows || 4}
+      placeholder={componentProps.placeholder || '请输入内容'}
     />
   );
 };
@@ -68,15 +90,16 @@ const CustomTextArea: React.FC<FieldComponentProps> = ({ field, value, onChange 
 // 1. 增强的文本输入组件（覆盖默认的TextInput）
 const EnhancedTextInput: React.FC<FieldComponentProps> = ({ field, value, onChange }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const componentProps = getDemoComponentProps(field);
 
   return (
     <div style={{ display: 'flex', gap: 8 }}>
       <Input
         type={showPassword ? 'text' : 'password'}
-        value={value}
+        value={value as InputProps['value']}
         onChange={onChange}
-        disabled={field.componentProps?.disabled}
-        placeholder={field.componentProps?.placeholder || '请输入内容'}
+        disabled={componentProps.disabled}
+        placeholder={componentProps.placeholder || '请输入内容'}
         style={{ flex: 1 }}
       />
       <Switch
@@ -92,6 +115,7 @@ const EnhancedTextInput: React.FC<FieldComponentProps> = ({ field, value, onChan
 
 // 2. 带验证的邮箱输入组件
 const EmailInput: React.FC<FieldComponentProps> = ({ field, value, onChange }) => {
+  const componentProps = getDemoComponentProps(field);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     onChange?.(newValue);
@@ -100,9 +124,9 @@ const EmailInput: React.FC<FieldComponentProps> = ({ field, value, onChange }) =
   return (
     <Input
       type="email"
-      value={value}
+      value={value as InputProps['value']}
       onChange={handleChange}
-      disabled={field.componentProps?.disabled}
+      disabled={componentProps.disabled}
       placeholder="请输入邮箱地址"
     />
   );
@@ -110,7 +134,10 @@ const EmailInput: React.FC<FieldComponentProps> = ({ field, value, onChange }) =
 
 // 3. 动态选项的选择器组件
 const DynamicSelect: React.FC<FieldComponentProps> = ({ field, value, onChange }) => {
-  const [options, setOptions] = useState(field.componentProps?.options || []);
+  const componentProps = getDemoComponentProps(field);
+  const [options, setOptions] = useState<NonNullable<SelectProps['options']>>(
+    componentProps.options || []
+  );
 
   const handleAddOption = () => {
     const newOption = {
@@ -124,9 +151,9 @@ const DynamicSelect: React.FC<FieldComponentProps> = ({ field, value, onChange }
     <div style={{ display: 'flex', gap: 8 }}>
       <Select
         style={{ flex: 1 }}
-        value={value}
+        value={value as SelectProps['value']}
         onChange={onChange}
-        disabled={field.componentProps?.disabled}
+        disabled={componentProps.disabled}
         options={options}
         placeholder="请选择选项"
       />
@@ -139,16 +166,17 @@ const DynamicSelect: React.FC<FieldComponentProps> = ({ field, value, onChange }
 
 // 4. 带单位的数字输入组件
 const UnitNumberInput: React.FC<FieldComponentProps> = ({ field, value, onChange }) => {
-  const unit = field.componentProps?.unit || '个';
+  const componentProps = getDemoComponentProps(field);
+  const unit = componentProps.unit || '个';
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
       <InputNumber
-        value={value}
+        value={value as InputNumberProps['value']}
         onChange={onChange}
-        disabled={field.componentProps?.disabled}
-        min={field.componentProps?.min || 0}
-        max={field.componentProps?.max || 999}
+        disabled={componentProps.disabled}
+        min={componentProps.min || 0}
+        max={componentProps.max || 999}
         style={{ flex: 1 }}
       />
       <span style={{ color: '#666' }}>{unit}</span>

@@ -27,7 +27,12 @@ const toEditTableRows = (input: unknown): EditTableRow[] => {
 };
 
 // EditTable 组件 - 使用 Ant Design Pro 的 EditableProTable
-const CustomEditTable: React.FC<FieldComponentProps> = ({ field, value, onChange, form }) => {
+const CustomEditTable: React.FC<FieldComponentProps> = ({
+  field,
+  value,
+  onChange,
+  formAdapter
+}) => {
   const [dataSource, setDataSource] = React.useState<EditTableRow[]>(() => toEditTableRows(value));
   const [editableKeys, setEditableKeys] = React.useState<React.Key[]>([]);
 
@@ -57,8 +62,8 @@ const CustomEditTable: React.FC<FieldComponentProps> = ({ field, value, onChange
     const valueArray = [...newValue];
     setDataSource(valueArray);
     onChange?.(valueArray);
-    if (form) {
-      form.validateFields([getFieldName(field)]).catch(() => {});
+    if (formAdapter) {
+      formAdapter.validateFields([getFieldName(field)]).catch(() => {});
     }
   };
 

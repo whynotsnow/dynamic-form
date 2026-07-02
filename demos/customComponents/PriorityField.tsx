@@ -1,9 +1,16 @@
 import { FieldComponentProps } from '@/exports';
 import { Space, Tag, Select } from 'antd';
+import type { SelectProps } from 'antd';
 import { EffectFn } from 'form-chain-effect-engine';
 
 export const PriorityField: React.FC<FieldComponentProps> = ({ field, value, onChange }) => {
-  return <Select value={value} onChange={onChange} options={field.componentProps?.options} />;
+  return (
+    <Select
+      value={value as SelectProps['value']}
+      onChange={onChange}
+      options={(field.componentProps as { options?: SelectProps['options'] } | undefined)?.options}
+    />
+  );
 };
 export default PriorityField;
 

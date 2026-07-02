@@ -1,5 +1,6 @@
 import type {
   BaseFieldConfig,
+  FormValues,
   FieldState,
   GroupFieldState,
   FieldRegistry,
@@ -22,7 +23,7 @@ export interface ConfigAnalysisResult {
 
 /** --------------------- 带初始值的结果 --------------------- */
 export interface HydratedConfigResult {
-  initialValues: Record<string, any>;
+  initialValues: FormValues;
   initializedFields: Record<string, FieldState>;
   initializedGroupFields: Record<string, GroupFieldState>;
   initializedNodes: Record<string, FieldState | ContainerState>;
@@ -34,7 +35,7 @@ export interface ConfigProcessInfo extends ConfigAnalysisResult, HydratedConfigR
 
 export interface ApplyInitialEffectResultParams extends HydratedConfigResult {
   field: BaseFieldConfig;
-  result: any;
+  result: Record<string, unknown>;
   fieldRegistry: Record<string, FieldRegistry>;
   fieldAddressRegistry: Record<string, FieldAddress>;
 }
