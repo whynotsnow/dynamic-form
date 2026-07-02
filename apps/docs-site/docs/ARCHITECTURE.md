@@ -1,6 +1,6 @@
 # 架构说明
 
-DynamicForm 4.0 由 Field Address、统一节点树、可选的 Adapter / Module / Rule / Compiler 预处理能力，以及稳定的 Config / State / Runtime / Consumer / Shared 运行时主线组成。核心目标是让字段逻辑标识和值路径分离，并让外部输入归一化、领域模块展开、配置解析、状态维护、运行时策略和 UI 渲染各自保持清晰边界，同时保留 Ant Design Form 对真实表单值和校验运行时状态的所有权。
+DynamicForm 4.1 由 Field Address、统一节点树、可选的 Adapter / Module / Rule / Compiler 预处理能力、Form Adapter / Renderer Adapter，以及稳定的 Config / State / Runtime / Consumer / Shared 运行时主线组成。核心目标是让字段逻辑标识和值路径分离，并让外部输入归一化、领域模块展开、配置解析、状态维护、运行时策略、表单值读写和 UI 渲染各自保持清晰边界。默认实现仍使用 Ant Design Form 和 `antdRenderer`。
 
 ### 仓库结构
 
@@ -29,10 +29,10 @@ flowchart TD
   content --> runtime["useRuntimeState"]
   content --> events["useFormRuntimeEvents"]
   content --> participation["useFieldParticipation"]
-  content --> renderer["FieldComponentRenderer"]
+  content --> renderer["Renderer Adapter + FieldComponentRenderer"]
 ```
 
-4.0 主流程仍然是 `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`。`DynamicForm` 继续接收现有 `FormConfig`；Adapter、Compiler、Rule Engine 和 Schema Adapters 是可选预处理层，最终仍输出标准 `FormConfig`。`fields`、`groups` 和 `nodes` 会在 Config Layer 归一成同一棵节点树。
+4.1 主流程仍然是 `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`。`DynamicForm` 继续接收现有 `FormConfig`；Adapter、Compiler、Rule Engine 和 Schema Adapters 是可选预处理层，最终仍输出标准 `FormConfig`。`fields`、`groups` 和 `nodes` 会在 Config Layer 归一成同一棵节点树。未传 `formAdapter` / `renderer` 时，默认使用 `createAntdFormAdapter(form)` 和 `antdRenderer`。
 
 ### 关键文件
 
@@ -43,11 +43,13 @@ flowchart TD
 - `packages/dynamic-form/src/CompiledDynamicForm.tsx`：把 compiler 产物及其组件注册表接入 `DynamicForm`。
 - `packages/dynamic-form/src/index.tsx`：拆分 `DynamicFormProps`，把引擎层 props 交给 Provider，把 UI 层 props 交给 FormContent。
 - `packages/dynamic-form/src/consumer/provider/DynamicFormProvider.tsx`：初始化 store、effect engine 和 React context。
-- `packages/dynamic-form/src/state/useStoreInit.ts`：处理配置、创建 reducer state、合并初始值并同步到 Ant Design Form。
+- `packages/dynamic-form/src/consumer/formAdapter.ts`：提供默认 AntD form adapter，并把旧 `form` 实例转换为中立 `DynamicFormFormAdapter`。
+- `packages/dynamic-form/src/state/useStoreInit.ts`：处理配置、创建 reducer state、合并初始值并通过 form adapter 同步到表单运行时。
 - `packages/dynamic-form/src/config/processor/configParser.ts`：归一化节点树，生成 `effectMap`、`nodeRegistry`、`containerRegistry`、`fieldRegistry`、`initialValues`、初始化后的字段和 container 状态。
 - `packages/dynamic-form/src/state/reducer.ts`：用 Immer 处理字段 meta、分组 meta 和动态 UI 配置更新。
 - `packages/dynamic-form/src/runtime/resolver.ts`：解析字段和 container 运行时能力。
-- `packages/dynamic-form/src/consumer/render/FormContent.tsx`：渲染表单并连接提交、变更事件。
+- `packages/dynamic-form/src/consumer/render/FormContent.tsx`：遍历 Runtime 节点，调用 renderer adapter，并连接提交、变更事件。
+- `packages/dynamic-form/src/consumer/render/antdRenderer.tsx`：默认 AntD renderer，负责 `Form`、`Form.Item`、`Form.List`、`Row`、`Col`、`Card` 和 `Button` 外壳。
 - `packages/dynamic-form/src/consumer/effects/`：通过 handler 系统应用 effect 返回值。
 - `packages/dynamic-form/src/consumer/render/componentRegistry.tsx`：提供内置组件和自定义组件注册能力。
 
@@ -64,11 +66,11 @@ flowchart TD
 9. `FormContent` 基于 reducer state 计算一次 `runtimeState`。
 10. 渲染、提交校验、字段变更校验和隐藏字段参与策略共同使用这份 `runtimeState`。
 11. 用户输入触发 runtime 过滤后的校验，再把变更值交给 effect engine。
-12. effect 返回值进入 `applyEffectResult`，handler 更新 Ant Design Form 值、字段 meta、分组 meta 或动态 UI 配置。
+12. effect 返回值进入 `applyEffectResult`，handler 通过 form adapter 更新表单值，或更新字段 meta、分组 meta、动态 UI 配置。
 
 ### 状态归属
 
-Ant Design Form 负责：
+Form runtime 负责；默认实现是 Ant Design Form：
 
 - 字段值
 - 校验 errors 和 warnings
@@ -86,7 +88,7 @@ DynamicForm reducer 负责：
 - 动态 UI 配置
 - initialized 标记
 
-reducer 不维护重复的 values store。更新值的 effect handler 应调用 `form.setFieldsValue`。
+reducer 不维护重复的 values store。更新值的 effect handler 应调用上下文提供的 `setFieldValue` 或 `formAdapter`。
 
 ### 分层职责
 
@@ -96,7 +98,7 @@ reducer 不维护重复的 values store。更新值的 effect handler 应调用 
 - Config Layer：把 flat/grouped/mixed/nodes `FormConfig` 归一化为节点树和标准化运行时输入。
 - State Layer：保存初始化后的字段/container 结构和 meta，并兼容旧的 flat meta key。
 - Runtime Layer：统一解析 rendered、submitable、editable、readonly、disabled、validatable 等策略。
-- Consumer Layer：连接 Provider、渲染、hooks、effect 结果处理和组件注册。
+- Consumer Layer：连接 Provider、form adapter、renderer adapter、hooks、effect 结果处理和组件注册。
 - Shared Layer：存放公共类型、上下文、工具函数和 meta 归一化逻辑。
 
 ### 维护约束

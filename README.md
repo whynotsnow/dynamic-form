@@ -2,6 +2,8 @@
 
 这是 `@whynotsnow/dynamic-form` 的 monorepo。仓库根目录只作为 private workspace root，真正的 npm 发布包位于 `packages/dynamic-form/`，Docusaurus 文档站位于 `apps/docs-site/`，可复用 demo 业务逻辑保留在根目录 `demos/`。
 
+DynamicForm 是配置驱动的动态表单引擎，默认提供 Ant Design renderer。4.1 开始提供 Form Adapter 和 Renderer Adapter 扩展基础，可作为可视化表单设计器或低代码系统的表单运行时内核。
+
 ### 工作区结构
 
 ```text
@@ -41,4 +43,3 @@ pnpm run site:build  # 构建文档站
 - 根 `docs/` 只维护 monorepo 级文档，例如仓库结构、发布流程、站点规划和维护策略。
 - `apps/docs-site/` 维护站点布局、Docusaurus 配置和站点内容，不复制 `demos/` 的业务逻辑。
 - `demos/` 继续作为 repo-level demo 来源，同时被 Vite demo 和 docs-site 复用。
-

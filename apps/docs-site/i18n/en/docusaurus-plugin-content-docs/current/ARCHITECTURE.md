@@ -1,6 +1,6 @@
 # Architecture
 
-DynamicForm 4.0 combines Field Address, the unified node tree, optional Adapter / Module / Rule / Compiler preprocessing, and a stable Config / State / Runtime / Consumer / Shared runtime pipeline. It separates logical field identity from value paths while preserving Ant Design Form as the owner of actual values and validation runtime state.
+DynamicForm 4.1 combines Field Address, the unified node tree, optional Adapter / Module / Rule / Compiler preprocessing, Form Adapter / Renderer Adapter, and a stable Config / State / Runtime / Consumer / Shared runtime pipeline. It separates logical field identity, value paths, value access, runtime policy, and UI rendering. The default implementation still uses Ant Design Form and `antdRenderer`.
 
 ### Repository Layout
 
@@ -29,10 +29,10 @@ flowchart TD
   content --> runtime["useRuntimeState"]
   content --> events["useFormRuntimeEvents"]
   content --> participation["useFieldParticipation"]
-  content --> renderer["FieldComponentRenderer"]
+  content --> renderer["Renderer Adapter + FieldComponentRenderer"]
 ```
 
-The 4.0 main flow remains `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`. `DynamicForm` continues to accept the existing `FormConfig`; Adapter, Compiler, Rule Engine, and Schema Adapters are optional preprocessing layers that still output standard `FormConfig`. `fields`, `groups`, and `nodes` are normalized into the same node tree in the Config Layer.
+The 4.1 main flow remains `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`. `DynamicForm` continues to accept the existing `FormConfig`; Adapter, Compiler, Rule Engine, and Schema Adapters are optional preprocessing layers that still output standard `FormConfig`. `fields`, `groups`, and `nodes` are normalized into the same node tree in the Config Layer. When `formAdapter` / `renderer` are omitted, DynamicForm uses `createAntdFormAdapter(form)` and `antdRenderer`.
 
 ### Important Files
 
@@ -43,11 +43,13 @@ The 4.0 main flow remains `FormConfig -> adapter/compiler -> processFormConfig -
 - `packages/dynamic-form/src/CompiledDynamicForm.tsx`: wires compiler output and its component registry into `DynamicForm`.
 - `packages/dynamic-form/src/index.tsx`: splits `DynamicFormProps` into engine props and UI props.
 - `packages/dynamic-form/src/consumer/provider/DynamicFormProvider.tsx`: initializes store, effect engine, and React context.
-- `packages/dynamic-form/src/state/useStoreInit.ts`: processes config, creates reducer state, merges initial values, and syncs Ant Design Form.
+- `packages/dynamic-form/src/consumer/formAdapter.ts`: provides the default AntD form adapter and converts the legacy `form` instance into the neutral `DynamicFormFormAdapter`.
+- `packages/dynamic-form/src/state/useStoreInit.ts`: processes config, creates reducer state, merges initial values, and syncs them to the form runtime through the form adapter.
 - `packages/dynamic-form/src/config/processor/configParser.ts`: normalizes the node tree and creates `effectMap`, `nodeRegistry`, `containerRegistry`, `fieldRegistry`, `initialValues`, and initialized field/container state.
 - `packages/dynamic-form/src/state/reducer.ts`: handles field meta, group meta, and dynamic UI config updates with Immer.
 - `packages/dynamic-form/src/runtime/resolver.ts`: resolves field and container runtime capabilities.
-- `packages/dynamic-form/src/consumer/render/FormContent.tsx`: renders the form and wires submit/change events.
+- `packages/dynamic-form/src/consumer/render/FormContent.tsx`: walks Runtime nodes, calls the renderer adapter, and wires submit/change events.
+- `packages/dynamic-form/src/consumer/render/antdRenderer.tsx`: the default AntD renderer for `Form`, `Form.Item`, `Form.List`, `Row`, `Col`, `Card`, and `Button` shells.
 - `packages/dynamic-form/src/consumer/effects/`: applies effect results through handlers.
 - `packages/dynamic-form/src/consumer/render/componentRegistry.tsx`: provides built-in components and custom registration.
 
@@ -64,15 +66,15 @@ The 4.0 main flow remains `FormConfig -> adapter/compiler -> processFormConfig -
 9. `FormContent` computes one `runtimeState` from reducer state.
 10. Rendering, validation, and hidden-field participation consume that same `runtimeState`.
 11. User input triggers runtime-filtered validation and then the effect engine.
-12. Effect results pass through `applyEffectResult`, and handlers update Ant Design Form values, field meta, group meta, or dynamic UI config.
+12. Effect results pass through `applyEffectResult`, and handlers update form values through the form adapter or update field meta, group meta, or dynamic UI config.
 
 ### State Ownership
 
-Ant Design Form owns values, validation errors and warnings, touched and validating state, and submitted value retrieval.
+The form runtime owns values, validation errors and warnings, touched and validating state, and submitted value retrieval. The default form runtime is Ant Design Form.
 
 DynamicForm reducer owns flat field state, container/group field state, node state and root node order, field behavior/render meta, container/group behavior meta, config processing info, dynamic UI config, and initialized state.
 
-The reducer intentionally does not maintain a duplicate value store. Effect handlers that update values should call `form.setFieldsValue`.
+The reducer intentionally does not maintain a duplicate value store. Effect handlers that update values should call the provided `setFieldValue` helper or `formAdapter`.
 
 ### Layer Responsibilities
 
@@ -82,7 +84,7 @@ The reducer intentionally does not maintain a duplicate value store. Effect hand
 - Config Layer: normalizes flat/grouped/mixed/nodes `FormConfig` into a node tree and runtime inputs.
 - State Layer: stores initialized field/container structure and meta while normalizing legacy flat meta keys.
 - Runtime Layer: resolves rendered, submitable, editable, readonly, disabled, and validatable policy.
-- Consumer Layer: connects provider, rendering, hooks, effect results, and component registry.
+- Consumer Layer: connects provider, form adapter, renderer adapter, hooks, effect results, and component registry.
 - Shared Layer: contains types, context, utilities, and meta normalization helpers.
 
 ### Maintenance Constraints

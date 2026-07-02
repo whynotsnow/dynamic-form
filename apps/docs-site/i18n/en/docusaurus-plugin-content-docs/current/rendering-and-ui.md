@@ -1,6 +1,6 @@
 # Rendering and UI Extensions
 
-`FormContent` provides the default Ant Design rendering pipeline and exposes layered extension points. The default UI is intentionally simple and can be replaced incrementally.
+`FormContent` provides the default rendering pipeline and exposes layered extension points. Starting in 4.1, the default UI is provided by `antdRenderer`; applications can keep using render hooks for local changes or replace the default shell through `renderer`.
 
 ### Default Rendering
 
@@ -25,9 +25,34 @@ flowchart TD
   form --> submit["Submit Button"]
 ```
 
-Default rendering uses `Form`, `Row`, `Col`, `Card`, and `Button`.
+The default `antdRenderer` uses `Form`, `Row`, `Col`, `Card`, and `Button`.
 
 `FieldComponentRenderer` resolves the component, applies `Form.Item` props, maps runtime disabled/readonly state, and suppresses rules when a field is not runtime-validatable. Field-level `required: true` is automatically merged into a required rule by the default Ant Design renderer, while explicit required rules take precedence.
+
+### 4.1 Form / Renderer Adapter
+
+4.1 adds two optional extension points:
+
+- `formAdapter`: wraps form value access and validation through `getFieldValue`, `getFieldsValue`, `setFieldValue`, `setFieldsValue`, and `validateFields`.
+- `renderer`: wraps the default UI shell, including the form, field item, field-list layout, field layout, group container, repeatable container, and submit button.
+
+When `formAdapter` is omitted, `DynamicForm` converts the legacy AntD `form` instance with `createAntdFormAdapter(form)`. When `renderer` is omitted, it uses `antdRenderer`. Existing 4.0 AntD usage remains compatible:
+
+```tsx
+<DynamicForm form={form} formConfig={formConfig} />
+```
+
+A custom component-library renderer can reuse the core Runtime and render hooks while replacing the default UI shell:
+
+```tsx
+<DynamicForm
+  formAdapter={customFormAdapter}
+  renderer={customRenderer}
+  formConfig={formConfig}
+/>
+```
+
+4.1 only provides the AntD default implementation and extension interfaces. It does not include built-in Arco, Semi, or other component-library renderers.
 
 ### Nodes and Container Rendering Contract
 
@@ -42,7 +67,7 @@ As a result, `renderFields` applies not only to legacy flat fields or fields ins
 
 ### Component Registry
 
-Use `componentRegistry` to register business-specific field components. Custom components receive `field`, `value`, `onChange`, and `form`.
+Use `componentRegistry` to register business-specific field components. Custom components receive `field`, `value`, `onChange`, `form`, and optional `formAdapter`.
 
 By default, custom components do not replace built-ins. Set `allowOverride: true` only when replacement is intentional.
 
@@ -60,6 +85,6 @@ Each hook receives lower-level render functions and `defaultRender`, so callers 
 
 ### Choosing an Extension Point
 
-Use `uiConfig` when the default structure is still correct and only Ant Design props need to change. Use `componentRegistry` when the field input itself is business-specific. Use render hooks when the layout structure needs to change.
+Use `uiConfig` when the default structure is still correct and only Ant Design props need to change. Use `componentRegistry` when the field input itself is business-specific. Use render hooks when the layout structure needs to change. Implement `formAdapter` and `renderer` when another Form runtime or UI shell needs to be connected.
 
 Default rendering respects Runtime. Custom render hooks can bypass those defaults if they ignore the provided render helpers, so full replacement should be intentional.

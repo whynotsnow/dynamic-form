@@ -4,7 +4,7 @@ slug: /
 
 # DynamicForm 文档索引
 
-这里是 DynamicForm 4.0 的文档入口。首次使用建议先从快速开始跑通最小表单，再按业务场景查找配置、联动、校验和扩展方式；架构、Runtime、Compiler、Adapter 和节点树等专题用于深入理解和维护。
+这里是 DynamicForm 4.1 的文档入口。首次使用建议先从快速开始跑通最小表单，再按业务场景查找配置、联动、校验和扩展方式；架构、Runtime、Compiler、Adapter、Renderer 和节点树等专题用于深入理解和维护。
 
 ### 推荐路径
 
@@ -14,7 +14,7 @@ slug: /
 4. 🎨 [渲染与 UI 扩展](./rendering-and-ui.md)：学习默认渲染结构、组件注册和分层 render hooks。
 5. 🧭 [组件使用指南](./development.md)：按使用场景查找 demo、配置组合、自定义组件和自定义 handlers。
 6. 🧩 [高级配置管线](./compiler-foundation.md)：需要字段模块、递归 container、规则或外部 schema 输入时，再阅读 Compiler、Rule、Adapter 和 Schema Adapters 专题。
-7. 🧠 [深入理解](./ARCHITECTURE.md)：通过架构、Runtime Layer 和 Field Address 理解运行时边界与 4.0 结构模型。
+7. 🧠 [深入理解](./ARCHITECTURE.md)：通过架构、Runtime Layer、Renderer Adapter 和 Field Address 理解运行时边界与 4.1 结构模型。
 8. 🛠️ [维护指南](./maintenance.md)：了解测试、构建、验证和文档维护规则。
 
 ### 文档范围
@@ -53,6 +53,8 @@ slug: /
 - `evaluateRule`
 - `getFieldName`
 - `resolveFieldAddress`
+- `createAntdFormAdapter`
+- `antdRenderer`
 - 来自 `packages/dynamic-form/src/shared/types.ts` 的核心公共类型。
 - Runtime 类型：`FieldCapability`、`GroupCapability`、`RuntimeState`。
 
@@ -62,10 +64,15 @@ DynamicForm 由可选预处理能力和稳定运行时主线组成：
 
 - Adapter / Compiler / Rules：把外部输入和领域模块归一化、编译为标准 `FormConfig`。
 - Config processing：把用户配置转换为字段/分组状态、初始值、依赖图和 registry 元信息。
-- State：保存结构和 meta，不保存 Ant Design Form 已经管理的运行时值。
+- State：保存结构和 meta，不保存表单运行时 values、errors、touched 或 validating 状态。
 - Runtime：从 state 解析字段和分组的最终运行时能力。
-- Consumer rendering：把运行时能力和配置渲染成 Ant Design UI。
+- Form Adapter：封装值读写和校验；默认通过 `createAntdFormAdapter(form)` 兼容 AntD Form。
+- Consumer rendering：把运行时能力和配置交给 renderer；默认 `antdRenderer` 渲染 Ant Design UI。
 - Effects and handlers：把依赖联动结果转换成语义化的表单、字段 meta、分组 meta 或 UI 更新。
+
+### 4.1 Adapter 基础
+
+DynamicForm 4.1 新增 `formAdapter` 和 `renderer` 扩展入口。旧的 `<DynamicForm form={form} />` 用法保持兼容；未传 adapter 时使用 AntD 默认实现。4.1 不拆包，也不内置第二套组件库 renderer。
 
 ### 4.0 配置模型
 

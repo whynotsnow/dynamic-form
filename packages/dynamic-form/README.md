@@ -1,10 +1,10 @@
 # DynamicForm
 
-`@whynotsnow/dynamic-form` 是一个基于 React、TypeScript 和 Ant Design 的动态表单库。它用配置描述表单结构，用 `form-chain-effect-engine` 执行字段联动，并通过 Runtime Layer 统一处理字段是否渲染、是否提交、是否可编辑、是否校验等运行时策略。
+`@whynotsnow/dynamic-form` 是一个基于 React 和 TypeScript 的配置驱动动态表单引擎，默认提供 Ant Design renderer。它用配置描述表单结构，用 `form-chain-effect-engine` 执行字段联动，并通过 Runtime Layer 统一处理字段是否渲染、是否提交、是否可编辑、是否校验等运行时策略。4.1 开始提供 Form Adapter 和 Renderer Adapter 扩展基础，可作为可视化表单设计器或低代码系统的运行时内核。
 
 ### 项目能力
 
-- 🚀 通过 `formConfig` 配置化渲染 Ant Design 表单。
+- 🚀 通过 `formConfig` 配置化渲染表单，默认使用 Ant Design renderer。
 - 🗂️ 支持平铺表单、分组表单和 4.0 统一节点树 `nodes`。
 - 🧱 支持递归 container、container `name` 前缀和 repeatable container。
 - 🔗 支持字段、分组和 container 级 `dependents` + `effect` 联动。
@@ -16,6 +16,7 @@
 - 🔄 支持 JsonSchema、OpenAPI 和 metadata 输入适配。
 - 🧩 `CompiledDynamicForm` 可直接渲染 compiler/adapter 产物并自动接入模块组件。
 - 🪝 支持从字段项到整个表单体的分层 render hooks。
+- 🔌 4.1 支持 `formAdapter` 和 `renderer` 扩展入口，旧的 AntD `form` 用法保持兼容。
 - 🧠 使用 Runtime Layer 统一解析 `rendered`、`submitable`、`editable`、`readonly`、`disabled`、`validatable` 等能力。
 - 🧱 Ant Design Form 仍然是真实表单值和校验运行时状态的唯一来源。
 - 🧭 支持通过 `name: NamePath` 分离稳定字段 `id` 与嵌套值路径，旧配置默认继续使用 `id`。
@@ -118,6 +119,8 @@ export function Example() {
 - `createRuleEngine`
 - `compileRulesToEffect`
 - `evaluateRule`
+- `createAntdFormAdapter`
+- `antdRenderer`
 - `DynamicFormProps`、`FormConfig`、compiler、adapter、rule、render hook 和组件注册相关公共类型。
 
 ### Rule Engine
@@ -167,8 +170,8 @@ Rule 是字段所属的 per-field 规则，不支持 `target` 配置。一个源
 
 `DynamicForm` props 分为两类：
 
-- 引擎层 props：`formConfig`、`form`、可选 `values`、`uiConfig`、`enableInitializationCheck`、`checkDelay`。
-- UI 层 props：可选 `onSubmit`、`submitButtonText`、`componentRegistry`、`renderFormInner`、`renderGroups`、`renderGroupItem`、`renderFields`、`renderFieldItem`。
+- 引擎层 props：`formConfig`、`form`、可选 `formAdapter`、`values`、`uiConfig`、`enableInitializationCheck`、`checkDelay`。
+- UI 层 props：可选 `renderer`、`onSubmit`、`submitButtonText`、`componentRegistry`、`renderFormInner`、`renderGroups`、`renderGroupItem`、`renderFields`、`renderFieldItem`。
 
 ### 文档入口
 
@@ -192,7 +195,16 @@ Rule 是字段所属的 per-field 规则，不支持 `target` 配置。一个源
 - 值归 Ant Design Form：reducer 不维护重复的 values、errors、touched 或 validating 状态。
 - Runtime 是策略边界：渲染、提交、编辑和校验能力从同一份状态快照统一解析。
 - 扩展优先于分叉：通过自定义组件、effect 结果处理器和 render hooks 覆盖业务差异。
-- 默认渲染保持简单：默认使用 Ant Design `Form`、`Row`、`Col`、`Card` 和 `Button`。
+- 默认渲染保持简单：默认使用 `antdRenderer`，其他组件库可通过 Renderer Adapter 接入；4.1 不内置第二套组件库 renderer。
+
+### 4.1 Adapter 边界
+
+4.1 保持单包发布和旧 API 兼容。未传 `formAdapter` 或 `renderer` 时，`DynamicForm` 会把旧的 AntD `form` 实例转换为 `createAntdFormAdapter(form)`，并使用默认 `antdRenderer`。
+
+- Form Adapter 负责值读写、批量赋值和校验：`getFieldValue`、`getFieldsValue`、`setFieldValue`、`setFieldsValue`、`validateFields`。
+- Renderer Adapter 负责默认 UI 外壳：form、字段项、字段布局、分组容器、repeatable container 和提交按钮。
+- Adapter / Compiler / Rule / Runtime 仍保持 UI-library agnostic；AntD 相关实现集中在默认 form adapter 和 renderer 中。
+- 4.1 不承诺内置 Arco、Semi 或其他组件库适配器；业务侧可以基于新增接口自定义 renderer。
 
 ### 4.0 配置管线
 

@@ -4,7 +4,7 @@ slug: /
 
 # DynamicForm Documentation
 
-This is the entry point for DynamicForm 4.0 documentation. New users should start with Quick Start to run a minimal form, then use scenario docs for configuration, effects, validation, and extensions. Architecture, Runtime, Compiler, Adapter, and node tree topics are for deeper understanding and maintenance.
+This is the entry point for DynamicForm 4.1 documentation. New users should start with Quick Start to run a minimal form, then use scenario docs for configuration, effects, validation, and extensions. Architecture, Runtime, Compiler, Adapter, Renderer, and node tree topics are for deeper understanding and maintenance.
 
 ### Recommended Path
 
@@ -14,7 +14,7 @@ This is the entry point for DynamicForm 4.0 documentation. New users should star
 4. 🎨 [Rendering and UI Extensions](./rendering-and-ui.md): default rendering, component registry, and layered render hooks.
 5. 🧭 [Component Usage Guide](./development.md): scenario-based demos, configuration combinations, custom components, and custom handlers.
 6. 🧩 [Advanced Configuration Pipeline](./compiler-foundation.md): read Compiler, Rule, Adapter, and Schema Adapter topics when you need field modules, recursive containers, rules, or external schema inputs.
-7. 🧠 [Deep Dive](./ARCHITECTURE.md): understand runtime boundaries and the 4.0 structure model through Architecture, Runtime Layer, and Field Address.
+7. 🧠 [Deep Dive](./ARCHITECTURE.md): understand runtime boundaries and the 4.1 structure model through Architecture, Runtime Layer, Renderer Adapter, and Field Address.
 8. 🧾 [CHANGELOG](./changelog.md): reader-focused release summaries and related topic entry points.
 9. 🛠️ [Maintenance Guide](./maintenance.md): tests, builds, verification, and documentation maintenance.
 
@@ -54,6 +54,8 @@ The package exports:
 - `evaluateRule`
 - `getFieldName`
 - `resolveFieldAddress`
+- `createAntdFormAdapter`
+- `antdRenderer`
 - Core public types from `packages/dynamic-form/src/shared/types.ts`.
 - Runtime types: `FieldCapability`, `GroupCapability`, and `RuntimeState`.
 
@@ -63,10 +65,15 @@ DynamicForm combines optional preprocessing capabilities with a stable runtime p
 
 - Adapter / Compiler / Rules normalize external input and domain modules into standard `FormConfig`.
 - Config processing turns user config into field/group state, initial values, dependency maps, and registry metadata.
-- State stores structure and meta, not Ant Design runtime values.
+- State stores structure and meta, not form runtime values, errors, touched state, or validating state.
 - Runtime resolves final field/group capabilities from state.
-- Consumer rendering turns runtime-capable state into Ant Design UI.
+- Form Adapter wraps value access and validation; the default `createAntdFormAdapter(form)` keeps AntD Form compatible.
+- Consumer rendering passes runtime-capable state to a renderer; the default `antdRenderer` renders Ant Design UI.
 - Effects and handlers translate dependency results into semantic form, meta, group, or UI updates.
+
+### 4.1 Adapter Foundation
+
+DynamicForm 4.1 adds `formAdapter` and `renderer` extension points. Existing `<DynamicForm form={form} />` usage remains compatible; when adapters are omitted, the default AntD implementation is used. 4.1 keeps the single package shape and does not include a second built-in component-library renderer.
 
 ### 4.0 Configuration Model
 

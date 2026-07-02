@@ -1,6 +1,6 @@
 # 渲染与 UI 扩展
 
-`FormContent` 提供默认 Ant Design 渲染流水线，并暴露分层扩展点。默认 UI 保持简单，业务侧可以按需逐层替换。
+`FormContent` 提供默认渲染流水线，并暴露分层扩展点。4.1 起默认 UI 由 `antdRenderer` 提供，业务侧可以继续使用 render hooks 局部扩展，也可以通过 `renderer` 替换默认外壳。
 
 ### 默认渲染结构
 
@@ -25,7 +25,7 @@ flowchart TD
   form --> submit["Submit Button"]
 ```
 
-默认渲染使用：
+默认 `antdRenderer` 使用：
 
 - `Form`
 - `Row`
@@ -34,6 +34,31 @@ flowchart TD
 - `Button`
 
 `FieldComponentRenderer` 负责解析组件、应用 `Form.Item` props、应用 runtime disabled/readonly 状态，并在字段不可校验时移除 `Form.Item` rules。字段 `required: true` 会在默认 Ant Design renderer 中自动合并为 required rule；显式 `rules` 中的 required rule 优先。
+
+### 4.1 Form / Renderer Adapter
+
+4.1 新增两个可选扩展入口：
+
+- `formAdapter`：封装表单值读写和校验，包括 `getFieldValue`、`getFieldsValue`、`setFieldValue`、`setFieldsValue`、`validateFields`。
+- `renderer`：封装默认 UI 外壳，包括 form、字段项、字段集合布局、字段布局、分组容器、repeatable container 和提交按钮。
+
+未传 `formAdapter` 时，`DynamicForm` 会把旧的 AntD `form` 实例转换为 `createAntdFormAdapter(form)`。未传 `renderer` 时，默认使用 `antdRenderer`。因此 4.0 的 AntD 用法继续兼容：
+
+```tsx
+<DynamicForm form={form} formConfig={formConfig} />
+```
+
+自定义组件库 renderer 可以先复用核心 Runtime 和 render hooks，只替换默认 UI 外壳：
+
+```tsx
+<DynamicForm
+  formAdapter={customFormAdapter}
+  renderer={customRenderer}
+  formConfig={formConfig}
+/>
+```
+
+4.1 只提供 AntD 默认实现和扩展接口，不内置 Arco、Semi 或其他组件库 renderer。
 
 ### Nodes 与 container 渲染契约
 
@@ -68,7 +93,8 @@ interface FieldComponentProps {
   field: FieldState;
   value?: FieldValue;
   onChange?: (value: FieldValue) => void;
-  form: FormInstance;
+  form: unknown;
+  formAdapter?: DynamicFormFormAdapter;
 }
 ```
 
@@ -145,6 +171,7 @@ render hooks 按作用范围从小到大排列：
 - 只改默认 Ant Design props：使用 `uiConfig`。
 - 字段控件本身有业务逻辑：使用 `componentRegistry`。
 - 结构需要变化，例如 Tabs、特殊分组、自定义提交区：使用 render hooks。
+- 需要接入另一套 Form 或 UI 外壳：实现 `formAdapter` 和 `renderer`。
 
 默认渲染尊重 Runtime：不可渲染字段返回 `null`，分组隐藏时子字段不渲染，disabled/readonly 会传给组件，不可校验字段不会挂载 rules。
 
