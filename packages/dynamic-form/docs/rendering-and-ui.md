@@ -41,6 +41,7 @@ flowchart TD
 
 - `formAdapter`：封装表单值读写和校验，包括 `getFieldValue`、`getFieldsValue`、`setFieldValue`、`setFieldsValue`、`validateFields`。
 - `renderer`：封装默认 UI 外壳，包括 form、字段项、字段集合布局、字段布局、分组容器、repeatable container 和提交按钮。
+- `assertFormAdapter` / `assertRendererAdapter`：在初始化阶段提前校验自定义 adapter 的必需方法。
 
 未传 `formAdapter` 时，`DynamicForm` 会把旧的 AntD `form` 实例转换为 `createAntdFormAdapter(form)`。未传 `renderer` 时，默认使用 `antdRenderer`。因此 4.0 的 AntD 用法继续兼容：
 
@@ -58,7 +59,12 @@ flowchart TD
 />
 ```
 
-4.1 只提供 AntD 默认实现和扩展接口，不内置 Arco、Semi 或其他组件库 renderer。
+4.1.1 还提供两个无组件库依赖的 reference 实现：
+
+- `createMemoryFormAdapter(initialValues)`：维护一个内存 values store，提供 no-op `validateFields`，适合测试、自定义 renderer 示例和可视化预览态。
+- `headlessRenderer`：使用原生 `<form>`、`<label>`、`<div>`、`<fieldset>` 和 `<button>` 渲染最小 UI 外壳；它不是生产级组件库替代品。
+
+4.1 只提供 AntD 默认实现、headless reference implementation 和扩展接口，不内置 Arco、Semi 或其他组件库 renderer。
 
 ### Nodes 与 container 渲染契约
 
@@ -117,6 +123,8 @@ render hooks 按作用范围从小到大排列：
 | `renderFormInner` | 自定义整个表单 body 和提交区域。 |
 
 每个 hook 都会收到下层 render 函数和 `defaultRender`，可以只包装需要扩展的部分。
+
+`renderer` 负责生成默认 UI，render hooks 仍然是更靠近业务侧的覆盖层。也就是说，`renderer` 先生成 `defaultRender`，再由 `renderFieldItem`、`renderFields`、`renderGroupItem`、`renderGroups` 或 `renderFormInner` 包装或替换它。
 
 ### 字段项扩展
 

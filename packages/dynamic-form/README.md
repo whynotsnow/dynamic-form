@@ -119,8 +119,12 @@ export function Example() {
 - `createRuleEngine`
 - `compileRulesToEffect`
 - `evaluateRule`
+- `assertFormAdapter`
 - `createAntdFormAdapter`
+- `createMemoryFormAdapter`
+- `assertRendererAdapter`
 - `antdRenderer`
+- `headlessRenderer`
 - `DynamicFormProps`、`FormConfig`、compiler、adapter、rule、render hook 和组件注册相关公共类型。
 
 ### Rule Engine
@@ -204,6 +208,9 @@ Rule 是字段所属的 per-field 规则，不支持 `target` 配置。一个源
 - Form Adapter 负责值读写、批量赋值和校验：`getFieldValue`、`getFieldsValue`、`setFieldValue`、`setFieldsValue`、`validateFields`。
 - Renderer Adapter 负责默认 UI 外壳：form、字段项、字段布局、分组容器、repeatable container 和提交按钮。
 - Adapter / Compiler / Rule / Runtime 仍保持 UI-library agnostic；AntD 相关实现集中在默认 form adapter 和 renderer 中。
+- `assertFormAdapter` 和 `assertRendererAdapter` 会提前校验自定义 adapter 的必需方法。
+- `createMemoryFormAdapter` 提供无 UI 组件库依赖的内存 values runtime，适合测试、自定义 renderer 示例和可视化预览态。
+- `headlessRenderer` 提供基于原生元素的最小 reference renderer，不定位为生产级 UI。
 - 4.1 不承诺内置 Arco、Semi 或其他组件库适配器；业务侧可以基于新增接口自定义 renderer。
 
 ### 4.0 配置管线

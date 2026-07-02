@@ -35,6 +35,7 @@ The default `antdRenderer` uses `Form`, `Row`, `Col`, `Card`, and `Button`.
 
 - `formAdapter`: wraps form value access and validation through `getFieldValue`, `getFieldsValue`, `setFieldValue`, `setFieldsValue`, and `validateFields`.
 - `renderer`: wraps the default UI shell, including the form, field item, field-list layout, field layout, group container, repeatable container, and submit button.
+- `assertFormAdapter` / `assertRendererAdapter`: validate required adapter methods during initialization.
 
 When `formAdapter` is omitted, `DynamicForm` converts the legacy AntD `form` instance with `createAntdFormAdapter(form)`. When `renderer` is omitted, it uses `antdRenderer`. Existing 4.0 AntD usage remains compatible:
 
@@ -52,7 +53,12 @@ A custom component-library renderer can reuse the core Runtime and render hooks 
 />
 ```
 
-4.1 only provides the AntD default implementation and extension interfaces. It does not include built-in Arco, Semi, or other component-library renderers.
+4.1.1 also provides two UI-library-free reference implementations:
+
+- `createMemoryFormAdapter(initialValues)`: maintains an in-memory values store and no-op `validateFields`; it is useful for tests, custom renderer examples, and visual-builder preview mode.
+- `headlessRenderer`: renders the smallest native shell with `<form>`, `<label>`, `<div>`, `<fieldset>`, and `<button>`. It is not intended to replace a production component library.
+
+4.1 provides the AntD default implementation, headless reference implementations, and extension interfaces. It does not include built-in Arco, Semi, or other component-library renderers.
 
 ### Nodes and Container Rendering Contract
 
@@ -82,6 +88,8 @@ Render hooks are layered from smallest to largest scope:
 - `renderFormInner`: customize the full form body and submit area.
 
 Each hook receives lower-level render functions and `defaultRender`, so callers can wrap or replace only the part they need.
+
+The `renderer` creates the default UI, while render hooks remain the business-side override layer. In other words, `renderer` creates `defaultRender` first, then `renderFieldItem`, `renderFields`, `renderGroupItem`, `renderGroups`, or `renderFormInner` can wrap or replace it.
 
 ### Choosing an Extension Point
 
