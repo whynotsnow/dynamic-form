@@ -141,6 +141,9 @@ importers:
 
   packages/dynamic-form:
     dependencies:
+      '@whynotsnow/dynamic-form-core':
+        specifier: workspace:*
+        version: link:../dynamic-form-core
       form-chain-effect-engine:
         specifier: ^2.0.4
         version: 2.0.4(antd@5.29.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)

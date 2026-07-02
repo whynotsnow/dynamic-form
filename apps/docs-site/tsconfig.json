@@ -4,7 +4,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["../../packages/dynamic-form/src/*"],
-      "@whynotsnow/dynamic-form": ["../../packages/dynamic-form/src/exports.ts"]
+      "@whynotsnow/dynamic-form": ["../../packages/dynamic-form/src/exports.ts"],
+      "@whynotsnow/dynamic-form-core": ["../../packages/dynamic-form-core/src/exports.ts"]
     }
   },
   "include": ["src", "docs", "i18n", "docusaurus.config.ts", "sidebars.ts"],

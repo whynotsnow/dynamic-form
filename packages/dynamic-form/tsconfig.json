@@ -11,7 +11,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@whynotsnow/dynamic-form": ["src/exports.ts"]
+      "@whynotsnow/dynamic-form": ["src/exports.ts"],
+      "@whynotsnow/dynamic-form-core": ["../dynamic-form-core/src/exports.ts"]
     },
     "esModuleInterop": true,
     "skipLibCheck": true,

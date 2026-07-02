@@ -9,7 +9,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["packages/dynamic-form/src/*"],
-      "@whynotsnow/dynamic-form": ["packages/dynamic-form/src/exports.ts"]
+      "@whynotsnow/dynamic-form": ["packages/dynamic-form/src/exports.ts"],
+      "@whynotsnow/dynamic-form-core": ["packages/dynamic-form-core/src/exports.ts"]
     },
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -17,5 +18,5 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": ["demos", "tests/**/*.ts", "tests/**/*.tsx"],
-  "exclude": ["node_modules", "dist", "packages/dynamic-form/dist"]
+  "exclude": ["node_modules", "dist", "packages/dynamic-form/dist", "packages/dynamic-form-core/dist"]
 }

@@ -7,24 +7,8 @@ export { default as FormChainEffectEngineWrapper } from './consumer/provider/Dyn
 
 export type {
   DynamicFormProps,
-  FormValues,
-  FieldNamePath,
-  ValidationRule,
   DynamicFormFormAdapter,
   DynamicFormRendererAdapter,
-  DesignerMetadata,
-  FieldAddress,
-  FieldNode,
-  ContainerNode,
-  FormNode,
-  NodeRegistryEntry,
-  ContainerRegistryEntry,
-  FormConfig,
-  FlatFormConfig,
-  GroupedFormConfig,
-  BaseFieldConfig,
-  FieldState,
-  GroupFieldState,
   FieldComponentProps,
   ComponentRegistry,
   ComponentRegistryConfig,
@@ -43,6 +27,27 @@ export type {
   RenderFormParams
 } from './shared/types';
 
+export type {
+  BaseFieldConfig,
+  ConfigProcessInfo,
+  ContainerNode,
+  ContainerRegistryEntry,
+  DesignerMetadata,
+  FieldAddress,
+  FieldNamePath,
+  FieldNode,
+  FieldState,
+  FlatFormConfig,
+  FormConfig,
+  FormNode,
+  FormValues,
+  GroupField,
+  GroupFieldState,
+  GroupedFormConfig,
+  NodeRegistryEntry,
+  ValidationRule
+} from '@whynotsnow/dynamic-form-core';
+
 export {
   assertFormAdapter,
   createAntdFormAdapter,
@@ -53,22 +58,27 @@ export { antdRenderer } from './consumer/render/antdRenderer';
 export { headlessRenderer } from './consumer/render/headlessRenderer';
 export { assertRendererAdapter } from './consumer/render/rendererAdapter';
 
-export type { FieldCapability, GroupCapability, NodeCapability, RuntimeState } from './runtime';
+export type {
+  FieldCapability,
+  GroupCapability,
+  NodeCapability,
+  RuntimeState
+} from '@whynotsnow/dynamic-form-core';
 export {
   getFieldRuntimeSnapshot,
   getRenderedFieldIds,
   getSubmitableFieldIds,
   getValidatableFieldIds
-} from './runtime';
+} from '@whynotsnow/dynamic-form-core';
 
-export { getFieldName, resolveFieldAddress } from './shared/utils';
+export { getFieldName, resolveFieldAddress } from '@whynotsnow/dynamic-form-core';
 
 export {
   ComponentRegistryManager,
   DefaultRegistryFieldComponents
 } from './consumer/render/componentRegistry';
 
-export { compileFormConfig } from './compiler';
+export { compileFormConfig } from '@whynotsnow/dynamic-form-core';
 export type {
   CompiledModuleConfig,
   CompileFormConfigOptions,
@@ -80,10 +90,10 @@ export type {
   ModuleFormConfig,
   ModuleFormNode,
   ModuleConfig
-} from './compiler';
+} from '@whynotsnow/dynamic-form-core';
 
-export { ModuleRegistryManager, defaultModuleRegistry } from './modules';
-export type { FieldModule, ModuleRegistryRegisterOptions } from './modules';
+export { ModuleRegistryManager, defaultModuleRegistry } from '@whynotsnow/dynamic-form-core';
+export type { FieldModule, ModuleRegistryRegisterOptions } from '@whynotsnow/dynamic-form-core';
 
 export {
   AdapterRegistryManager,
@@ -94,7 +104,7 @@ export {
   adaptModuleConfigs,
   compileAdaptedFormConfig,
   defaultAdapterRegistry
-} from './adapters';
+} from '@whynotsnow/dynamic-form-core';
 export type {
   AdaptModuleConfigsOptions,
   AdapterContext,
@@ -112,9 +122,14 @@ export type {
   SchemaFormMetadata,
   SchemaGroupConfig,
   SchemaModuleFormConfig
-} from './adapters';
+} from '@whynotsnow/dynamic-form-core';
 
-export { RuleEngine, createRuleEngine, compileRulesToEffect, evaluateRule } from './rules';
+export {
+  RuleEngine,
+  createRuleEngine,
+  compileRulesToEffect,
+  evaluateRule
+} from '@whynotsnow/dynamic-form-core';
 export type {
   DeclarativeRule,
   GroupDeclarativeRule,
@@ -124,7 +139,7 @@ export type {
   RuleEngineOptions,
   RuleEvaluationContext,
   RuleEvaluationResult
-} from './rules';
+} from '@whynotsnow/dynamic-form-core';
 
 export { useFormChainContext } from './shared/context/FormChainContext';
 export { useStoreInit } from './state';
@@ -138,10 +153,14 @@ export type {
 } from './consumer/effects';
 
 export { getDefaultConfig } from './config/defaultConfig';
-export { getFormConfigDiagnostics, processFormConfig, validateFormConfig } from './config';
+export {
+  getFormConfigDiagnostics,
+  processFormConfig,
+  validateFormConfig
+} from '@whynotsnow/dynamic-form-core';
 export type {
   FormConfigDiagnostic,
   FormConfigDiagnosticsOptions,
   FormConfigDiagnosticSeverity,
   FormConfigValidationResult
-} from './config';
+} from '@whynotsnow/dynamic-form-core';
