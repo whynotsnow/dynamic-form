@@ -11,7 +11,13 @@ const modulePromise = build({
       import React from 'react';
       import { renderToStaticMarkup } from 'react-dom/server';
       import FormContent from './packages/dynamic-form/src/consumer/render/FormContent';
-      import { createAntdFormAdapter } from './packages/dynamic-form/src/consumer/formAdapter';
+      import {
+        assertFormAdapter,
+        createAntdFormAdapter,
+        createMemoryFormAdapter
+      } from './packages/dynamic-form/src/consumer/formAdapter';
+      import { headlessRenderer } from './packages/dynamic-form/src/consumer/render/headlessRenderer';
+      import { assertRendererAdapter } from './packages/dynamic-form/src/consumer/render/rendererAdapter';
       import { FormChainContext } from './packages/dynamic-form/src/shared/context/FormChainContext';
       import { processFormConfig } from './packages/dynamic-form/src/config/processor/configParser';
 
@@ -91,6 +97,37 @@ const modulePromise = build({
         };
       }
 
+      export function exerciseMemoryFormAdapter() {
+        const adapter = createMemoryFormAdapter({ profile: { name: 'Ada' } });
+        const before = adapter.getFieldValue(['profile', 'name']);
+        adapter.setFieldValue(['profile', 'name'], 'Grace');
+        adapter.setFieldsValue({ status: 'active' });
+        return adapter.validateFields([['profile', 'name']]).then((validated) => ({
+          before,
+          after: adapter.getFieldValue(['profile', 'name']),
+          values: adapter.getFieldsValue(true),
+          validated,
+          rawValues: adapter.values
+        }));
+      }
+
+      export function exerciseAdapterAssertions() {
+        const errors = [];
+        try {
+          assertFormAdapter({ getFieldValue: () => undefined });
+        } catch (error) {
+          errors.push(error.message);
+        }
+
+        try {
+          assertRendererAdapter({ renderForm: () => null });
+        } catch (error) {
+          errors.push(error.message);
+        }
+
+        return errors;
+      }
+
       export function renderWithCustomRenderer() {
         const form = createMockAntdForm({ name: 'Ada', hidden: 'skip' });
         const formAdapter = createAntdFormAdapter(form);
@@ -149,6 +186,41 @@ const modulePromise = build({
 
         return { html, calls, capturedFinish, form };
       }
+
+      export function renderWithHeadlessRenderer() {
+        const formAdapter = createMemoryFormAdapter({ name: 'Ada' });
+        const state = createState({
+          fields: [{ id: 'name', label: 'Name', component: 'Marker', required: true }]
+        });
+
+        function Marker({ field }) {
+          return React.createElement('input', { name: field.id, defaultValue: 'Ada' });
+        }
+
+        const contextValue = {
+          form: formAdapter,
+          formAdapter,
+          state,
+          dispatch: () => undefined,
+          onValuesChange: () => undefined,
+          manualTrigger: () => undefined
+        };
+
+        return renderToStaticMarkup(
+          React.createElement(
+            FormChainContext.Provider,
+            { value: contextValue },
+            React.createElement(FormContent, {
+              formAdapter,
+              renderer: headlessRenderer,
+              componentRegistry: {
+                customComponents: { Marker },
+                allowOverride: true
+              }
+            })
+          )
+        );
+      }
     `,
     resolveDir: process.cwd(),
     sourcefile: 'formAdapterBoundaryTestEntry.tsx',
@@ -172,6 +244,27 @@ test('createAntdFormAdapter preserves nested field paths and setFieldsValue comp
   assert.equal(result.values.__includeAll, true);
 });
 
+test('createMemoryFormAdapter provides a UI-library-free value runtime', async () => {
+  const { exerciseMemoryFormAdapter } = await modulePromise;
+  const result = await exerciseMemoryFormAdapter();
+
+  assert.equal(result.before, 'Ada');
+  assert.equal(result.after, 'Grace');
+  assert.equal(result.values.status, 'active');
+  assert.deepEqual(result.validated, result.rawValues);
+});
+
+test('adapter assertions report missing required methods early', async () => {
+  const { exerciseAdapterAssertions } = await modulePromise;
+  const errors = exerciseAdapterAssertions();
+
+  assert.equal(errors.length, 2);
+  assert.match(errors[0], /formAdapter is invalid/);
+  assert.match(errors[0], /validateFields/);
+  assert.match(errors[1], /renderer is invalid/);
+  assert.match(errors[1], /renderSubmit/);
+});
+
 test('renderer adapter can replace the default AntD form shell', async () => {
   const { renderWithCustomRenderer } = await modulePromise;
   const result = renderWithCustomRenderer();
@@ -190,4 +283,14 @@ test('submit validation filters hidden fields through runtime capability before 
 
   assert.deepEqual(result.form.validatedNames, [['name']]);
   assert.equal(result.form.values.__includeAll, true);
+});
+
+test('headlessRenderer renders a native form shell without AntD components', async () => {
+  const { renderWithHeadlessRenderer } = await modulePromise;
+  const html = renderWithHeadlessRenderer();
+
+  assert.match(html, /^<form>/);
+  assert.match(html, /data-field-layout="name"/);
+  assert.match(html, /data-field-name="&quot;name&quot;"/);
+  assert.match(html, /<button type="submit">提交<\/button>/);
 });

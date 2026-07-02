@@ -17,6 +17,7 @@ import { getFieldName, normalizeFieldName } from '../../shared/utils';
 import { mergeUIConfig } from '../../shared/utils/uiConfig';
 import { resolveFormAdapter, resolveFormHandle } from '../formAdapter';
 import { antdRenderer } from './antdRenderer';
+import { assertRendererAdapter } from './rendererAdapter';
 
 type NameSegment = string | number;
 
@@ -46,7 +47,11 @@ const FormContent: React.FC<FormContentProps> = (props) => {
     formAdapter: providedFormAdapter,
     renderer: providedRenderer
   } = props;
-  const renderer = providedRenderer ?? antdRenderer;
+  const renderer = useMemo(() => {
+    const resolvedRenderer = providedRenderer ?? antdRenderer;
+    assertRendererAdapter(resolvedRenderer);
+    return resolvedRenderer;
+  }, [providedRenderer]);
   const formAdapter = useMemo(
     () => resolveFormAdapter({ form, formAdapter: providedFormAdapter }),
     [form, providedFormAdapter]

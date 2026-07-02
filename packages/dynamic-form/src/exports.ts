@@ -42,8 +42,15 @@ export type {
   RenderFormParams
 } from './shared/types';
 
-export { createAntdFormAdapter } from './consumer/formAdapter';
+export {
+  assertFormAdapter,
+  createAntdFormAdapter,
+  createMemoryFormAdapter
+} from './consumer/formAdapter';
+export type { MemoryFormAdapter } from './consumer/formAdapter';
 export { antdRenderer } from './consumer/render/antdRenderer';
+export { headlessRenderer } from './consumer/render/headlessRenderer';
+export { assertRendererAdapter } from './consumer/render/rendererAdapter';
 
 export type { FieldCapability, GroupCapability, NodeCapability, RuntimeState } from './runtime';
 
