@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { Form } from 'antd';
 import type { FieldRendererProps } from '../../shared/types';
 import { defaultRegistryManager } from './componentRegistry';
 import { shallowEqual } from '../../shared/utils/utils';
@@ -15,6 +14,7 @@ const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
     componentRegistry,
     staticUIConfig,
     dynamicUIConfig,
+    renderer,
     runtimeCapability,
     name
   }) {
@@ -70,16 +70,19 @@ const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
       (Component as typeof Component & { wrapWithFormItem?: boolean }).wrapWithFormItem !== false;
 
     if (wrapFormItem) {
-      return (
-        <Form.Item {...resolvedConfigs.formItemProps}>
+      return renderer.renderFieldItem({
+        form,
+        formAdapter,
+        formItemProps: resolvedConfigs.formItemProps,
+        children: (
           <Component
             field={field}
             form={form}
             formAdapter={formAdapter}
             {...resolvedConfigs.componentProps}
           />
-        </Form.Item>
-      );
+        )
+      });
     }
     return <Component field={field} form={form} formAdapter={formAdapter} {...resolvedConfigs} />;
   },

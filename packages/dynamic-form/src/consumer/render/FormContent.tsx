@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { Form, Button, Card, Row, Col } from 'antd';
 import type {
   FormContentProps,
   FieldState,
@@ -17,6 +16,7 @@ import { useRuntimeState } from '../../runtime';
 import { getFieldName, normalizeFieldName } from '../../shared/utils';
 import { mergeUIConfig } from '../../shared/utils/uiConfig';
 import { resolveFormAdapter, resolveFormHandle } from '../formAdapter';
+import { antdRenderer } from './antdRenderer';
 
 type NameSegment = string | number;
 
@@ -43,8 +43,10 @@ const FormContent: React.FC<FormContentProps> = (props) => {
     renderFields,
     renderGroups,
     form,
-    formAdapter: providedFormAdapter
+    formAdapter: providedFormAdapter,
+    renderer: providedRenderer
   } = props;
+  const renderer = providedRenderer ?? antdRenderer;
   const formAdapter = useMemo(
     () => resolveFormAdapter({ form, formAdapter: providedFormAdapter }),
     [form, providedFormAdapter]
@@ -102,6 +104,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
         componentRegistry={registryManager}
         staticUIConfig={staticUIConfig}
         dynamicUIConfig={dynamicUIConfig}
+        renderer={renderer}
         runtimeCapability={capability}
       />
     );
@@ -135,29 +138,24 @@ const FormContent: React.FC<FormContentProps> = (props) => {
     listPrefix?: FieldNamePath,
     schemaPrefix?: FieldNamePath
   ) => {
-    const defaultRender = (
-      <Row {...effectiveUIConfig.rowProps}>
-        {fieldsArr.map((field) => {
-          const capability = runtimeState.fields[field.id];
+    const defaultRender = renderer.renderFieldsLayout({
+      uiConfig: effectiveUIConfig,
+      children: fieldsArr.map((field) => {
+        const capability = runtimeState.fields[field.id];
 
-          if (!capability?.rendered) {
-            return null;
-          }
-          const renderedName = listPrefix
-            ? [...toNamePath(listPrefix), ...stripNamePrefix(getFieldName(field), schemaPrefix)]
-            : undefined;
-          return (
-            <Col
-              key={field.id}
-              {...effectiveUIConfig.colProps}
-              span={field.span || effectiveUIConfig.colProps?.span}
-            >
-              {internalRenderFieldItem(field, renderedName)}
-            </Col>
-          );
-        })}
-      </Row>
-    );
+        if (!capability?.rendered) {
+          return null;
+        }
+        const renderedName = listPrefix
+          ? [...toNamePath(listPrefix), ...stripNamePrefix(getFieldName(field), schemaPrefix)]
+          : undefined;
+        return renderer.renderFieldLayout({
+          field,
+          uiConfig: effectiveUIConfig,
+          children: internalRenderFieldItem(field, renderedName)
+        });
+      })
+    });
 
     return renderFields
       ? renderFields({
@@ -175,11 +173,12 @@ const FormContent: React.FC<FormContentProps> = (props) => {
       return null;
     }
 
-    const defaultRender = (
-      <Card key={group.id} title={group.title ?? group.id} {...effectiveUIConfig.cardProps}>
-        {internalRenderFields(Object.values(group.fields))}
-      </Card>
-    );
+    const defaultRender = renderer.renderGroup({
+      id: group.id,
+      title: group.title,
+      uiConfig: effectiveUIConfig,
+      children: internalRenderFields(Object.values(group.fields))
+    });
 
     return renderGroupItem
       ? renderGroupItem({
@@ -284,35 +283,22 @@ const FormContent: React.FC<FormContentProps> = (props) => {
       renderNodeChildren(container.children, renderPrefix, nextSchemaPrefix);
 
     if (container.repeatable) {
-      return (
-        <Card
-          key={container.id}
-          title={container.title ?? container.id}
-          {...effectiveUIConfig.cardProps}
-        >
-          <Form.List name={container.name!}>
-            {(items) => (
-              <>
-                {items.map((item) => (
-                  <div key={item.key}>{renderChildren([item.name], containerSchemaPrefix)}</div>
-                ))}
-              </>
-            )}
-          </Form.List>
-        </Card>
-      );
+      return renderer.renderRepeatable({
+        id: container.id,
+        title: container.title,
+        name: container.name!,
+        uiConfig: effectiveUIConfig,
+        renderItem: (itemName) => renderChildren([itemName], containerSchemaPrefix)
+      });
     }
 
     const group = groupFields[container.id];
-    const defaultRender = (
-      <Card
-        key={container.id}
-        title={container.title ?? container.id}
-        {...effectiveUIConfig.cardProps}
-      >
-        {renderChildren(containerRenderPrefix, containerSchemaPrefix)}
-      </Card>
-    );
+    const defaultRender = renderer.renderGroup({
+      id: container.id,
+      title: container.title,
+      uiConfig: effectiveUIConfig,
+      children: renderChildren(containerRenderPrefix, containerSchemaPrefix)
+    });
 
     if (group && renderGroupItem) {
       return renderGroupItem({
@@ -328,13 +314,11 @@ const FormContent: React.FC<FormContentProps> = (props) => {
   };
 
   /** 提交区渲染 */
-  const internalRenderSubmit = () => (
-    <div style={{ textAlign: 'center', marginTop: 24 }} {...effectiveUIConfig.submitAreaProps}>
-      <Button type="primary" htmlType="submit" {...effectiveUIConfig.buttonProps}>
-        {finalSubmitButtonText}
-      </Button>
-    </div>
-  );
+  const internalRenderSubmit = () =>
+    renderer.renderSubmit({
+      submitButtonText: finalSubmitButtonText,
+      uiConfig: effectiveUIConfig
+    });
 
   const renderRootNodes = () => {
     if (rootNodeIds.length === 0) return null;
@@ -366,19 +350,15 @@ const FormContent: React.FC<FormContentProps> = (props) => {
       {formBlocks.submitArea}
     </>
   );
-  return (
-    <Form
-      form={formHandle}
-      onFinish={handleFinish}
-      onValuesChange={handleValuesChange}
-      initialValues={configProcessInfo.initialValues}
-      style={{ marginTop: 24 }}
-      scrollToFirstError
-      {...effectiveUIConfig.formProps}
-    >
-      {finalFormBody}
-    </Form>
-  );
+  return renderer.renderForm({
+    form: formHandle,
+    formAdapter,
+    onFinish: handleFinish,
+    onValuesChange: handleValuesChange,
+    initialValues: configProcessInfo.initialValues,
+    uiConfig: effectiveUIConfig,
+    children: finalFormBody
+  });
 };
 
 export default FormContent;

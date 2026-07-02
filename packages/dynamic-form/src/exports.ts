@@ -30,6 +30,7 @@ export type {
   UIConfig,
   RendererFormParams,
   RendererFieldItemParams,
+  RendererFieldsLayoutParams,
   RendererFieldLayoutParams,
   RendererGroupParams,
   RendererRepeatableParams,
@@ -42,6 +43,7 @@ export type {
 } from './shared/types';
 
 export { createAntdFormAdapter } from './consumer/formAdapter';
+export { antdRenderer } from './consumer/render/antdRenderer';
 
 export type { FieldCapability, GroupCapability, NodeCapability, RuntimeState } from './runtime';
 

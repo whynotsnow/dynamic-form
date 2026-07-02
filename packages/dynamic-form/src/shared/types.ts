@@ -257,6 +257,11 @@ export interface RendererFieldLayoutParams {
   children: React.ReactNode;
 }
 
+export interface RendererFieldsLayoutParams {
+  uiConfig: UIConfig;
+  children: React.ReactNode;
+}
+
 export interface RendererGroupParams {
   id: string;
   title?: string;
@@ -280,6 +285,7 @@ export interface RendererSubmitParams {
 export interface DynamicFormRendererAdapter {
   renderForm: (params: RendererFormParams) => React.ReactNode;
   renderFieldItem: (params: RendererFieldItemParams) => React.ReactNode;
+  renderFieldsLayout: (params: RendererFieldsLayoutParams) => React.ReactNode;
   renderFieldLayout: (params: RendererFieldLayoutParams) => React.ReactNode;
   renderGroup: (params: RendererGroupParams) => React.ReactNode;
   renderRepeatable: (params: RendererRepeatableParams) => React.ReactNode;
@@ -388,6 +394,7 @@ export interface FieldRendererProps {
   staticUIConfig?: UIConfig;
   // 动态全局 UI 配置，来自 effect 返回值
   dynamicUIConfig?: UIConfig;
+  renderer: DynamicFormRendererAdapter;
   runtimeCapability?: FieldCapability;
 }
 
