@@ -5,11 +5,19 @@ import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const expectedPackageName = '@whynotsnow/dynamic-form';
 const expectedNpmUser = 'whynotsnow';
 const expectedRegistry = 'https://registry.npmjs.org/';
 const rootDir = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const packageDir = resolve(rootDir, 'packages/dynamic-form');
+const packages = [
+  {
+    name: '@whynotsnow/dynamic-form-core',
+    dir: resolve(rootDir, 'packages/dynamic-form-core')
+  },
+  {
+    name: '@whynotsnow/dynamic-form',
+    dir: resolve(rootDir, 'packages/dynamic-form')
+  }
+];
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const pnpm = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
 const node = process.platform === 'win32' ? 'node.exe' : 'node';
@@ -45,9 +53,58 @@ function requireSuccess(command, args, options = {}) {
   return result;
 }
 
-function readPackageJson() {
+function readPackageJson(packageDir) {
   const packageJsonPath = resolve(packageDir, 'package.json');
   return JSON.parse(readFileSync(packageJsonPath, 'utf8'));
+}
+
+function readReleasePackages() {
+  return packages.map((packageInfo) => {
+    const packageJson = readPackageJson(packageInfo.dir);
+
+    if (packageJson.name !== packageInfo.name) {
+      console.error(
+        `[ERROR] Expected package "${packageInfo.name}", but got "${packageJson.name}".`
+      );
+      process.exitCode = 1;
+      throw new Error('invalid package name');
+    }
+
+    if (!packageJson.version) {
+      console.error(`[ERROR] Could not read package version from ${packageInfo.name}.`);
+      process.exitCode = 1;
+      throw new Error('missing package version');
+    }
+
+    return {
+      ...packageInfo,
+      version: packageJson.version
+    };
+  });
+}
+
+function ensureVersionDoesNotExist(packageInfo) {
+  console.log(`Checking whether ${packageInfo.name}@${packageInfo.version} already exists on npm...`);
+  const viewResult = run(npm, ['view', `${packageInfo.name}@${packageInfo.version}`, 'version'], {
+    capture: true
+  });
+
+  if (viewResult.status === 0) {
+    console.error(`[ERROR] ${packageInfo.name}@${packageInfo.version} already exists on npm.`);
+    console.error('npm does not allow publishing the same version twice.');
+    process.exitCode = 1;
+    throw new Error('version already exists');
+  }
+
+  const viewOutput = `${viewResult.stdout ?? ''}\n${viewResult.stderr ?? ''}`;
+  if (!/E404|404|not found/i.test(viewOutput)) {
+    console.error(`[ERROR] Failed to check ${packageInfo.name}@${packageInfo.version} on npm.`);
+    console.error(viewOutput.trim());
+    process.exitCode = viewResult.status ?? 1;
+    throw new Error('version check failed');
+  }
+
+  console.log(`[OK] ${packageInfo.name}@${packageInfo.version} was not found on npm.`);
 }
 
 async function waitBeforeExit() {
@@ -62,26 +119,14 @@ async function main() {
     requireSuccess(pnpm, ['--version'], { capture: true });
     requireSuccess(node, ['--version'], { capture: true });
 
-    const packageJson = readPackageJson();
-    const packageName = packageJson.name;
-    const packageVersion = packageJson.version;
-
-    if (packageName !== expectedPackageName) {
-      console.error(`[ERROR] Expected package "${expectedPackageName}", but got "${packageName}".`);
-      process.exitCode = 1;
-      return;
-    }
-
-    if (!packageVersion) {
-      console.error('[ERROR] Could not read package version from package.json.');
-      process.exitCode = 1;
-      return;
-    }
+    const releasePackages = readReleasePackages();
 
     console.log('');
-    console.log(`Publishing ${packageName}@${packageVersion}`);
+    console.log('Publishing DynamicForm packages:');
+    releasePackages.forEach((packageInfo) => {
+      console.log(`- ${packageInfo.name}@${packageInfo.version}`);
+    });
     console.log(`Workspace root: ${rootDir}`);
-    console.log(`Package workspace: ${packageDir}`);
     console.log('Auth mode: npm default user config');
     console.log('');
 
@@ -108,30 +153,8 @@ async function main() {
     }
 
     console.log(`[OK] npm user: ${npmUser}`);
-    console.log(`[OK] package.json version is ${packageVersion}`);
-
     console.log('');
-    console.log(`Checking whether ${packageName}@${packageVersion} already exists on npm...`);
-    const viewResult = run(npm, ['view', `${packageName}@${packageVersion}`, 'version'], {
-      capture: true
-    });
-
-    if (viewResult.status === 0) {
-      console.error(`[ERROR] ${packageName}@${packageVersion} already exists on npm.`);
-      console.error('npm does not allow publishing the same version twice.');
-      process.exitCode = 1;
-      return;
-    }
-
-    const viewOutput = `${viewResult.stdout ?? ''}\n${viewResult.stderr ?? ''}`;
-    if (!/E404|404|not found/i.test(viewOutput)) {
-      console.error('[ERROR] Failed to check the current version on npm.');
-      console.error(viewOutput.trim());
-      process.exitCode = viewResult.status ?? 1;
-      return;
-    }
-
-    console.log('[OK] Exact version was not found on npm.');
+    releasePackages.forEach(ensureVersionDoesNotExist);
 
     console.log('');
     console.log('Running release checks...');
@@ -141,16 +164,18 @@ async function main() {
 
     console.log('');
     console.log('Running package dry-run...');
-    requireSuccess(npm, ['pack', '--dry-run'], {
-      cwd: packageDir,
-      env: {
-        HUSKY: '0'
-      }
+    releasePackages.forEach((packageInfo) => {
+      requireSuccess(npm, ['pack', '--dry-run'], {
+        cwd: packageInfo.dir,
+        env: {
+          HUSKY: '0'
+        }
+      });
     });
 
     console.log('');
-    console.log(`Ready to publish ${packageName}@${packageVersion}.`);
-    console.log('This operation is permanent for this version number.');
+    console.log('Ready to publish packages in order: core, then dynamic-form.');
+    console.log('This operation is permanent for these version numbers.');
 
     const rl = createInterface({ input, output });
     const confirmation = await rl.question('Type PUBLISH to continue: ');
@@ -164,17 +189,21 @@ async function main() {
 
     console.log('');
     console.log('Publishing to npm...');
-    requireSuccess(npm, ['publish', '--access', 'public'], {
-      cwd: packageDir,
-      env: {
-        HUSKY: '0'
-      }
+    releasePackages.forEach((packageInfo) => {
+      requireSuccess(npm, ['publish', '--access', 'public'], {
+        cwd: packageInfo.dir,
+        env: {
+          HUSKY: '0'
+        }
+      });
     });
 
     console.log('');
-    console.log(`[OK] Published ${packageName}@${packageVersion}.`);
+    console.log('[OK] Published DynamicForm packages.');
     console.log('Verify with:');
-    console.log(`npm view ${packageName}@${packageVersion} version`);
+    releasePackages.forEach((packageInfo) => {
+      console.log(`npm view ${packageInfo.name}@${packageInfo.version} version`);
+    });
   } catch {
     if (!process.exitCode) {
       process.exitCode = 1;
