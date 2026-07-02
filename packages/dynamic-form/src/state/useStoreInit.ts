@@ -1,13 +1,12 @@
 import { useReducer, useMemo, useLayoutEffect } from 'react';
-import type { FormInstance } from 'antd';
-import type { FormConfig, FormValues, UIConfig } from '../shared/types';
+import type { DynamicFormFormAdapter, FormConfig, FormValues, UIConfig } from '../shared/types';
 import { processFormConfig } from '../config/processor';
 import formReducer from './reducer';
 import { mergeFormValues } from '../shared/utils';
 
 interface useStoreInitParams {
   formConfig: FormConfig;
-  form: FormInstance;
+  formAdapter: DynamicFormFormAdapter;
   values?: FormValues;
   uiConfig?: UIConfig;
 }
@@ -18,7 +17,7 @@ interface useStoreInitParams {
  *
  * 处理器注册现在由 useInitHandlers 负责
  */
-export const useStoreInit = ({ formConfig, form, values, uiConfig }: useStoreInitParams) => {
+export const useStoreInit = ({ formConfig, formAdapter, values, uiConfig }: useStoreInitParams) => {
   // 1. 预计算配置
   const configProcessInfo = useMemo(() => processFormConfig(formConfig), [formConfig]);
 
@@ -71,8 +70,8 @@ export const useStoreInit = ({ formConfig, form, values, uiConfig }: useStoreIni
   }, [configProcessInfo, state.initialized]);
 
   useLayoutEffect(() => {
-    form.setFieldsValue(mergedInitialValues);
-  }, [form, mergedInitialValues]);
+    formAdapter.setFieldsValue(mergedInitialValues);
+  }, [formAdapter, mergedInitialValues]);
 
   return {
     state, // reducer 管理的状态

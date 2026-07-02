@@ -1,7 +1,6 @@
-import type { Rule } from 'antd/es/form';
-import type { FieldState } from '../../shared/types';
+import type { FieldState, ValidationRule } from '../../shared/types';
 
-function hasRequiredRule(rules: Rule[] = []): boolean {
+function hasRequiredRule(rules: ValidationRule[] = []): boolean {
   return rules.some((rule) => {
     if (!rule || typeof rule !== 'object' || Array.isArray(rule)) {
       return false;
@@ -11,7 +10,7 @@ function hasRequiredRule(rules: Rule[] = []): boolean {
   });
 }
 
-export function resolveFieldRules(field: FieldState, validatable = true): Rule[] {
+export function resolveFieldRules(field: FieldState, validatable = true): ValidationRule[] {
   if (!validatable) {
     return [];
   }
@@ -28,7 +27,7 @@ export function resolveFieldRules(field: FieldState, validatable = true): Rule[]
 
 export function resolveFieldRequired(
   field: FieldState,
-  rules: Rule[],
+  rules: ValidationRule[],
   validatable = true
 ): boolean {
   if (!validatable) {

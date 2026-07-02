@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import type { FormInstance } from 'antd';
 import { useFormChainEffectEngine } from 'form-chain-effect-engine';
 import type { DynamicFormProviderProps, FormValues } from '../../shared/types';
 import { useStoreInit } from '../../state';
@@ -11,6 +10,7 @@ import {
 } from '../../shared/utils/initializationChecker';
 import { createRuntimeEffectResultContext } from '../effects';
 import { createFieldValueView, getChangedFieldIds } from '../../shared/utils';
+import { resolveFormAdapter, resolveFormHandle } from '../formAdapter';
 
 const DynamicFormProvider: React.FC<DynamicFormProviderProps> = ({
   formConfig,
@@ -19,11 +19,17 @@ const DynamicFormProvider: React.FC<DynamicFormProviderProps> = ({
   checkDelay = 100,
   values,
   uiConfig,
-  form
+  form,
+  formAdapter: providedFormAdapter
 }) => {
+  const formAdapter = useMemo(
+    () => resolveFormAdapter({ form, formAdapter: providedFormAdapter }),
+    [form, providedFormAdapter]
+  );
+  const formHandle = useMemo(() => resolveFormHandle({ form, formAdapter }), [form, formAdapter]);
   const { state, dispatch, configProcessInfo } = useStoreInit({
     formConfig,
-    form,
+    formAdapter,
     values,
     uiConfig
   });
@@ -48,21 +54,20 @@ const DynamicFormProvider: React.FC<DynamicFormProviderProps> = ({
   }, [enableInitializationCheck, checkDelay]);
 
   const effectEngineForm = useMemo(
-    () =>
-      ({
-        ...form,
-        getFieldValue: (fieldId: string) => {
-          const address = configProcessInfo.fieldAddressRegistry[fieldId];
-          return form.getFieldValue(address?.name ?? fieldId);
-        },
-        getFieldsValue: () =>
-          createFieldValueView(form.getFieldsValue(), configProcessInfo.fieldAddressRegistry)
-      }) as FormInstance,
-    [configProcessInfo.fieldAddressRegistry, form]
+    () => ({
+      ...formAdapter,
+      getFieldValue: (fieldId: string) => {
+        const address = configProcessInfo.fieldAddressRegistry[fieldId];
+        return formAdapter.getFieldValue(address?.name ?? fieldId);
+      },
+      getFieldsValue: () =>
+        createFieldValueView(formAdapter.getFieldsValue(), configProcessInfo.fieldAddressRegistry)
+    }),
+    [configProcessInfo.fieldAddressRegistry, formAdapter]
   );
 
   const { onValuesChange: onEffectValuesChange, manualTrigger } = useFormChainEffectEngine({
-    form: effectEngineForm,
+    form: effectEngineForm as any,
     config: configProcessInfo.effectMap || {},
     options: {
       enableAdvancedControl: true,
@@ -71,7 +76,8 @@ const DynamicFormProvider: React.FC<DynamicFormProviderProps> = ({
     onEffectResult({ fieldName, result }) {
       const context = createRuntimeEffectResultContext({
         fieldName,
-        form,
+        form: formHandle,
+        formAdapter,
         dispatch,
         configProcessInfo
       });
@@ -86,17 +92,18 @@ const DynamicFormProvider: React.FC<DynamicFormProviderProps> = ({
       getChangedFieldIds(changedValues, configProcessInfo.fieldAddressRegistry).forEach(
         (fieldId) => {
           const address = configProcessInfo.fieldAddressRegistry[fieldId];
-          onEffectValuesChange({ [fieldId]: form.getFieldValue(address.name) });
+          onEffectValuesChange({ [fieldId]: formAdapter.getFieldValue(address.name) });
         }
       );
     },
-    [configProcessInfo.fieldAddressRegistry, form, onEffectValuesChange]
+    [configProcessInfo.fieldAddressRegistry, formAdapter, onEffectValuesChange]
   );
 
   return (
     <FormChainContext.Provider
       value={{
-        form,
+        form: formHandle,
+        formAdapter,
         state,
         dispatch,
         onValuesChange,

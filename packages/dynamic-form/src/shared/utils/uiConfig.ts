@@ -1,4 +1,3 @@
-import type { FormItemProps } from 'antd';
 import type { FieldState, UIConfig } from '../types';
 
 export function mergeUIConfig(baseConfig: UIConfig, patchConfig: UIConfig): UIConfig {
@@ -26,11 +25,11 @@ export function resolveMergedFormItemProps({
   staticUIConfig,
   dynamicUIConfig
 }: {
-  baseFormItemProps: FormItemProps;
+  baseFormItemProps: Record<string, any>;
   field: FieldState;
   staticUIConfig?: UIConfig;
   dynamicUIConfig?: UIConfig;
-}): FormItemProps {
+}): Record<string, any> {
   return {
     ...baseFormItemProps,
     ...(staticUIConfig?.formItemProps || {}),

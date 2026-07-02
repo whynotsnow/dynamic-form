@@ -1,9 +1,16 @@
-import { FormInstance } from 'antd';
 import { Dispatch } from 'react';
-import { ConfigProcessInfo, FieldMeta, FieldValue, FormAction, UIConfig } from '../../shared/types';
+import {
+  ConfigProcessInfo,
+  DynamicFormFormAdapter,
+  FieldMeta,
+  FieldValue,
+  FormAction,
+  UIConfig
+} from '../../shared/types';
 import type { EffectResultContext, InitContextParams } from './types';
 import {
   createFieldAddressRegistry,
+  getValueAtNamePath,
   getFieldName,
   mergeFieldMetaPatch,
   mergeGroupMetaPatch,
@@ -26,8 +33,21 @@ export function createInitialEffectResultContext(params: InitContextParams): Eff
     return undefined;
   };
 
+  const initialFormAdapter: DynamicFormFormAdapter = {
+    getFieldValue: (name) => getValueAtNamePath(initialValues, name),
+    getFieldsValue: () => initialValues,
+    setFieldValue: (name, value) => {
+      setValueAtNamePath(initialValues, name, value);
+    },
+    setFieldsValue: (values) => {
+      Object.assign(initialValues, values);
+    },
+    validateFields: async () => initialValues
+  };
+
   return {
-    form: {} as FormInstance,
+    form: initialFormAdapter,
+    formAdapter: initialFormAdapter,
     dispatch: (() => undefined) as Dispatch<FormAction>,
     fieldName: fieldId,
     configProcessInfo: {
@@ -75,11 +95,12 @@ export function createInitialEffectResultContext(params: InitContextParams): Eff
 
 export function createRuntimeEffectResultContext(params: {
   fieldName: string;
-  form: FormInstance;
+  form: unknown;
+  formAdapter: DynamicFormFormAdapter;
   dispatch: Dispatch<FormAction>;
   configProcessInfo: ConfigProcessInfo;
 }): EffectResultContext {
-  const { fieldName, form, dispatch, configProcessInfo } = params;
+  const { fieldName, form, formAdapter, dispatch, configProcessInfo } = params;
 
   const registryEntry = configProcessInfo.fieldRegistry[fieldName];
 
@@ -98,7 +119,7 @@ export function createRuntimeEffectResultContext(params: {
 
   const setFieldValue = (value: FieldValue) => {
     const address = configProcessInfo.fieldAddressRegistry[fieldName];
-    form.setFieldValue(address?.name ?? fieldName, value);
+    formAdapter.setFieldValue(address?.name ?? fieldName, value);
   };
 
   const updateFieldMeta = (meta: Partial<FieldMeta>) => {
@@ -124,6 +145,7 @@ export function createRuntimeEffectResultContext(params: {
 
   return {
     form,
+    formAdapter,
     dispatch,
     fieldName,
     configProcessInfo,

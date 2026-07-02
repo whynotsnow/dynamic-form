@@ -56,6 +56,7 @@ export function applyEffectResult(result: EffectResult | undefined, context: Eff
       const exportContext = {
         fieldName: context.fieldName,
         form: context.form,
+        formAdapter: context.formAdapter,
         setFieldValue: context.setFieldValue,
         updateFieldMeta: context.updateFieldMeta,
         updateFieldMetaById: context.updateFieldMetaById,

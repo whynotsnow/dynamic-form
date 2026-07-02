@@ -1,8 +1,9 @@
-import type { FormInstance } from 'antd';
 import type { Dispatch } from 'react';
 import type {
   FormAction,
   ConfigProcessInfo,
+  DynamicFormFormAdapter,
+  DynamicFormLegacyForm,
   FieldMeta,
   FieldState,
   FieldValue,
@@ -48,7 +49,8 @@ export interface EffectResult {
  * - 不要在自定义处理器中维护 value/error/touched/validating 副本
  */
 export interface EffectResultContext {
-  form: FormInstance;
+  form: DynamicFormLegacyForm;
+  formAdapter: DynamicFormFormAdapter;
   dispatch: Dispatch<FormAction>;
   fieldName: string;
   configProcessInfo?: ConfigProcessInfo;
@@ -74,7 +76,8 @@ export interface ExportEffectContext {
   fieldName: string;
 
   /** 表单实例 */
-  form: FormInstance;
+  form: DynamicFormLegacyForm;
+  formAdapter: DynamicFormFormAdapter;
 
   /** 安全获取完整字段配置（可能为 undefined，初始化阶段） */
   getField: () => BaseFieldConfig | GroupField | undefined;

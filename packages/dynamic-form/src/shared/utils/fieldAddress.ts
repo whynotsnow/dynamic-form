@@ -1,7 +1,7 @@
-import type { NamePath } from 'antd/es/form/interface';
 import type {
   BaseFieldConfig,
   FieldAddress,
+  FieldNamePath,
   FieldRegistry,
   FieldValue,
   FormValues
@@ -9,7 +9,7 @@ import type {
 
 type NamePathSegment = string | number;
 
-export function normalizeFieldName(name: NamePath): NamePathSegment[] {
+export function normalizeFieldName(name: FieldNamePath): NamePathSegment[] {
   return Array.isArray(name) ? [...name] : [name];
 }
 
@@ -20,15 +20,15 @@ export function resolveFieldAddress(field: Pick<BaseFieldConfig, 'id' | 'name'>)
   };
 }
 
-export function getFieldName(field: Pick<BaseFieldConfig, 'id' | 'name'>): NamePath {
+export function getFieldName(field: Pick<BaseFieldConfig, 'id' | 'name'>): FieldNamePath {
   return resolveFieldAddress(field).name;
 }
 
-export function serializeFieldName(name: NamePath): string {
+export function serializeFieldName(name: FieldNamePath): string {
   return JSON.stringify(normalizeFieldName(name));
 }
 
-export function getValueAtNamePath(values: unknown, name: NamePath): FieldValue {
+export function getValueAtNamePath(values: unknown, name: FieldNamePath): FieldValue {
   return normalizeFieldName(name).reduce<unknown>((current, segment) => {
     if (current === null || current === undefined || typeof current !== 'object') {
       return undefined;
@@ -38,7 +38,7 @@ export function getValueAtNamePath(values: unknown, name: NamePath): FieldValue 
   }, values);
 }
 
-export function hasValueAtNamePath(values: unknown, name: NamePath): boolean {
+export function hasValueAtNamePath(values: unknown, name: FieldNamePath): boolean {
   let current = values;
 
   for (const segment of normalizeFieldName(name)) {
@@ -56,7 +56,11 @@ export function hasValueAtNamePath(values: unknown, name: NamePath): boolean {
   return true;
 }
 
-export function setValueAtNamePath(values: FormValues, name: NamePath, value: FieldValue): void {
+export function setValueAtNamePath(
+  values: FormValues,
+  name: FieldNamePath,
+  value: FieldValue
+): void {
   const segments = normalizeFieldName(name);
   let current: Record<NamePathSegment, unknown> = values;
 

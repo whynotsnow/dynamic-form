@@ -1,14 +1,23 @@
-import type { FormInstance, Rule } from 'antd/es/form';
-import type { NamePath } from 'antd/es/form/interface';
 import type { EffectFn } from 'form-chain-effect-engine';
 import type { Dispatch } from 'react';
 import type { CustomEffectResultHandler, HandlerRegistrationOptions } from '../consumer/effects';
 import type { FieldCapability } from '../runtime';
-import { ButtonProps, CardProps, ColProps, FormItemProps, FormProps, RowProps } from 'antd/lib';
 
 export type FieldValue = any;
 export type FormValues = Record<string, FieldValue>;
 export type FieldComponentRuntimeProps = Record<string, any>;
+export type FieldNamePath = string | number | Array<string | number>;
+export type ValidationRule = Record<string, any>;
+export type DynamicFormLegacyForm = any;
+
+export interface DynamicFormFormAdapter {
+  rawForm?: DynamicFormLegacyForm;
+  getFieldValue: (name: FieldNamePath) => FieldValue;
+  getFieldsValue: (includeAll?: boolean) => FormValues;
+  setFieldValue: (name: FieldNamePath, value: FieldValue) => void;
+  setFieldsValue: (values: FormValues) => void;
+  validateFields: (names?: FieldNamePath[]) => Promise<FormValues>;
+}
 
 /**
  * 字段稳定标识与 Ant Design 值路径的统一描述。
@@ -16,7 +25,7 @@ export type FieldComponentRuntimeProps = Record<string, any>;
  */
 export interface FieldAddress {
   id: string;
-  name: NamePath;
+  name: FieldNamePath;
 }
 
 export interface FieldBehaviorMeta {
@@ -35,7 +44,7 @@ export interface FieldMeta {
   /** @deprecated Use behavior.readonly instead. Kept for backward-compatible effect results. */
   readonly?: boolean;
 
-  formItemProps?: FormItemProps;
+  formItemProps?: Record<string, any>;
   componentProps?: FieldComponentRuntimeProps;
 }
 
@@ -56,8 +65,8 @@ export type NodeMeta = GroupMeta;
 
 export interface BaseFieldConfig {
   id: string;
-  /** Ant Design Form 值路径；未提供时保持兼容，默认使用 id。 */
-  name?: NamePath;
+  /** 表单值路径；未提供时保持兼容，默认使用 id。 */
+  name?: FieldNamePath;
   initialValue?:
     | FieldValue
     | ((allValues: FormValues) => FieldValue | { value: FieldValue; [key: string]: any });
@@ -69,11 +78,11 @@ export interface BaseFieldConfig {
   dependents?: string[];
   effect?: EffectFn;
 
-  formItemProps?: FormItemProps;
+  formItemProps?: Record<string, any>;
   label?: string;
   required?: boolean;
   style?: React.CSSProperties;
-  rules?: Rule[];
+  rules?: ValidationRule[];
   span?: number; // 栅格列数（如 span: 8）
   componentProps?: FieldComponentRuntimeProps;
 
@@ -97,7 +106,7 @@ export interface ContainerNode {
   nodeType: 'container';
   id: string;
   title?: string;
-  name?: NamePath;
+  name?: FieldNamePath;
   children: FormNode[];
   initialVisible?: boolean;
   dependents?: string[];
@@ -210,19 +219,71 @@ export interface ComponentRegistryConfig {
 //UI组件配置项
 export interface UIConfig {
   // Form组件配置
-  formProps?: FormProps;
+  formProps?: Record<string, any>;
   // Button组件配置
-  buttonProps?: ButtonProps;
+  buttonProps?: Record<string, any>;
   // Card组件配置
-  cardProps?: CardProps;
+  cardProps?: Record<string, any>;
   // Row组件配置
-  rowProps?: RowProps;
+  rowProps?: Record<string, any>;
   // Col组件配置
-  colProps?: ColProps;
+  colProps?: Record<string, any>;
   // 提交按钮区域配置
   submitAreaProps?: object;
-  // Form.Item组件配置 - 支持函数化值
-  formItemProps?: FormItemProps;
+  // 字段外壳配置 - 默认 AntD renderer 会作为 Form.Item props 使用
+  formItemProps?: Record<string, any>;
+}
+
+export interface RendererFormParams {
+  form: DynamicFormLegacyForm;
+  formAdapter: DynamicFormFormAdapter;
+  onFinish: () => Promise<void>;
+  onValuesChange: (changedValues: FormValues, allValues?: FormValues) => void;
+  initialValues: FormValues;
+  uiConfig: UIConfig;
+  children: React.ReactNode;
+}
+
+export interface RendererFieldItemParams {
+  form: DynamicFormLegacyForm;
+  formAdapter: DynamicFormFormAdapter;
+  formItemProps: Record<string, any>;
+  children: React.ReactNode;
+}
+
+export interface RendererFieldLayoutParams {
+  field: FieldState;
+  uiConfig: UIConfig;
+  children: React.ReactNode;
+}
+
+export interface RendererGroupParams {
+  id: string;
+  title?: string;
+  uiConfig: UIConfig;
+  children: React.ReactNode;
+}
+
+export interface RendererRepeatableParams {
+  id: string;
+  title?: string;
+  name: FieldNamePath;
+  uiConfig: UIConfig;
+  renderItem: (itemName: string | number, itemKey: React.Key) => React.ReactNode;
+}
+
+export interface RendererSubmitParams {
+  submitButtonText: string;
+  uiConfig: UIConfig;
+}
+
+export interface DynamicFormRendererAdapter {
+  renderForm: (params: RendererFormParams) => React.ReactNode;
+  renderFieldItem: (params: RendererFieldItemParams) => React.ReactNode;
+  renderFieldLayout: (params: RendererFieldLayoutParams) => React.ReactNode;
+  renderGroup: (params: RendererGroupParams) => React.ReactNode;
+  renderRepeatable: (params: RendererRepeatableParams) => React.ReactNode;
+  renderSubmit: (params: RendererSubmitParams) => React.ReactNode;
 }
 
 export interface DynamicFormProps extends EngineProps, FormContentProps {}
@@ -234,7 +295,8 @@ export type FormChainEffectEngineWrapperProps = DynamicFormProviderProps;
 // 引擎层（逻辑层） Props
 export interface EngineProps {
   formConfig: FormConfig;
-  form: FormInstance;
+  form?: DynamicFormLegacyForm;
+  formAdapter?: DynamicFormFormAdapter;
   values?: FormValues;
   uiConfig?: UIConfig;
   enableInitializationCheck?: boolean;
@@ -244,7 +306,8 @@ export interface EngineProps {
 // ---- Field 最小粒度：保持原样 ----
 export interface RenderFieldItemParams {
   field: FieldState;
-  form: FormInstance;
+  form: DynamicFormLegacyForm;
+  formAdapter: DynamicFormFormAdapter;
   fieldValue: FieldValue;
   renderField: (targetField: FieldState) => React.ReactNode;
   defaultRender: React.ReactNode;
@@ -277,7 +340,8 @@ export interface RenderGroupsParams {
 
 // ---- 顶层 Form：提供整条链路（含 renderGroups） ----
 export interface RenderFormParams {
-  form: FormInstance;
+  form: DynamicFormLegacyForm;
+  formAdapter: DynamicFormFormAdapter;
   fields: Record<string, FieldState>;
   groupFields: Record<string, GroupFieldState>;
   dynamicUIConfig: UIConfig;
@@ -296,7 +360,9 @@ export interface RenderFormParams {
 // UI 层（渲染层） Props
 // ---- 组件 Props：保持 renderFormInner 名称 ----
 export interface FormContentProps {
-  form: FormInstance;
+  form?: DynamicFormLegacyForm;
+  formAdapter?: DynamicFormFormAdapter;
+  renderer?: DynamicFormRendererAdapter;
   onSubmit?: (data: FormValues) => void;
   submitButtonText?: string;
   componentRegistry?: ComponentRegistryConfig;
@@ -312,9 +378,10 @@ export interface FormContentProps {
 /** 字段渲染器 props */
 export interface FieldRendererProps {
   field: FieldState;
-  form: FormInstance;
+  form: DynamicFormLegacyForm;
+  formAdapter: DynamicFormFormAdapter;
   fieldValue?: FieldValue;
-  name?: NamePath;
+  name?: FieldNamePath;
   // 新增：组件注册器
   componentRegistry?: ComponentRegistryResolver | null;
   // 静态全局 UI 配置，来自 props.uiConfig 和默认值
@@ -328,7 +395,8 @@ export interface FieldComponentProps {
   field: FieldState;
   value?: FieldValue;
   onChange?: (value: FieldValue) => void;
-  form: FormInstance;
+  form: DynamicFormLegacyForm;
+  formAdapter?: DynamicFormFormAdapter;
 }
 
 export type FieldComponent = React.ComponentType<FieldComponentProps> & {
@@ -376,7 +444,8 @@ export interface ComponentRegistryResolver {
 }
 
 export interface FormChainContextType {
-  form: FormInstance;
+  form: DynamicFormLegacyForm;
+  formAdapter: DynamicFormFormAdapter;
   state: FormState;
   dispatch: Dispatch<FormAction>;
   onValuesChange: (changed: FormValues) => void;

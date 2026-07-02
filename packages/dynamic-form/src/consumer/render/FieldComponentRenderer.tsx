@@ -11,6 +11,7 @@ const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
   function FieldRenderer({
     field,
     form,
+    formAdapter,
     componentRegistry,
     staticUIConfig,
     dynamicUIConfig,
@@ -71,11 +72,16 @@ const FieldComponentRenderer: React.FC<FieldRendererProps> = React.memo(
     if (wrapFormItem) {
       return (
         <Form.Item {...resolvedConfigs.formItemProps}>
-          <Component field={field} form={form} {...resolvedConfigs.componentProps} />
+          <Component
+            field={field}
+            form={form}
+            formAdapter={formAdapter}
+            {...resolvedConfigs.componentProps}
+          />
         </Form.Item>
       );
     }
-    return <Component field={field} form={form} {...resolvedConfigs} />;
+    return <Component field={field} form={form} formAdapter={formAdapter} {...resolvedConfigs} />;
   },
   (prevProps, nextProps) => {
     // 字段配置比较

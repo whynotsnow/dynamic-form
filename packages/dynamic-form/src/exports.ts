@@ -8,6 +8,10 @@ export { default as FormChainEffectEngineWrapper } from './consumer/provider/Dyn
 export type {
   DynamicFormProps,
   FormValues,
+  FieldNamePath,
+  ValidationRule,
+  DynamicFormFormAdapter,
+  DynamicFormRendererAdapter,
   FieldAddress,
   FieldNode,
   ContainerNode,
@@ -24,12 +28,20 @@ export type {
   ComponentRegistry,
   ComponentRegistryConfig,
   UIConfig,
+  RendererFormParams,
+  RendererFieldItemParams,
+  RendererFieldLayoutParams,
+  RendererGroupParams,
+  RendererRepeatableParams,
+  RendererSubmitParams,
   RenderFieldItemParams,
   RenderFieldsParams,
   RenderGroupItemParams,
   RenderGroupsParams,
   RenderFormParams
 } from './shared/types';
+
+export { createAntdFormAdapter } from './consumer/formAdapter';
 
 export type { FieldCapability, GroupCapability, NodeCapability, RuntimeState } from './runtime';
 

@@ -4,9 +4,9 @@ import type {
   FormContentProps,
   FieldState,
   GroupFieldState,
-  ContainerState
+  ContainerState,
+  FieldNamePath
 } from '../../shared/types';
-import type { NamePath } from 'antd/es/form/interface';
 import { useFormRuntimeEvents } from '../hooks/useFormRuntimeEvents';
 import { useFieldParticipation } from '../hooks/useFieldParticipation';
 import { useFormChainContext } from '../../shared/context/FormChainContext';
@@ -16,15 +16,16 @@ import FieldComponentRenderer from './FieldComponentRenderer';
 import { useRuntimeState } from '../../runtime';
 import { getFieldName, normalizeFieldName } from '../../shared/utils';
 import { mergeUIConfig } from '../../shared/utils/uiConfig';
+import { resolveFormAdapter, resolveFormHandle } from '../formAdapter';
 
 type NameSegment = string | number;
 
-function toNamePath(name: NamePath | undefined): NameSegment[] {
+function toNamePath(name: FieldNamePath | undefined): NameSegment[] {
   if (name === undefined) return [];
   return normalizeFieldName(name);
 }
 
-function stripNamePrefix(name: NamePath, prefix: NamePath | undefined): NameSegment[] {
+function stripNamePrefix(name: FieldNamePath, prefix: FieldNamePath | undefined): NameSegment[] {
   const namePath = toNamePath(name);
   const prefixPath = toNamePath(prefix);
 
@@ -41,15 +42,21 @@ const FormContent: React.FC<FormContentProps> = (props) => {
     renderGroupItem,
     renderFields,
     renderGroups,
-    form
+    form,
+    formAdapter: providedFormAdapter
   } = props;
+  const formAdapter = useMemo(
+    () => resolveFormAdapter({ form, formAdapter: providedFormAdapter }),
+    [form, providedFormAdapter]
+  );
+  const formHandle = useMemo(() => resolveFormHandle({ form, formAdapter }), [form, formAdapter]);
 
   const finalSubmitButtonText = submitButtonText ?? '提交';
 
   const { state } = useFormChainContext();
   const runtimeState = useRuntimeState(state);
   const { handleFinish, handleValuesChange } = useFormRuntimeEvents({
-    form,
+    formAdapter,
     onSubmit,
     runtimeState
   });
@@ -64,7 +71,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
     rootNodeIds
   } = state;
 
-  useFieldParticipation(form, state, runtimeState);
+  useFieldParticipation(formAdapter, state, runtimeState);
 
   const effectiveUIConfig = useMemo(
     () => mergeUIConfig(staticUIConfig, dynamicUIConfig),
@@ -78,7 +85,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
     return null;
   }, [componentRegistry]);
 
-  const renderFieldRenderer = (field: FieldState, name?: NamePath) => {
+  const renderFieldRenderer = (field: FieldState, name?: FieldNamePath) => {
     const capability = runtimeState.fields[field.id];
 
     if (!initialized || !capability?.rendered) {
@@ -89,7 +96,8 @@ const FormContent: React.FC<FormContentProps> = (props) => {
       <FieldComponentRenderer
         key={field.id}
         field={field}
-        form={form}
+        form={formHandle}
+        formAdapter={formAdapter}
         name={name}
         componentRegistry={registryManager}
         staticUIConfig={staticUIConfig}
@@ -100,7 +108,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
   };
 
   /** 单字段渲染（最小单元，必须兜底） */
-  const internalRenderFieldItem = (field: FieldState, name?: NamePath) => {
+  const internalRenderFieldItem = (field: FieldState, name?: FieldNamePath) => {
     const defaultRender = renderFieldRenderer(field, name);
 
     if (defaultRender === null) {
@@ -110,8 +118,9 @@ const FormContent: React.FC<FormContentProps> = (props) => {
     if (renderFieldItem) {
       return renderFieldItem({
         field,
-        form,
-        fieldValue: form.getFieldValue(name ?? getFieldName(field)),
+        form: formHandle,
+        formAdapter,
+        fieldValue: formAdapter.getFieldValue(name ?? getFieldName(field)),
         renderField: internalRenderFieldItem,
         defaultRender
       });
@@ -123,8 +132,8 @@ const FormContent: React.FC<FormContentProps> = (props) => {
   /** 一组字段渲染（提供 renderFieldItem 能力） */
   const internalRenderFields = (
     fieldsArr: FieldState[],
-    listPrefix?: NamePath,
-    schemaPrefix?: NamePath
+    listPrefix?: FieldNamePath,
+    schemaPrefix?: FieldNamePath
   ) => {
     const defaultRender = (
       <Row {...effectiveUIConfig.rowProps}>
@@ -200,8 +209,8 @@ const FormContent: React.FC<FormContentProps> = (props) => {
 
   const renderNodeChildren = (
     childNodeIds: string[],
-    listPrefix?: NamePath,
-    schemaPrefix?: NamePath
+    listPrefix?: FieldNamePath,
+    schemaPrefix?: FieldNamePath
   ): React.ReactNode => {
     const blocks: React.ReactNode[] = [];
     let fieldNodes: FieldState[] = [];
@@ -243,8 +252,8 @@ const FormContent: React.FC<FormContentProps> = (props) => {
 
   const renderNode = (
     nodeId: string,
-    listPrefix?: NamePath,
-    schemaPrefix?: NamePath
+    listPrefix?: FieldNamePath,
+    schemaPrefix?: FieldNamePath
   ): React.ReactNode => {
     const node = nodes[nodeId];
     const entry = configProcessInfo.nodeRegistry[nodeId];
@@ -271,7 +280,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
         ? [...toNamePath(listPrefix), ...toNamePath(container.name)]
         : listPrefix;
 
-    const renderChildren = (renderPrefix?: NamePath, nextSchemaPrefix?: NamePath) =>
+    const renderChildren = (renderPrefix?: FieldNamePath, nextSchemaPrefix?: FieldNamePath) =>
       renderNodeChildren(container.children, renderPrefix, nextSchemaPrefix);
 
     if (container.repeatable) {
@@ -340,7 +349,8 @@ const FormContent: React.FC<FormContentProps> = (props) => {
 
   const finalFormBody = renderFormInner ? (
     renderFormInner({
-      form,
+      form: formHandle,
+      formAdapter,
       fields,
       groupFields,
       dynamicUIConfig: effectiveUIConfig,
@@ -358,7 +368,7 @@ const FormContent: React.FC<FormContentProps> = (props) => {
   );
   return (
     <Form
-      form={form}
+      form={formHandle}
       onFinish={handleFinish}
       onValuesChange={handleValuesChange}
       initialValues={configProcessInfo.initialValues}

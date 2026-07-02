@@ -1,13 +1,12 @@
 import { useEffect, useRef } from 'react';
-import type { FormInstance } from 'antd';
-import type { FieldValue, FormState } from '../../shared/types';
+import type { DynamicFormFormAdapter, FieldValue, FormState } from '../../shared/types';
 import type { RuntimeState } from '../../runtime';
 import { getAllFields } from '../../runtime/selectors';
 import { getFieldName } from '../../shared/utils';
 import { resolveFieldParticipationPolicy } from './fieldParticipationPolicy';
 
 export function useFieldParticipation(
-  form: FormInstance,
+  formAdapter: DynamicFormFormAdapter,
   state: FormState,
   runtimeState: RuntimeState
 ) {
@@ -31,10 +30,10 @@ export function useFieldParticipation(
 
       if (!isSubmitable && wasSubmitable !== false && !shouldPreserve) {
         if (shouldRestore) {
-          hiddenValueCacheRef.current[field.id] = form.getFieldValue(fieldName);
+          hiddenValueCacheRef.current[field.id] = formAdapter.getFieldValue(fieldName);
         }
 
-        form.setFieldValue(fieldName, undefined);
+        formAdapter.setFieldValue(fieldName, undefined);
       }
 
       if (
@@ -43,12 +42,12 @@ export function useFieldParticipation(
         shouldRestore &&
         Object.hasOwn(hiddenValueCacheRef.current, field.id)
       ) {
-        form.setFieldValue(fieldName, hiddenValueCacheRef.current[field.id]);
+        formAdapter.setFieldValue(fieldName, hiddenValueCacheRef.current[field.id]);
 
         delete hiddenValueCacheRef.current[field.id];
       }
 
       previousSubmitableRef.current[field.id] = isSubmitable;
     });
-  }, [form, state, runtimeState]);
+  }, [formAdapter, state, runtimeState]);
 }

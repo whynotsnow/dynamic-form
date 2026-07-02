@@ -1,17 +1,20 @@
 import { useReducer } from 'react';
-import type { FormInstance } from 'antd';
-import type { FormValues } from '../../shared/types';
+import type { DynamicFormFormAdapter, FormValues } from '../../shared/types';
 import type { RuntimeState } from '../../runtime';
 import { useFormChainContext } from '../../shared/context/FormChainContext';
 import { getChangedFieldIds } from '../../shared/utils';
 
 interface UseFormRuntimeEventsParams {
-  form: FormInstance;
+  formAdapter: DynamicFormFormAdapter;
   onSubmit?: (data: FormValues) => void;
   runtimeState: RuntimeState;
 }
 
-export function useFormRuntimeEvents({ form, onSubmit, runtimeState }: UseFormRuntimeEventsParams) {
+export function useFormRuntimeEvents({
+  formAdapter,
+  onSubmit,
+  runtimeState
+}: UseFormRuntimeEventsParams) {
   const [, forceRender] = useReducer((version: number) => version + 1, 0);
   const { state, onValuesChange } = useFormChainContext();
 
@@ -24,10 +27,10 @@ export function useFormRuntimeEvents({ form, onSubmit, runtimeState }: UseFormRu
     fieldIds.filter((fieldId) => runtimeState.fields[fieldId]?.validatable === true);
 
   const handleFinish = async () => {
-    await form.validateFields(
+    await formAdapter.validateFields(
       getFieldNames(getValidatableFieldIds(Object.keys(runtimeState.fields)))
     );
-    const submitValues = form.getFieldsValue(true);
+    const submitValues = formAdapter.getFieldsValue(true);
 
     onSubmit?.(submitValues);
   };
@@ -41,7 +44,7 @@ export function useFormRuntimeEvents({ form, onSubmit, runtimeState }: UseFormRu
     const validatableChangedFieldIds = getValidatableFieldIds(changedFieldIds);
 
     if (validatableChangedFieldIds.length > 0) {
-      form.validateFields(getFieldNames(validatableChangedFieldIds)).catch(() => undefined);
+      formAdapter.validateFields(getFieldNames(validatableChangedFieldIds)).catch(() => undefined);
     }
 
     onValuesChange?.(changedValues);

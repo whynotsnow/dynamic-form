@@ -5,10 +5,12 @@ import DynamicFormProvider from './consumer/provider/DynamicFormProvider';
 
 // EngineProps
 function pickEngineProps(props: DynamicFormProps): EngineProps {
-  const { formConfig, form, values, enableInitializationCheck, checkDelay, uiConfig } = props;
+  const { formConfig, form, formAdapter, values, enableInitializationCheck, checkDelay, uiConfig } =
+    props;
   return {
     formConfig,
     form,
+    formAdapter,
     values,
     uiConfig,
     enableInitializationCheck,
@@ -27,7 +29,9 @@ function pickUIProps(props: DynamicFormProps): FormContentProps {
     renderFields,
     renderGroupItem,
     renderGroups,
-    form
+    form,
+    formAdapter,
+    renderer
   } = props;
   return {
     onSubmit,
@@ -38,7 +42,9 @@ function pickUIProps(props: DynamicFormProps): FormContentProps {
     renderFields,
     renderGroupItem,
     renderGroups,
-    form
+    form,
+    formAdapter,
+    renderer
   };
 }
 
