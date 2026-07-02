@@ -13,7 +13,7 @@ slug: /
 3. 🔗 [Effect 与处理器](./effects-and-handlers.md)：学习字段联动、默认返回 key、自定义处理器和初始化约束。
 4. 🎨 [渲染与 UI 扩展](./rendering-and-ui.md)：学习默认渲染结构、组件注册和分层 render hooks。
 5. 🧭 [组件使用指南](./development.md)：按使用场景查找 demo、配置组合、自定义组件和自定义 handlers。
-6. 🧩 [高级配置管线](./compiler-foundation.md)：需要字段模块、递归 container、规则或外部 schema 输入时，再阅读 Compiler、Rule、Adapter 和 Schema Adapters 专题。
+6. 🧩 [高级配置管线](./core-package.md)：需要字段模块、递归 container、规则、外部 schema 输入或独立 core 包时，再阅读 Core Package、Compiler、Rule、Adapter 和 Schema Adapters 专题。
 7. 🧠 [深入理解](./ARCHITECTURE.md)：通过架构、Runtime Layer、Renderer Adapter 和 Field Address 理解运行时边界与 4.1 结构模型。
 8. 🛠️ [维护指南](./maintenance.md)：了解测试、构建、验证和文档维护规则。
 
@@ -79,6 +79,10 @@ DynamicForm 由可选预处理能力和稳定运行时主线组成：
 - Form Adapter：封装值读写和校验；默认通过 `createAntdFormAdapter(form)` 兼容 AntD Form。
 - Consumer rendering：把运行时能力和配置交给 renderer；默认 `antdRenderer` 渲染 Ant Design UI。
 - Effects and handlers：把依赖联动结果转换成语义化的表单、字段 meta、分组 meta 或 UI 更新。
+
+### 4.2 Core Package
+
+DynamicForm 4.2 新增 `@whynotsnow/dynamic-form-core` workspace/package，承载配置处理、配置诊断、Compiler、Adapters、Rule Engine、纯 Runtime resolver、Runtime inspection helpers 和共享纯类型。`@whynotsnow/dynamic-form` 继续作为兼容主入口导出 React/AntD 运行时能力，并 re-export core 公共 API。详见 [Core Package](./core-package.md)。
 
 ### 4.1 Adapter 基础
 

@@ -77,6 +77,9 @@
   "api.groups.configTypes.description": {
     "message": "Describe form config, field config, UI config, render hook parameters, and core value types."
   },
+  "api.groups.corePackage.description": {
+    "message": "Config, compiler, rules, diagnostics, and pure Runtime APIs that can be consumed directly from @whynotsnow/dynamic-form-core starting in 4.2."
+  },
   "api.groups.formRendererAdapters.description": {
     "message": "Adapter contracts and default implementations for connecting different Form runtimes or UI shells."
   },

@@ -15,7 +15,13 @@ const sidebars: SidebarsConfig = {
     {
       type: 'category',
       label: '高级能力',
-      items: ['compiler-foundation', 'rule-engine', 'adapter-foundation', 'schema-adapters']
+      items: [
+        'core-package',
+        'compiler-foundation',
+        'rule-engine',
+        'adapter-foundation',
+        'schema-adapters'
+      ]
     },
     {
       type: 'category',

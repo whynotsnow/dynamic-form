@@ -46,6 +46,23 @@ const apiGroups = [
     docs: '/docs/configuration'
   },
   {
+    title: 'Core Package',
+    description: translate({
+      id: 'api.groups.corePackage.description',
+      message:
+        '4.2 起可从 @whynotsnow/dynamic-form-core 直接消费的配置、编译、规则、诊断和 Runtime 纯能力。'
+    }),
+    exports: [
+      '@whynotsnow/dynamic-form-core',
+      'processFormConfig',
+      'validateFormConfig',
+      'compileFormConfig',
+      'RuleEngine',
+      'resolveRuntimeState'
+    ],
+    docs: '/docs/core-package'
+  },
+  {
     title: 'Form / Renderer Adapters',
     description: translate({
       id: 'api.groups.formRendererAdapters.description',

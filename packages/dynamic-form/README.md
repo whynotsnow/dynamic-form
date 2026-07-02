@@ -20,6 +20,7 @@
 - 🧠 使用 Runtime Layer 统一解析 `rendered`、`submitable`、`editable`、`readonly`、`disabled`、`validatable` 等能力。
 - 🧱 Ant Design Form 仍然是真实表单值和校验运行时状态的唯一来源。
 - 🧭 支持通过 `name: NamePath` 分离稳定字段 `id` 与嵌套值路径，旧配置默认继续使用 `id`。
+- 📦 4.2 新增 `@whynotsnow/dynamic-form-core`，用于直接消费配置诊断、Compiler、Adapters、Rules 和 Runtime inspection helpers。
 
 ### 安装
 
@@ -186,6 +187,7 @@ Rule 是字段所属的 per-field 规则，不支持 `target` 配置。一个源
 ### 文档入口
 
 - 📚 [文档索引](./docs/README.md)
+- 📦 [Core Package](./docs/core-package.md)
 - 🏗️ [架构说明](./docs/ARCHITECTURE.md)
 - ⚙️ [配置指南](./docs/configuration.md)
 - 🧩 [Compiler Foundation](./docs/compiler-foundation.md)

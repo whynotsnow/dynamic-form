@@ -5,10 +5,14 @@
 ### 目录边界
 
 ```text
-packages/dynamic-form/   @whynotsnow/dynamic-form 发布包
-  src/                   库源码
-  docs/                  库文档，随包维护和发布
-  tsup.config.ts         库构建配置
+packages/dynamic-form-core/ @whynotsnow/dynamic-form-core 发布包
+  src/                      配置、compiler、adapters、rules 和纯 runtime 源码
+  docs/                     core package 文档，随包维护和发布
+  tsup.config.ts            core 构建配置
+packages/dynamic-form/      @whynotsnow/dynamic-form 发布包
+  src/                      React consumer、Provider、hooks、renderers、component registry 和兼容导出
+  docs/                     库文档，随包维护和发布
+  tsup.config.ts            库构建配置
 apps/docs-site/          Docusaurus 文档站
   docs/                  站点默认语言文档
   i18n/en/               英文站点文档
@@ -21,12 +25,13 @@ scripts/                 发布和维护脚本
 ### Workspace 职责
 
 - 根 `package.json`：声明 `packages/*` 和 `apps/*` workspaces，提供统一的 build、type-check、test、site build 和 release 命令。
-- `packages/dynamic-form/package.json`：保留 npm 包名、`exports`、`main`、`module`、`types`、peer dependencies 和发布文件清单。
+- `packages/dynamic-form-core/package.json`：保留 core npm 包名、`exports`、`main`、`module`、`types` 和发布文件清单。
+- `packages/dynamic-form/package.json`：保留 React/AntD npm 包名、`exports`、`main`、`module`、`types`、peer dependencies、对 core 的 workspace dependency 和发布文件清单。
 - `apps/docs-site/package.json`：只负责 Docusaurus 站点构建与本地预览。
 
 ### 文档职责
 
-- 库行为文档在 `packages/dynamic-form/docs/` 中维护，包括架构、配置、effects、Runtime、compiler、adapter、schema、rule 和开发指南。
+- 库行为文档在 `packages/dynamic-form/docs/` 中维护，包括架构、配置、effects、Runtime、compiler、adapter、schema、rule、core package 和开发指南。
 - 站点文档在 `apps/docs-site/` 中维护，可以为站点体验拆分语言和页面结构。
 - 根 `docs/` 只记录 monorepo 结构、维护规则、发布流程和站点规划。
 

@@ -13,7 +13,7 @@ This is the entry point for DynamicForm 4.1 documentation. New users should star
 3. 🔗 [Effects and Handlers](./effects-and-handlers.md): field dependencies, default result keys, custom handlers, and initialization.
 4. 🎨 [Rendering and UI Extensions](./rendering-and-ui.md): default rendering, component registry, and layered render hooks.
 5. 🧭 [Component Usage Guide](./development.md): scenario-based demos, configuration combinations, custom components, and custom handlers.
-6. 🧩 [Advanced Configuration Pipeline](./compiler-foundation.md): read Compiler, Rule, Adapter, and Schema Adapter topics when you need field modules, recursive containers, rules, or external schema inputs.
+6. 🧩 [Advanced Configuration Pipeline](./core-package.md): read Core Package, Compiler, Rule, Adapter, and Schema Adapter topics when you need field modules, recursive containers, rules, external schema inputs, or the standalone core package.
 7. 🧠 [Deep Dive](./ARCHITECTURE.md): understand runtime boundaries and the 4.1 structure model through Architecture, Runtime Layer, Renderer Adapter, and Field Address.
 8. 🧾 [CHANGELOG](./changelog.md): reader-focused release summaries and related topic entry points.
 9. 🛠️ [Maintenance Guide](./maintenance.md): tests, builds, verification, and documentation maintenance.
@@ -80,6 +80,10 @@ DynamicForm combines optional preprocessing capabilities with a stable runtime p
 - Form Adapter wraps value access and validation; the default `createAntdFormAdapter(form)` keeps AntD Form compatible.
 - Consumer rendering passes runtime-capable state to a renderer; the default `antdRenderer` renders Ant Design UI.
 - Effects and handlers translate dependency results into semantic form, meta, group, or UI updates.
+
+### 4.2 Core Package
+
+DynamicForm 4.2 adds the `@whynotsnow/dynamic-form-core` workspace/package for config processing, config diagnostics, Compiler, Adapters, Rule Engine, pure Runtime resolvers, Runtime inspection helpers, and shared pure types. `@whynotsnow/dynamic-form` remains the compatible main entry for React/AntD runtime APIs and re-exports core public APIs. See [Core Package](./core-package.md).
 
 ### 4.1 Adapter Foundation
 
