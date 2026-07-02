@@ -1,8 +1,9 @@
 import { useReducer, useMemo, useLayoutEffect } from 'react';
+import { processFormConfig } from '@whynotsnow/dynamic-form-core';
 import type { DynamicFormFormAdapter, FormConfig, FormValues, UIConfig } from '../shared/types';
-import { processFormConfig } from '../config/processor';
 import formReducer from './reducer';
 import { mergeFormValues } from '../shared/utils';
+import { applyEffectResult, createInitialEffectResultContext } from '../consumer/effects';
 
 interface useStoreInitParams {
   formConfig: FormConfig;
@@ -19,7 +20,30 @@ interface useStoreInitParams {
  */
 export const useStoreInit = ({ formConfig, formAdapter, values, uiConfig }: useStoreInitParams) => {
   // 1. 预计算配置
-  const configProcessInfo = useMemo(() => processFormConfig(formConfig), [formConfig]);
+  const configProcessInfo = useMemo(
+    () =>
+      processFormConfig(formConfig, {
+        applyInitialEffectResult: ({
+          field,
+          result,
+          initialValues,
+          initializedFields,
+          initializedGroupFields,
+          fieldRegistry
+        }) => {
+          const context = createInitialEffectResultContext({
+            fieldId: field.id,
+            initialValues,
+            initializedFields,
+            initializedGroupFields,
+            fieldRegistry
+          });
+
+          applyEffectResult(result, context);
+        }
+      }),
+    [formConfig]
+  );
 
   // 合并 initialValues + values
   const mergedInitialValues = useMemo(() => {

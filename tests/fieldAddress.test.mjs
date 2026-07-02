@@ -111,6 +111,96 @@ test('processFormConfig supports grouped fields with nested name paths', async (
   assert.ok(result.initializedGroupFields.companyInfo.fields.companyName);
 });
 
+test('processFormConfig applies default object initialValue results in core', async () => {
+  const { configParser } = await modulePromise;
+  const result = configParser.processFormConfig({
+    fields: [
+      {
+        id: 'status',
+        component: 'TextInput',
+        initialValue: () => ({
+          value: 'ready',
+          visible: false,
+          disabled: true,
+          readonly: true,
+          formItemProps: { labelCol: { span: 6 } },
+          componentProps: { placeholder: 'Status' },
+          groupsVisible: { profile: false }
+        })
+      }
+    ],
+    groups: [
+      {
+        id: 'profile',
+        fields: [{ id: 'name', component: 'TextInput' }]
+      }
+    ]
+  });
+
+  assert.deepEqual(result.initialValues, { status: 'ready' });
+  assert.deepEqual(result.initializedFields.status.meta, {
+    behavior: { visible: false, disabled: true, readonly: true },
+    formItemProps: { labelCol: { span: 6 } },
+    componentProps: { placeholder: 'Status' }
+  });
+  assert.equal(result.initializedGroupFields.profile.meta.behavior.visible, false);
+  assert.equal(result.initializedNodes.profile.meta.behavior.visible, false);
+});
+
+test('processFormConfig lets callers handle object initialValue results', async () => {
+  const { configParser } = await modulePromise;
+  const calls = [];
+  const result = configParser.processFormConfig(
+    {
+      fields: [
+        {
+          id: 'status',
+          component: 'TextInput',
+          initialValue: () => ({ customValue: 'ready', visible: false })
+        }
+      ]
+    },
+    {
+      applyInitialEffectResult: ({
+        field,
+        result: effectResult,
+        initialValues,
+        initializedFields,
+        fieldRegistry,
+        fieldAddressRegistry
+      }) => {
+        calls.push({
+          fieldId: field.id,
+          result: effectResult,
+          hasFieldState: Boolean(initializedFields[field.id]),
+          registryName: fieldAddressRegistry[field.id].name,
+          isGroupField: fieldRegistry[field.id].isGroupField
+        });
+        initialValues[field.id] = effectResult.customValue;
+        initializedFields[field.id].meta = {
+          ...initializedFields[field.id].meta,
+          customMeta: true
+        };
+      }
+    }
+  );
+
+  assert.deepEqual(calls, [
+    {
+      fieldId: 'status',
+      result: { customValue: 'ready', visible: false },
+      hasFieldState: true,
+      registryName: 'status',
+      isGroupField: false
+    }
+  ]);
+  assert.deepEqual(result.initialValues, { status: 'ready' });
+  assert.deepEqual(result.initializedFields.status.meta, {
+    behavior: { visible: true },
+    customMeta: true
+  });
+});
+
 test('field address registry rejects duplicate Ant Design name paths', async () => {
   const { configParser } = await modulePromise;
 

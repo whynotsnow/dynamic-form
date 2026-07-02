@@ -13,7 +13,12 @@ import type {
   GroupFieldState,
   NodeRegistryEntry
 } from '../../shared/types';
-import type { ConfigAnalysisResult, ConfigProcessInfo, HydratedConfigResult } from './types';
+import type {
+  ConfigAnalysisResult,
+  ConfigProcessInfo,
+  HydratedConfigResult,
+  ProcessFormConfigOptions
+} from './types';
 import {
   createFieldAddressRegistry,
   createFieldValueView,
@@ -253,13 +258,24 @@ function createContainerGroupState(
 /**
  * 根据分析结果和原始配置计算初始值和字段状态。
  */
-export function hydrateFormConfig(analysisConfig: ConfigAnalysisResult): HydratedConfigResult {
+export function hydrateFormConfig(
+  analysisConfig: ConfigAnalysisResult,
+  options: ProcessFormConfigOptions = {}
+): HydratedConfigResult {
   const { fieldRegistry, nodeRegistry, containerRegistry } = analysisConfig;
   const initialValues: Record<string, any> = {};
   const initializedFields: Record<string, FieldState> = {};
   const initializedGroupFields: Record<string, GroupFieldState> = {};
   const initializedNodes: Record<string, FieldState | ContainerState> = {};
   const initializedContainerFields: Record<string, Record<string, FieldState>> = {};
+
+  const hydratedConfig: HydratedConfigResult = {
+    initialValues,
+    initializedFields,
+    initializedGroupFields,
+    initializedNodes,
+    initializedContainerFields
+  };
 
   Object.values(containerRegistry).forEach(({ config: container }) => {
     const fields = collectDirectContainerFields(container, nodeRegistry);
@@ -278,6 +294,17 @@ export function hydrateFormConfig(analysisConfig: ConfigAnalysisResult): Hydrate
   const processInitialValueResult = (field: BaseFieldConfig, result: any) => {
     if (!result || typeof result !== 'object') {
       setValueAtNamePath(initialValues, getFieldName(field), result);
+      return;
+    }
+
+    if (options.applyInitialEffectResult) {
+      options.applyInitialEffectResult({
+        ...hydratedConfig,
+        field,
+        result,
+        fieldRegistry,
+        fieldAddressRegistry: analysisConfig.fieldAddressRegistry
+      });
       return;
     }
 
@@ -364,21 +391,18 @@ export function hydrateFormConfig(analysisConfig: ConfigAnalysisResult): Hydrate
     }
   });
 
-  return {
-    initialValues,
-    initializedFields,
-    initializedGroupFields,
-    initializedNodes,
-    initializedContainerFields
-  };
+  return hydratedConfig;
 }
 
 /**
  * 外部统一调用函数
  */
-export function processFormConfig(config: FormConfig): ConfigProcessInfo {
+export function processFormConfig(
+  config: FormConfig,
+  options: ProcessFormConfigOptions = {}
+): ConfigProcessInfo {
   const analysis = analyzeFormConfig(config);
-  const hydrated = hydrateFormConfig(analysis);
+  const hydrated = hydrateFormConfig(analysis, options);
 
   return {
     ...analysis,

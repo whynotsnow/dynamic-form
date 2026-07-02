@@ -93,8 +93,10 @@ export {
 
 export { getFormConfigDiagnostics, processFormConfig, validateFormConfig } from './config';
 export type {
+  ApplyInitialEffectResultParams,
   FormConfigDiagnostic,
   FormConfigDiagnosticsOptions,
   FormConfigDiagnosticSeverity,
-  FormConfigValidationResult
+  FormConfigValidationResult,
+  ProcessFormConfigOptions
 } from './config';

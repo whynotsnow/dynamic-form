@@ -6,4 +6,8 @@ export type {
   FormConfigDiagnosticSeverity,
   FormConfigValidationResult
 } from './diagnostics';
-export type { ConfigProcessInfo } from './processor';
+export type {
+  ApplyInitialEffectResultParams,
+  ConfigProcessInfo,
+  ProcessFormConfigOptions
+} from './processor';

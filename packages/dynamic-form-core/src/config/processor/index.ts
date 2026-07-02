@@ -9,4 +9,8 @@
  */
 
 export { processFormConfig } from './configParser';
-export type { ConfigProcessInfo } from './types';
+export type {
+  ApplyInitialEffectResultParams,
+  ConfigProcessInfo,
+  ProcessFormConfigOptions
+} from './types';

@@ -1,4 +1,5 @@
 import type {
+  BaseFieldConfig,
   FieldState,
   GroupFieldState,
   FieldRegistry,
@@ -30,3 +31,17 @@ export interface HydratedConfigResult {
 
 /** --------------------- 最终组合后的完整信息 --------------------- */
 export interface ConfigProcessInfo extends ConfigAnalysisResult, HydratedConfigResult {}
+
+export interface ApplyInitialEffectResultParams extends HydratedConfigResult {
+  field: BaseFieldConfig;
+  result: any;
+  fieldRegistry: Record<string, FieldRegistry>;
+  fieldAddressRegistry: Record<string, FieldAddress>;
+}
+
+export interface ProcessFormConfigOptions {
+  /**
+   * 允许 React 包注入 effect result handler；core 默认不依赖 React/AntD/handler registry。
+   */
+  applyInitialEffectResult?: (params: ApplyInitialEffectResultParams) => void;
+}
