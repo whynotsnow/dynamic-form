@@ -1,0 +1,59 @@
+{
+  "name": "@whynotsnow/dynamic-form-core",
+  "version": "4.1.2",
+  "description": "DynamicForm core package for configuration processing, compiler, adapters, rules and pure runtime helpers.",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "files": [
+    "dist",
+    "docs",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "dynamic-form",
+    "form-engine",
+    "form-core",
+    "schema-adapter",
+    "rule-engine"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "type-check": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whynotsnow/dynamic-form.git",
+    "directory": "packages/dynamic-form-core"
+  },
+  "author": {
+    "name": "whynotsnow",
+    "email": "whynotsnow@163.com",
+    "url": "https://github.com/whynotsnow"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/whynotsnow/dynamic-form/issues"
+  },
+  "homepage": "https://github.com/whynotsnow/dynamic-form#readme",
+  "dependencies": {
+    "form-chain-effect-engine": "^2.0.4"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.11",
+    "react": "^19.1.1",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.2"
+  }
+}

@@ -170,6 +170,25 @@ importers:
         specifier: ^7.1.3
         version: 7.3.6(@types/node@24.13.2)(jiti@1.21.7)(terser@5.48.0)(yaml@2.9.0)
 
+  packages/dynamic-form-core:
+    dependencies:
+      form-chain-effect-engine:
+        specifier: ^2.0.4
+        version: 2.0.4(antd@5.29.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)
+    devDependencies:
+      '@types/react':
+        specifier: ^19.1.11
+        version: 19.2.17
+      react:
+        specifier: ^19.1.1
+        version: 19.2.7
+      tsup:
+        specifier: ^8.5.0
+        version: 8.5.1(jiti@1.21.7)(postcss@8.5.16)(typescript@5.9.3)(yaml@2.9.0)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
+
 packages:
 
   '@algolia/abtesting@1.21.1':
