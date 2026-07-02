@@ -4,7 +4,7 @@ import { build } from 'esbuild';
 
 const modulePromise = build({
   entryPoints: [
-    'packages/dynamic-form/src/config/processor/configParser.ts',
+    'packages/dynamic-form-core/src/config/processor/configParser.ts',
     'demos/nodeModel4DemoConfig.ts'
   ],
   bundle: true,

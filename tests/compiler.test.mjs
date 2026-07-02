@@ -1,10 +1,12 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
-  CompiledDynamicForm,
   compileFormConfig,
   ModuleRegistryManager,
   processFormConfig
+} from '../packages/dynamic-form-core/dist/index.mjs';
+import {
+  CompiledDynamicForm
 } from '../packages/dynamic-form/dist/index.mjs';
 
 test('ModuleRegistryManager registers, lists, looks up, and unregisters modules', () => {

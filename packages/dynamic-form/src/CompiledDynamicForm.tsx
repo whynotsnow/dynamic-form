@@ -1,6 +1,6 @@
 import React from 'react';
 import DynamicForm from './index';
-import type { CompiledModuleConfig } from './compiler';
+import type { CompiledModuleConfig } from '@whynotsnow/dynamic-form-core';
 import type { DynamicFormProps } from './shared/types';
 
 export interface CompiledDynamicFormProps

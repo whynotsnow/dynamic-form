@@ -3,10 +3,12 @@ import test from 'node:test';
 import {
   adaptModuleConfigs,
   AdapterRegistryManager,
-  CompiledDynamicForm,
   compileAdaptedFormConfig,
   ModuleConfigPassthroughAdapter,
   ModuleRegistryManager
+} from '../packages/dynamic-form-core/dist/index.mjs';
+import {
+  CompiledDynamicForm
 } from '../packages/dynamic-form/dist/index.mjs';
 
 test('AdapterRegistryManager registers, lists, looks up, and unregisters adapters', () => {

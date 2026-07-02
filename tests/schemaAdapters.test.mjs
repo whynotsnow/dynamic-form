@@ -7,7 +7,7 @@ import {
   MetadataAdapter,
   ModuleRegistryManager,
   OpenApiAdapter
-} from '../packages/dynamic-form/dist/index.mjs';
+} from '../packages/dynamic-form-core/dist/index.mjs';
 
 test('JsonSchemaAdapter converts top-level properties into ModuleConfig entries', () => {
   const moduleFormConfig = JsonSchemaAdapter.adapt({

@@ -4,7 +4,7 @@ import { build } from 'esbuild';
 
 const modulePromise = build({
   entryPoints: [
-    'packages/dynamic-form/src/runtime/runtimeState.ts',
+    'packages/dynamic-form-core/src/runtime/runtimeState.ts',
     'packages/dynamic-form/src/consumer/hooks/fieldParticipationPolicy.ts'
   ],
   bundle: true,

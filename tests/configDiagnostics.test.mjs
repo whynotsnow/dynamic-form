@@ -4,10 +4,10 @@ import { build } from 'esbuild';
 
 const modulePromise = build({
   entryPoints: [
-    'packages/dynamic-form/src/config/diagnostics.ts',
-    'packages/dynamic-form/src/config/processor/configParser.ts',
-    'packages/dynamic-form/src/runtime/runtimeState.ts',
-    'packages/dynamic-form/src/runtime/inspection.ts'
+    'packages/dynamic-form-core/src/config/diagnostics.ts',
+    'packages/dynamic-form-core/src/config/processor/configParser.ts',
+    'packages/dynamic-form-core/src/runtime/runtimeState.ts',
+    'packages/dynamic-form-core/src/runtime/inspection.ts'
   ],
   bundle: true,
   format: 'esm',

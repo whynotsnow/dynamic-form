@@ -4,8 +4,8 @@ import { build } from 'esbuild';
 
 const modulePromise = build({
   entryPoints: [
-    'packages/dynamic-form/src/config/processor/configParser.ts',
-    'packages/dynamic-form/src/shared/utils/fieldAddress.ts'
+    'packages/dynamic-form-core/src/config/processor/configParser.ts',
+    'packages/dynamic-form-core/src/shared/utils/fieldAddress.ts'
   ],
   bundle: true,
   format: 'esm',
