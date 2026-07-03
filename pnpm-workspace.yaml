@@ -8,3 +8,5 @@ onlyBuiltDependencies:
 allowBuilds:
   core-js: true
   esbuild: true
+minimumReleaseAgeExclude:
+  - '@whynotsnow/hooks@0.4.0'

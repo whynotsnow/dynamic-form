@@ -79,7 +79,7 @@
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
-    "form-chain-effect-engine": "^2.0.4",
+    "@whynotsnow/hooks": "^0.4.0",
     "husky": "^8.0.0",
     "lint-staged": "^16.1.5",
     "prettier": "3.6.2",

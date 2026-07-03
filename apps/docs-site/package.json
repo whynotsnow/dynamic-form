@@ -17,7 +17,7 @@
     "@mdx-js/react": "^3.1.0",
     "antd": "^5.27.1",
     "clsx": "^2.1.1",
-    "form-chain-effect-engine": "^2.0.4",
+    "@whynotsnow/hooks": "^0.4.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "prism-react-renderer": "^2.4.1"

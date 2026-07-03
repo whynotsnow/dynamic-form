@@ -63,7 +63,7 @@
   },
   "dependencies": {
     "@whynotsnow/dynamic-form-core": "4.2.1",
-    "form-chain-effect-engine": "^2.0.4"
+    "@whynotsnow/hooks": "^0.4.0"
   },
   "devDependencies": {
     "@types/react": "^19.1.11",
