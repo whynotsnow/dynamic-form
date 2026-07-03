@@ -1,4 +1,4 @@
-import { Chain } from 'form-chain-effect-engine';
+import type { Chain } from '@whynotsnow/hooks';
 import { GroupedFormConfig, FlatFormConfig } from '@/exports';
 import { operatingAreaEffect } from '../demos/customComponents/OperatingAreaField';
 export const supplierFormConfig: GroupedFormConfig = {
@@ -385,7 +385,7 @@ const circularDependencyConfig: GroupedFormConfig = {
   ]
 };
 
-// 基于 useFormChainEffectEngine 示例的表单配置
+// 基于 useFormChainEffect 示例的表单配置
 export const simpleChainTestConfig: FlatFormConfig = {
   fields: [
     {
@@ -420,7 +420,7 @@ export const simpleChainTestConfig: FlatFormConfig = {
   ]
 };
 
-// 基于 useFormChainEffectEngine 示例的分组表单配置
+// 基于 useFormChainEffect 示例的分组表单配置
 export const simpleChainGroupedTestConfig: GroupedFormConfig = {
   groups: [
     {

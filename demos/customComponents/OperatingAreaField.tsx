@@ -1,6 +1,6 @@
 import { Select, Space, Typography } from 'antd';
 import { FieldComponentProps } from '@/shared/types';
-import { EffectFn } from 'form-chain-effect-engine';
+import type { EffectFn } from '@/exports';
 
 /**
  * 主营品类类型
@@ -18,6 +18,11 @@ export interface AreaOption {
   value: string;
   label: string;
 }
+
+type OperatingAreaValues = {
+  categories?: CategoryType;
+  operatingArea?: string;
+};
 
 /**
  * 主营品类 -> 经营地区映射
@@ -115,8 +120,11 @@ export const OperatingAreaField: React.FC<OperatingAreaFieldProps> = (connect) =
  * 2. 更新 operatingArea RuntimeMeta
  * 3. 自动修正非法值
  */
-export const operatingAreaEffect: EffectFn = (category, allValues) => {
-  const options = AREA_OPTIONS_MAP[allValues.categories as CategoryType] ?? [];
+export const operatingAreaEffect: EffectFn<OperatingAreaValues, 'categories'> = (
+  _category,
+  allValues
+) => {
+  const options = allValues.categories ? AREA_OPTIONS_MAP[allValues.categories] : [];
 
   const currentValue = allValues.operatingArea;
 

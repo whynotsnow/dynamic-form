@@ -15,7 +15,7 @@ const modulePromise = build({
   write: false,
   logLevel: 'silent',
   outdir: 'out',
-  external: ['antd', 'react', 'form-chain-effect-engine']
+  external: ['antd', 'react', '@whynotsnow/hooks']
 }).then(async ({ outputFiles }) => {
   const modules = {};
 

@@ -66,6 +66,16 @@ const defaultAddressUsageByCompanyType = {
   studio: '工作室地址'
 };
 
+type NodeModel4Values = FormValues & {
+  company?: {
+    companyType?: keyof typeof addressUsageOptionsByCompanyType;
+    address?: {
+      companyProvince?: keyof typeof cityOptionsByProvince;
+      companyCity?: keyof typeof districtOptionsByCity;
+    };
+  };
+};
+
 export const nodeModel4DemoConfig: FormConfig = {
   nodes: [
     {
@@ -143,10 +153,8 @@ export const nodeModel4DemoConfig: FormConfig = {
               component: 'Select',
               initialValue: 'Shanghai',
               dependents: ['contacts', 'companyDistrict'],
-              effect: (_changedValue, allValues, chain) => {
-                const province = allValues.company?.address?.companyProvince as
-                  | keyof typeof cityOptionsByProvince
-                  | undefined;
+              effect: (_changedValue, allValues: NodeModel4Values, chain) => {
+                const province = allValues.company?.address?.companyProvince;
                 const cityFromProvince = province ? defaultCityByProvince[province] : undefined;
                 const city =
                   chain.path.includes('companyProvince') || !allValues.company?.address?.companyCity
@@ -174,10 +182,8 @@ export const nodeModel4DemoConfig: FormConfig = {
               label: '区县',
               component: 'Select',
               initialValue: '浦东新区',
-              effect: (_changedValue, allValues) => {
-                const city = allValues.company?.address?.companyCity as
-                  | keyof typeof districtOptionsByCity
-                  | undefined;
+              effect: (_changedValue, allValues: NodeModel4Values) => {
+                const city = allValues.company?.address?.companyCity;
 
                 return {
                   value: city ? defaultDistrictByCity[city] : undefined,
@@ -197,10 +203,8 @@ export const nodeModel4DemoConfig: FormConfig = {
               label: '地址用途',
               component: 'Select',
               initialValue: '工商注册地址',
-              effect: (_changedValue, allValues) => {
-                const companyType = allValues.company?.companyType as
-                  | keyof typeof addressUsageOptionsByCompanyType
-                  | undefined;
+              effect: (_changedValue, allValues: NodeModel4Values) => {
+                const companyType = allValues.company?.companyType;
 
                 return {
                   value: companyType ? defaultAddressUsageByCompanyType[companyType] : undefined,

@@ -1,7 +1,6 @@
-import { FieldComponentProps } from '@/exports';
+import { FieldComponentProps, type EffectFn } from '@/exports';
 import { Space, Tag, Select } from 'antd';
 import type { SelectProps } from 'antd';
-import { EffectFn } from 'form-chain-effect-engine';
 
 export const PriorityField: React.FC<FieldComponentProps> = ({ field, value, onChange }) => {
   return (
@@ -41,7 +40,11 @@ const renderPriorityLabel = (value?: string) => {
   );
 };
 
-export const priorityEffect: EffectFn = (_changedValue, allValues) => {
+type PriorityValues = {
+  priority?: string;
+};
+
+export const priorityEffect: EffectFn<PriorityValues, 'priority'> = (_changedValue, allValues) => {
   console.log('_changedValue, allValues', _changedValue, allValues);
   const value = allValues.priority;
 

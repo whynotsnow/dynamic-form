@@ -137,8 +137,8 @@ const UIConfigDemo: React.FC = () => {
           ),
           style: { borderLeft: '4px solid #52c41a', paddingLeft: '12px' }
         },
-        effect: (changedValue, allValues) =>
-          getStatusUIEffect(changedValue, allValues as DynamicUIFormValues)
+        effect: (changedValue: DynamicUIFormValues['status'], allValues: DynamicUIFormValues) =>
+          getStatusUIEffect(changedValue, allValues)
       },
       {
         id: 'priority',
@@ -179,7 +179,8 @@ const UIConfigDemo: React.FC = () => {
         componentProps: {
           rows: 3
         },
-        effect: (changedValue) => getDescriptionUIEffect(changedValue)
+        effect: (changedValue: DynamicUIFormValues['description']) =>
+          getDescriptionUIEffect(changedValue)
       }
     ]
   };
