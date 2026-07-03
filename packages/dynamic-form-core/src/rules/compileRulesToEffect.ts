@@ -1,5 +1,5 @@
-import type { EffectFn } from 'form-chain-effect-engine';
 import { createRuleEngine } from './RuleEngine';
+import type { EffectFn } from '../shared/types';
 import type { CompileRulesToEffectOptions, DeclarativeRule, RuleCondition } from './types';
 
 function collectDependencies(condition: RuleCondition, dependencies: Set<string>) {

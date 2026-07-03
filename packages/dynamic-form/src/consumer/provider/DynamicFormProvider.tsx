@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { useFormChainEffectEngine } from 'form-chain-effect-engine';
-import type { FormInstance } from 'antd';
+import { defineLooseFormChainEffectConfig, useFormChainEffect } from '@whynotsnow/hooks';
+import type { LooseFormLike } from '@whynotsnow/hooks';
 import type { DynamicFormProviderProps, FormValues } from '../../shared/types';
 import { useStoreInit } from '../../state';
 import { applyEffectResult } from '../effects';
@@ -54,9 +54,8 @@ const DynamicFormProvider: React.FC<DynamicFormProviderProps> = ({
     return () => clearTimeout(timer);
   }, [enableInitializationCheck, checkDelay]);
 
-  const effectEngineForm = useMemo(
+  const effectEngineForm = useMemo<LooseFormLike>(
     () => ({
-      ...formAdapter,
       getFieldValue: (fieldId: string) => {
         const address = configProcessInfo.fieldAddressRegistry[fieldId];
         return formAdapter.getFieldValue(address?.name ?? fieldId);
@@ -67,9 +66,14 @@ const DynamicFormProvider: React.FC<DynamicFormProviderProps> = ({
     [configProcessInfo.fieldAddressRegistry, formAdapter]
   );
 
-  const { onValuesChange: onEffectValuesChange, manualTrigger } = useFormChainEffectEngine({
-    form: effectEngineForm as unknown as FormInstance,
-    config: configProcessInfo.effectMap || {},
+  const effectConfig = useMemo(
+    () => defineLooseFormChainEffectConfig(configProcessInfo.effectMap),
+    [configProcessInfo.effectMap]
+  );
+
+  const { onValuesChange: onEffectValuesChange, manualTrigger } = useFormChainEffect({
+    form: effectEngineForm,
+    config: effectConfig,
     options: {
       enableAdvancedControl: true,
       debugLog: false

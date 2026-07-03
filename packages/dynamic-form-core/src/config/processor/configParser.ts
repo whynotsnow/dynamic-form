@@ -6,9 +6,9 @@ import type {
   FieldNode,
   FieldRegistry,
   FieldState,
-  Fieldchain,
   FormConfig,
   FormValues,
+  AnyLooseFormChainEffectMap,
   FormNode,
   GroupField,
   GroupFieldState,
@@ -96,7 +96,7 @@ function assertContainerNode(node: ContainerNode) {
  * 分析表单配置，生成 normalized node tree、effectMap 和 registry。
  */
 export function analyzeFormConfig(config: FormConfig): ConfigAnalysisResult {
-  const effectMap: Record<string, Fieldchain> = {};
+  const effectMap: AnyLooseFormChainEffectMap = {};
   const nodeRegistry: Record<string, NodeRegistryEntry> = {};
   const containerRegistry: Record<string, ContainerRegistryEntry> = {};
   const fieldRegistry: Record<string, FieldRegistry> = {};
@@ -194,6 +194,10 @@ export function analyzeFormConfig(config: FormConfig): ConfigAnalysisResult {
 
   if (config.nodes?.length) {
     Object.entries(effectMap).forEach(([id, chain]) => {
+      if (!chain?.dependents) {
+        return;
+      }
+
       chain.dependents.forEach((dependentId) => {
         if (!nodeRegistry[dependentId]) {
           throw new Error(

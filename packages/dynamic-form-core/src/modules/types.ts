@@ -1,6 +1,5 @@
 import type React from 'react';
-import type { EffectFn } from 'form-chain-effect-engine';
-import type { BaseFieldConfig, FieldComponentProps } from '../shared/types';
+import type { BaseFieldConfig, EffectFn, FieldComponentProps } from '../shared/types';
 import type { DeclarativeRule } from '../rules';
 
 export interface FieldModule<TOptions extends Record<string, unknown> = Record<string, unknown>> {

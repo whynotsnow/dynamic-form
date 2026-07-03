@@ -1,4 +1,4 @@
-import type { EffectResult, EffectResultContext, CustomEffectResultHandler } from './types';
+import type { EffectResultContext, CustomEffectResultHandler } from './types';
 import { getEffectResultHandlerRegistry, isEffectResultDebugEnabled } from './handlerRegistry';
 
 /**
@@ -28,7 +28,7 @@ import { getEffectResultHandlerRegistry, isEffectResultDebugEnabled } from './ha
  * );
  * ```
  */
-export function applyEffectResult(result: EffectResult | undefined, context: EffectResultContext) {
+export function applyEffectResult(result: unknown, context: EffectResultContext) {
   if (!result || typeof result !== 'object') {
     return;
   }

@@ -1,10 +1,40 @@
-import type { EffectFn } from 'form-chain-effect-engine';
+import type {
+  AnyFormValues as HookAnyFormValues,
+  AnyLooseFormChainEffectMap as HookAnyLooseFormChainEffectMap,
+  FieldName as HookFieldName,
+  LooseEffectConfig as HookLooseEffectConfig,
+  LooseEffectFn as HookLooseEffectFn,
+  LooseFormChainEffectMap as HookLooseFormChainEffectMap
+} from '@whynotsnow/hooks';
 import type { Dispatch } from 'react';
 import type { FieldCapability } from '@whynotsnow/dynamic-form-core';
 import type { CustomEffectResultHandler, HandlerRegistrationOptions } from '../consumer/effects';
 
 export type FieldValue = unknown;
-export type FormValues = Record<string, FieldValue>;
+export type AnyFormValues = HookAnyFormValues;
+export type FormValues = AnyFormValues;
+export type FieldName<Values extends object = FormValues> = HookFieldName<Values>;
+export type EffectFn<
+  Values extends object = FormValues,
+  Field extends FieldName<Values> = FieldName<Values>,
+  EffectResult = unknown,
+  EffectActions = undefined
+> = HookLooseEffectFn<Values, Field, EffectResult, EffectActions>;
+export type EffectConfig<
+  Values extends object = FormValues,
+  Field extends FieldName<Values> = FieldName<Values>,
+  EffectResult = unknown,
+  EffectActions = undefined
+> = HookLooseEffectConfig<Values, Field, EffectResult, EffectActions>;
+export type FormChainEffectMap<
+  Values extends object = FormValues,
+  EffectResult = unknown,
+  EffectActions = undefined
+> = HookLooseFormChainEffectMap<Values, EffectResult, EffectActions>;
+export type AnyLooseFormChainEffectMap<
+  EffectResult = unknown,
+  EffectActions = undefined
+> = HookAnyLooseFormChainEffectMap<EffectResult, EffectActions>;
 export type FieldComponentRuntimeProps = Record<string, unknown>;
 export type FieldNamePath = string | number | Array<string | number>;
 export type ValidationRule = Record<string, unknown>;
@@ -150,7 +180,10 @@ export type FieldState = BaseFieldConfig & {
   meta: FieldMeta;
 };
 
-export type Fieldchain = { dependents: string[]; effect: EffectFn };
+export type FieldChain = EffectConfig<FormValues> & {
+  dependents: string[];
+  effect: EffectFn;
+};
 
 export type GroupFieldState = Omit<GroupField, 'fields'> & {
   meta: GroupMeta;
@@ -448,7 +481,7 @@ export interface ContainerRegistryEntry {
 }
 
 export interface ConfigProcessInfo {
-  effectMap: Record<string, Fieldchain>;
+  effectMap: AnyLooseFormChainEffectMap;
   nodeRegistry: Record<string, NodeRegistryEntry>;
   containerRegistry: Record<string, ContainerRegistryEntry>;
   fieldRegistry: Record<string, FieldRegistry>;

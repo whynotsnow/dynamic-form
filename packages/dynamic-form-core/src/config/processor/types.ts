@@ -4,7 +4,7 @@ import type {
   FieldState,
   GroupFieldState,
   FieldRegistry,
-  Fieldchain,
+  AnyLooseFormChainEffectMap,
   FieldAddress,
   NodeRegistryEntry,
   ContainerRegistryEntry,
@@ -13,7 +13,7 @@ import type {
 
 /** --------------------- 配置分析结果 --------------------- */
 export interface ConfigAnalysisResult {
-  effectMap: Record<string, Fieldchain>;
+  effectMap: AnyLooseFormChainEffectMap;
   nodeRegistry: Record<string, NodeRegistryEntry>;
   containerRegistry: Record<string, ContainerRegistryEntry>;
   fieldRegistry: Record<string, FieldRegistry>;
