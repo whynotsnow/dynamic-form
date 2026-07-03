@@ -321,7 +321,7 @@
     "message": "Effects and Runtime Policy"
   },
   "homepage.features.effectsRuntime.description": {
-    "message": "Execute dependency chains through form-chain-effect-engine and resolve rendering, submit, disabled, readonly, and validation capabilities through the Runtime Layer."
+    "message": "Execute dependency chains through @whynotsnow/hooks/form-chain-effect and resolve rendering, submit, disabled, readonly, and validation capabilities through the Runtime Layer."
   },
   "homepage.features.extensionPoints.title": {
     "message": "Extension Points"

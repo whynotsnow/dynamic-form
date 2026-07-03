@@ -31,7 +31,7 @@ flowchart TD
   subgraph react["@whynotsnow/dynamic-form"]
   entry["packages/dynamic-form/src/index.tsx"] --> provider["DynamicFormProvider"]
   provider --> storeInit["useStoreInit"]
-  provider --> effectEngine["form-chain-effect-engine"]
+  provider --> effectEngine["form-chain-effect"]
   provider --> context["FormChainContext"]
 
   entry --> content["FormContent"]
@@ -72,7 +72,7 @@ flowchart TD
 5. `useStoreInit` 调用 `processFormConfig(formConfig)`。
 6. 配置处理把 `nodes`、`fields` 和 `groups` 归一化为节点树，生成依赖图、node/container/field registry、初始值和初始化后的字段/container 状态。
 7. reducer 接收 `INIT`，保存节点结构、meta、配置处理信息和动态 UI 配置。
-8. `DynamicFormProvider` 用 `effectMap` 初始化 `form-chain-effect-engine`。
+8. `DynamicFormProvider` 用 `effectMap` 初始化 `form-chain-effect`。
 9. `FormContent` 基于 reducer state 计算一次 `runtimeState`。
 10. 渲染、提交校验、字段变更校验和隐藏字段参与策略共同使用这份 `runtimeState`。
 11. 用户输入触发 runtime 过滤后的校验，再把变更值交给 effect engine。

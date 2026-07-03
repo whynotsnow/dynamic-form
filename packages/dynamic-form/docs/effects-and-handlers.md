@@ -1,6 +1,6 @@
 # Effect 与处理器
 
-DynamicForm 使用 `form-chain-effect-engine` 执行依赖链，但 effect 返回值如何作用到表单由 DynamicForm 的 handler 系统负责。
+DynamicForm 使用 `@whynotsnow/hooks/form-chain-effect` 执行依赖链，但 effect 返回值如何作用到表单由 DynamicForm 的 handler 系统负责。
 
 ## 异步边界
 
@@ -50,7 +50,7 @@ return <DynamicForm form={form} formConfig={formConfig} />;
 }
 ```
 
-配置处理阶段会生成 `effectMap`，并传给 `form-chain-effect-engine`。
+配置处理阶段会生成 `effectMap`，并传给 `form-chain-effect`。
 
 Effect graph 节点引用稳定 `id`，不引用 Ant Design `NamePath`。Field Address 和 4.0 container `name` 可以让 values 呈现嵌套结构，但字段、group 和 container 的联动依赖仍应通过全局唯一 `id` 声明。
 

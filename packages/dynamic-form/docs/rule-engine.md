@@ -8,7 +8,7 @@ DynamicForm 提供声明式同步 Rule Engine。规则属于被影响的字段�
 flowchart TD
   rules["Module rules"] --> compiler["compileRulesToEffect"]
   compiler --> effect["standard effect"]
-  effect --> engine["form-chain-effect-engine"]
+  effect --> engine["form-chain-effect"]
   engine --> handlers["effect result handlers"]
   handlers --> output["field/group meta or field value"]
 ```
@@ -107,5 +107,5 @@ compileFormConfig({
 - 不支持异步规则、远程规则、请求取消或竞态策略；这些异步交互应放在自定义字段组件、业务容器或 Ant Design `rules.validator` 中。
 - 当前路线不承诺提供库级 async validation compile。
 - 不替代 Ant Design validation rules。
-- 不替代 `form-chain-effect-engine`，而是生成该引擎可执行的标准 effects。
+- 不替代 `form-chain-effect`，而是生成该引擎可执行的标准 effects。
 - 不维护独立 values store，规则从 effect engine 提供的当前 values 快照读取数据。

@@ -6,7 +6,7 @@
 
 本文适用于 `packages/dynamic-form/`。这里是 monorepo 中的 React/AntD npm 发布包，包名为 `@whynotsnow/dynamic-form`。
 
-DynamicForm 是 React + TypeScript 动态表单库，基于 Ant Design 渲染表单，并通过 `form-chain-effect-engine` 执行字段依赖和 effect chain。
+DynamicForm 是 React + TypeScript 动态表单库，基于 Ant Design 渲染表单，并通过 `@whynotsnow/hooks/form-chain-effect` 执行字段依赖和 effect chain。
 
 ## Package 边界
 
@@ -103,7 +103,7 @@ package 变更通常还需要关注：
 8. `FormContent` 通过 `useRuntimeState(state)` 为同一个 state snapshot 计算一次 `runtimeState`。
 9. `useFormRuntimeEvents` 使用同一份 Runtime snapshot 处理 submit/change events。
 10. `useFieldParticipation` 消费同一份 `runtimeState`，并根据 `submitable` 清理或恢复 values。
-11. `form-chain-effect-engine` 从 `effectMap` 执行 dependent field effects。
+11. `form-chain-effect` 从 `effectMap` 执行 dependent field effects。
 12. `applyEffectResult` 通过内置或自定义 handlers 应用 value/meta/UI updates。
 
 ## Runtime Layer 运行时层

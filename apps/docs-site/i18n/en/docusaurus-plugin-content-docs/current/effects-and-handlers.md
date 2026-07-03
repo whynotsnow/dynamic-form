@@ -1,6 +1,6 @@
 # Effects and Handlers
 
-DynamicForm delegates dependency execution to `form-chain-effect-engine`, while DynamicForm owns how effect results are applied through its handler system.
+DynamicForm delegates dependency execution to `@whynotsnow/hooks/form-chain-effect`, while DynamicForm owns how effect results are applied through its handler system.
 
 ## Async Boundary
 
@@ -33,7 +33,7 @@ return <DynamicForm form={form} formConfig={formConfig} />;
 
 ## Effect Config
 
-Fields and groups can declare `dependents` and `effect`. Config processing creates an `effectMap` and passes it to `form-chain-effect-engine`.
+Fields and groups can declare `dependents` and `effect`. Config processing creates an `effectMap` and passes it to `form-chain-effect`.
 
 Effect graph nodes reference stable `id` values, not Ant Design `NamePath` values. Field Address and 4.0 container `name` prefixes can make values nested, but field, group, and container dependencies should still be declared through globally unique `id` values.
 

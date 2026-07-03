@@ -31,7 +31,7 @@ flowchart TD
   subgraph react["@whynotsnow/dynamic-form"]
   entry["packages/dynamic-form/src/index.tsx"] --> provider["DynamicFormProvider"]
   provider --> storeInit["useStoreInit"]
-  provider --> effectEngine["form-chain-effect-engine"]
+  provider --> effectEngine["form-chain-effect"]
   provider --> context["FormChainContext"]
 
   entry --> content["FormContent"]
@@ -72,7 +72,7 @@ The 4.2 main flow remains `FormConfig -> adapter/compiler -> processFormConfig -
 5. `useStoreInit` calls `processFormConfig(formConfig)`.
 6. Config processing normalizes `nodes`, `fields`, and `groups` into a node tree, then creates dependency maps, node/container/field registries, initial values, and initialized field/container state.
 7. The reducer receives `INIT` and stores node structure, meta, config process info, and dynamic UI config.
-8. `DynamicFormProvider` initializes `form-chain-effect-engine` with `effectMap`.
+8. `DynamicFormProvider` initializes `form-chain-effect` with `effectMap`.
 9. `FormContent` computes one `runtimeState` from reducer state.
 10. Rendering, validation, and hidden-field participation consume that same `runtimeState`.
 11. User input triggers runtime-filtered validation and then the effect engine.

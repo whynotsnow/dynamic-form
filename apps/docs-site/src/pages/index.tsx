@@ -28,7 +28,7 @@ const features = [
     description: translate({
       id: 'homepage.features.effectsRuntime.description',
       message:
-        '通过 form-chain-effect-engine 执行依赖链，并由 Runtime Layer 统一解析显示、提交、禁用、只读和校验能力。'
+        '通过 @whynotsnow/hooks/form-chain-effect 执行依赖链，并由 Runtime Layer 统一解析显示、提交、禁用、只读和校验能力。'
     })
   },
   {

@@ -1,6 +1,6 @@
 # DynamicForm
 
-`@whynotsnow/dynamic-form` 是一个基于 React 和 TypeScript 的配置驱动动态表单引擎，默认提供 Ant Design renderer。它用配置描述表单结构，用 `form-chain-effect-engine` 执行字段联动，并通过 Runtime Layer 统一处理字段是否渲染、是否提交、是否可编辑、是否校验等运行时策略。4.2 起，UI-library agnostic 的配置、编译、规则和纯 Runtime 能力归属 `@whynotsnow/dynamic-form-core`，本包继续作为 React/AntD 兼容主入口并 re-export core 公共 API。
+`@whynotsnow/dynamic-form` 是一个基于 React 和 TypeScript 的配置驱动动态表单引擎，默认提供 Ant Design renderer。它用配置描述表单结构，用 `@whynotsnow/hooks/form-chain-effect` 执行字段联动，并通过 Runtime Layer 统一处理字段是否渲染、是否提交、是否可编辑、是否校验等运行时策略。4.2 起，UI-library agnostic 的配置、编译、规则和纯 Runtime 能力归属 `@whynotsnow/dynamic-form-core`，本包继续作为 React/AntD 兼容主入口并 re-export core 公共 API。
 
 ## 项目能力
 
@@ -177,7 +177,7 @@ const compiled = compileFormConfig(
 
 当前规则支持同步联动动作：`show`、`hide`、`enable`、`disable`、`readonly`、`editable`、`setValue` 和 `clearValue`。Group/container rules 仅支持 `show` 和 `hide`。
 
-Rule 是字段所属的 per-field 规则，不支持 `target` 配置。一个源字段影响多个字段时，应在每个被影响字段上分别声明 rule；compiler 会从 `when` 条件推导相同的 `dependents`，再由 `form-chain-effect-engine` 触发这些字段各自的 effect。
+Rule 是字段所属的 per-field 规则，不支持 `target` 配置。一个源字段影响多个字段时，应在每个被影响字段上分别声明 rule；compiler 会从 `when` 条件推导相同的 `dependents`，再由 `form-chain-effect` 触发这些字段各自的 effect。
 
 `DynamicForm` props 分为两类：
 
