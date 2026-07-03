@@ -56,6 +56,10 @@ const config: Config = {
                 '@whynotsnow/dynamic-form': path.resolve(
                   __dirname,
                   '../../packages/dynamic-form/src/exports.ts'
+                ),
+                '@whynotsnow/dynamic-form-core': path.resolve(
+                  __dirname,
+                  '../../packages/dynamic-form-core/src/exports.ts'
                 )
               }
             },
