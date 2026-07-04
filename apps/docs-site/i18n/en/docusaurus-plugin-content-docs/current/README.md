@@ -29,7 +29,7 @@ The package exports:
 - `DynamicForm`
 - `CompiledDynamicForm`
 - `DynamicFormProvider`
-- `FormChainEffectEngineWrapper`
+- `FormChainEffectWrapper`
 - `useInitHandlers`
 - `useStoreInit`
 - `useFormChainContext`

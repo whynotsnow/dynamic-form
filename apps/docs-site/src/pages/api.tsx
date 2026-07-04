@@ -16,7 +16,7 @@ const apiGroups = [
       'DynamicForm',
       'CompiledDynamicForm',
       'DynamicFormProvider',
-      'FormChainEffectEngineWrapper'
+      'FormChainEffectWrapper'
     ],
     docs: '/docs/development'
   },

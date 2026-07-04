@@ -1,10 +1,9 @@
 import React from 'react';
-import type { DynamicFormProps, EngineProps, FormContentProps } from './shared/types';
+import type { DynamicFormProps, FormChainEffectProps, FormContentProps } from './shared/types';
 import FormContent from './consumer/render/FormContent';
 import DynamicFormProvider from './consumer/provider/DynamicFormProvider';
 
-// EngineProps
-function pickEngineProps(props: DynamicFormProps): EngineProps {
+function pickFormChainEffectProps(props: DynamicFormProps): FormChainEffectProps {
   const { formConfig, form, formAdapter, values, enableInitializationCheck, checkDelay, uiConfig } =
     props;
   return {
@@ -49,10 +48,10 @@ function pickUIProps(props: DynamicFormProps): FormContentProps {
 }
 
 const DynamicForm: React.FC<DynamicFormProps> = (props) => {
-  const engineProps = pickEngineProps(props);
+  const formChainEffectProps = pickFormChainEffectProps(props);
   const uiProps = pickUIProps(props);
   return (
-    <DynamicFormProvider {...engineProps}>
+    <DynamicFormProvider {...formChainEffectProps}>
       <FormContent {...uiProps} />
     </DynamicFormProvider>
   );

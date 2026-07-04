@@ -340,14 +340,13 @@ export interface DynamicFormRendererAdapter {
   renderSubmit: (params: RendererSubmitParams) => React.ReactNode;
 }
 
-export interface DynamicFormProps extends EngineProps, FormContentProps {}
+export interface DynamicFormProps extends FormChainEffectProps, FormContentProps {}
 
-export interface DynamicFormProviderProps extends EngineProps {
+export interface DynamicFormProviderProps extends FormChainEffectProps {
   children: React.ReactNode;
 }
-export type FormChainEffectEngineWrapperProps = DynamicFormProviderProps;
-// 引擎层（逻辑层） Props
-export interface EngineProps {
+export type FormChainEffectWrapperProps = DynamicFormProviderProps;
+export interface FormChainEffectProps {
   formConfig: FormConfig;
   form?: DynamicFormLegacyForm;
   formAdapter?: DynamicFormFormAdapter;

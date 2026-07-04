@@ -51,7 +51,7 @@ package 变更通常还需要关注：
 ## 目录地图
 
 - `src/exports.ts`：package public export surface；tsup entry point。
-- `src/index.tsx`：`DynamicForm` 组件，组合 engine layer 和 UI layer。
+- `src/index.tsx`：`DynamicForm` 组件，组合 effect chain provider 和 UI layer。
 - `src/shared/types.ts`：React/AntD/effect handler 相关 public/internal types；纯 core 类型从 `@whynotsnow/dynamic-form-core` 复用。
 - `src/consumer/provider/DynamicFormProvider.tsx`：provider layer，初始化 store、effect engine、context、初始化告警和 effect result handling。
 - `src/consumer/render/FormContent.tsx`：rendering layer，拥有 Ant Design `Form`、value change、submit、default rendering 和 render extension hooks。
@@ -75,7 +75,7 @@ package 变更通常还需要关注：
 - `DynamicForm`
 - `CompiledDynamicForm`
 - `DynamicFormProvider`
-- `FormChainEffectEngineWrapper`
+- `FormChainEffectWrapper`
 - key types：`DynamicFormProps`、`FormConfig`、`BaseFieldConfig`、`FieldComponentProps`、`ComponentRegistry`、`ComponentRegistryConfig`
 - `ComponentRegistryManager`、`DefaultRegistryFieldComponents`
 - hooks：`useFormChainContext`、`useStoreInit`、`useInitHandlers`
@@ -88,14 +88,14 @@ package 变更通常还需要关注：
 
 `DynamicFormProps` 分为：
 
-- engine props：`formConfig`、`form`、可选 `values`、`uiConfig`、`enableInitializationCheck`、`checkDelay`
+- effect chain props：`formConfig`、`form`、可选 `values`、`uiConfig`、`enableInitializationCheck`、`checkDelay`
 - UI props：可选 `onSubmit`、`submitButtonText`、`componentRegistry` 和 render extension callbacks
 
 ## Core Data Flow 数据流
 
 1. 可选 adapters 通过 `adaptModuleConfigs` 或 `compileAdaptedFormConfig` 把外部输入归一化为 `ModuleConfig[]`。
 2. 可选 compiler APIs 通过 `compileFormConfig` 把 `ModuleConfig[]` 展开为现有 `FormConfig`。
-3. `DynamicForm` 把 props 拆分为 engine props 和 UI props。
+3. `DynamicForm` 把 props 拆分为 effect chain props 和 UI props。
 4. `DynamicFormProvider` 调用 `useStoreInit`。
 5. `useStoreInit` 使用 `processFormConfig` 处理 `formConfig`，合并 initial values 与 `values`，创建 reducer state，并 dispatch `INIT`。
 6. `FormContent` 从 reducer state 渲染 Ant Design `Form`。

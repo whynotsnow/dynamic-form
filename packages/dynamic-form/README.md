@@ -98,7 +98,7 @@ export function Example() {
 - `DynamicForm`
 - `CompiledDynamicForm`
 - `DynamicFormProvider`
-- `FormChainEffectEngineWrapper`
+- `FormChainEffectWrapper`
 - `useInitHandlers`
 - `useStoreInit`
 - `useFormChainContext`

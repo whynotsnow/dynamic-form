@@ -53,7 +53,7 @@ The 4.2 main flow remains `FormConfig -> adapter/compiler -> processFormConfig -
 - `packages/dynamic-form-core/src/config/processor/configParser.ts`: normalizes the node tree and creates `effectMap`, `nodeRegistry`, `containerRegistry`, `fieldRegistry`, `initialValues`, and initialized field/container state.
 - `packages/dynamic-form-core/src/runtime/`: resolves pure field, container, and group runtime capabilities and exposes inspection helpers.
 - `packages/dynamic-form/src/CompiledDynamicForm.tsx`: wires compiler output and its component registry into `DynamicForm`.
-- `packages/dynamic-form/src/index.tsx`: splits `DynamicFormProps` into engine props and UI props.
+- `packages/dynamic-form/src/index.tsx`: splits `DynamicFormProps` into effect chain props and UI props.
 - `packages/dynamic-form/src/consumer/provider/DynamicFormProvider.tsx`: initializes store, effect engine, and React context.
 - `packages/dynamic-form/src/consumer/formAdapter.ts`: provides the default AntD form adapter and converts the legacy `form` instance into the neutral `DynamicFormFormAdapter`.
 - `packages/dynamic-form/src/state/useStoreInit.ts`: processes config, creates reducer state, merges initial values, and syncs them to the form runtime through the form adapter.
@@ -68,7 +68,7 @@ The 4.2 main flow remains `FormConfig -> adapter/compiler -> processFormConfig -
 1. An optional adapter normalizes external input into `ModuleFormConfig`.
 2. The optional compiler expands field modules, compiles field/group rules, and creates standard `FormConfig` plus a component registry.
 3. The user supplies handwritten `FormConfig` to `DynamicForm`, or compiler output to `CompiledDynamicForm`.
-4. `DynamicForm` passes engine props to `DynamicFormProvider` and UI props to `FormContent`.
+4. `DynamicForm` passes effect chain props to `DynamicFormProvider` and UI props to `FormContent`.
 5. `useStoreInit` calls `processFormConfig(formConfig)`.
 6. Config processing normalizes `nodes`, `fields`, and `groups` into a node tree, then creates dependency maps, node/container/field registries, initial values, and initialized field/container state.
 7. The reducer receives `INIT` and stores node structure, meta, config process info, and dynamic UI config.

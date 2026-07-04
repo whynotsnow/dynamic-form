@@ -1,5 +1,5 @@
 export { default as DynamicFormProvider } from './provider/DynamicFormProvider';
-export { default as FormChainEffectEngineWrapper } from './provider/DynamicFormProvider';
+export { default as FormChainEffectWrapper } from './provider/DynamicFormProvider';
 
 export { useInitHandlers } from './hooks/useInitHandlers';
 export { useFormRuntimeEvents } from './hooks/useFormRuntimeEvents';
