@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { getFieldName } from '@/exports';
 import type { FieldComponentProps } from '@/exports';
-import { Button, message, Input, Select, Popconfirm } from 'antd';
+import { Button, Card, Form, Grid, Input, message, Popconfirm, Select, Space, Table } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
 import { PlusOutlined } from '@ant-design/icons';
-import { EditableProTable } from '@ant-design/pro-components';
-import type { ProColumns } from '@ant-design/pro-components';
+import styles from './CustomEditTable.module.css';
 
 type EditTableRow = {
   key: React.Key;
@@ -16,17 +16,32 @@ type EditTableRow = {
   status: string;
 };
 
-type EditTableAction = {
-  save?: (key: React.Key) => void;
-  cancel?: (key: React.Key) => void;
-  startEditable?: (key: React.Key) => void;
-};
+type EditableField = Exclude<keyof EditTableRow, 'key'>;
+type EditErrors = Partial<Record<EditableField, string>>;
 
 const toEditTableRows = (input: unknown): EditTableRow[] => {
   return Array.isArray(input) ? (input as EditTableRow[]) : [];
 };
 
-// EditTable 组件 - 使用 Ant Design Pro 的 EditableProTable
+const validateEditTableRow = (row: EditTableRow): EditErrors => {
+  const errors: EditErrors = {};
+
+  if (!row.name.trim()) errors.name = '请输入姓名';
+  if (!row.age.trim()) errors.age = '请输入年龄';
+  else if (!/^[0-9]+$/.test(row.age)) errors.age = '年龄必须是数字';
+  else if (Number(row.age) > 150) errors.age = '年龄必须在0-150之间';
+  if (!row.address.trim()) errors.address = '请输入地址';
+  if (!row.email.trim()) errors.email = '请输入邮箱';
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(row.email)) {
+    errors.email = '邮箱格式不正确';
+  }
+  if (!row.phone.trim()) errors.phone = '请输入电话';
+  else if (!/^1[3-9]\d{9}$/.test(row.phone)) errors.phone = '请输入有效的 11 位手机号';
+  if (!row.status) errors.status = '请选择状态';
+
+  return errors;
+};
+
 const CustomEditTable: React.FC<FieldComponentProps> = ({
   field,
   value,
@@ -35,6 +50,20 @@ const CustomEditTable: React.FC<FieldComponentProps> = ({
 }) => {
   const [dataSource, setDataSource] = React.useState<EditTableRow[]>(() => toEditTableRows(value));
   const [editableKeys, setEditableKeys] = React.useState<React.Key[]>([]);
+  const [editSnapshots, setEditSnapshots] = React.useState<Record<string, EditTableRow | null>>({});
+  const [editErrors, setEditErrors] = React.useState<Record<string, EditErrors>>({});
+  const screens = Grid.useBreakpoint();
+  const isNarrowScreen = !screens.lg;
+  const previousLayout = useRef(isNarrowScreen);
+
+  useEffect(() => {
+    if (previousLayout.current !== isNarrowScreen) {
+      setEditableKeys([]);
+      setEditSnapshots({});
+      setEditErrors({});
+      previousLayout.current = isNarrowScreen;
+    }
+  }, [isNarrowScreen]);
 
   // 监听表单值变化，保持 value/onChange 兼容性
   useEffect(() => {
@@ -83,8 +112,10 @@ const CustomEditTable: React.FC<FieldComponentProps> = ({
     setDataSource(newDataSource);
     onChange?.(newDataSource);
 
-    // 新增行立即进入编辑状态
+    // 新增行立即进入编辑状态；取消时移除此行。
     setEditableKeys((prev) => [...prev, newKey]);
+    setEditSnapshots((prev) => ({ ...prev, [newKey]: null }));
+    setEditErrors((prev) => ({ ...prev, [newKey]: {} }));
   };
 
   const handleDelete = (key: React.Key) => {
@@ -94,124 +125,183 @@ const CustomEditTable: React.FC<FieldComponentProps> = ({
     message.success('删除成功');
   };
 
-  const columns: ProColumns<EditTableRow>[] = [
-    {
-      title: '姓名',
-      dataIndex: 'name',
-      key: 'name',
-      formItemProps: {
-        rules: [{ required: true, message: '请输入姓名' }]
-      },
-      renderFormItem: () => <Input placeholder="请输入姓名" />
-    },
-    {
-      title: '年龄',
-      dataIndex: 'age',
-      key: 'age',
-      formItemProps: {
-        rules: [
-          { required: true, message: '请输入年龄' },
-          { pattern: /^[0-9]+$/, message: '年龄必须是数字' },
-          {
-            validator: (_, value) => {
-              if (value && (Number(value) < 0 || Number(value) > 150)) {
-                return Promise.reject(new Error('年龄必须在0-150之间'));
-              }
-              return Promise.resolve();
-            }
-          }
-        ]
-      },
-      renderFormItem: () => <Input type="number" placeholder="请输入年龄" />
-    },
-    {
-      title: '地址',
-      dataIndex: 'address',
-      key: 'address',
-      formItemProps: {
-        rules: [{ required: true, message: '请输入地址' }]
-      },
-      renderFormItem: () => <Input placeholder="请输入地址" />
-    },
-    {
-      title: '邮箱',
-      dataIndex: 'email',
-      key: 'email',
-      formItemProps: {
-        rules: [
-          { required: true, message: '请输入邮箱' },
-          { pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: '邮箱格式不正确' }
-        ]
-      },
-      renderFormItem: () => <Input placeholder="请输入邮箱" />
-    },
-    {
-      title: '电话',
-      dataIndex: 'phone',
-      key: 'phone',
-      formItemProps: {
-        rules: [
-          { required: true, message: '请输入电话' },
-          { pattern: /^1[3-9]\d{9}$/, message: '电话格式不正确（11位手机号）' }
-        ]
-      },
-      renderFormItem: () => <Input placeholder="请输入电话" />
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      key: 'status',
-      valueType: 'select',
-      valueEnum: {
-        active: { text: '活跃', status: 'Success' },
-        inactive: { text: '非活跃', status: 'Error' },
-        paused: { text: '暂停', status: 'Warning' }
-      },
-      formItemProps: {
-        rules: [{ required: true, message: '请选择状态' }]
-      },
-      renderFormItem: () => (
+  const updateField = (key: React.Key, fieldName: EditableField, nextValue: string) => {
+    const nextData = dataSource.map((row) =>
+      row.key === key ? { ...row, [fieldName]: nextValue } : row
+    );
+    handleValueChange(nextData);
+    setEditErrors((prev) => ({
+      ...prev,
+      [String(key)]: { ...prev[String(key)], [fieldName]: undefined }
+    }));
+  };
+
+  const startEdit = (row: EditTableRow) => {
+    setEditSnapshots((prev) => ({ ...prev, [String(row.key)]: { ...row } }));
+    setEditErrors((prev) => ({ ...prev, [String(row.key)]: {} }));
+    setEditableKeys((prev) => (prev.includes(row.key) ? prev : [...prev, row.key]));
+  };
+
+  const cancelEdit = (row: EditTableRow) => {
+    const key = String(row.key);
+    const original = editSnapshots[key];
+
+    if (original === null) {
+      const nextData = dataSource.filter((item) => item.key !== row.key);
+      setDataSource(nextData);
+      onChange?.(nextData);
+    } else if (original) {
+      const nextData = dataSource.map((item) => (item.key === row.key ? original : item));
+      setDataSource(nextData);
+      onChange?.(nextData);
+    }
+
+    setEditableKeys((prev) => prev.filter((itemKey) => itemKey !== row.key));
+    setEditSnapshots((prev) => {
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+    setEditErrors((prev) => {
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+  };
+
+  const saveEdit = (row: EditTableRow) => {
+    const errors = validateEditTableRow(row);
+    const key = String(row.key);
+
+    if (Object.keys(errors).length > 0) {
+      setEditErrors((prev) => ({ ...prev, [key]: errors }));
+      return;
+    }
+
+    setEditableKeys((prev) => prev.filter((itemKey) => itemKey !== row.key));
+    setEditSnapshots((prev) => {
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+    setEditErrors((prev) => {
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+    message.success('保存成功');
+  };
+
+  const renderDesktopField = (row: EditTableRow, fieldName: EditableField, placeholder: string) => {
+    const error = editErrors[String(row.key)]?.[fieldName];
+    const isEditing = editableKeys.includes(row.key);
+
+    if (!isEditing) return row[fieldName] || '—';
+
+    const control =
+      fieldName === 'status' ? (
         <Select
+          size="small"
+          value={row.status}
           options={[
             { label: '活跃', value: 'active' },
             { label: '非活跃', value: 'inactive' },
             { label: '暂停', value: 'paused' }
           ]}
+          onChange={(nextValue) => updateField(row.key, 'status', nextValue)}
         />
-      )
+      ) : (
+        <Input
+          size="small"
+          type={fieldName === 'age' ? 'number' : 'text'}
+          value={row[fieldName]}
+          placeholder={placeholder}
+          onChange={(event) => updateField(row.key, fieldName, event.target.value)}
+        />
+      );
+
+    return (
+      <div className={styles.desktopEditCell}>
+        {control}
+        {error && <span className={styles.desktopFieldError}>{error}</span>}
+      </div>
+    );
+  };
+
+  const columns: ColumnsType<EditTableRow> = [
+    {
+      title: '姓名',
+      dataIndex: 'name',
+      key: 'name',
+      width: 88,
+      render: (_value, row) => renderDesktopField(row, 'name', '请输入姓名')
+    },
+    {
+      title: '年龄',
+      dataIndex: 'age',
+      key: 'age',
+      width: 64,
+      render: (_value, row) => renderDesktopField(row, 'age', '年龄')
+    },
+    {
+      title: '地址',
+      dataIndex: 'address',
+      key: 'address',
+      width: 130,
+      render: (_value, row) => renderDesktopField(row, 'address', '请输入地址')
+    },
+    {
+      title: '邮箱',
+      dataIndex: 'email',
+      key: 'email',
+      width: 150,
+      render: (_value, row) => renderDesktopField(row, 'email', '请输入邮箱')
+    },
+    {
+      title: '电话',
+      dataIndex: 'phone',
+      key: 'phone',
+      width: 116,
+      render: (_value, row) => renderDesktopField(row, 'phone', '请输入电话')
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      key: 'status',
+      width: 88,
+      render: (_value, row) => renderDesktopField(row, 'status', '请选择状态')
     },
     {
       title: '操作',
-      valueType: 'option',
-      render: (_text, record, _index, action?: EditTableAction) => {
-        const isEditing = editableKeys.includes(record.key);
-        return isEditing
-          ? [
-              <Button key="save" type="link" onClick={() => action?.save?.(record.key)}>
-                保存
-              </Button>,
-              <Button key="cancel" type="link" onClick={() => action?.cancel?.(record.key)}>
-                取消
+      key: 'actions',
+      width: 144,
+      render: (_value, row) =>
+        editableKeys.includes(row.key) ? (
+          <Space size={0} wrap>
+            <Button size="small" type="link" onClick={() => saveEdit(row)}>
+              保存
+            </Button>
+            <Button size="small" type="link" onClick={() => cancelEdit(row)}>
+              取消
+            </Button>
+          </Space>
+        ) : (
+          <Space size={0} wrap>
+            <Button size="small" type="link" onClick={() => startEdit(row)}>
+              编辑
+            </Button>
+            <Popconfirm title="确认删除？" onConfirm={() => handleDelete(row.key)}>
+              <Button size="small" type="link" danger>
+                删除
               </Button>
-            ]
-          : [
-              <Button key="edit" type="link" onClick={() => action?.startEditable?.(record.key)}>
-                编辑
-              </Button>,
-              <Popconfirm
-                key="delete"
-                title="确认删除？"
-                onConfirm={() => handleDelete(record.key)}
-              >
-                <Button type="link">删除</Button>
-              </Popconfirm>
-            ];
-      }
+            </Popconfirm>
+          </Space>
+        )
     }
   ];
 
   return (
-    <div>
+    <div style={{ width: '100%', minWidth: 0, overflow: 'visible' }}>
       <Button
         type="dashed"
         onClick={handleAdd}
@@ -220,26 +310,155 @@ const CustomEditTable: React.FC<FieldComponentProps> = ({
       >
         添加行
       </Button>
-      <EditableProTable
-        columns={columns}
-        value={dataSource}
-        onChange={handleValueChange}
-        rowKey="key"
-        editable={{
-          editableKeys,
-          onChange: setEditableKeys,
-          onDelete: async () => {
-            message.success('删除成功');
-            return true;
-          }
-        }}
-        search={false}
-        options={false}
-        pagination={false}
-        size="small"
-        bordered
-        recordCreatorProps={false} // 禁用内置添加按钮
-      />
+      {isNarrowScreen ? (
+        <div className={styles.mobileList}>
+          {dataSource.map((row, index) => {
+            const rowKey = String(row.key);
+            const isEditing = editableKeys.includes(row.key);
+            const errors = editErrors[rowKey] ?? {};
+
+            const field = (
+              fieldName: EditableField,
+              label: string,
+              control: React.ReactNode,
+              wide = false
+            ) => (
+              <div
+                className={`${styles.mobileField} ${wide ? styles.mobileFieldWide : ''}`}
+                key={fieldName}
+              >
+                {isEditing ? (
+                  <Form.Item
+                    label={label}
+                    required
+                    validateStatus={errors[fieldName] ? 'error' : undefined}
+                    help={errors[fieldName]}
+                  >
+                    {control}
+                  </Form.Item>
+                ) : (
+                  <div>
+                    <div className={styles.mobileLabel}>{label}</div>
+                    <div className={styles.mobileValue}>{row[fieldName] || '—'}</div>
+                  </div>
+                )}
+              </div>
+            );
+
+            return (
+              <Card className={styles.mobileCard} size="small" key={row.key}>
+                <div className={styles.mobileCardHeader}>
+                  <strong>{row.name || `用户${index + 1}`}</strong>
+                  {!isEditing && (
+                    <Space size={4}>
+                      <Button size="small" type="link" onClick={() => startEdit(row)}>
+                        编辑
+                      </Button>
+                      <Popconfirm title="确认删除？" onConfirm={() => handleDelete(row.key)}>
+                        <Button size="small" type="link" danger>
+                          删除
+                        </Button>
+                      </Popconfirm>
+                    </Space>
+                  )}
+                </div>
+
+                <div className={styles.mobileFields}>
+                  {field(
+                    'name',
+                    '姓名',
+                    <Input
+                      size="small"
+                      value={row.name}
+                      placeholder="请输入姓名"
+                      onChange={(event) => updateField(row.key, 'name', event.target.value)}
+                    />
+                  )}
+                  {field(
+                    'age',
+                    '年龄',
+                    <Input
+                      size="small"
+                      type="number"
+                      value={row.age}
+                      placeholder="请输入年龄"
+                      onChange={(event) => updateField(row.key, 'age', event.target.value)}
+                    />
+                  )}
+                  {field(
+                    'address',
+                    '地址',
+                    <Input
+                      size="small"
+                      value={row.address}
+                      placeholder="请输入地址"
+                      onChange={(event) => updateField(row.key, 'address', event.target.value)}
+                    />,
+                    true
+                  )}
+                  {field(
+                    'email',
+                    '邮箱',
+                    <Input
+                      size="small"
+                      value={row.email}
+                      placeholder="请输入邮箱"
+                      onChange={(event) => updateField(row.key, 'email', event.target.value)}
+                    />,
+                    true
+                  )}
+                  {field(
+                    'phone',
+                    '电话',
+                    <Input
+                      size="small"
+                      value={row.phone}
+                      placeholder="请输入电话"
+                      onChange={(event) => updateField(row.key, 'phone', event.target.value)}
+                    />
+                  )}
+                  {field(
+                    'status',
+                    '状态',
+                    <Select
+                      size="small"
+                      value={row.status}
+                      options={[
+                        { label: '活跃', value: 'active' },
+                        { label: '非活跃', value: 'inactive' },
+                        { label: '暂停', value: 'paused' }
+                      ]}
+                      onChange={(nextValue) => updateField(row.key, 'status', nextValue)}
+                    />
+                  )}
+                </div>
+
+                {isEditing && (
+                  <div className={styles.mobileCardActions}>
+                    <Button size="small" type="primary" onClick={() => saveEdit(row)}>
+                      保存
+                    </Button>
+                    <Button size="small" onClick={() => cancelEdit(row)}>
+                      取消
+                    </Button>
+                  </div>
+                )}
+              </Card>
+            );
+          })}
+        </div>
+      ) : (
+        <Table
+          className={styles.desktopTable}
+          columns={columns}
+          dataSource={dataSource}
+          rowKey="key"
+          tableLayout="fixed"
+          pagination={false}
+          size="small"
+          bordered
+        />
+      )}
     </div>
   );
 };

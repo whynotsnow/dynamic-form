@@ -1,0 +1,102 @@
+.mobileList {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.mobileCard {
+  min-width: 0;
+  border-color: #e5e7eb;
+}
+
+.mobileCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  margin-bottom: 12px;
+}
+
+.mobileCardHeader strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobileFields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 12px;
+  min-width: 0;
+}
+
+.mobileField {
+  min-width: 0;
+}
+
+.mobileFieldWide {
+  grid-column: 1 / -1;
+}
+
+.mobileField :global(.ant-form-item) {
+  margin-bottom: 12px;
+}
+
+.mobileField :global(.ant-form-item-label) {
+  padding-bottom: 2px;
+}
+
+.mobileField :global(.ant-form-item-control-input) {
+  min-height: 28px;
+}
+
+.mobileLabel {
+  margin-bottom: 4px;
+  color: #6b7280;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.mobileValue {
+  min-height: 22px;
+  overflow-wrap: anywhere;
+  color: #1f2937;
+  line-height: 1.5;
+}
+
+.mobileCardActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.desktopTable :global(.ant-table-cell) {
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.desktopTable :global(.ant-table-tbody > tr > td) {
+  padding: 8px 6px;
+}
+
+.desktopEditCell {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.desktopFieldError {
+  color: #ff4d4f;
+  font-size: 11px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 400px) {
+  .mobileFields {
+    column-gap: 8px;
+  }
+}
