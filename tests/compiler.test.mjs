@@ -246,15 +246,17 @@ test('compileFormConfig assembles mixed fields and groups with group-owned rules
     compiled.formConfig.groups[0].fields.map((field) => field.id),
     ['companyName', 'taxNo']
   );
-  assert.deepEqual(compiled.formConfig.groups[0].dependents, ['legacyType', 'accountType']);
+  assert.deepEqual(compiled.formConfig.groups[0].dependents, ['legacyType']);
+  assert.deepEqual(compiled.formConfig.fields[0].dependents, ['companyInfo']);
   assert.deepEqual(compiled.formConfig.groups[0].effect(undefined, { accountType: 'company' }), {
-    visible: true
+    groupsVisible: { companyInfo: true }
   });
   assert.equal(compiled.componentRegistry.TextField, Component);
 
   const processed = processFormConfig(compiled.formConfig);
   assert.ok(processed.initializedFields.accountType);
   assert.ok(processed.initializedGroupFields.companyInfo.fields.companyName);
+  assert.deepEqual(processed.effectMap.accountType.dependents, ['companyInfo']);
 });
 
 test('compileFormConfig rejects invalid group membership and ids', () => {

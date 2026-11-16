@@ -161,11 +161,10 @@ test('compileAdaptedFormConfig adapts input before using the module compiler', (
   });
   assert.deepEqual(compiled.formConfig.groups[0].dependents, [
     'legacy',
-    'departmentId',
-    'enabled'
+    'departmentId'
   ]);
   assert.deepEqual(compiled.formConfig.groups[0].effect(undefined, { enabled: true }), {
-    visible: true
+    groupsVisible: { reviewGroup: true }
   });
 
   const element = CompiledDynamicForm({ compiled, form: {} });

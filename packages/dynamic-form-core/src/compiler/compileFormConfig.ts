@@ -77,6 +77,26 @@ function mergeEffectResults(baseResult: unknown, ruleResult: unknown) {
   };
 }
 
+function normalizeGroupEffectResult(result: unknown, groupId: string) {
+  if (!result || typeof result !== 'object' || !('visible' in result)) {
+    return result;
+  }
+
+  const { visible, groupsVisible, ...rest } = result as Record<string, unknown>;
+
+  if (typeof visible !== 'boolean') {
+    return result;
+  }
+
+  return {
+    ...rest,
+    groupsVisible: {
+      ...(groupsVisible && typeof groupsVisible === 'object' ? groupsVisible : {}),
+      [groupId]: visible
+    }
+  };
+}
+
 function expandModule(
   moduleConfig: ModuleConfig,
   options: CompileFormConfigOptions
@@ -300,6 +320,15 @@ export function compileFormConfig(
   });
 
   groupConfigs.forEach((groupConfig) => {
+    inferRulesDependencies(groupConfig.rules || []).forEach((sourceId) => {
+      const source = compiledFields.find(({ field }) => field.id === sourceId)?.field;
+      if (source) {
+        source.dependents = mergeDependents(source.dependents, [groupConfig.id]);
+      }
+    });
+  });
+
+  groupConfigs.forEach((groupConfig) => {
     const groupFields = compiledFieldsByGroup.get(groupConfig.id) || [];
 
     if (groupFields.length === 0) {
@@ -314,15 +343,19 @@ export function compileFormConfig(
       groupRules.length > 0
         ? compileRulesToEffect(groupRules, { fieldId: groupConfig.id })
         : undefined;
+    const effect =
+      groupConfig.effect && ruleEffect
+        ? (...args: Parameters<NonNullable<typeof groupConfig.effect>>) =>
+            mergeEffectResults(groupConfig.effect!(...args), ruleEffect(...args))
+        : ruleEffect || groupConfig.effect;
     const group: GroupField = {
       id: groupConfig.id,
       title: groupConfig.title,
       initialVisible: groupConfig.initialVisible,
-      dependents: mergeDependents(groupConfig.dependents, inferRulesDependencies(groupRules)),
-      effect:
-        groupConfig.effect && ruleEffect
-          ? (...args) => mergeEffectResults(groupConfig.effect!(...args), ruleEffect(...args))
-          : ruleEffect || groupConfig.effect,
+      dependents: groupConfig.dependents,
+      effect: effect
+        ? (...args) => normalizeGroupEffectResult(effect(...args), groupConfig.id)
+        : undefined,
       fields: groupFields
     };
     const groupContext: CompileHookContext = {
