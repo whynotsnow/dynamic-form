@@ -163,6 +163,15 @@
   margin: 0;
 }
 
+.mountReference {
+  display: grid;
+  gap: 8px;
+}
+
+.mountReference p {
+  margin: 0;
+}
+
 .sourceContext strong {
   color: var(--df-text-main);
 }

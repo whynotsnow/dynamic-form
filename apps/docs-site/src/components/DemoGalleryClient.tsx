@@ -337,6 +337,7 @@ export default function DemoGalleryClient(): React.JSX.Element {
 
         <section className={styles.content}>
           <DemoWrapper
+            componentName={currentDemoInfo.name}
             description={currentDemoText.description}
             guide={DEMO_GUIDES[currentDemo]}
             key={currentDemo}

@@ -71,6 +71,12 @@
   "demos.sourcePanel.fileTabsLabel": {
     "message": "Demo source files"
   },
+  "demos.sourcePanel.mountTitle": {
+    "message": "Reference Mount"
+  },
+  "demos.sourcePanel.mountDescription": {
+    "message": "This example assumes App.tsx is at the repository root. It imports the current component from ./demos, renders it as a React component, and mounts it to #root."
+  },
   "demos.sourcePanel.sharedContext": {
     "message": "DemoWrapper and DemoLoading are shared presentation components. The links below open this demo and the custom components it uses.",
     "description": "Context note above GitHub source links"

@@ -15,6 +15,7 @@ export interface DemoGuideItem {
 }
 
 interface DemoWrapperProps {
+  componentName: string;
   title: string;
   description: string;
   guide: DemoGuideItem[];
@@ -25,6 +26,7 @@ interface DemoWrapperProps {
 }
 
 interface DemoSourcePanelProps {
+  componentName: string;
   githubDemoPath: string;
   relatedComponentPaths: string[];
   sourceFiles: DemoSourceFile[];
@@ -34,6 +36,7 @@ const MINIMUM_LOADING_DURATION = 180;
 const GITHUB_SOURCE_BASE = 'https://github.com/whynotsnow/dynamic-form/blob/main/';
 
 function DemoSourcePanel({
+  componentName,
   githubDemoPath,
   relatedComponentPaths,
   sourceFiles
@@ -48,6 +51,15 @@ function DemoSourcePanel({
 
   const activeFile = sourceFiles[activeFileIndex] ?? sourceFiles[0];
   const activeSource = `// 文件路径: ${activeFile.path}\n${activeFile.content.trim()}`;
+  const referenceMountSource = [
+    "import React from 'react';",
+    "import { createRoot } from 'react-dom/client';",
+    `import { ${componentName} } from './demos';`,
+    '',
+    `const App: React.FC = () => <${componentName} />;`,
+    '',
+    "createRoot(document.getElementById('root')!).render(<App />);"
+  ].join('\n');
   const tabIds = sourceFiles.map((_, index) => `${idPrefix}-tab-${index}`);
   const panelId = `${idPrefix}-tab-panel`;
 
@@ -88,6 +100,27 @@ function DemoSourcePanel({
                 'DemoWrapper 和 DemoLoading 是共享展示组件；下方链接指向当前 demo 和它使用的自定义组件。'
             })}
           </p>
+          <div className={styles.mountReference}>
+            <strong>
+              {translate({
+                id: 'demos.sourcePanel.mountTitle',
+                message: '参考挂载方式'
+              })}
+            </strong>
+            <p>
+              {translate({
+                id: 'demos.sourcePanel.mountDescription',
+                message:
+                  '示例假设 App.tsx 位于仓库根目录；从 ./demos 导入当前组件，将它作为 React 组件渲染后挂载到 #root。'
+              })}
+            </p>
+            <SiteCodeBlock
+              code={referenceMountSource}
+              copyCode={referenceMountSource}
+              language="tsx"
+              title="App.tsx"
+            />
+          </div>
           <div>
             <strong>
               {translate({
@@ -187,6 +220,7 @@ function DemoSourcePanel({
 }
 
 export default function DemoWrapper({
+  componentName,
   title,
   description,
   guide,
@@ -273,6 +307,7 @@ export default function DemoWrapper({
         </div>
         {!isLoading ? (
           <DemoSourcePanel
+            componentName={componentName}
             githubDemoPath={githubDemoPath}
             relatedComponentPaths={relatedComponentPaths}
             sourceFiles={sourceFiles}
