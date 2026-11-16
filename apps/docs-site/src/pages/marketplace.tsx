@@ -11,7 +11,7 @@ export default function Marketplace(): React.JSX.Element {
       title={translate({ id: 'marketplace.layout.title', message: '扩展市场' })}
       description={translate({
         id: 'marketplace.layout.description',
-        message: 'DynamicForm 系统内置能力和可复制安装扩展的市场页面。'
+        message: '浏览 DynamicForm 内置能力和可复制的自定义扩展示例。'
       })}
     >
       <main className={styles.page}>

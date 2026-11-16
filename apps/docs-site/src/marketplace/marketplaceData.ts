@@ -3,9 +3,9 @@ import {
   editableTableFieldSource,
   fieldErrorsHandlerSource,
   highlightHandlerSource,
-  registerComponentSource,
-  registerHandlerSource,
-  remoteSelectFieldSource,
+  getRegisterComponentSource,
+  getRegisterHandlerSource,
+  searchSelectFieldSource,
   toastHandlerSource,
   userPickerFieldSource
 } from './snippets/copyInstallSnippets';
@@ -75,13 +75,13 @@ const builtinHandlerNames = [
 
 const builtinComponentDescription = translate({
   id: 'marketplace.data.builtinComponent.description',
-  message: '系统内置字段组件，无需复制安装，可直接在 FormConfig 的 component 中引用。'
+  message: '系统内置字段组件，可直接在 FormConfig 的 component 字段中引用。'
 });
 
 const builtinHandlerDescription = translate({
   id: 'marketplace.data.builtinHandler.description',
   message:
-    '系统内置 effect result handler，调用 useInitHandlers() 后即可处理同名 effect result key。'
+    '系统内置联动处理器；调用 useInitHandlers({}) 注册默认处理器后，即可在 effect 中使用对应结果名。'
 });
 
 export const marketplaceFilters: MarketplaceFilter[] = [
@@ -146,7 +146,7 @@ const builtinHandlerItems: MarketplaceItem[] = builtinHandlerNames.map((handlerN
     {
       title: translate({ id: 'marketplace.code.initHandlers', message: '初始化 handlers' }),
       language: 'tsx',
-      code: `useInitHandlers();`
+      code: `useInitHandlers({});`
     },
     {
       title: translate({ id: 'marketplace.code.effectResult', message: 'Effect result 示例' }),
@@ -163,30 +163,31 @@ const copyComponentItems: MarketplaceItem[] = [
     id: 'copy-component-remote-select',
     installMode: 'copy',
     kind: 'component-snippet',
-    title: 'RemoteSelectField',
+    title: 'SearchSelectField',
     description: translate({
       id: 'marketplace.data.remoteSelect.description',
-      message: '封装可搜索的远程选择字段，适合团队、组织、项目等异步选项场景。'
+      message:
+        '展示可搜索下拉框的写法。当前代码使用本地示例数据；接入服务端时，需要自行请求并更新选项。'
     }),
-    tags: ['ComponentRegistry', 'Select', 'Async Options'],
+    tags: ['ComponentRegistry', 'Select', 'Search'],
     dependencies: ['antd'],
-    previewId: 'snippet-component-remote-select',
+    previewId: 'snippet-component-search-select',
     docsPath: '/docs/rendering-and-ui',
     codeBlocks: [
       {
         title: translate({ id: 'marketplace.code.componentSource', message: '组件源码' }),
         language: 'tsx',
-        code: remoteSelectFieldSource
+        code: searchSelectFieldSource
       },
       {
         title: translate({ id: 'marketplace.code.registerComponent', message: '注册代码' }),
         language: 'tsx',
-        code: registerComponentSource
+        code: getRegisterComponentSource('SearchSelectField')
       },
       {
         title: translate({ id: 'marketplace.code.formConfigExample', message: 'FormConfig 示例' }),
         language: 'ts',
-        code: `{ id: 'team', label: '团队', component: 'RemoteSelectField' }`
+        code: `{ id: 'team', label: '团队', component: 'SearchSelectField' }`
       }
     ]
   },
@@ -197,7 +198,7 @@ const copyComponentItems: MarketplaceItem[] = [
     title: 'UserPickerField',
     description: translate({
       id: 'marketplace.data.userPicker.description',
-      message: '封装带头像展示的人员选择字段，适合负责人、审批人和协作者选择。'
+      message: '用固定示例人员展示带头像的选择框，适合作为负责人、审批人等字段的起点。'
     }),
     tags: ['ComponentRegistry', 'Select', 'User'],
     dependencies: ['antd'],
@@ -212,7 +213,7 @@ const copyComponentItems: MarketplaceItem[] = [
       {
         title: translate({ id: 'marketplace.code.registerComponent', message: '注册代码' }),
         language: 'tsx',
-        code: registerComponentSource
+        code: getRegisterComponentSource('UserPickerField')
       },
       {
         title: translate({ id: 'marketplace.code.formConfigExample', message: 'FormConfig 示例' }),
@@ -243,7 +244,7 @@ const copyComponentItems: MarketplaceItem[] = [
       {
         title: translate({ id: 'marketplace.code.registerComponent', message: '注册代码' }),
         language: 'tsx',
-        code: registerComponentSource
+        code: getRegisterComponentSource('EditableTableField')
       },
       {
         title: translate({ id: 'marketplace.code.formConfigExample', message: 'FormConfig 示例' }),
@@ -277,7 +278,7 @@ const copyHandlerItems: MarketplaceItem[] = [
       {
         title: translate({ id: 'marketplace.code.registerHandler', message: '注册代码' }),
         language: 'tsx',
-        code: registerHandlerSource
+        code: getRegisterHandlerSource('toastHandler')
       },
       {
         title: translate({ id: 'marketplace.code.effectResult', message: 'Effect result 示例' }),
@@ -307,7 +308,7 @@ const copyHandlerItems: MarketplaceItem[] = [
       {
         title: translate({ id: 'marketplace.code.registerHandler', message: '注册代码' }),
         language: 'tsx',
-        code: registerHandlerSource
+        code: getRegisterHandlerSource('highlightHandler')
       },
       {
         title: translate({ id: 'marketplace.code.effectResult', message: 'Effect result 示例' }),
@@ -337,7 +338,7 @@ const copyHandlerItems: MarketplaceItem[] = [
       {
         title: translate({ id: 'marketplace.code.registerHandler', message: '注册代码' }),
         language: 'tsx',
-        code: registerHandlerSource
+        code: getRegisterHandlerSource('fieldErrorsHandler')
       },
       {
         title: translate({ id: 'marketplace.code.effectResult', message: 'Effect result 示例' }),
@@ -353,13 +354,13 @@ const recipeItems: MarketplaceItem[] = [
     id: 'recipe-remote-search',
     installMode: 'copy',
     kind: 'recipe',
-    title: translate({ id: 'marketplace.recipe.remoteSearch.title', message: '远程搜索字段' }),
+    title: translate({ id: 'marketplace.recipe.remoteSearch.title', message: '可搜索下拉框' }),
     description: translate({
       id: 'marketplace.recipe.remoteSearch.description',
       message:
-        '使用 RemoteSelectField 接入远程选项搜索，并通过 componentRegistry 注册到 DynamicForm。'
+        '使用 SearchSelectField 演示如何筛选本地选项并注册到 DynamicForm。接入服务端数据时，请自行添加请求逻辑。'
     }),
-    tags: ['Recipe', 'RemoteSelectField'],
+    tags: ['Recipe', 'SearchSelectField'],
     dependencies: ['antd'],
     previewId: 'recipe-remote-search',
     docsPath: '/docs/rendering-and-ui',
@@ -367,12 +368,12 @@ const recipeItems: MarketplaceItem[] = [
       {
         title: translate({ id: 'marketplace.code.componentSource', message: '组件源码' }),
         language: 'tsx',
-        code: remoteSelectFieldSource
+        code: searchSelectFieldSource
       },
       {
         title: translate({ id: 'marketplace.code.registerComponent', message: '注册代码' }),
         language: 'tsx',
-        code: registerComponentSource
+        code: getRegisterComponentSource('SearchSelectField')
       }
     ]
   },
@@ -398,7 +399,7 @@ const recipeItems: MarketplaceItem[] = [
       {
         title: translate({ id: 'marketplace.code.registerComponent', message: '注册代码' }),
         language: 'tsx',
-        code: registerComponentSource
+        code: getRegisterComponentSource('UserPickerField')
       }
     ]
   },
@@ -424,7 +425,7 @@ const recipeItems: MarketplaceItem[] = [
       {
         title: translate({ id: 'marketplace.code.registerComponent', message: '注册代码' }),
         language: 'tsx',
-        code: registerComponentSource
+        code: getRegisterComponentSource('EditableTableField')
       }
     ]
   }

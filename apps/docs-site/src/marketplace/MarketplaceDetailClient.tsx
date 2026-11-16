@@ -10,18 +10,18 @@ import styles from '../pages/marketplace.module.css';
 
 const installModeText = {
   builtin: translate({ id: 'marketplace.installMode.builtin', message: '系统内置安装' }),
-  copy: translate({ id: 'marketplace.installMode.copy', message: '复制安装' })
+  copy: translate({ id: 'marketplace.installMode.copy', message: '复制示例' })
 };
 
 const installModeDescription = {
   builtin: translate({
     id: 'marketplace.installMode.builtin.description',
-    message:
-      '无需复制代码。组件可直接在 component 中引用；默认 handlers 在 useInitHandlers() 后可用。'
+    message: '内置字段组件可直接写在字段配置中；调用 useInitHandlers({}) 后即可使用内置联动处理器。'
   }),
   copy: translate({
     id: 'marketplace.installMode.copy.description',
-    message: '复制源码、注册代码和使用示例到你的项目，再通过 DynamicForm 的注册入口接入。'
+    message:
+      '复制示例代码并注册到 DynamicForm。示例用于说明接入方式；真实数据和业务逻辑需要按你的项目调整。'
   })
 };
 
@@ -93,7 +93,7 @@ export default function MarketplaceDetailClient(): React.JSX.Element {
             <div className={styles.usageMeta}>
               <div>
                 <span>
-                  <Translate id="marketplace.detail.installModeLabel">安装方式</Translate>
+                  <Translate id="marketplace.detail.installModeLabel">使用方式</Translate>
                 </span>
                 <strong>{installModeText[item.installMode]}</strong>
               </div>
@@ -213,7 +213,7 @@ export default function MarketplaceDetailClient(): React.JSX.Element {
             <span>
               <Translate id="marketplace.detail.pathLabel">扩展</Translate>
             </span>
-            <strong>{item.id}</strong>
+            <strong>{item.title}</strong>
           </div>
           <div className={styles.detailSideGroup}>
             <span>

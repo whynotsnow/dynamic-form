@@ -69,19 +69,19 @@
     "message": "{demoTitle} threw a runtime error. Other demos are still available."
   },
   "api.groups.components.description": {
-    "message": "Primary React entry points for rendering standard config or compiler/adapter output."
+    "message": "Render a form from a hand-written config or converted config."
   },
   "api.groups.hooks.description": {
-    "message": "Initialize effect handlers, access context, and reuse store initialization logic."
+    "message": "Register interaction handlers or access form context from custom extensions."
   },
   "api.groups.configTypes.description": {
-    "message": "Describe form config, field config, UI config, render hook parameters, and core value types."
+    "message": "Describe fields, groups, submitted values, and form presentation settings."
   },
   "api.groups.corePackage.description": {
     "message": "Config, compiler, rules, diagnostics, and pure Runtime APIs that can be consumed directly from @whynotsnow/dynamic-form-core starting in 4.2."
   },
   "api.groups.formRendererAdapters.description": {
-    "message": "Adapter contracts and default implementations for connecting different Form runtimes or UI shells."
+    "message": "Connect a form instance, replace the default presentation, or register custom field components."
   },
   "api.groups.componentRegistry.description": {
     "message": "Register or extend field components and access the default Ant Design component set."
@@ -90,28 +90,76 @@
     "message": "Compile domain field modules into standard FormConfig while preserving the runtime rendering pipeline."
   },
   "api.groups.adapters.description": {
-    "message": "Normalize ModuleConfig, JsonSchema, OpenAPI, or metadata inputs into module configs."
+    "message": "Convert field modules, JSON Schema, OpenAPI, or metadata into DynamicForm config."
   },
   "api.groups.rules.description": {
-    "message": "Declarative synchronous rule layer that compiles to standard effects and reuses the existing handler pipeline."
+    "message": "Define synchronous rules and convert them into interaction results DynamicForm can handle."
   },
   "api.groups.fieldAddress.description": {
     "message": "Separates stable field ids from Ant Design NamePath and supports nested value paths."
   },
   "api.groups.runtimeInspection.description": {
-    "message": "Read rendered, submit, and validation participation from Runtime snapshots for debugging and designer previews."
+    "message": "Handle nested field paths or check whether fields are displayed, submitted, or validated."
   },
   "api.groups.utilities.description": {
-    "message": "Default config and config processing entry points for advanced integrations and tests."
+    "message": "Check config and query whether fields are displayed, submitted, or validated."
+  },
+  "api.groups.coreConfig.description": {
+    "message": "Find config issues or prepare the information needed to display a form."
+  },
+  "api.groups.coreCompiler.description": {
+    "message": "Convert reusable field modules or external schemas into form config."
+  },
+  "api.groups.coreTypes.description": {
+    "message": "TypeScript types for form config, fields, rules, and runtime state."
+  },
+  "api.package.react.description": {
+    "message": "Render and use forms in React applications. This package also re-exports commonly used core config APIs for existing imports."
+  },
+  "api.package.core.description": {
+    "message": "Check, convert, or inspect form config without rendering a React form, such as in a visual builder, server task, or build script."
+  },
+  "api.react.components.title": {
+    "message": "Form Components"
+  },
+  "api.react.hooks.title": {
+    "message": "Hooks"
+  },
+  "api.react.ui.title": {
+    "message": "Form and UI Extensions"
+  },
+  "api.react.types.title": {
+    "message": "Common Config Types"
+  },
+  "api.react.validation.title": {
+    "message": "Config Checks and Interaction Rules"
+  },
+  "api.react.conversion.title": {
+    "message": "Config Conversion"
+  },
+  "api.core.config.title": {
+    "message": "Config Validation"
+  },
+  "api.core.compiler.title": {
+    "message": "Field Modules and Config Conversion"
+  },
+  "api.core.rules.title": {
+    "message": "Interaction Rules"
+  },
+  "api.core.runtime.title": {
+    "message": "Field Paths and Runtime State"
+  },
+  "api.core.types.title": {
+    "message": "Common Config Types"
   },
   "api.layout.description": {
-    "message": "Exported API summary for @whynotsnow/dynamic-form."
+    "message": "A summary of commonly used exports, grouped by package."
   },
   "api.layout.title": {
     "message": "Exported API"
   },
   "api.page.description": {
-    "message": "This page groups public exported APIs from packages/dynamic-form/src/exports.ts by purpose as a quick lookup entry. The topic docs remain the source of detailed behavior."
+    "message": "This page lists commonly used APIs from both packages to help you choose an import path. It is not a complete export list; check the package for full exports and type details."
   },
   "api.page.title": {
     "message": "Exported API"
@@ -123,34 +171,37 @@
     "message": "Minimal Form"
   },
   "examples.minimal.description": {
-    "message": "Render basic fields from a flat FormConfig and delegate submit handling to Ant Design Form."
+    "message": "Set up basic fields with fields. DynamicForm uses Ant Design to display the form by default."
   },
   "examples.grouped.title": {
     "message": "Grouped Form"
   },
   "examples.grouped.description": {
-    "message": "Organize fields in groups, using the default Card layout or replacing the shell with render hooks."
+    "message": "Put related fields in one group. They appear in a section card by default; adjust the layout when needed."
   },
   "examples.effects.title": {
     "message": "Field Effects"
   },
   "examples.effects.description": {
-    "message": "Use dependents and effect to return visible, disabled, value, or render meta updates."
+    "message": "Show or hide the company name field based on whether the user has a company."
   },
   "examples.customComponents.title": {
     "message": "Custom Components"
   },
   "examples.customComponents.description": {
-    "message": "Register business field components with componentRegistry while DynamicForm still manages runtime props."
+    "message": "Register a custom input in componentRegistry, then refer to it from the field config."
   },
   "examples.customHandlers.title": {
     "message": "Custom Handlers"
   },
   "examples.customHandlers.description": {
-    "message": "Map effect return values to business semantics while keeping components focused on rendering."
+    "message": "Use a custom handler for business-specific interaction results; the field component still handles display and input."
   },
   "examples.compilerAdapter.description": {
-    "message": "Adapt JsonSchema, OpenAPI, or metadata into module config, then compile it into standard FormConfig."
+    "message": "Convert JSON Schema, OpenAPI, or your own data format into config that DynamicForm can display."
+  },
+  "examples.compilerAdapter.title": {
+    "message": "Convert External Config"
   },
   "examples.layout.title": {
     "message": "Config Examples"
@@ -162,7 +213,7 @@
     "message": "Config Examples"
   },
   "examples.page.description": {
-    "message": "Find configuration entry points by scenario, with concise snippets, full documentation links, and interactive demo showcase links."
+    "message": "Find a starting point by scenario. Each example is a short snippet with links to the full guide and an interactive demo."
   },
   "examples.card.docsLink": {
     "message": "Docs"
@@ -177,19 +228,19 @@
     "message": "Extension Marketplace"
   },
   "marketplace.layout.description": {
-    "message": "Marketplace page for DynamicForm built-in capabilities and copy-install extensions."
+    "message": "Browse built-in DynamicForm features and example code for custom extensions."
   },
   "marketplace.installMode.builtin": {
-    "message": "Built-in Install"
+    "message": "Built-in"
   },
   "marketplace.installMode.copy": {
-    "message": "Copy Install"
+    "message": "Copy Example"
   },
   "marketplace.installMode.builtin.description": {
-    "message": "No code copy required. Components can be referenced directly in component, and default handlers are available after useInitHandlers()."
+    "message": "Use built-in field components directly in field config. Call useInitHandlers({}) to register the built-in interaction handlers."
   },
   "marketplace.installMode.copy.description": {
-    "message": "Copy source, registration code, and usage examples into your project, then wire them through DynamicForm registration APIs."
+    "message": "Copy the example code and register it with DynamicForm. Adapt data and business logic for your project."
   },
   "marketplace.code.copied": {
     "message": "Copied"
@@ -210,13 +261,13 @@
     "message": "Extension Marketplace"
   },
   "marketplace.page.description": {
-    "message": "Browse DynamicForm built-in capabilities and copy-install components, handlers, and recipes. Copy-install entries target user projects and are registered through componentRegistry or useInitHandlers."
+    "message": "Browse built-in fields and interaction handlers, or copy custom component, handler, and recipe examples as a starting point. These are code examples, not installable plugin packages; add your own data requests and business logic."
   },
   "marketplace.detail.layout.title": {
     "message": "Extension Details"
   },
   "marketplace.detail.layout.description": {
-    "message": "Explore previews, installation guidance, and code snippets for DynamicForm extensions."
+    "message": "Explore previews, usage guidance, and code snippets for DynamicForm extension examples."
   },
   "marketplace.detail.notFoundTitle": {
     "message": "Extension Not Found"
@@ -234,7 +285,7 @@
     "message": "Usage"
   },
   "marketplace.detail.installModeLabel": {
-    "message": "Installation"
+    "message": "Usage"
   },
   "marketplace.detail.kindLabel": {
     "message": "Category"
@@ -294,10 +345,10 @@
     "message": "Extension marketplace categories"
   },
   "marketplace.data.builtinComponent.description": {
-    "message": "Built-in field component. No copy install required; reference it directly in FormConfig component."
+    "message": "Built-in field component. Reference it directly in the component field of your form config."
   },
   "marketplace.data.builtinHandler.description": {
-    "message": "Built-in effect result handler. After useInitHandlers(), it handles the matching effect result key."
+    "message": "Built-in interaction handler. Call useInitHandlers({}) to register it, then use its result name in an effect."
   },
   "marketplace.filters.all": {
     "message": "All"
@@ -327,7 +378,7 @@
     "message": "Effect result example"
   },
   "marketplace.data.remoteSelect.description": {
-    "message": "Wraps a searchable remote-select field for teams, organizations, projects, and other async option scenarios."
+    "message": "A searchable select example using local sample data. Add your own request logic and update the options to connect a service."
   },
   "marketplace.code.componentSource": {
     "message": "Component source"
@@ -339,7 +390,7 @@
     "message": "FormConfig example"
   },
   "marketplace.data.userPicker.description": {
-    "message": "Wraps a user picker with avatar display for owners, approvers, and collaborators."
+    "message": "Shows an avatar picker with a fixed sample user list, as a starting point for owner or approver fields."
   },
   "marketplace.data.editableTable.description": {
     "message": "Wraps an editable detail table field for order lines, expense details, and task breakdowns."
@@ -360,10 +411,10 @@
     "message": "Writes server-side field errors into Ant Design Form for business validation feedback before or after submit."
   },
   "marketplace.recipe.remoteSearch.title": {
-    "message": "Remote Search Field"
+    "message": "Searchable Select"
   },
   "marketplace.recipe.remoteSearch.description": {
-    "message": "Use RemoteSelectField for remote option search and register it through componentRegistry."
+    "message": "Use SearchSelectField to filter local sample options and register it through componentRegistry. Add request logic to connect a service."
   },
   "marketplace.recipe.approverPicker.title": {
     "message": "Approver Picker"

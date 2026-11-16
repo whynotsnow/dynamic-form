@@ -1,31 +1,29 @@
-export const remoteSelectFieldSource = `import React, { useMemo, useState } from 'react';
+export const searchSelectFieldSource = `import React, { useMemo, useState } from 'react';
 import { Select } from 'antd';
 import type { FieldComponentProps } from '@whynotsnow/dynamic-form';
 
-interface RemoteOption {
+interface SearchOption {
   label: string;
   value: string;
 }
 
-const MOCK_OPTIONS: RemoteOption[] = [
+const SAMPLE_OPTIONS: SearchOption[] = [
   { label: '北京研发中心', value: 'beijing-rd' },
   { label: '上海交付中心', value: 'shanghai-delivery' },
   { label: '杭州产品团队', value: 'hangzhou-product' }
 ];
 
-export const RemoteSelectField: React.FC<FieldComponentProps> = ({
+export const SearchSelectField: React.FC<FieldComponentProps> = ({
   value,
   onChange,
-  field,
-  form,
   ...restProps
 }) => {
   const [keyword, setKeyword] = useState('');
 
   const options = useMemo(() => {
     const normalizedKeyword = keyword.trim().toLowerCase();
-    if (!normalizedKeyword) return MOCK_OPTIONS;
-    return MOCK_OPTIONS.filter((option) =>
+    if (!normalizedKeyword) return SAMPLE_OPTIONS;
+    return SAMPLE_OPTIONS.filter((option) =>
       option.label.toLowerCase().includes(normalizedKeyword)
     );
   }, [keyword]);
@@ -58,8 +56,6 @@ const users = [
 export const UserPickerField: React.FC<FieldComponentProps> = ({
   value,
   onChange,
-  field,
-  form,
   ...restProps
 }) => {
   return (
@@ -173,21 +169,33 @@ export const fieldErrorsHandler: CustomEffectResultHandler = {
   }
 };`;
 
-export const registerComponentSource = `const componentRegistry = {
+export function getRegisterComponentSource(componentName: string) {
+  return `import { DynamicForm } from '@whynotsnow/dynamic-form';
+import { ${componentName} } from './${componentName}';
+
+const componentRegistry = {
   customComponents: {
-    RemoteSelectField,
-    UserPickerField,
-    EditableTableField
+    ${componentName}
   }
 };
 
-<DynamicForm
-  form={form}
-  formConfig={formConfig}
-  componentRegistry={componentRegistry}
-/>`;
+export function FormPage() {
+  return (
+    <DynamicForm
+      formConfig={formConfig}
+      componentRegistry={componentRegistry}
+    />
+  );
+}`;
+}
 
-export const registerHandlerSource = `useInitHandlers({
-  handlers: [toastHandler, highlightHandler, fieldErrorsHandler],
-  options: { override: true }
-});`;
+export function getRegisterHandlerSource(handlerName: string) {
+  return `import { DynamicForm, useInitHandlers } from '@whynotsnow/dynamic-form';
+import { ${handlerName} } from './${handlerName}';
+
+export function FormPage() {
+  useInitHandlers({ handlers: [${handlerName}] });
+
+  return <DynamicForm formConfig={formConfig} />;
+}`;
+}

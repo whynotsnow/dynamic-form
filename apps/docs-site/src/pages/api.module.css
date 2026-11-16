@@ -27,6 +27,28 @@
   gap: 18px;
 }
 
+.package + .package {
+  margin-top: 38px;
+}
+
+.packageHeader {
+  max-width: 820px;
+  margin-bottom: 18px;
+}
+
+.packageHeader h2 {
+  margin: 0 0 8px;
+  color: var(--df-text-strong);
+  font-size: 1.45rem;
+  letter-spacing: 0;
+}
+
+.packageHeader p {
+  margin: 0;
+  color: var(--df-text-muted);
+  line-height: 1.65;
+}
+
 .group {
   min-width: 0;
   padding: 22px;
@@ -35,7 +57,7 @@
   background: var(--df-background-panel);
 }
 
-.group h2 {
+.group h3 {
   margin: 0 0 10px;
   color: var(--df-text-strong);
   font-size: 1.2rem;

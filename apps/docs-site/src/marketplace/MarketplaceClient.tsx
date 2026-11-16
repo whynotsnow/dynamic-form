@@ -10,18 +10,18 @@ type ActiveFilter = 'all' | MarketplaceKind;
 
 const installModeText = {
   builtin: translate({ id: 'marketplace.installMode.builtin', message: '系统内置安装' }),
-  copy: translate({ id: 'marketplace.installMode.copy', message: '复制安装' })
+  copy: translate({ id: 'marketplace.installMode.copy', message: '复制示例' })
 };
 
 const installModeDescription = {
   builtin: translate({
     id: 'marketplace.installMode.builtin.description',
-    message:
-      '无需复制代码。组件可直接在 component 中引用；默认 handlers 在 useInitHandlers() 后可用。'
+    message: '内置字段组件可直接写在字段配置中；调用 useInitHandlers({}) 后即可使用内置联动处理器。'
   }),
   copy: translate({
     id: 'marketplace.installMode.copy.description',
-    message: '复制源码、注册代码和使用示例到你的项目，再通过 DynamicForm 的注册入口接入。'
+    message:
+      '复制示例代码并注册到 DynamicForm。示例用于说明接入方式；真实数据和业务逻辑需要按你的项目调整。'
   })
 };
 
@@ -98,9 +98,8 @@ export default function MarketplaceClient(): React.JSX.Element {
         </Heading>
         <p>
           <Translate id="marketplace.page.description">
-            浏览 DynamicForm
-            的系统内置能力和可复制安装的组件、handlers、组合方案。复制安装条目面向用户项目，复制后通过
-            componentRegistry 或 useInitHandlers 注册到 DynamicForm。
+            浏览 DynamicForm 的内置字段和联动处理方式，也可以复制自定义组件、handler
+            和组合示例作为项目起点。这里展示的是代码示例，不是可直接安装的插件包；复制后请按项目补充数据请求和业务逻辑。
           </Translate>
         </p>
       </section>

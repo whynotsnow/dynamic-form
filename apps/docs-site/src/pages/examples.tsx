@@ -14,7 +14,7 @@ const examples = [
     }),
     description: translate({
       id: 'examples.minimal.description',
-      message: '用一个 flat FormConfig 渲染基础字段，并把提交交给 Ant Design Form。'
+      message: '用 fields 配置一组基础字段，DynamicForm 默认使用 Ant Design 展示表单。'
     }),
     code: `const formConfig = {
   fields: [
@@ -31,7 +31,7 @@ const examples = [
     }),
     description: translate({
       id: 'examples.grouped.description',
-      message: '把字段组织到 groups 中，使用默认 Card 布局或后续 render hooks 替换外壳。'
+      message: '把相关字段放进同一个分组。默认会按分组卡片显示，也可以按需要调整布局。'
     }),
     code: `const formConfig = {
   groups: [
@@ -48,7 +48,7 @@ const examples = [
     }),
     description: translate({
       id: 'examples.effects.description',
-      message: '通过 dependents 和 effect 返回 visible、disabled、value 或 render meta。'
+      message: '根据“是否有公司”的选择，自动显示或隐藏公司名称字段。'
     }),
     code: `{
   id: 'companyName',
@@ -65,7 +65,7 @@ const examples = [
     }),
     description: translate({
       id: 'examples.customComponents.description',
-      message: '用 componentRegistry 注册业务字段组件，仍由 DynamicForm 负责运行时 props。'
+      message: '把自定义输入组件注册到 componentRegistry，并在字段配置中引用它。'
     }),
     code: `<DynamicForm
   componentRegistry={{ customComponents: { ProjectSelect } }}
@@ -81,7 +81,7 @@ const examples = [
     }),
     description: translate({
       id: 'examples.customHandlers.description',
-      message: '把 effect 返回值映射到业务语义，保持组件只负责渲染。'
+      message: '用自定义 handler 处理业务专属的联动结果；字段组件仍负责显示和输入。'
     }),
     code: `const handler = {
   name: 'highlight',
@@ -92,12 +92,14 @@ const examples = [
     demoUrl: '/demos?demo=customHandlers'
   },
   {
-    title: 'Compiler / Adapter',
+    title: translate({ id: 'examples.compilerAdapter.title', message: '转换外部配置' }),
     description: translate({
       id: 'examples.compilerAdapter.description',
-      message: '把 JsonSchema、OpenAPI 或 metadata 适配为模块配置，再编译为标准 FormConfig。'
+      message: '把 JSON Schema、OpenAPI 或自有数据格式转换成 DynamicForm 可以显示的表单配置。'
     }),
-    code: `const compiled = compileAdaptedFormConfig(schema, {
+    code: `import { compileAdaptedFormConfig } from '@whynotsnow/dynamic-form-core';
+
+const formConfig = compileAdaptedFormConfig(schema, {
   adapterType: 'json-schema',
   moduleRegistry
 });`,

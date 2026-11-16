@@ -228,21 +228,15 @@ function createBuiltinHandlerPreview(handlerName: string): MarketplacePreviewCom
   };
 }
 
-const remoteOptions = [
+const sampleOptions = [
   { label: '北京研发中心', value: 'beijing-rd' },
   { label: '上海交付中心', value: 'shanghai-delivery' },
   { label: '杭州产品团队', value: 'hangzhou-product' }
 ];
 
-const RemoteSelectField: React.FC<FieldComponentProps> = ({
-  value,
-  onChange,
-  field,
-  form,
-  ...restProps
-}) => {
+const SearchSelectField: React.FC<FieldComponentProps> = ({ value, onChange, ...restProps }) => {
   const [keyword, setKeyword] = useState('');
-  const options = remoteOptions.filter((option) => option.label.includes(keyword.trim()));
+  const options = sampleOptions.filter((option) => option.label.includes(keyword.trim()));
 
   return (
     <Select
@@ -250,7 +244,7 @@ const RemoteSelectField: React.FC<FieldComponentProps> = ({
       filterOption={false}
       onChange={onChange}
       onSearch={setKeyword}
-      options={options.length > 0 ? options : remoteOptions}
+      options={options}
       placeholder="搜索团队"
       showSearch
       value={value}
@@ -265,13 +259,7 @@ const users = [
   { label: '王敏 / 测试负责人', value: 'wangmin', avatar: '王' }
 ];
 
-const UserPickerField: React.FC<FieldComponentProps> = ({
-  value,
-  onChange,
-  field,
-  form,
-  ...restProps
-}) => {
+const UserPickerField: React.FC<FieldComponentProps> = ({ value, onChange, ...restProps }) => {
   return (
     <Select
       allowClear
@@ -392,7 +380,7 @@ function ComponentSnippetPreview({ component }: { component: string }) {
   const componentRegistry = useMemo<ComponentRegistryConfig>(
     () => ({
       customComponents: {
-        RemoteSelectField,
+        SearchSelectField,
         UserPickerField,
         EditableTableField
       }
@@ -401,8 +389,8 @@ function ComponentSnippetPreview({ component }: { component: string }) {
   );
 
   const componentConfig: Record<string, FlatFormConfig> = {
-    RemoteSelectField: {
-      fields: [{ id: 'team', label: '团队', component: 'RemoteSelectField' }]
+    SearchSelectField: {
+      fields: [{ id: 'team', label: '团队', component: 'SearchSelectField' }]
     },
     UserPickerField: {
       fields: [{ id: 'owner', label: '负责人', component: 'UserPickerField' }]
@@ -488,7 +476,7 @@ function HandlerSnippetPreview({ handler }: { handler: string }) {
 
 function RecipePreview({ recipe }: { recipe: string }) {
   if (recipe === 'remote-search') {
-    return <ComponentSnippetPreview component="RemoteSelectField" />;
+    return <ComponentSnippetPreview component="SearchSelectField" />;
   }
 
   if (recipe === 'approver-picker') {
@@ -535,8 +523,8 @@ export const previewRegistry: Record<string, MarketplacePreviewComponent> = {
       'submitAreaProps'
     ].map((handler) => [`builtin-handler-${handler}`, createBuiltinHandlerPreview(handler)])
   ),
-  'snippet-component-remote-select': () => (
-    <ComponentSnippetPreview component="RemoteSelectField" />
+  'snippet-component-search-select': () => (
+    <ComponentSnippetPreview component="SearchSelectField" />
   ),
   'snippet-component-user-picker': () => <ComponentSnippetPreview component="UserPickerField" />,
   'snippet-component-editable-table': () => (
