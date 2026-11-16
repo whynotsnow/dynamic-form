@@ -4,11 +4,19 @@ This page is a reader-focused release summary for the docs site. Use it to quick
 
 ## Current Version
 
-The current documentation baseline is DynamicForm 4.2. It builds on the 4.0 unified node tree and the 4.1 Form/Renderer Adapter foundation by adding the pure `@whynotsnow/dynamic-form-core` package. `@whynotsnow/dynamic-form` remains the React/AntD-compatible main entry and re-exports core public APIs.
+The current documentation baseline is DynamicForm 4.2.2. It builds on the 4.0 unified node tree and the 4.1 Form/Renderer Adapter foundation by adding the pure `@whynotsnow/dynamic-form-core` package. `@whynotsnow/dynamic-form` remains the React/AntD-compatible main entry and re-exports core public APIs.
 
 The main flow remains `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`. Config processing, Compiler, Adapters, Rules, and pure Runtime resolvers belong to core; React Provider, hooks, form adapters, renderers, component registry, and effect handler runtime belong to `@whynotsnow/dynamic-form`.
 
 ## Release Timeline
+
+### 4.2.2
+
+- Moves form-chain effect execution and types to `@whynotsnow/hooks`, and exports effect map, effect function, and field-name types from the package root.
+- Adds the preferred `FormChainEffectWrapper` name while retaining the former name as a deprecated compatibility alias.
+- Tightens TypeScript types for config, effect results, and component props, with additional runtime input checks.
+
+Related topics: [Effects and Handlers](./effects-and-handlers.md), [Configuration Guide](./configuration.md).
 
 ### 4.2.0 - 2026-07-02
 

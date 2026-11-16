@@ -4,11 +4,19 @@
 
 ## 当前版本
 
-当前文档基线是 DynamicForm 4.2。它在 4.0 统一节点树和 4.1 Form/Renderer Adapter 基础上，新增 `@whynotsnow/dynamic-form-core` 纯核心包；`@whynotsnow/dynamic-form` 继续作为 React/AntD 兼容主入口并 re-export core 公共 API。
+当前文档基线是 DynamicForm 4.2.2。它在 4.0 统一节点树和 4.1 Form/Renderer Adapter 基础上，新增 `@whynotsnow/dynamic-form-core` 纯核心包；`@whynotsnow/dynamic-form` 继续作为 React/AntD 兼容主入口并 re-export core 公共 API。
 
 当前主流程仍是 `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`。其中配置处理、Compiler、Adapters、Rules 和纯 Runtime resolver 归属 core；React Provider、hooks、form adapters、renderers、component registry 和 effect handler runtime 归属 `@whynotsnow/dynamic-form`。
 
 ## 版本时间线
+
+### 4.2.2
+
+- 表单联动 effect 切换到 `@whynotsnow/hooks`，包根入口补充 effect map、effect 函数和字段名类型导出。
+- 新增推荐的 `FormChainEffectWrapper` 名称，并保留旧名称作为弃用兼容别名。
+- 收紧配置、effect result 和组件属性的 TypeScript 类型，并增加运行时输入检查。
+
+相关专题：[Effect 与处理器](./effects-and-handlers.md)、[配置指南](./configuration.md)。
 
 ### 4.2.0 - 2026-07-02
 

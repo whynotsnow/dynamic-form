@@ -1,6 +1,6 @@
 {
   "name": "@whynotsnow/dynamic-form-core",
-  "version": "4.2.1",
+  "version": "4.2.2",
   "description": "DynamicForm core package for configuration processing, compiler, adapters, rules and pure runtime helpers.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",

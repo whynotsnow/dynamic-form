@@ -4,6 +4,8 @@ export type { CompiledDynamicFormProps } from './CompiledDynamicForm';
 
 export { default as DynamicFormProvider } from './consumer/provider/DynamicFormProvider';
 export { default as FormChainEffectWrapper } from './consumer/provider/DynamicFormProvider';
+/** @deprecated Use FormChainEffectWrapper. */
+export { default as FormChainEffectEngineWrapper } from './consumer/provider/DynamicFormProvider';
 
 export type {
   DynamicFormProps,
