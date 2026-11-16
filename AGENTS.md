@@ -1,6 +1,6 @@
 # 后续 Agent 项目说明
 
-最近审阅：2026-06-30
+最近审阅：2026-11-16
 
 ## 作用范围
 
@@ -61,6 +61,15 @@
 - 库文档归属 `packages/dynamic-form/docs/`。
 - docs-site 中文内容归属 `apps/docs-site/docs/`，英文 i18n 内容归属 `apps/docs-site/i18n/`。
 - demo 文档归属 `demos/README.md`。
+- Agent 长期项目知识归属 `docs/agents/`；开发者文档从 `docs/developers/README.md` 路由。不要在 `AGENTS.md` 复制这些文档的细节。
+
+## Sidecar 工作流
+
+- 相邻 `../dynamic-form.sidecar/` 用于复杂需求的 RM、开发 task、Agent plan、decision、run、validation note 和 handoff；产品源码与长期项目文档仍留在本仓库。
+- 简单且边界明确的工作可以直接执行。涉及 Sidecar task 时，先读取 Sidecar 的 `AGENTS.md`、`sidecar.config.json`、`index.json` 和目标 task/plan；只执行 `execution/ready` 或 `execution/running` 的 task。
+- 主仓库提交直接执行 task 时使用 `Plan-Item: <taskId>`；仅相关时使用 `Related-Plan: <id>`。完整流程见 [Agent 工作流](docs/agents/workflow.md)。
+- 执行记录、验证摘要和 handoff 写入 Sidecar；只有可复用的长期知识才提炼到 `docs/agents/`。
+- Sidecar 与主仓库都不得跟踪凭据、个人身份、原始日志或机器专属路径；具体边界见 [信息披露策略](docs/agents/disclosure-policy.md)。
 
 ## Demo 边界
 

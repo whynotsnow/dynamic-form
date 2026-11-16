@@ -1,12 +1,12 @@
 # DynamicForm Package 后续 Agent 说明
 
-最近审阅：2026-06-30
+最近审阅：2026-11-16
 
 ## 作用范围
 
 本文适用于 `packages/dynamic-form/`。这里是 monorepo 中的 React/AntD npm 发布包，包名为 `@whynotsnow/dynamic-form`。
 
-DynamicForm 是 React + TypeScript 动态表单库，基于 Ant Design 渲染表单，并通过 `@whynotsnow/hooks/form-chain-effect` 执行字段依赖和 effect chain。
+DynamicForm 是 React + TypeScript 动态表单库，默认通过 Ant Design renderer 渲染表单，也支持 renderer/form adapters；字段依赖和 effect chain 由 `@whynotsnow/hooks/form-chain-effect` 执行。
 
 ## Package 边界
 
@@ -54,9 +54,13 @@ package 变更通常还需要关注：
 - `src/index.tsx`：`DynamicForm` 组件，组合 effect chain provider 和 UI layer。
 - `src/shared/types.ts`：React/AntD/effect handler 相关 public/internal types；纯 core 类型从 `@whynotsnow/dynamic-form-core` 复用。
 - `src/consumer/provider/DynamicFormProvider.tsx`：provider layer，初始化 store、effect engine、context、初始化告警和 effect result handling。
-- `src/consumer/render/FormContent.tsx`：rendering layer，拥有 Ant Design `Form`、value change、submit、default rendering 和 render extension hooks。
+- `src/consumer/render/FormContent.tsx`：rendering orchestration，消费 renderer adapter、Runtime snapshot、value change、submit 和 render extension hooks。
+- `src/consumer/formAdapter.ts`：校验 Form Adapter contract，并提供 Ant Design 与 memory form adapter。
+- `src/consumer/render/rendererAdapter.ts`：校验 Renderer Adapter 所需方法。
+- `src/consumer/render/antdRenderer.tsx`：默认 Ant Design renderer。
+- `src/consumer/render/headlessRenderer.tsx`：基于原生 HTML 元素的最小 reference renderer，不是生产级 UI。
 - `src/runtime/useRuntimeState.ts`：React hook，复用 core `resolveRuntimeState()`。
-- `src/state/reducer.ts`：Immer reducer，维护 field/group meta、batched updates 和 dynamic UI config。
+- `src/state/reducer.ts`：Immer reducer，维护 fields、groups、nested nodes/containers、meta 和 dynamic UI config。
 - `src/state/useStoreInit.ts`：调用 core `processFormConfig` 初始化 reducer state，并把 initial values 同步到 AntD Form。
 - `src/config/defaultConfig.ts`：导出的默认配置 helper。
 - `src/consumer/effects/`：通过已注册 handlers 应用 effect/initialValue 返回对象。
@@ -76,7 +80,12 @@ package 变更通常还需要关注：
 - `CompiledDynamicForm`
 - `DynamicFormProvider`
 - `FormChainEffectWrapper`
+- deprecated compatibility alias：`FormChainEffectEngineWrapper`
 - key types：`DynamicFormProps`、`FormConfig`、`BaseFieldConfig`、`FieldComponentProps`、`ComponentRegistry`、`ComponentRegistryConfig`
+- adapter contracts：`DynamicFormFormAdapter`、`DynamicFormRendererAdapter`
+- form adapters：`assertFormAdapter`、`createAntdFormAdapter`、`createMemoryFormAdapter`
+- renderer APIs：`antdRenderer`、`headlessRenderer`、`assertRendererAdapter`
+- Runtime APIs：`FieldCapability`、`GroupCapability`、`NodeCapability`、`RuntimeState` 与 Runtime inspection selectors
 - `ComponentRegistryManager`、`DefaultRegistryFieldComponents`
 - hooks：`useFormChainContext`、`useStoreInit`、`useInitHandlers`
 - `getDefaultConfig`
@@ -88,8 +97,8 @@ package 变更通常还需要关注：
 
 `DynamicFormProps` 分为：
 
-- effect chain props：`formConfig`、`form`、可选 `values`、`uiConfig`、`enableInitializationCheck`、`checkDelay`
-- UI props：可选 `onSubmit`、`submitButtonText`、`componentRegistry` 和 render extension callbacks
+- effect chain props：`formConfig`、可选旧式 AntD `form`、可选 `formAdapter`、`values`、`uiConfig`、`enableInitializationCheck`、`checkDelay`
+- UI props：可选 `renderer`、`onSubmit`、`submitButtonText`、`componentRegistry` 和 render extension callbacks
 
 ## Core Data Flow 数据流
 
@@ -98,13 +107,14 @@ package 变更通常还需要关注：
 3. `DynamicForm` 把 props 拆分为 effect chain props 和 UI props。
 4. `DynamicFormProvider` 调用 `useStoreInit`。
 5. `useStoreInit` 使用 `processFormConfig` 处理 `formConfig`，合并 initial values 与 `values`，创建 reducer state，并 dispatch `INIT`。
-6. `FormContent` 从 reducer state 渲染 Ant Design `Form`。
-7. 用户输入触发 Ant Design `onValuesChange`。
-8. `FormContent` 通过 `useRuntimeState(state)` 为同一个 state snapshot 计算一次 `runtimeState`。
-9. `useFormRuntimeEvents` 使用同一份 Runtime snapshot 处理 submit/change events。
-10. `useFieldParticipation` 消费同一份 `runtimeState`，并根据 `submitable` 清理或恢复 values。
-11. `form-chain-effect` 从 `effectMap` 执行 dependent field effects。
-12. `applyEffectResult` 通过内置或自定义 handlers 应用 value/meta/UI updates。
+6. `DynamicFormProvider` 通过 Form Adapter 读写表单值，并把字段变更交给 form-chain-effect。
+7. `FormContent` 解析传入 renderer（默认 `antdRenderer`），从 reducer state 生成 Runtime snapshot 并渲染字段、containers 和提交入口。
+8. 默认 Ant Design renderer 的用户输入触发 Ant Design `onValuesChange`；自定义 renderer 通过相同的 renderer contract 工作。
+9. `FormContent` 通过 `useRuntimeState(state)` 为同一个 state snapshot 计算一次 `runtimeState`。
+10. `useFormRuntimeEvents` 使用同一份 Runtime snapshot 处理 submit/change events。
+11. `useFieldParticipation` 消费同一份 `runtimeState`，并根据 `submitable` 清理或恢复 values。
+12. `form-chain-effect` 从 core 生成的 `effectMap` 执行 dependent field effects。
+13. `applyEffectResult` 通过内置或自定义 handlers 应用 value/meta/UI updates。
 
 ## Runtime Layer 运行时层
 
@@ -119,6 +129,7 @@ Runtime Layer 是 UI participation decisions 的 source of truth：
 
 实现约束：
 
+- `FormConfig` 除 `fields` 和 legacy `groups` 外，也支持递归 `nodes`/container；repeatable container 要求配置 `name`，并由 renderer contract 渲染其重复项。
 - 在 `FormContent` 中用 `useRuntimeState(state)` 对每个 state snapshot 只计算一次 Runtime。
 - 把同一份 `runtimeState` 传给 consumers，不要重复调用 `resolveFieldCapability()`。
 - `useFieldParticipation` 必须消费 Runtime，不要独立解析 capability。
@@ -196,9 +207,9 @@ effect 相关变更应一起检查 `src/consumer/effects/types.ts`、`handlerReg
 
 - 保持改动小且贴合现有架构。
 - 不要为了窄行为修复重写整个 form pipeline。
-- 字段可能是 flat field，也可能在 group 内；定位字段必须尊重 `configProcessInfo.fieldRegistry`。
-- `UPDATE_META` 需要根据 registry metadata 更新 `fields` 或 `groupFields[groupId].fields`，并使用 `mergeFieldMetaPatch` 归一化 legacy flat behavior keys。
-- `SET_GROUP_META` 应使用 `mergeGroupMetaPatch`。
+- 字段可能是 flat field、legacy group field 或 nested container field；定位字段必须尊重 `configProcessInfo.fieldRegistry` 与 node/container registries。
+- `UPDATE_META` 需要根据 registry metadata 更新对应 field state，并使用 `mergeFieldMetaPatch` 归一化 legacy flat behavior keys。
+- `SET_GROUP_META` / container meta 更新应使用对应的 meta merge helpers。
 - Runtime validation 当前位于 `useFormRuntimeEvents`，必须继续按 Runtime capability 过滤。
 - `FieldComponentRenderer` 是默认 component-level runtime props 应用位置。Custom render hooks 可能绕过它，因此 render extension 行为变更要谨慎。
 - `enableInitializationCheck` 用来在 `useInitHandlers` 未调用时告警；除非初始化契约变化，不要移除。

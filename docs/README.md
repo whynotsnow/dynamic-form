@@ -9,6 +9,11 @@
 3. [发布流程](./release.md)：npm 包构建、`npm pack`、tag 和发布脚本。
 4. [站点规划](./site-roadmap.md)：Docusaurus 站点、demo 复用和站点内容边界。
 
+## 按读者查找
+
+- [Agent 文档](./agents/README.md)：Agent 工作流、仓库地图、运行要求、披露规则和可复用维护知识。
+- [开发者文档](./developers/README.md)：面向维护者的开发、配置、发布和运维文档入口。
+
 ## 文档 Ownership
 
 - `packages/dynamic-form/docs/`：React/AntD 兼容入口文档，随 `@whynotsnow/dynamic-form` 包维护并进入 npm tarball。

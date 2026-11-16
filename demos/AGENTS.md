@@ -1,6 +1,6 @@
 # Demo 后续 Agent 说明
 
-最近审阅：2026-06-30
+最近审阅：2026-11-16
 
 ## 作用范围
 
@@ -19,6 +19,8 @@
 - `uiConfig`
 - `renderExtension`
 - `compilerFoundation`
+- `nodeModel4`
+- `headlessRenderer`
 
 不要依赖陈旧文档中的旧 demo 名称，除非文件真实存在。
 
