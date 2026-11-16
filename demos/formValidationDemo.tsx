@@ -29,8 +29,8 @@ type ProjectValue = {
   description: string;
   members: ProjectMemberValue[];
   tasks: ProjectTaskValue[];
-  fruit: string[];
-  multipleSelect: string[];
+  targetPlatforms: string[];
+  techStack: string[];
 };
 
 type UserTableRowValue = {
@@ -211,8 +211,8 @@ const FormValidationDemo: React.FC = () => {
                 dueDate: '2025-08-09T16:00:00.000Z'
               }
             ],
-            fruit: ['Apple', 'Orange'],
-            multipleSelect: ['d13', 'c12', 'f15']
+            targetPlatforms: ['web', 'miniProgram'],
+            techStack: ['react', 'typescript', 'nodejs']
           },
           {
             name: '噶是多少胜多负少噶手动阀分手大师三大发',
@@ -234,8 +234,8 @@ const FormValidationDemo: React.FC = () => {
                 dueDate: '2025-08-23T16:00:00.000Z'
               }
             ],
-            fruit: ['Apple', 'Pear', 'Orange'],
-            multipleSelect: ['a10', 'b11', 'c12', 'd13']
+            targetPlatforms: ['web', 'mobileApp', 'desktop'],
+            techStack: ['vue', 'typescript', 'java', 'postgresql']
           }
         ],
         userTable: [
@@ -270,7 +270,7 @@ const FormValidationDemo: React.FC = () => {
 
         <DynamicForm
           form={form}
-          // values={initialValues}
+          values={initialValues}
           formConfig={formConfig}
           onSubmit={(values) => handleSubmit(values as DemoFormValues)}
           componentRegistry={componentRegistryConfig}

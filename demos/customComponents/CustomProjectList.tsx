@@ -1,9 +1,30 @@
 import React from 'react';
 import { getFieldName } from '@/exports';
 import type { FieldComponentProps } from '@/exports';
-import { Form, Input, Button, Space, Card, Select, DatePicker, SelectProps, Checkbox } from 'antd';
+import { Form, Input, Button, Space, Card, Select, DatePicker, Checkbox } from 'antd';
+import type { SelectProps } from 'antd';
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
+
+const deliveryPlatformOptions = [
+  { label: 'Web 应用', value: 'web' },
+  { label: '移动 App', value: 'mobileApp' },
+  { label: '微信小程序', value: 'miniProgram' },
+  { label: '桌面客户端', value: 'desktop' }
+];
+
+const techStackOptions: NonNullable<SelectProps['options']> = [
+  { label: 'React', value: 'react' },
+  { label: 'Vue', value: 'vue' },
+  { label: 'TypeScript', value: 'typescript' },
+  { label: 'Node.js', value: 'nodejs' },
+  { label: 'Java', value: 'java' },
+  { label: 'PostgreSQL', value: 'postgresql' },
+  { label: 'MySQL', value: 'mysql' },
+  { label: 'Redis', value: 'redis' },
+  { label: 'Docker', value: 'docker' },
+  { label: 'Kubernetes', value: 'kubernetes' }
+];
 
 // 可拆分为独立文件
 const MemberForm: React.FC<{ name: string | number; remove: () => void }> = ({ name, remove }) => (
@@ -95,14 +116,6 @@ const TaskForm: React.FC<{ name: string | number; remove: () => void }> = ({ nam
 const CustomProjectList: React.FC<FieldComponentProps> & { wrapWithFormItem?: boolean } = ({
   field
 }) => {
-  const options: SelectProps['options'] = [];
-
-  for (let i = 10; i < 36; i++) {
-    options.push({
-      value: i.toString(36) + i,
-      label: i.toString(36) + i
-    });
-  }
   return (
     <Form.List
       name={getFieldName(field)}
@@ -128,7 +141,16 @@ const CustomProjectList: React.FC<FieldComponentProps> & { wrapWithFormItem?: bo
           >
             <Button
               type="dashed"
-              onClick={() => addProject({ name: '', description: '', members: [], tasks: [] })}
+              onClick={() =>
+                addProject({
+                  name: '',
+                  description: '',
+                  members: [],
+                  tasks: [],
+                  targetPlatforms: [],
+                  techStack: []
+                })
+              }
               icon={<PlusOutlined />}
               style={{ marginBottom: 16 }}
             >
@@ -175,25 +197,43 @@ const CustomProjectList: React.FC<FieldComponentProps> & { wrapWithFormItem?: bo
                 </Form.Item>
 
                 <Form.Item
-                  label="水果"
-                  name={[projectField.name, 'fruit']}
-                  rules={[{ required: true, message: '水果不能为空' }]}
+                  label="交付平台"
+                  name={[projectField.name, 'targetPlatforms']}
+                  extra="选择项目计划支持的终端形态，可多选。"
+                  rules={[
+                    {
+                      required: true,
+                      type: 'array',
+                      min: 1,
+                      message: '请至少选择一个交付平台'
+                    }
+                  ]}
                 >
-                  <Checkbox.Group
-                    style={{ width: '100%' }}
-                    options={[
-                      { label: 'Apple', value: 'Apple', className: 'label-1' },
-                      { label: 'Pear', value: 'Pear', className: 'label-2' },
-                      { label: 'Orange', value: 'Orange', className: 'label-3' }
-                    ]}
-                  />
+                  <Checkbox.Group style={{ width: '100%' }} options={deliveryPlatformOptions} />
                 </Form.Item>
                 <Form.Item
-                  label="多选"
-                  name={[projectField.name, 'multipleSelect']}
-                  rules={[{ required: true, message: '多选不能为空' }]}
+                  label="技术栈"
+                  name={[projectField.name, 'techStack']}
+                  extra="选择项目主要使用的语言、框架和基础设施。"
+                  rules={[
+                    {
+                      required: true,
+                      type: 'array',
+                      min: 1,
+                      message: '请至少选择一项技术栈'
+                    }
+                  ]}
                 >
-                  <Select mode="multiple" style={{ width: '100%' }} options={options}></Select>
+                  <Select
+                    mode="multiple"
+                    allowClear
+                    showSearch
+                    optionFilterProp="label"
+                    maxTagCount="responsive"
+                    placeholder="搜索并选择项目技术栈"
+                    style={{ width: '100%' }}
+                    options={techStackOptions}
+                  />
                 </Form.Item>
 
                 {/* 成员列表 */}
