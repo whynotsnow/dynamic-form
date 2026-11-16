@@ -12,20 +12,7 @@ import { UploadOutlined } from '@ant-design/icons';
 import CustomProjectList from '../../demos/customComponents/CustomProjectList';
 import CustomEditTable from '../../demos/customComponents/CustomEditTable';
 import OperatingAreaField from './OperatingAreaField';
-
-type DemoComponentProps = {
-  min?: number;
-  max?: number;
-  rows?: number;
-  placeholder?: string;
-  disabled?: boolean;
-  options?: SelectProps['options'];
-  unit?: React.ReactNode;
-};
-
-const getDemoComponentProps = (field: FieldComponentProps['field']): DemoComponentProps => {
-  return field.componentProps as DemoComponentProps;
-};
+import { getDemoComponentProps } from './demoComponentProps';
 
 // 自定义受控组件用于测试
 
