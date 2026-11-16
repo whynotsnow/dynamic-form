@@ -62,11 +62,38 @@
   "demos.client.description": {
     "message": "Select a demo to inspect the interactive behavior."
   },
+  "demos.sourcePanel.open": {
+    "message": "View demo source"
+  },
+  "demos.sourcePanel.multiFileHint": {
+    "message": "Use the file tabs to switch between sources. Copying copies only the selected file."
+  },
+  "demos.sourcePanel.fileTabsLabel": {
+    "message": "Demo source files"
+  },
   "demos.error.title": {
     "message": "Current demo failed to render"
   },
   "demos.error.description": {
     "message": "{demoTitle} threw a runtime error. Other demos are still available."
+  },
+  "siteCodeBlock.copy": {
+    "message": "Copy"
+  },
+  "siteCodeBlock.copied": {
+    "message": "Copied"
+  },
+  "siteCodeBlock.copyFailed": {
+    "message": "Copy failed"
+  },
+  "siteCodeBlock.copyCurrentFile": {
+    "message": "Copy current file"
+  },
+  "siteCodeBlock.collapse": {
+    "message": "Collapse code"
+  },
+  "siteCodeBlock.expand": {
+    "message": "Expand code"
   },
   "api.groups.components.description": {
     "message": "Render a form from a hand-written config or converted config."

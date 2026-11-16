@@ -12,6 +12,7 @@ export interface SiteCodeBlockProps {
   language?: 'tsx' | 'ts' | 'json' | 'bash' | 'text';
   title?: React.ReactNode;
   copyCode?: string;
+  copyLabel?: React.ReactNode;
   showCopy?: boolean;
   defaultExpanded?: boolean;
   collapsedLineLimit?: number;
@@ -172,6 +173,7 @@ export default function SiteCodeBlock({
   language = 'text',
   title,
   copyCode,
+  copyLabel,
   showCopy = true,
   defaultExpanded = false,
   collapsedLineLimit = COLLAPSED_CODE_LINE_LIMIT,
@@ -180,6 +182,7 @@ export default function SiteCodeBlock({
   preClassName
 }: SiteCodeBlockProps): React.JSX.Element {
   const [copied, setCopied] = useState(false);
+  const [copyFailed, setCopyFailed] = useState(false);
   const [expanded, setExpanded] = useState(defaultExpanded);
   const formattedCode = useMemo(() => formatCode(code, language), [code, language]);
   const shouldCollapse =
@@ -187,9 +190,24 @@ export default function SiteCodeBlock({
     formattedCode.length > collapsedLengthLimit;
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(copyCode ?? code);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1600);
+    setCopied(false);
+    setCopyFailed(false);
+
+    try {
+      if (!navigator.clipboard?.writeText) {
+        throw new Error('Clipboard API is unavailable');
+      }
+
+      await navigator.clipboard.writeText(copyCode ?? code);
+      setCopied(true);
+    } catch {
+      setCopyFailed(true);
+    }
+
+    window.setTimeout(() => {
+      setCopied(false);
+      setCopyFailed(false);
+    }, 2000);
   };
 
   return (
@@ -201,7 +219,9 @@ export default function SiteCodeBlock({
             <button onClick={handleCopy} type="button">
               {copied
                 ? translate({ id: 'siteCodeBlock.copied', message: '已复制' })
-                : translate({ id: 'siteCodeBlock.copy', message: '复制' })}
+                : copyFailed
+                  ? translate({ id: 'siteCodeBlock.copyFailed', message: '复制失败' })
+                  : (copyLabel ?? translate({ id: 'siteCodeBlock.copy', message: '复制' }))}
             </button>
           ) : null}
         </div>

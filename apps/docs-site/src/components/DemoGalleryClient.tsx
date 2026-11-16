@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import 'antd/dist/reset.css';
 import { translate } from '@docusaurus/Translate';
 import Heading from '@theme/Heading';
-import { DEMO_COMPONENTS, type DemoType } from '../../../../demos/demoRegistry';
+import { DEMO_COMPONENTS, DEMO_SOURCE_FILES, type DemoType } from '../../../../demos/demoRegistry';
+import SiteCodeBlock from './SiteCodeBlock';
 import styles from './DemoGalleryClient.module.css';
 
 const DEFAULT_DEMO: DemoType = 'storeBoundary';
@@ -132,6 +133,123 @@ const writeDemoToUrl = (demoKey: DemoType) => {
   window.history.pushState(null, '', url);
 };
 
+interface DemoSourcePanelProps {
+  sourceFiles: Array<{ path: string; content: string }>;
+}
+
+function DemoSourcePanel({ sourceFiles }: DemoSourcePanelProps): React.JSX.Element | null {
+  const [activeFileIndex, setActiveFileIndex] = useState(0);
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const idPrefix = useId().replace(/:/g, '');
+
+  if (sourceFiles.length === 0) {
+    return null;
+  }
+
+  const activeFile = sourceFiles[activeFileIndex] ?? sourceFiles[0];
+  const activeSource = `// 文件路径: ${activeFile.path}\n${activeFile.content.trim()}`;
+  const tabIds = sourceFiles.map((_, index) => `${idPrefix}-tab-${index}`);
+  const panelId = `${idPrefix}-tab-panel`;
+
+  const handleTabKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+    let nextIndex: number | undefined;
+
+    if (event.key === 'ArrowRight') {
+      nextIndex = (index + 1) % sourceFiles.length;
+    } else if (event.key === 'ArrowLeft') {
+      nextIndex = (index - 1 + sourceFiles.length) % sourceFiles.length;
+    } else if (event.key === 'Home') {
+      nextIndex = 0;
+    } else if (event.key === 'End') {
+      nextIndex = sourceFiles.length - 1;
+    }
+
+    if (nextIndex !== undefined) {
+      event.preventDefault();
+      setActiveFileIndex(nextIndex);
+      tabRefs.current[nextIndex]?.focus();
+    }
+  };
+
+  return (
+    <details className={styles.sourcePanel} open>
+      <summary>
+        {translate({
+          id: 'demos.sourcePanel.open',
+          message: '查看示例源码'
+        })}
+      </summary>
+      {sourceFiles.length > 1 ? (
+        <>
+          <p className={styles.sourceHint}>
+            {translate({
+              id: 'demos.sourcePanel.multiFileHint',
+              message: '切换文件标签查看源码；复制操作只会复制当前文件。'
+            })}
+          </p>
+          <div
+            aria-label={translate({
+              id: 'demos.sourcePanel.fileTabsLabel',
+              message: '示例源码文件'
+            })}
+            className={styles.sourceTabs}
+            role="tablist"
+          >
+            {sourceFiles.map((file, index) => {
+              const fileName = file.path.split('/').pop() ?? file.path;
+              const tabId = tabIds[index];
+
+              return (
+                <button
+                  aria-controls={panelId}
+                  aria-selected={index === activeFileIndex}
+                  className={styles.sourceTab}
+                  id={tabId}
+                  key={file.path}
+                  onClick={() => setActiveFileIndex(index)}
+                  onKeyDown={(event) => handleTabKeyDown(event, index)}
+                  ref={(element) => {
+                    tabRefs.current[index] = element;
+                  }}
+                  role="tab"
+                  tabIndex={index === activeFileIndex ? 0 : -1}
+                  title={file.path}
+                  type="button"
+                >
+                  {fileName}
+                </button>
+              );
+            })}
+          </div>
+        </>
+      ) : null}
+      <div
+        aria-labelledby={sourceFiles.length > 1 ? tabIds[activeFileIndex] : undefined}
+        className={styles.sourceTabPanel}
+        id={sourceFiles.length > 1 ? panelId : undefined}
+        role={sourceFiles.length > 1 ? 'tabpanel' : undefined}
+        tabIndex={sourceFiles.length > 1 ? 0 : undefined}
+      >
+        <SiteCodeBlock
+          className={styles.sourceCodeBlock}
+          code={activeSource}
+          copyCode={activeSource}
+          copyLabel={
+            sourceFiles.length > 1
+              ? translate({
+                  id: 'siteCodeBlock.copyCurrentFile',
+                  message: '复制当前文件'
+                })
+              : undefined
+          }
+          key={activeFile.path}
+          language="tsx"
+        />
+      </div>
+    </details>
+  );
+}
+
 interface DemoErrorBoundaryProps {
   children: React.ReactNode;
   demoTitle: string;
@@ -189,6 +307,7 @@ export default function DemoGalleryClient(): React.JSX.Element {
   const currentDemoInfo = DEMO_COMPONENTS[currentDemo];
   const currentDemoText = DEMO_TEXT[currentDemo];
   const CurrentDemo = currentDemoInfo.component;
+  const sourceFiles = DEMO_SOURCE_FILES[currentDemo] ?? [];
 
   useEffect(() => {
     const handlePopState = () => {
@@ -261,6 +380,8 @@ export default function DemoGalleryClient(): React.JSX.Element {
               </DemoErrorBoundary>
             </div>
           </div>
+
+          <DemoSourcePanel key={currentDemo} sourceFiles={sourceFiles} />
         </section>
       </div>
     </div>

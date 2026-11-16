@@ -42,6 +42,7 @@ demos/
 ├── App.tsx
 ├── DemoSelector.tsx
 ├── demoRegistry.tsx
+├── demoSources.json
 ├── storeBoundaryDemo.tsx
 ├── customHandlers.ts
 ├── customHandlersDemo.tsx
@@ -61,6 +62,8 @@ demos/
 ## 维护规则
 
 - 新增 demo 时，优先添加到 `demoRegistry.tsx`；`DemoSelector` 会从该注册表渲染演示。
+- docs-site 的 Demo 源码展示由 `demoSources.json` 手动维护。新增、修改或移除被站点展示的 demo 时，同步核对对应源码快照及其项目内辅助文件；每项应覆盖当前渲染所需的源文件，并使用仓库相对路径。
+- `demoSources.json` 是展示用静态快照，不会在构建时自动读取组件文件；修改 demo 后应主动同步，避免展示的代码与运行效果不一致。
 - demo 级 effect handler 初始化统一使用 `useDemoInitHandlers`，保持默认配置一致。
 - 页面级 demo 文件名应与主要职责一致，并使用 `*Demo.tsx` 后缀。
 - 本 README 需要与 `DemoSelector` 实际暴露的文件和 key 保持同步。

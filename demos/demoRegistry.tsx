@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react';
+import demoSources from './demoSources.json';
 import StoreBoundaryDemo from './storeBoundaryDemo';
 import CustomHandlersDemo from './customHandlersDemo';
 import CustomComponentsDemo from './customComponentsDemo';
@@ -76,3 +77,10 @@ export const DEMO_COMPONENTS = {
 } satisfies Record<string, DemoDefinition>;
 
 export type DemoType = keyof typeof DEMO_COMPONENTS;
+
+export interface DemoSourceFile {
+  path: string;
+  content: string;
+}
+
+export const DEMO_SOURCE_FILES = demoSources as Record<DemoType, DemoSourceFile[]>;
