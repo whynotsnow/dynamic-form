@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Typography, Space, Button, message, Form, Spin } from 'antd';
+import { Typography, Space, Button, message, Form } from 'antd';
 import type { RuleObject } from 'antd/es/form';
 import DynamicForm from '@/index';
 import { customComponents } from './customComponents';
@@ -7,8 +7,9 @@ import { FormConfig } from '@/exports';
 import { exampleHandlers } from './customHandlers';
 import { mockFetchFormData } from '../packages/dynamic-form/src/shared/utils';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
+import DemoLoading from './DemoLoading';
 
-const { Title, Paragraph } = Typography;
+const { Paragraph } = Typography;
 
 type ProjectMemberValue = {
   name: string;
@@ -253,14 +254,12 @@ const FormValidationDemo: React.FC = () => {
     fetchData();
   }, []);
 
-  if (!initialValues) return <Spin />;
+  if (!initialValues) return <DemoLoading />;
 
   return (
-    <div style={{ padding: 24, maxWidth: 1200, margin: '0 auto' }}>
-      <Title level={2}>Form.Item 校验集成演示</Title>
-
+    <div>
       <Space direction="vertical" size="large" style={{ width: '100%' }}>
-        <Card title="说明" size="small">
+        <section>
           <Paragraph>
             本演示展示了如何在 DynamicForm 中为自定义组件配置 Form.Item 校验规则。
           </Paragraph>
@@ -270,18 +269,18 @@ const FormValidationDemo: React.FC = () => {
             <li>支持复杂的自定义校验逻辑</li>
             <li>校验错误会显示在 Form.Item 的错误状态中</li>
           </ul>
-        </Card>
+        </section>
 
-        <Card title="操作" size="small">
+        <section>
           <Space>
             <Button type="primary" onClick={handleValidate}>
               校验所有字段
             </Button>
             <Button onClick={() => form.resetFields()}>重置表单</Button>
           </Space>
-        </Card>
+        </section>
 
-        <Card title="表单" size="small">
+        <section>
           <DynamicForm
             form={form}
             // values={initialValues}
@@ -290,7 +289,7 @@ const FormValidationDemo: React.FC = () => {
             componentRegistry={componentRegistryConfig}
             submitButtonText="提交表单"
           />
-        </Card>
+        </section>
       </Space>
     </div>
   );

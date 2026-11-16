@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Card, Form, Select, Space, Typography } from 'antd';
+import { Form, Select, Space, Typography } from 'antd';
 import type { SelectProps } from 'antd';
 import {
   DynamicForm,
@@ -234,8 +234,8 @@ const CompilerFoundationDemo: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      <Card title="编译器基础演示" style={{ marginBottom: 20 }}>
+    <div>
+      <section>
         <Space direction="vertical" size={8}>
           <Text>本示例演示 metadata adapter、module registry 和 compiler 的组合流程。</Text>
           <ul style={{ margin: 0, paddingLeft: 20 }}>
@@ -246,25 +246,16 @@ const CompilerFoundationDemo: React.FC = () => {
             <li>提交表单后可在控制台查看编译后表单的 values。</li>
           </ul>
         </Space>
-      </Card>
+      </section>
 
-      <div
-        style={{
-          border: '1px solid #d9d9d9',
-          borderRadius: 8,
-          padding: 20,
-          backgroundColor: '#fff'
-        }}
-      >
-        <DynamicForm
-          form={form}
-          formConfig={compiled.formConfig}
-          componentRegistry={{ customComponents: compiled.componentRegistry }}
-          submitButtonText="提交编译后表单"
-          onSubmit={handleSubmit}
-          uiConfig={uiConfig}
-        />
-      </div>
+      <DynamicForm
+        form={form}
+        formConfig={compiled.formConfig}
+        componentRegistry={{ customComponents: compiled.componentRegistry }}
+        submitButtonText="提交编译后表单"
+        onSubmit={handleSubmit}
+        uiConfig={uiConfig}
+      />
     </div>
   );
 };

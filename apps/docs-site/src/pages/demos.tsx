@@ -1,7 +1,8 @@
 import type React from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
-import Translate, { translate } from '@docusaurus/Translate';
+import { translate } from '@docusaurus/Translate';
 import Layout from '@theme/Layout';
+import DemoLoading from '../../../../demos/DemoLoading';
 import DemoGalleryClient from '../components/DemoGalleryClient';
 import styles from './demos.module.css';
 
@@ -21,9 +22,9 @@ export default function Demos(): React.JSX.Element {
         <BrowserOnly
           fallback={
             <div className="container">
-              <div className={styles.loading}>
-                <Translate id="demos.loading">正在加载 demo演示...</Translate>
-              </div>
+              <DemoLoading
+                message={translate({ id: 'demos.loading', message: '正在加载 demo演示...' })}
+              />
             </div>
           }
         >

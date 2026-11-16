@@ -9,7 +9,8 @@ import type {
 import DynamicForm from '@/index';
 import { exampleHandlers } from './customHandlers';
 import { customComponents } from './customComponents';
-import { Button, Form, message, Space, Spin } from 'antd';
+import { Button, Form, message, Space } from 'antd';
+import DemoLoading from './DemoLoading';
 import { mockFetchFormData } from '../packages/dynamic-form/src/shared/utils/utils';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
 
@@ -230,7 +231,7 @@ const CustomComponentsDemo: React.FC = () => {
   const [viewMode, setViewMode] = useState<'customRender' | 'disabledFields'>('disabledFields');
 
   // 有数据才渲染
-  if (!initialValues) return <Spin />;
+  if (!initialValues) return <DemoLoading />;
   return (
     <div style={{ padding: 24, maxWidth: 1200, margin: '0 auto' }}>
       <Space style={{ marginBottom: 16 }}>

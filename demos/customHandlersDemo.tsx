@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Card, Space, Typography, Alert, Spin, SelectProps, Form } from 'antd';
+import { Space, Typography, Alert, SelectProps, Form } from 'antd';
 import { exampleHandlers } from './customHandlers';
 import { FlatFormConfig, FormValues } from '@/exports';
 import { DynamicForm } from '@/exports';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
+import DemoLoading from './DemoLoading';
 
 const { Title, Paragraph } = Typography;
 
@@ -220,10 +221,10 @@ const CustomHandlersDemo: React.FC = () => {
   }, [initialValues]);
 
   // 有数据才渲染
-  if (!initialValues) return <Spin />;
+  if (!initialValues) return <DemoLoading />;
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div>
       <Alert
         message="处理器初始化成功"
         description={`成功注册了 ${registeredCount} 个处理器`}
@@ -231,7 +232,8 @@ const CustomHandlersDemo: React.FC = () => {
         showIcon
         style={{ marginBottom: 16 }}
       />
-      <Card title="自定义处理器演示">
+      <section>
+        <Title level={4}>处理器能力</Title>
         <Space direction="vertical">
           <Title level={4}>自定义处理器功能</Title>
 
@@ -264,9 +266,9 @@ const CustomHandlersDemo: React.FC = () => {
             <li>在&quot;状态&quot;字段选择不同状态会应用不同样式和数据转换</li>
           </ol>
         </Space>
-      </Card>
+      </section>
 
-      <div style={{ padding: 24, maxWidth: 720, margin: '0 auto', width: '100%' }}>
+      <div style={{ maxWidth: 720, width: '100%' }}>
         <DynamicForm
           formConfig={memoConfig as FlatFormConfig}
           values={initialValues}

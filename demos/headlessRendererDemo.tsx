@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Card, Space, Typography } from 'antd';
+import { Space, Typography } from 'antd';
 import {
   createMemoryFormAdapter,
   DynamicForm,
@@ -92,35 +92,33 @@ const HeadlessRendererDemo: React.FC = () => {
   const [submittedValues, setSubmittedValues] = useState<HeadlessFormValues | null>(null);
 
   return (
-    <Card title="Headless Renderer / Memory Adapter 演示" size="small">
-      <Space direction="vertical" style={{ width: '100%' }}>
-        <Paragraph type="secondary">
-          该示例使用原生元素 renderer 和内存 form adapter，用于说明非 AntD UI 外壳接入方式。
-        </Paragraph>
+    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+      <Paragraph type="secondary">
+        该示例使用原生元素 renderer 和内存 form adapter，用于说明非 AntD UI 外壳接入方式。
+      </Paragraph>
 
-        <DynamicForm
-          formAdapter={formAdapter}
-          renderer={headlessRenderer}
-          formConfig={formConfig}
-          componentRegistry={{
-            customComponents: {
-              HeadlessInput
-            },
-            allowOverride: true
-          }}
-          renderFieldItem={({ field, defaultRender }) => (
-            <div data-demo-field={field.id} style={{ marginBottom: 12 }}>
-              {defaultRender}
-            </div>
-          )}
-          submitButtonText="提交 Headless 表单"
-          onSubmit={(values) => setSubmittedValues({ ...values })}
-        />
+      <DynamicForm
+        formAdapter={formAdapter}
+        renderer={headlessRenderer}
+        formConfig={formConfig}
+        componentRegistry={{
+          customComponents: {
+            HeadlessInput
+          },
+          allowOverride: true
+        }}
+        renderFieldItem={({ field, defaultRender }) => (
+          <div data-demo-field={field.id} style={{ marginBottom: 12 }}>
+            {defaultRender}
+          </div>
+        )}
+        submitButtonText="提交 Headless 表单"
+        onSubmit={(values) => setSubmittedValues({ ...values })}
+      />
 
-        <Text strong>提交结果</Text>
-        <pre>{JSON.stringify(submittedValues, null, 2)}</pre>
-      </Space>
-    </Card>
+      <Text strong>提交结果</Text>
+      <pre>{JSON.stringify(submittedValues, null, 2)}</pre>
+    </Space>
   );
 };
 

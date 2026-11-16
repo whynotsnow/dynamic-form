@@ -1,0 +1,11 @@
+.loading {
+  display: flex;
+  min-height: 160px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  color: #595959;
+  text-align: center;
+}

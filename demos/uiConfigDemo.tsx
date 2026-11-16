@@ -209,8 +209,8 @@ const UIConfigDemo: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <div style={{ marginBottom: '40px' }}>
+    <div>
+      <section>
         <h2>动态/静态 全局配置字段配置演示</h2>
         <ul>
           <li>
@@ -223,23 +223,14 @@ const UIConfigDemo: React.FC = () => {
           </li>
         </ul>
         <p>配置优先级：字段级别配置 &gt; 动态全局配置 &gt; 静态全局配置</p>
-        <div
-          style={{
-            border: '2px solid #1890ff',
-            borderRadius: '8px',
-            padding: '20px',
-            backgroundColor: '#f0f8ff'
-          }}
-        >
-          <DynamicForm
-            formConfig={dynamicFormConfig}
-            uiConfig={dynamicUIConfig}
-            componentRegistry={componentRegistryConfig}
-            onSubmit={handleDynamicSubmit}
-            form={dynamicForm}
-          />
-        </div>
-      </div>
+        <DynamicForm
+          formConfig={dynamicFormConfig}
+          uiConfig={dynamicUIConfig}
+          componentRegistry={componentRegistryConfig}
+          onSubmit={handleDynamicSubmit}
+          form={dynamicForm}
+        />
+      </section>
     </div>
   );
 };

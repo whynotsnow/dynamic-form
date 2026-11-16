@@ -64,8 +64,8 @@ const NodeModel4Demo: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      <Card title="4.0 Node Model / Container 演示" style={{ marginBottom: 16 }}>
+    <div>
+      <section>
         <Space direction="vertical" size={8}>
           <Paragraph>
             按下面的操作可以验证 4.0 node form 的嵌套结构、级联联动和跨层级 effect。
@@ -91,7 +91,7 @@ const NodeModel4Demo: React.FC = () => {
             <Button onClick={removeLastContact}>移除最后一个联系人</Button>
           </Space>
         </Space>
-      </Card>
+      </section>
 
       <DynamicForm
         form={form}

@@ -207,8 +207,9 @@ const RenderExtensionDemo: React.FC = () => {
   );
 
   return (
-    <div style={{ padding: 24, maxWidth: 1000, margin: '0 auto' }}>
-      <Card title="🎯 渲染扩展能力演示" style={{ marginBottom: 24 }}>
+    <div>
+      <section>
+        <h3>可配置的扩展点</h3>
         <ul>
           <li>
             <b>renderFieldItem：</b> 给单字段外层加红色边框
@@ -226,21 +227,19 @@ const RenderExtensionDemo: React.FC = () => {
             <b>renderFormInner：</b> 自定义提交按钮
           </li>
         </ul>
-      </Card>
+      </section>
 
-      <Card title="📝 表单演示">
-        <DynamicForm
-          formConfig={formConfig}
-          form={form}
-          onSubmit={(values) => handleSubmit(values as RenderExtensionFormValues)}
-          componentRegistry={componentRegistry}
-          renderFieldItem={renderFieldItem}
-          renderFields={renderFields}
-          renderGroupItem={renderGroupItem}
-          renderGroups={renderGroups}
-          renderFormInner={renderFormInner}
-        />
-      </Card>
+      <DynamicForm
+        formConfig={formConfig}
+        form={form}
+        onSubmit={(values) => handleSubmit(values as RenderExtensionFormValues)}
+        componentRegistry={componentRegistry}
+        renderFieldItem={renderFieldItem}
+        renderFields={renderFields}
+        renderGroupItem={renderGroupItem}
+        renderGroups={renderGroups}
+        renderFormInner={renderFormInner}
+      />
 
       {Object.keys(formValues).length > 0 && (
         <Card title="📊 提交结果" style={{ marginTop: 24 }}>
