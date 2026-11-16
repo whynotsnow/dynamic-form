@@ -212,6 +212,72 @@
   "marketplace.page.description": {
     "message": "Browse DynamicForm built-in capabilities and copy-install components, handlers, and recipes. Copy-install entries target user projects and are registered through componentRegistry or useInitHandlers."
   },
+  "marketplace.detail.layout.title": {
+    "message": "Extension Details"
+  },
+  "marketplace.detail.layout.description": {
+    "message": "Explore previews, installation guidance, and code snippets for DynamicForm extensions."
+  },
+  "marketplace.detail.notFoundTitle": {
+    "message": "Extension Not Found"
+  },
+  "marketplace.detail.notFoundDescription": {
+    "message": "This link points to an extension entry that does not exist. It may have been renamed or removed."
+  },
+  "marketplace.detail.backToList": {
+    "message": "Back to Extension Marketplace"
+  },
+  "marketplace.detail.back": {
+    "message": "Back to Extension Marketplace"
+  },
+  "marketplace.detail.usageTitle": {
+    "message": "Usage"
+  },
+  "marketplace.detail.installModeLabel": {
+    "message": "Installation"
+  },
+  "marketplace.detail.kindLabel": {
+    "message": "Category"
+  },
+  "marketplace.detail.codeCountLabel": {
+    "message": "Code Snippets"
+  },
+  "marketplace.detail.whenToUseTitle": {
+    "message": "When to Use"
+  },
+  "marketplace.detail.previewTitle": {
+    "message": "Live Preview"
+  },
+  "marketplace.detail.previewMissing": {
+    "message": "No interactive preview is available for this entry yet."
+  },
+  "marketplace.detail.codeLabel": {
+    "message": "Code"
+  },
+  "marketplace.detail.codeTitle": {
+    "message": "Code Examples"
+  },
+  "marketplace.detail.codeTabs": {
+    "message": "Code snippets"
+  },
+  "marketplace.detail.sidebar": {
+    "message": "Details page navigation"
+  },
+  "marketplace.detail.pathLabel": {
+    "message": "Extension"
+  },
+  "marketplace.detail.feedbackLabel": {
+    "message": "Resources"
+  },
+  "marketplace.detail.anchorTitle": {
+    "message": "On this page"
+  },
+  "marketplace.detail.jumpPreview": {
+    "message": "Preview"
+  },
+  "marketplace.detail.jumpCode": {
+    "message": "Code"
+  },
   "marketplace.preview.label": {
     "message": "Lazy Preview"
   },
