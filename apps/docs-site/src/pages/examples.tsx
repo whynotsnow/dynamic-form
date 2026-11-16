@@ -50,11 +50,15 @@ const examples = [
       id: 'examples.effects.description',
       message: '根据“是否有公司”的选择，自动显示或隐藏公司名称字段。'
     }),
-    code: `{
-  id: 'companyName',
-  dependents: ['hasCompany'],
-  effect: (_value, allValues) => ({ visible: allValues.hasCompany === true })
-}`,
+    code: `const formConfig = {
+  fields: [
+    { id: 'hasCompany', label: '是否有公司', component: 'Switch', dependents: ['companyName'] },
+    {
+      id: 'companyName', label: '公司名称', component: 'TextInput', initialVisible: false,
+      effect: (_value, allValues) => ({ visible: allValues.hasCompany === true })
+    }
+  ]
+};`,
     docs: '/docs/effects-and-handlers',
     demoUrl: '/demos?demo=customHandlers'
   },
@@ -86,7 +90,12 @@ const examples = [
     code: `const handler = {
   name: 'highlight',
   canHandle: (key) => key === 'highlight',
-  handle: (context, enabled) => context.updateFieldMeta({ componentProps: { enabled } })
+  handle: (context, enabled) => context.updateFieldMeta({
+    componentProps: {
+      className: enabled ? 'field-highlight' : undefined,
+      style: enabled ? { backgroundColor: '#fffbe6' } : undefined
+    }
+  })
 };`,
     docs: '/docs/effects-and-handlers',
     demoUrl: '/demos?demo=customHandlers'

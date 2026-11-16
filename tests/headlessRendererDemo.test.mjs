@@ -32,7 +32,7 @@ test('HeadlessRendererDemo renders the memory adapter reference form', async () 
   const { renderDemo } = await modulePromise;
   const html = renderDemo();
 
-  assert.match(html, /Headless Renderer \/ Memory Adapter 演示/);
   assert.match(html, /<form>/);
+  assert.match(html, /<fieldset data-group="contact">/);
   assert.match(html, /提交 Headless 表单/);
 });

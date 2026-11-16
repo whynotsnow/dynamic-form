@@ -16,6 +16,9 @@ const SAMPLE_OPTIONS: SearchOption[] = [
 export const SearchSelectField: React.FC<FieldComponentProps> = ({
   value,
   onChange,
+  field: _field,
+  form: _form,
+  formAdapter: _formAdapter,
   ...restProps
 }) => {
   const [keyword, setKeyword] = useState('');
@@ -56,6 +59,9 @@ const users = [
 export const UserPickerField: React.FC<FieldComponentProps> = ({
   value,
   onChange,
+  field: _field,
+  form: _form,
+  formAdapter: _formAdapter,
   ...restProps
 }) => {
   return (
@@ -108,7 +114,7 @@ export const EditableTableField: React.FC<FieldComponentProps> = ({
       }}
       editable={{
         type: 'multiple',
-        onValuesChange: (_, rows) => onChange(rows)
+        onValuesChange: (_, rows) => onChange?.(rows)
       }}
     />
   );
@@ -143,7 +149,8 @@ export const highlightHandler: CustomEffectResultHandler = {
   handle: (context, enabled) => {
     context.updateFieldMeta({
       componentProps: {
-        className: enabled ? 'field-highlight' : undefined
+        className: enabled ? 'field-highlight' : undefined,
+        style: enabled ? { backgroundColor: '#fffbe6' } : undefined
       },
       formItemProps: {
         extra: enabled ? '当前字段已触发高亮提示' : undefined

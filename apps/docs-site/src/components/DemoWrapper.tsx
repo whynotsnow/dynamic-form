@@ -168,7 +168,7 @@ function DemoSourcePanel({
           <SiteCodeBlock
             className={styles.sourceCodeBlock}
             code={activeSource}
-            copyCode={activeSource}
+            copyCode={activeFile.content}
             copyLabel={
               sourceFiles.length > 1
                 ? translate({

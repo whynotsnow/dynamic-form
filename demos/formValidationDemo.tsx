@@ -50,6 +50,12 @@ type DemoFormValues = {
   userTable: UserTableRowValue[];
 };
 
+const futureDate = (daysFromToday: number) => {
+  const date = new Date();
+  date.setDate(date.getDate() + daysFromToday);
+  return date.toISOString();
+};
+
 const FormValidationDemo: React.FC = () => {
   const [form] = Form.useForm();
 
@@ -157,81 +163,63 @@ const FormValidationDemo: React.FC = () => {
   useEffect(() => {
     async function fetchData() {
       const testData = {
-        name: 'gas递四方速递',
-        email: 'yourname@example.com',
+        name: '示例用户',
+        email: 'demo@example.com',
         projects: [
           {
-            name: '噶手动阀是的',
-            description: '去玩儿萨达阿斯顿发生是的发生',
+            name: '客户门户改版',
+            description: '升级客户自助服务门户的账户管理和工单查询流程。',
             members: [
               {
-                name: '三大发',
+                name: '成员 A',
                 role: 'developer',
-                email: 'yourname@developer.com'
+                email: 'member-a@example.com'
               },
               {
-                name: '3',
+                name: '成员 B',
                 role: 'tester',
-                email: 'yourname@tester.com'
-              },
-              {
-                name: '是的',
-                role: 'product',
-                email: 'yourname@product.com'
-              },
-              {
-                name: '撒旦法',
-                role: 'designer',
-                email: 'yourname@designer.com'
+                email: 'member-b@example.com'
               }
             ],
             tasks: [
               {
-                title: '撒大声地',
-                description: '三大发',
-                assignee: '撒旦法',
+                title: '设计导航结构',
+                description: '整理常用入口和页面层级',
+                assignee: '成员 A',
                 status: 'pending',
-                priority: 'low',
-                dueDate: '2025-08-19T16:00:00.000Z'
+                priority: 'high',
+                dueDate: futureDate(14)
               },
               {
-                title: '是的发生',
-                description: '三大发',
-                assignee: '是打发打发',
+                title: '验证工单查询',
+                description: '覆盖筛选和详情查看流程',
+                assignee: '成员 B',
                 status: 'in_progress',
                 priority: 'medium',
-                dueDate: '2025-08-09T16:00:00.000Z'
-              },
-              {
-                title: '噶手动阀是否',
-                description: '士大夫撒',
-                assignee: '撒旦法',
-                status: 'completed',
-                priority: 'high',
-                dueDate: '2025-08-09T16:00:00.000Z'
+                dueDate: futureDate(21)
               }
             ],
             targetPlatforms: ['web', 'miniProgram'],
             techStack: ['react', 'typescript', 'nodejs']
           },
           {
-            name: '噶是多少胜多负少噶手动阀分手大师三大发',
-            description: '三大发三大发是三大发收费多少是东风风神',
+            name: '运营数据看板',
+            description: '建设跨渠道运营数据看板和关键指标监控页面。',
             members: [
               {
-                name: '是打发打发是',
+                name: '成员 C',
                 role: 'developer',
-                email: 'yourname@developer.com'
+                email: 'member-c@example.com'
               }
             ],
             tasks: [
               {
-                title: '噶手动阀',
-                description: '士大夫撒',
-                assignee: '三大发',
-                status: 'completed',
+                title: '实现指标卡片',
+                description: '展示流量与转化数据',
+                assignee: '成员 C',
+                status: 'pending',
                 priority: 'high',
-                dueDate: '2025-08-23T16:00:00.000Z'
+                dueDate: futureDate(28)
               }
             ],
             targetPlatforms: ['web', 'mobileApp', 'desktop'],
@@ -240,12 +228,12 @@ const FormValidationDemo: React.FC = () => {
         ],
         userTable: [
           {
-            key: '1754668878601',
-            name: 'name your',
-            age: '18',
-            address: '阿斯顿发大街1号',
-            email: 'yourname@example.com',
-            phone: '13888888888',
+            key: 'demo-user',
+            name: '示例用户',
+            age: '28',
+            address: '示例路 1 号',
+            email: 'demo@example.com',
+            phone: '00000000000',
             status: 'active'
           }
         ]

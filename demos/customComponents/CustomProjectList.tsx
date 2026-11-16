@@ -79,6 +79,7 @@ const TaskForm: React.FC<{ name: string | number; remove: () => void }> = ({ nam
         getValueProps={(value) => ({
           value: value ? dayjs(value) : null
         })}
+        getValueFromEvent={(value: dayjs.Dayjs | null) => value?.toISOString() ?? ''}
       >
         <DatePicker
           placeholder="截止日期"

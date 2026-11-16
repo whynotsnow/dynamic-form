@@ -73,6 +73,29 @@ const builtinHandlerNames = [
   'submitAreaProps'
 ];
 
+const builtinComponentFieldExtras: Record<string, string> = {
+  SelectField: ", options: [{ label: '待处理', value: 'pending' }]",
+  Select: ", componentProps: { options: [{ label: '待处理', value: 'pending' }] }",
+  CheckboxGroup: ", componentProps: { options: [{ label: '读取', value: 'read' }] }",
+  TextDisplay: ", initialValue: '示例文本'"
+};
+
+const builtinHandlerResultExamples: Record<string, string> = {
+  value: "'示例值'",
+  visible: 'true',
+  disabled: 'true',
+  readonly: 'true',
+  groupsVisible: '{ advanced: true }',
+  formItemProps: "{ extra: '字段提示' }",
+  componentProps: "{ placeholder: '请输入' }",
+  formProps: "{ layout: 'vertical' }",
+  buttonProps: "{ type: 'primary' }",
+  cardProps: "{ size: 'small' }",
+  rowProps: '{ gutter: 16 }',
+  colProps: '{ span: 12 }',
+  submitAreaProps: "{ style: { textAlign: 'right' } }"
+};
+
 const builtinComponentDescription = translate({
   id: 'marketplace.data.builtinComponent.description',
   message: '系统内置字段组件，可直接在 FormConfig 的 component 字段中引用。'
@@ -126,7 +149,7 @@ const builtinComponentItems: MarketplaceItem[] = builtinComponentNames.map((comp
       language: 'ts',
       code: `const formConfig = {
   fields: [
-    { id: '${componentName.toLowerCase()}', label: '${componentName}', component: '${componentName}' }
+    { id: '${componentName.toLowerCase()}', label: '${componentName}', component: '${componentName}'${builtinComponentFieldExtras[componentName] ?? ''} }
   ]
 };`
     }
@@ -152,7 +175,7 @@ const builtinHandlerItems: MarketplaceItem[] = builtinHandlerNames.map((handlerN
       title: translate({ id: 'marketplace.code.effectResult', message: 'Effect result 示例' }),
       language: 'ts',
       code: `effect: () => ({
-  ${handlerName}: ${handlerName === 'visible' || handlerName === 'disabled' || handlerName === 'readonly' ? 'true' : "'示例值'"}
+  ${handlerName}: ${builtinHandlerResultExamples[handlerName]}
 })`
     }
   ]

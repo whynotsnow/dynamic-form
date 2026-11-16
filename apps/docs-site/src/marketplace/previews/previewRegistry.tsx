@@ -234,7 +234,14 @@ const sampleOptions = [
   { label: '杭州产品团队', value: 'hangzhou-product' }
 ];
 
-const SearchSelectField: React.FC<FieldComponentProps> = ({ value, onChange, ...restProps }) => {
+const SearchSelectField: React.FC<FieldComponentProps> = ({
+  value,
+  onChange,
+  field: _field,
+  form: _form,
+  formAdapter: _formAdapter,
+  ...restProps
+}) => {
   const [keyword, setKeyword] = useState('');
   const options = sampleOptions.filter((option) => option.label.includes(keyword.trim()));
 
@@ -259,7 +266,14 @@ const users = [
   { label: '王敏 / 测试负责人', value: 'wangmin', avatar: '王' }
 ];
 
-const UserPickerField: React.FC<FieldComponentProps> = ({ value, onChange, ...restProps }) => {
+const UserPickerField: React.FC<FieldComponentProps> = ({
+  value,
+  onChange,
+  field: _field,
+  form: _form,
+  formAdapter: _formAdapter,
+  ...restProps
+}) => {
   return (
     <Select
       allowClear
@@ -318,7 +332,7 @@ const EditableTableField: React.FC<FieldComponentProps> = ({ value, onChange }) 
         columns={editableColumns}
         editable={{
           type: 'multiple',
-          onValuesChange: (_, rows) => onChange(rows)
+          onValuesChange: (_, rows) => onChange?.(rows)
         }}
         options={false}
         pagination={false}
@@ -352,7 +366,8 @@ const highlightHandler: CustomEffectResultHandler = {
   handle: (context, enabled) => {
     context.updateFieldMeta({
       componentProps: {
-        className: enabled ? 'field-highlight' : undefined
+        className: enabled ? 'field-highlight' : undefined,
+        style: enabled ? { backgroundColor: '#fffbe6' } : undefined
       },
       formItemProps: {
         extra: enabled ? '当前字段已触发高亮提示' : undefined
