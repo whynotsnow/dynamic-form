@@ -14,7 +14,7 @@
 
 - 表单联动 effect 切换到 `@whynotsnow/hooks`，包根入口补充 effect map、effect 函数和字段名类型导出。
 - 新增推荐的 `FormChainEffectWrapper` 名称，并保留旧名称作为弃用兼容别名。
-- 收紧配置、effect result 和组件属性的 TypeScript 类型，并增加运行时输入检查。
+- 在内部配置处理与 effect result 路径中增加类型收窄和运行时输入检查，同时保持既有公开字段值、form 实例、组件属性和 handler 回调的类型兼容。
 
 相关专题：[Effect 与处理器](./effects-and-handlers.md)、[配置指南](./configuration.md)。
 

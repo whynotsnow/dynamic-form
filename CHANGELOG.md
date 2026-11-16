@@ -6,7 +6,7 @@
 
 - 将表单联动 effect 的执行与类型定义切换到 `@whynotsnow/hooks`，并在包根入口补充对应的 effect map、effect 函数和字段名类型导出。
 - 新增推荐使用的 `FormChainEffectWrapper` 导出；为兼容既有代码，保留 `FormChainEffectEngineWrapper` 作为弃用别名。
-- 收紧 core 与 React 包配置、effect result 和组件属性的 TypeScript 类型，并为运行时输入增加类型检查。
+- 在内部配置处理与 effect result 路径中增加类型收窄和运行时输入校验，同时保持既有公开字段值、form 实例、组件属性和 handler 回调的宽松类型契约。
 - 更新 demos、构建配置和中英文文档以匹配新的 hooks 类型与导出名称。
 
 ## 4.2.0 - 2026-07-02

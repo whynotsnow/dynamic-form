@@ -14,7 +14,7 @@ The main flow remains `FormConfig -> adapter/compiler -> processFormConfig -> Ru
 
 - Moves form-chain effect execution and types to `@whynotsnow/hooks`, and exports effect map, effect function, and field-name types from the package root.
 - Adds the preferred `FormChainEffectWrapper` name while retaining the former name as a deprecated compatibility alias.
-- Tightens TypeScript types for config, effect results, and component props, with additional runtime input checks.
+- Adds type narrowing and runtime input checks to internal config and effect-result handling while preserving the existing permissive public types for field values, form instances, component props, and handler callbacks.
 
 Related topics: [Effects and Handlers](./effects-and-handlers.md), [Configuration Guide](./configuration.md).
 

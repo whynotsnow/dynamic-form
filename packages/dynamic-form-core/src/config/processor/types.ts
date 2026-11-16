@@ -35,7 +35,7 @@ export interface ConfigProcessInfo extends ConfigAnalysisResult, HydratedConfigR
 
 export interface ApplyInitialEffectResultParams extends HydratedConfigResult {
   field: BaseFieldConfig;
-  result: Record<string, unknown>;
+  result: any;
   fieldRegistry: Record<string, FieldRegistry>;
   fieldAddressRegistry: Record<string, FieldAddress>;
 }
