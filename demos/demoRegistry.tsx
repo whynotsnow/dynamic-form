@@ -83,4 +83,22 @@ export interface DemoSourceFile {
   content: string;
 }
 
-export const DEMO_SOURCE_FILES = demoSources as Record<DemoType, DemoSourceFile[]>;
+export interface DemoSourceEntry {
+  sourceFiles: DemoSourceFile[];
+  githubDemoPath: string;
+  relatedComponents: string[];
+}
+
+const demoSourceEntries = demoSources as Record<DemoType, DemoSourceEntry>;
+
+export const DEMO_SOURCE_FILES = Object.fromEntries(
+  Object.entries(demoSourceEntries).map(([demoType, entry]) => [demoType, entry.sourceFiles])
+) as Record<DemoType, DemoSourceFile[]>;
+
+export const DEMO_RELATED_COMPONENTS = Object.fromEntries(
+  Object.entries(demoSourceEntries).map(([demoType, entry]) => [demoType, entry.relatedComponents])
+) as Record<DemoType, string[]>;
+
+export const DEMO_GITHUB_SOURCE = Object.fromEntries(
+  Object.entries(demoSourceEntries).map(([demoType, entry]) => [demoType, entry.githubDemoPath])
+) as Record<DemoType, string>;

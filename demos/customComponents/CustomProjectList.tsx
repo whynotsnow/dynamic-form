@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 // 可拆分为独立文件
 const MemberForm: React.FC<{ name: string | number; remove: () => void }> = ({ name, remove }) => (
   <Card size="small" style={{ marginBottom: 8 }}>
-    <Space align="start" style={{ marginBottom: 8 }}>
+    <Space align="start" wrap size={[8, 0]} style={{ width: '100%', marginBottom: 8 }}>
       <Form.Item name={[name, 'name']} rules={[{ required: true, message: '成员姓名不能为空' }]}>
         <Input placeholder="成员姓名" style={{ width: 120 }} />
       </Form.Item>
@@ -40,7 +40,7 @@ const MemberForm: React.FC<{ name: string | number; remove: () => void }> = ({ n
 
 const TaskForm: React.FC<{ name: string | number; remove: () => void }> = ({ name, remove }) => (
   <Card size="small" style={{ marginBottom: 8 }}>
-    <Space align="start" style={{ width: '100%' }}>
+    <Space align="start" wrap size={[8, 0]} style={{ width: '100%' }}>
       <Form.Item name={[name, 'title']} rules={[{ required: true, message: '任务标题不能为空' }]}>
         <Input placeholder="任务标题" style={{ width: 120 }} />
       </Form.Item>
@@ -120,6 +120,8 @@ const CustomProjectList: React.FC<FieldComponentProps> & { wrapWithFormItem?: bo
         return (
           <Form.Item
             label={field.label}
+            labelCol={{ span: 24 }}
+            wrapperCol={{ span: 24 }}
             required={field.rules?.some((rule) => 'required' in rule && rule.required)}
             validateStatus={errors.length > 0 ? 'error' : undefined}
             help={errors.length > 0 ? <Form.ErrorList errors={errors} /> : undefined}

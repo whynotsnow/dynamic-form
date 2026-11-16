@@ -209,29 +209,13 @@ const UIConfigDemo: React.FC = () => {
   };
 
   return (
-    <div>
-      <section>
-        <h2>动态/静态 全局配置字段配置演示</h2>
-        <ul>
-          <li>
-            <strong>全局配置</strong>
-            ：状态字段影响全局UIConfig（formProps、buttonProps、cardProps等），存储在store的dynamicUIConfig中
-          </li>
-          <li>
-            <strong>字段级别配置</strong>
-            ：优先级字段影响自身配置（formItemProps、componentProps、style、className、rules等），存储在字段的meta中
-          </li>
-        </ul>
-        <p>配置优先级：字段级别配置 &gt; 动态全局配置 &gt; 静态全局配置</p>
-        <DynamicForm
-          formConfig={dynamicFormConfig}
-          uiConfig={dynamicUIConfig}
-          componentRegistry={componentRegistryConfig}
-          onSubmit={handleDynamicSubmit}
-          form={dynamicForm}
-        />
-      </section>
-    </div>
+    <DynamicForm
+      formConfig={dynamicFormConfig}
+      uiConfig={dynamicUIConfig}
+      componentRegistry={componentRegistryConfig}
+      onSubmit={handleDynamicSubmit}
+      form={dynamicForm}
+    />
   );
 };
 

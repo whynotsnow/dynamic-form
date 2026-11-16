@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Form, Select, Space, Typography } from 'antd';
+import { Form, Select } from 'antd';
 import type { SelectProps } from 'antd';
 import {
   DynamicForm,
@@ -11,8 +11,6 @@ import {
   type UIConfig
 } from '@/exports';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
-
-const { Text } = Typography;
 
 const toText = (value: unknown, fallback: string) => {
   return typeof value === 'string' ? value : fallback;
@@ -235,19 +233,6 @@ const CompilerFoundationDemo: React.FC = () => {
 
   return (
     <div>
-      <section>
-        <Space direction="vertical" size={8}>
-          <Text>本示例演示 metadata adapter、module registry 和 compiler 的组合流程。</Text>
-          <ul style={{ margin: 0, paddingLeft: 20 }}>
-            <li>metadata 先适配为 mixed module config，再编译为标准 DynamicForm 配置。</li>
-            <li>TextField、DepartmentPicker、SelectFieldModule 等模块会展开为不同内置组件。</li>
-            <li>groupOverrides 在 adapter 后、compiler 前注入业务 effect。</li>
-            <li>交互：选择 Engineering 后会显示审核分组，切换为其他部门后审核分组会隐藏。</li>
-            <li>提交表单后可在控制台查看编译后表单的 values。</li>
-          </ul>
-        </Space>
-      </section>
-
       <DynamicForm
         form={form}
         formConfig={compiled.formConfig}

@@ -71,6 +71,119 @@
   "demos.sourcePanel.fileTabsLabel": {
     "message": "Demo source files"
   },
+  "demos.sourcePanel.sharedContext": {
+    "message": "DemoWrapper and DemoLoading are shared presentation components. The links below open this demo and the custom components it uses.",
+    "description": "Context note above GitHub source links"
+  },
+  "demos.sourcePanel.githubLinks": {
+    "message": "GitHub source",
+    "description": "Label for GitHub links to the demo and its custom components"
+  },
+  "demos.wrapper.guideLabel": {
+    "message": "Demo test and validation notes"
+  },
+  "demos.wrapper.guideTitle": {
+    "message": "Test and validation notes"
+  },
+  "demos.guide.storeBoundary.employeeCount": {
+    "message": "Change the employee count and observe the console log."
+  },
+  "demos.guide.storeBoundary.formValue": {
+    "message": "Confirm that Ant Design Form owns field values and that effect values are written to Form."
+  },
+  "demos.guide.storeBoundary.meta": {
+    "message": "Observe whether effect metadata such as visible and disabled updates the DynamicForm Store."
+  },
+  "demos.guide.storeBoundary.groupVisibility": {
+    "message": "Toggle fields to verify group visibility and dependent region options."
+  },
+  "demos.guide.customHandlers.name": {
+    "message": "Change the name to admin and observe the field background color."
+  },
+  "demos.guide.customHandlers.age": {
+    "message": "Change the age and observe the custom data transformation result."
+  },
+  "demos.guide.customHandlers.email": {
+    "message": "Enter an invalid email and observe the note field hide and its submitted value clear."
+  },
+  "demos.guide.customHandlers.status": {
+    "message": "Change the status and observe chained styling and data transformation."
+  },
+  "demos.guide.customComponents.viewMode": {
+    "message": "Switch between disabled controls and custom rendering modes."
+  },
+  "demos.guide.customComponents.visibility": {
+    "message": "Toggle Show extra information to verify custom field visibility."
+  },
+  "demos.guide.customComponents.registry": {
+    "message": "Use the custom fields and submit the form to inspect their interactions."
+  },
+  "demos.guide.formValidation.standard": {
+    "message": "Check required, length, and email format rules on standard fields."
+  },
+  "demos.guide.formValidation.custom": {
+    "message": "Use the project, member, or task lists to verify complex Form.List rules."
+  },
+  "demos.guide.formValidation.actions": {
+    "message": "Click Validate all fields to inspect errors, or reset the form to restore initial data."
+  },
+  "demos.guide.uiConfig.global": {
+    "message": "Change the status field and observe dynamic global UIConfig changes."
+  },
+  "demos.guide.uiConfig.field": {
+    "message": "Change the priority field and observe field-level UI config and validation rules."
+  },
+  "demos.guide.uiConfig.priority": {
+    "message": "Compare field-level, dynamic global, and static global config precedence."
+  },
+  "demos.guide.renderExtension.field": {
+    "message": "renderFieldItem customizes the appearance around an individual field."
+  },
+  "demos.guide.renderExtension.fields": {
+    "message": "renderFields adds a custom container around the field collection."
+  },
+  "demos.guide.renderExtension.group": {
+    "message": "renderGroupItem customizes group presentation."
+  },
+  "demos.guide.renderExtension.groups": {
+    "message": "renderGroups switches group presentation to Tabs."
+  },
+  "demos.guide.renderExtension.form": {
+    "message": "renderFormInner customizes the form submit button."
+  },
+  "demos.guide.compilerFoundation.adapter": {
+    "message": "Inspect how the metadata adapter converts input into mixed module config."
+  },
+  "demos.guide.compilerFoundation.modules": {
+    "message": "Observe how modules such as TextField and DepartmentPicker compile into standard fields."
+  },
+  "demos.guide.compilerFoundation.override": {
+    "message": "Select Engineering to show the review group, then switch departments to hide it."
+  },
+  "demos.guide.compilerFoundation.submit": {
+    "message": "Submit the form and inspect the compiled values in the console."
+  },
+  "demos.guide.nodeModel4.container": {
+    "message": "Turn off Company customer to hide company information and confirm hidden fields are omitted from submitted values."
+  },
+  "demos.guide.nodeModel4.parentChild": {
+    "message": "Change company type and observe the nested address usage default and options."
+  },
+  "demos.guide.nodeModel4.cascade": {
+    "message": "Change the province and city to observe cascading city and district updates."
+  },
+  "demos.guide.nodeModel4.crossLevel": {
+    "message": "Change the city from Shanghai to hide the contact list, then switch back to restore it."
+  },
+  "demos.guide.headlessRenderer.fields": {
+    "message": "Change the nested name and email fields."
+  },
+  "demos.guide.headlessRenderer.submit": {
+    "message": "Submit the form and inspect the values returned by the Memory Adapter."
+  },
+  "demos.guide.headlessRenderer.hidden": {
+    "message": "Inspect hidden fields and the custom render hook output."
+  },
   "demos.error.title": {
     "message": "Current demo failed to render"
   },

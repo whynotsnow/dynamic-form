@@ -1,9 +1,15 @@
-import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import 'antd/dist/reset.css';
 import { translate } from '@docusaurus/Translate';
 import Heading from '@theme/Heading';
-import { DEMO_COMPONENTS, DEMO_SOURCE_FILES, type DemoType } from '../../../../demos/demoRegistry';
-import SiteCodeBlock from './SiteCodeBlock';
+import {
+  DEMO_COMPONENTS,
+  DEMO_GITHUB_SOURCE,
+  DEMO_RELATED_COMPONENTS,
+  DEMO_SOURCE_FILES,
+  type DemoType
+} from '../../../../demos/demoRegistry';
+import DemoWrapper, { type DemoGuideItem } from './DemoWrapper';
 import styles from './DemoGalleryClient.module.css';
 
 const DEFAULT_DEMO: DemoType = 'storeBoundary';
@@ -103,6 +109,82 @@ const DEMO_TEXT: Record<DemoType, { title: string; description: string }> = {
   }
 };
 
+const guideItem = (id: string, message: string): DemoGuideItem => ({
+  text: translate({ id: `demos.guide.${id}`, message })
+});
+
+const DEMO_GUIDES: Record<DemoType, DemoGuideItem[]> = {
+  storeBoundary: [
+    guideItem('storeBoundary.employeeCount', '修改员工数量，观察控制台日志。'),
+    guideItem(
+      'storeBoundary.formValue',
+      '检查字段值由 Ant Design Form 管理，effect 返回的 value 会写入 Form。'
+    ),
+    guideItem(
+      'storeBoundary.meta',
+      '观察 visible、disabled 等 effect meta 是否更新到 DynamicForm Store。'
+    ),
+    guideItem('storeBoundary.groupVisibility', '切换字段，验证分组显隐和地区选项联动。')
+  ],
+  customHandlers: [
+    guideItem('customHandlers.name', '将姓名改为 admin，观察字段背景颜色变化。'),
+    guideItem('customHandlers.age', '修改年龄，观察自定义数据转换处理器的结果。'),
+    guideItem('customHandlers.email', '输入无效邮箱，观察邮箱备注字段隐藏和提交值清理。'),
+    guideItem('customHandlers.status', '切换状态，观察链式样式和数据转换处理。')
+  ],
+  customComponents: [
+    guideItem('customComponents.viewMode', '切换“控件禁用”和“自定义渲染”查看两种展示模式。'),
+    guideItem('customComponents.visibility', '切换“显示额外信息”，验证自定义字段显隐联动。'),
+    guideItem('customComponents.registry', '使用各个自定义字段并提交表单，查看注册组件的交互结果。')
+  ],
+  formValidation: [
+    guideItem('formValidation.standard', '检查标准字段的必填、长度和邮箱格式校验。'),
+    guideItem('formValidation.custom', '使用项目、成员或任务列表，验证 Form.List 复杂组件规则。'),
+    guideItem('formValidation.actions', '点击“校验所有字段”查看错误提示，或重置表单恢复初始数据。')
+  ],
+  uiConfig: [
+    guideItem('uiConfig.global', '切换状态字段，观察动态全局 UIConfig 的变化。'),
+    guideItem('uiConfig.field', '修改优先级字段，观察字段级 UI 配置和校验规则。'),
+    guideItem('uiConfig.priority', '对比字段级、动态全局和静态全局配置的合并优先级。')
+  ],
+  renderExtension: [
+    guideItem('renderExtension.field', 'renderFieldItem 为单字段添加自定义外观。'),
+    guideItem('renderExtension.fields', 'renderFields 为字段集合添加自定义容器。'),
+    guideItem('renderExtension.group', 'renderGroupItem 自定义分组展示。'),
+    guideItem('renderExtension.groups', 'renderGroups 将分组展示切换为 Tabs。'),
+    guideItem('renderExtension.form', 'renderFormInner 自定义表单提交按钮。')
+  ],
+  compilerFoundation: [
+    guideItem(
+      'compilerFoundation.adapter',
+      '查看 metadata adapter 如何转换为 mixed module config。'
+    ),
+    guideItem(
+      'compilerFoundation.modules',
+      '观察 TextField、DepartmentPicker 等模块如何编译为标准字段。'
+    ),
+    guideItem(
+      'compilerFoundation.override',
+      '选择 Engineering 显示审核分组，切换部门后观察分组显隐。'
+    ),
+    guideItem('compilerFoundation.submit', '提交表单后查看控制台中的编译结果。')
+  ],
+  nodeModel4: [
+    guideItem(
+      'nodeModel4.container',
+      '关闭“企业客户”，验证企业信息整体隐藏且隐藏字段不进入提交值。'
+    ),
+    guideItem('nodeModel4.parentChild', '修改企业类型，观察嵌套地址用途的默认值和选项变化。'),
+    guideItem('nodeModel4.cascade', '修改省份和城市，观察城市与区县的级联更新。'),
+    guideItem('nodeModel4.crossLevel', '将城市改为非上海值，观察联系人列表跨层级隐藏与恢复。')
+  ],
+  headlessRenderer: [
+    guideItem('headlessRenderer.fields', '修改嵌套的姓名和邮箱字段。'),
+    guideItem('headlessRenderer.submit', '提交表单，查看 Memory Adapter 返回的提交值。'),
+    guideItem('headlessRenderer.hidden', '检查隐藏字段和自定义 render hook 的渲染结果。')
+  ]
+};
+
 const isDemoType = (value: string | null): value is DemoType => {
   return value != null && Object.prototype.hasOwnProperty.call(DEMO_COMPONENTS, value);
 };
@@ -132,123 +214,6 @@ const writeDemoToUrl = (demoKey: DemoType) => {
   url.searchParams.set('demo', demoKey);
   window.history.pushState(null, '', url);
 };
-
-interface DemoSourcePanelProps {
-  sourceFiles: Array<{ path: string; content: string }>;
-}
-
-function DemoSourcePanel({ sourceFiles }: DemoSourcePanelProps): React.JSX.Element | null {
-  const [activeFileIndex, setActiveFileIndex] = useState(0);
-  const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
-  const idPrefix = useId().replace(/:/g, '');
-
-  if (sourceFiles.length === 0) {
-    return null;
-  }
-
-  const activeFile = sourceFiles[activeFileIndex] ?? sourceFiles[0];
-  const activeSource = `// 文件路径: ${activeFile.path}\n${activeFile.content.trim()}`;
-  const tabIds = sourceFiles.map((_, index) => `${idPrefix}-tab-${index}`);
-  const panelId = `${idPrefix}-tab-panel`;
-
-  const handleTabKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
-    let nextIndex: number | undefined;
-
-    if (event.key === 'ArrowRight') {
-      nextIndex = (index + 1) % sourceFiles.length;
-    } else if (event.key === 'ArrowLeft') {
-      nextIndex = (index - 1 + sourceFiles.length) % sourceFiles.length;
-    } else if (event.key === 'Home') {
-      nextIndex = 0;
-    } else if (event.key === 'End') {
-      nextIndex = sourceFiles.length - 1;
-    }
-
-    if (nextIndex !== undefined) {
-      event.preventDefault();
-      setActiveFileIndex(nextIndex);
-      tabRefs.current[nextIndex]?.focus();
-    }
-  };
-
-  return (
-    <details className={styles.sourcePanel} open>
-      <summary>
-        {translate({
-          id: 'demos.sourcePanel.open',
-          message: '查看示例源码'
-        })}
-      </summary>
-      {sourceFiles.length > 1 ? (
-        <>
-          <p className={styles.sourceHint}>
-            {translate({
-              id: 'demos.sourcePanel.multiFileHint',
-              message: '切换文件标签查看源码；复制操作只会复制当前文件。'
-            })}
-          </p>
-          <div
-            aria-label={translate({
-              id: 'demos.sourcePanel.fileTabsLabel',
-              message: '示例源码文件'
-            })}
-            className={styles.sourceTabs}
-            role="tablist"
-          >
-            {sourceFiles.map((file, index) => {
-              const fileName = file.path.split('/').pop() ?? file.path;
-              const tabId = tabIds[index];
-
-              return (
-                <button
-                  aria-controls={panelId}
-                  aria-selected={index === activeFileIndex}
-                  className={styles.sourceTab}
-                  id={tabId}
-                  key={file.path}
-                  onClick={() => setActiveFileIndex(index)}
-                  onKeyDown={(event) => handleTabKeyDown(event, index)}
-                  ref={(element) => {
-                    tabRefs.current[index] = element;
-                  }}
-                  role="tab"
-                  tabIndex={index === activeFileIndex ? 0 : -1}
-                  title={file.path}
-                  type="button"
-                >
-                  {fileName}
-                </button>
-              );
-            })}
-          </div>
-        </>
-      ) : null}
-      <div
-        aria-labelledby={sourceFiles.length > 1 ? tabIds[activeFileIndex] : undefined}
-        className={styles.sourceTabPanel}
-        id={sourceFiles.length > 1 ? panelId : undefined}
-        role={sourceFiles.length > 1 ? 'tabpanel' : undefined}
-        tabIndex={sourceFiles.length > 1 ? 0 : undefined}
-      >
-        <SiteCodeBlock
-          className={styles.sourceCodeBlock}
-          code={activeSource}
-          copyCode={activeSource}
-          copyLabel={
-            sourceFiles.length > 1
-              ? translate({
-                  id: 'siteCodeBlock.copyCurrentFile',
-                  message: '复制当前文件'
-                })
-              : undefined
-          }
-          key={activeFile.path}
-          language="tsx"
-        />
-      </div>
-    </details>
-  );
-}
 
 interface DemoErrorBoundaryProps {
   children: React.ReactNode;
@@ -368,20 +333,19 @@ export default function DemoGalleryClient(): React.JSX.Element {
         </aside>
 
         <section className={styles.content}>
-          <header className={styles.intro}>
-            <Heading as="h2">{currentDemoText.title}</Heading>
-            <p>{currentDemoText.description}</p>
-          </header>
-
-          <div className={styles.demoFrame}>
-            <div className={styles.demoSandbox}>
-              <DemoErrorBoundary demoTitle={currentDemoText.title} key={currentDemo}>
-                <CurrentDemo />
-              </DemoErrorBoundary>
-            </div>
-          </div>
-
-          <DemoSourcePanel key={currentDemo} sourceFiles={sourceFiles} />
+          <DemoWrapper
+            description={currentDemoText.description}
+            guide={DEMO_GUIDES[currentDemo]}
+            key={currentDemo}
+            githubDemoPath={DEMO_GITHUB_SOURCE[currentDemo]}
+            relatedComponentPaths={DEMO_RELATED_COMPONENTS[currentDemo] ?? []}
+            sourceFiles={sourceFiles}
+            title={currentDemoText.title}
+          >
+            <DemoErrorBoundary demoTitle={currentDemoText.title}>
+              <CurrentDemo />
+            </DemoErrorBoundary>
+          </DemoWrapper>
         </section>
       </div>
     </div>

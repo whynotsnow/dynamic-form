@@ -8,7 +8,7 @@ import {
   headlessRenderer
 } from '../packages/dynamic-form/src/exports';
 
-const { Paragraph, Text } = Typography;
+const { Text } = Typography;
 
 type HeadlessFormValues = {
   profile?: {
@@ -93,10 +93,6 @@ const HeadlessRendererDemo: React.FC = () => {
 
   return (
     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-      <Paragraph type="secondary">
-        该示例使用原生元素 renderer 和内存 form adapter，用于说明非 AntD UI 外壳接入方式。
-      </Paragraph>
-
       <DynamicForm
         formAdapter={formAdapter}
         renderer={headlessRenderer}

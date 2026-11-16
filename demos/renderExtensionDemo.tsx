@@ -208,27 +208,6 @@ const RenderExtensionDemo: React.FC = () => {
 
   return (
     <div>
-      <section>
-        <h3>可配置的扩展点</h3>
-        <ul>
-          <li>
-            <b>renderFieldItem：</b> 给单字段外层加红色边框
-          </li>
-          <li>
-            <b>renderFields：</b> 给字段集合加蓝色背景
-          </li>
-          <li>
-            <b>renderGroupItem：</b> 分组用绿色边框和图标卡片
-          </li>
-          <li>
-            <b>renderGroups：</b> 整体切换为 Tabs
-          </li>
-          <li>
-            <b>renderFormInner：</b> 自定义提交按钮
-          </li>
-        </ul>
-      </section>
-
       <DynamicForm
         formConfig={formConfig}
         form={form}

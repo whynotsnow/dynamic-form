@@ -5,7 +5,7 @@ import type { FormValues } from '@/exports';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
 import { nodeModel4DemoConfig, nodeModel4DemoValues } from './nodeModel4DemoConfig';
 
-const { Paragraph, Text } = Typography;
+const { Text } = Typography;
 
 function formatValues(values: FormValues) {
   return JSON.stringify(values, null, 2);
@@ -65,33 +65,10 @@ const NodeModel4Demo: React.FC = () => {
 
   return (
     <div>
-      <section>
-        <Space direction="vertical" size={8}>
-          <Paragraph>
-            按下面的操作可以验证 4.0 node form 的嵌套结构、级联联动和跨层级 effect。
-          </Paragraph>
-          <Paragraph>
-            <Text strong>隐藏整段企业信息：</Text>
-            关闭“企业客户”开关后，“企业信息”整段会隐藏；再次提交时，隐藏段落里的字段不会出现在提交值里。
-          </Paragraph>
-          <Paragraph>
-            <Text strong>父级字段带动子级字段：</Text>
-            修改“企业类型”，嵌套在“注册地址”里的“地址用途”会跟着切换默认值和可选项。
-          </Paragraph>
-          <Paragraph>
-            <Text strong>地址级联选择：</Text>
-            修改“省级行政区”会更新“城市”；修改“城市”会更新“区县”。
-          </Paragraph>
-          <Paragraph>
-            <Text strong>跨层级控制联系人：</Text>
-            把“城市”从“上海”改成其他城市后，页面底部的“联系人”列表会隐藏；改回“上海”后列表恢复显示。
-          </Paragraph>
-          <Space>
-            <Button onClick={addContact}>添加联系人</Button>
-            <Button onClick={removeLastContact}>移除最后一个联系人</Button>
-          </Space>
-        </Space>
-      </section>
+      <Space>
+        <Button onClick={addContact}>添加联系人</Button>
+        <Button onClick={removeLastContact}>移除最后一个联系人</Button>
+      </Space>
 
       <DynamicForm
         form={form}

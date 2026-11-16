@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Space, Button, message, Form } from 'antd';
+import { Space, Button, message, Form } from 'antd';
 import type { RuleObject } from 'antd/es/form';
 import DynamicForm from '@/index';
 import { customComponents } from './customComponents';
@@ -8,8 +8,6 @@ import { exampleHandlers } from './customHandlers';
 import { mockFetchFormData } from '../packages/dynamic-form/src/shared/utils';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
 import DemoLoading from './DemoLoading';
-
-const { Paragraph } = Typography;
 
 type ProjectMemberValue = {
   name: string;
@@ -121,6 +119,10 @@ const FormValidationDemo: React.FC = () => {
             label: '用户信息表格',
             component: 'CustomEditTable',
             rules: [{ required: true, message: '至少需要添加一行数据' }],
+            formItemProps: {
+              labelCol: { span: 24 },
+              wrapperCol: { span: 24 }
+            },
             span: 24
           }
         ]
@@ -259,37 +261,21 @@ const FormValidationDemo: React.FC = () => {
   return (
     <div>
       <Space direction="vertical" size="large" style={{ width: '100%' }}>
-        <section>
-          <Paragraph>
-            本演示展示了如何在 DynamicForm 中为自定义组件配置 Form.Item 校验规则。
-          </Paragraph>
-          <ul>
-            <li>基础字段使用标准的 Ant Design Form 校验规则</li>
-            <li>自定义组件通过 rules 配置校验规则</li>
-            <li>支持复杂的自定义校验逻辑</li>
-            <li>校验错误会显示在 Form.Item 的错误状态中</li>
-          </ul>
-        </section>
+        <Space>
+          <Button type="primary" onClick={handleValidate}>
+            校验所有字段
+          </Button>
+          <Button onClick={() => form.resetFields()}>重置表单</Button>
+        </Space>
 
-        <section>
-          <Space>
-            <Button type="primary" onClick={handleValidate}>
-              校验所有字段
-            </Button>
-            <Button onClick={() => form.resetFields()}>重置表单</Button>
-          </Space>
-        </section>
-
-        <section>
-          <DynamicForm
-            form={form}
-            // values={initialValues}
-            formConfig={formConfig}
-            onSubmit={(values) => handleSubmit(values as DemoFormValues)}
-            componentRegistry={componentRegistryConfig}
-            submitButtonText="提交表单"
-          />
-        </section>
+        <DynamicForm
+          form={form}
+          // values={initialValues}
+          formConfig={formConfig}
+          onSubmit={(values) => handleSubmit(values as DemoFormValues)}
+          componentRegistry={componentRegistryConfig}
+          submitButtonText="提交表单"
+        />
       </Space>
     </div>
   );

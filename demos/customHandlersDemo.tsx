@@ -1,12 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Space, Typography, Alert, SelectProps, Form } from 'antd';
+import { Alert, SelectProps, Form } from 'antd';
 import { exampleHandlers } from './customHandlers';
 import { FlatFormConfig, FormValues } from '@/exports';
 import { DynamicForm } from '@/exports';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
 import DemoLoading from './DemoLoading';
-
-const { Title, Paragraph } = Typography;
 
 type DemoFormValues = {
   name: string;
@@ -232,42 +230,6 @@ const CustomHandlersDemo: React.FC = () => {
         showIcon
         style={{ marginBottom: 16 }}
       />
-      <section>
-        <Title level={4}>处理器能力</Title>
-        <Space direction="vertical">
-          <Title level={4}>自定义处理器功能</Title>
-
-          <Paragraph>这个演示展示了如何使用自定义的 EffectResultHandler：</Paragraph>
-
-          <ul>
-            <li>
-              <strong>customStyle</strong>: 根据字段值动态改变样式
-            </li>
-            <li>
-              <strong>dataTransform</strong>: 转换数据格式（年龄自动乘以2）
-            </li>
-            <li>
-              <strong>conditionalDisplay</strong>: 根据条件控制字段显示
-            </li>
-            <li>
-              <strong>chained</strong>: 链式处理多个效果
-            </li>
-          </ul>
-
-          <Paragraph>
-            <strong>使用说明：</strong>
-          </Paragraph>
-          <ol>
-            <li>在&quot;姓名&quot;字段输入 &quot;admin&quot; 会触发红色背景样式</li>
-            <li>在&quot;年龄&quot;字段输入数字会自动乘以2（如输入10显示20）</li>
-            <li>
-              在&quot;邮箱&quot;字段输入无效邮箱会隐藏&quot;邮箱备注&quot;字段，隐藏时清理提交值，重新显示时恢复原值
-            </li>
-            <li>在&quot;状态&quot;字段选择不同状态会应用不同样式和数据转换</li>
-          </ol>
-        </Space>
-      </section>
-
       <div style={{ maxWidth: 720, width: '100%' }}>
         <DynamicForm
           formConfig={memoConfig as FlatFormConfig}
