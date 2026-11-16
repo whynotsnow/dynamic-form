@@ -122,7 +122,7 @@
     "message": "Check required, length, and email format rules on standard fields."
   },
   "demos.guide.formValidation.custom": {
-    "message": "Use the project, member, or task lists to verify complex Form.List rules."
+    "message": "Choose project delivery platforms and technologies, then add or remove members and tasks to verify complex Form.List rules."
   },
   "demos.guide.formValidation.actions": {
     "message": "Click Validate all fields to inspect errors, or reset the form to restore initial data."

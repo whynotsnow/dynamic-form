@@ -57,6 +57,12 @@ Use render hooks when the default `Form -> Row -> Col` or `Card -> Row -> Col` s
 
 Use Ant Design Form `rules` for normal fields. Runtime decides whether hidden, group-hidden, or disabled fields participate in validation. See [`demos/formValidationDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/formValidationDemo.tsx).
 
+### Complex Custom Components and Nested Lists
+
+When one form field contains a complete business section, register a custom component and use Ant Design `Form.List` inside it to manage repeated data. Bind the outer list with `getFieldName(field)` so it follows the DynamicForm field address; bind nested lists such as project members and tasks with paths relative to the current project. Use `type: 'array'` and `min` in rules to require at least one selection or item.
+
+The Form.Item validation demo shows a project management scenario: a Checkbox Group selects delivery platforms, a searchable multi-select chooses the technology stack, and nested lists add or remove project members and tasks. See [`CustomProjectList.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/customComponents/CustomProjectList.tsx) and [`formValidationDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/formValidationDemo.tsx) for the complete implementation.
+
 DynamicForm does not provide async validation compilation. For remote validation, prefer owning the request lifecycle inside a custom field component or application container. If you only need Ant Design validation integration, use Ant Design `rules.validator`; cancellation and race strategies remain application code.
 
 ## Usage Guidance

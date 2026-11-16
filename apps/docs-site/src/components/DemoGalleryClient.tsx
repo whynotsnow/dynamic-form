@@ -139,7 +139,10 @@ const DEMO_GUIDES: Record<DemoType, DemoGuideItem[]> = {
   ],
   formValidation: [
     guideItem('formValidation.standard', '检查标准字段的必填、长度和邮箱格式校验。'),
-    guideItem('formValidation.custom', '使用项目、成员或任务列表，验证 Form.List 复杂组件规则。'),
+    guideItem(
+      'formValidation.custom',
+      '在项目中选择交付平台和技术栈，并增删成员与任务，验证 Form.List 复杂组件规则。'
+    ),
     guideItem('formValidation.actions', '点击“校验所有字段”查看错误提示，或重置表单恢复初始数据。')
   ],
   uiConfig: [

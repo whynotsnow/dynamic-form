@@ -9,7 +9,7 @@
 | `storeBoundary`      | `storeBoundaryDemo.tsx`      | 验证字段值由 Ant Design Form 管理，字段 meta 和动态 UI 状态由 DynamicForm Store 管理。                      |
 | `customHandlers`     | `customHandlersDemo.tsx`     | 演示自定义 `EffectResultHandler` 的行为，包括 value 转换、字段 meta 更新、条件显示和链式处理器。            |
 | `customComponents`   | `customComponentsDemo.tsx`   | 演示自定义组件注册，以及只读/自定义渲染模式。                                                               |
-| `formValidation`     | `formValidationDemo.tsx`     | 演示标准字段和复杂自定义组件如何接入 Ant Design `Form.Item` 校验。                                          |
+| `formValidation`     | `formValidationDemo.tsx`     | 演示标准字段校验，以及项目交付平台、技术栈、成员和任务等复杂自定义组件的 `Form.Item` 校验。                |
 | `uiConfig`           | `uiConfigDemo.tsx`           | 演示静态 `uiConfig` 与 effect 返回的动态 UI 配置。                                                          |
 | `renderExtension`    | `renderExtensionDemo.tsx`    | 演示 `renderFieldItem`、`renderFields`、`renderGroupItem`、`renderGroups`、`renderFormInner` 等渲染扩展点。 |
 | `compilerFoundation` | `compilerFoundationDemo.tsx` | 演示字段模块如何编译为标准 `FormConfig` 后再交给 `DynamicForm` 渲染。                                       |

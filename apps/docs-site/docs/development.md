@@ -280,6 +280,12 @@ const { isInitialized } = useInitHandlers({
 
 隐藏字段、分组隐藏字段、disabled 字段是否参与校验由 Runtime Layer 统一决定。完整示例见 [`demos/formValidationDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/formValidationDemo.tsx)。
 
+### 复杂自定义组件与嵌套列表
+
+当一个表单字段包含完整的业务区块时，可以注册自定义组件，并在组件内部使用 Ant Design `Form.List` 管理重复数据。外层列表应使用 `getFieldName(field)` 绑定 DynamicForm 字段；项目成员、任务等子列表则使用当前项目的相对路径。每个数组字段可用 `type: 'array'` 和 `min` 校验至少选择或添加一项。
+
+Form.Item 校验集成演示展示了项目管理场景：用 Checkbox Group 选择交付平台，用可搜索的 Select 多选技术栈，并增删项目成员和任务。完整实现见 [`CustomProjectList.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/customComponents/CustomProjectList.tsx) 和 [`formValidationDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/formValidationDemo.tsx)。
+
 DynamicForm 不提供 async validation compile。需要远程校验时，优先在自定义字段组件或业务容器中处理请求生命周期；如果只是接入 Ant Design 校验，可以直接使用 Ant Design `rules.validator`，异步取消和竞态策略由业务代码负责。
 
 ## 使用建议

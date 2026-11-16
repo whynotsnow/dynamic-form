@@ -23,6 +23,16 @@ pnpm --filter @whynotsnow/dynamic-form-site start
 pnpm --filter @whynotsnow/dynamic-form-site build
 ```
 
+## 生产构建与发布准备
+
+```bash
+pnpm run site:build
+```
+
+静态产物输出到 `apps/docs-site/build/`，由构建生成，不提交到仓库。docs-site 是私有 workspace（版本为 `0.0.0`），站点文档或 demo 的更新不需要同步提升 npm 发布包版本，也不应使用 `release:publish` 发布。
+
+当前仓库没有 docs-site 的自动部署 workflow 或发布脚本；`site:build` 只生成静态文件，不会更新线上站点。部署需沿用仓库外已配置的站点发布入口。生产部署前应确认目标环境使用 `https://form.whynotsnow.com/` 与根路径 `/`，并检查构建产物。
+
 ## 维护规则
 
 - 新增或修改站点中文内容时，同步检查并维护 `apps/docs-site/i18n/` 中对应英文翻译。
