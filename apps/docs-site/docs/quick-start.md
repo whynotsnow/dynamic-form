@@ -86,9 +86,9 @@ const formConfig: FormConfig = {
 
 字段和 group 的详细配置见 [配置指南](./configuration.md)。
 
-## 使用 4.0 节点树
+## 组织嵌套区块
 
-需要嵌套区块、嵌套提交值或重复项时，可以使用 `nodes`。`nodes` 中的 container 会渲染为默认 `Card`，并把自己的 `name` 作为子字段的 Ant Design 值路径前缀：
+需要把一组字段放进嵌套区块，或让提交数据包含嵌套对象时，可以使用 `nodes`。container 默认会显示为一个分组卡片；它的 `name` 决定子字段在提交数据中的位置：
 
 ```ts
 const formConfig: FormConfig = {
@@ -111,7 +111,9 @@ const formConfig: FormConfig = {
 };
 ```
 
-提交值形状为 `{ profile: { profileName: string } }`。`profileName` 这个 `id` 仍然用于 Runtime、effect graph 和 meta 更新。
+提交数据会是 `{ profile: { profileName: string } }`。字段 `id` 用来在配置中标识字段，`name` 决定值在提交数据中的路径。
+
+`repeatable: true` 可将 container 配置为列表区块。默认展示会渲染表单中已有的列表项，但不会提供新增或删除按钮；需要编辑列表项数量时，请为列表交互提供自己的 UI。
 
 ## 加一个简单联动
 

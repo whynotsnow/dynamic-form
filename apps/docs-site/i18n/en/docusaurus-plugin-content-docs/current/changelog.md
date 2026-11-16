@@ -1,36 +1,33 @@
 # CHANGELOG
 
-This page is a reader-focused release summary for the docs site. Use it to quickly identify version capabilities, migration impact, and related topic docs. The complete release log remains in the repository root `CHANGELOG.md`.
+This page explains what changed for form users in each release and whether existing code needs an update. See the repository root `CHANGELOG.md` for the complete release record.
 
 ## Current Version
 
-The current documentation baseline is DynamicForm 4.2.2. It builds on the 4.0 unified node tree and the 4.1 Form/Renderer Adapter foundation by adding the pure `@whynotsnow/dynamic-form-core` package. `@whynotsnow/dynamic-form` remains the React/AntD-compatible main entry and re-exports core public APIs.
-
-The main flow remains `FormConfig -> adapter/compiler -> processFormConfig -> Runtime -> renderer`. Config processing, Compiler, Adapters, Rules, and pure Runtime resolvers belong to core; React Provider, hooks, form adapters, renderers, component registry, and effect handler runtime belong to `@whynotsnow/dynamic-form`.
+The current version is DynamicForm 4.2.2. Continue using `@whynotsnow/dynamic-form` for regular React forms. Install `@whynotsnow/dynamic-form-core` separately only when you need to validate or convert config before rendering a form.
 
 ## Release Timeline
 
 ### 4.2.2
 
-- Moves form-chain effect execution and types to `@whynotsnow/hooks`, and exports effect map, effect function, and field-name types from the package root.
-- Adds the preferred `FormChainEffectWrapper` name while retaining the former name as a deprecated compatibility alias.
-- Adds type narrowing and runtime input checks to internal config and effect-result handling while preserving the existing permissive public types for field values, form instances, component props, and handler callbacks.
+- Improves types and input checks related to form effects.
+- Adds the recommended `FormChainEffectWrapper` name while keeping the older name available; existing code using it does not need an immediate change.
+- Keeps public types for field values, form instances, component props, and handler callbacks compatible. Existing form config does not need to migrate.
 
 Related topics: [Effects and Handlers](./effects-and-handlers.md), [Configuration Guide](./configuration.md).
 
 ### 4.2.0 - 2026-07-02
 
-- Adds `@whynotsnow/dynamic-form-core` for config processing, config diagnostics, Compiler, Adapters, Rule Engine, pure Runtime resolvers, and Runtime inspection helpers.
-- Keeps `@whynotsnow/dynamic-form` compatible for existing imports while it continues to export React/AntD runtime APIs and re-export core public APIs.
-- Changes the release flow so core publishes before the React/AntD package, with a unified version strategy.
+- Adds the optional `@whynotsnow/dynamic-form-core` package to validate and convert config before a form is displayed.
+- React forms remain available from `@whynotsnow/dynamic-form`; existing imports still work, so migration is not required.
 
 Related topic: [Core Package](./core-package.md).
 
 ### 4.1.0 - 4.1.2 - 2026-07-01
 
-- 4.1 adds `formAdapter` and `renderer` extension points while keeping the existing AntD `form` usage compatible.
-- 4.1.1 adds `createMemoryFormAdapter`, `headlessRenderer`, and adapter runtime guards for tests, custom renderer examples, and visual-builder previews.
-- 4.1.2 adds config diagnostics, designer metadata, and Runtime inspection helpers, and clarifies the minimum contract for custom form adapters and renderers.
+- Adds `formAdapter` and `renderer` extension points while keeping existing Ant Design `form` usage compatible.
+- Adds an in-memory form adapter and headless renderer for tests and previews; the memory adapter does not run real validation rules.
+- Adds config diagnostics and field-state queries for config tools that save or preview forms.
 
 Related topics: [Rendering and UI](./rendering-and-ui.md), [Configuration Guide](./configuration.md), [Runtime Layer](./runtime-layer.md).
 
@@ -45,46 +42,24 @@ Related topics: [Configuration Guide](./configuration.md), [Compiler Foundation]
 
 ### 3.4.0 - 2026-06-30
 
-- Clarifies 3.x compatibility boundaries and 4.0 migration preparation.
-- Adds compatibility guardrail tests that continue rejecting nested object schemas, object array schemas, duplicate field/group ids, and duplicate `name` paths.
-- Recommends stable `id` values, explicit `name`, schema metadata, and synchronous rules/effects boundaries for 3.x projects.
+- Provides preparation guidance for the 4.0 config model: use stable field `id` values and set `name` when you need nested submitted values.
 
 Related topics: [Architecture](./ARCHITECTURE.md), [Field Address](./field-address.md), [Runtime Layer](./runtime-layer.md), [Effects and Handlers](./effects-and-handlers.md), [Schema Adapters](./schema-adapters.md).
 
-### 3.3.0 - 2026-06-30
-
-- Schema and metadata adapters can explicitly pass through Field Address `name`.
-- The package root exports `FieldCapability`, `GroupCapability`, and `RuntimeState` types.
-- `FormConfig`, Runtime, and renderer behavior remain compatible.
-
-### 3.2.1 - 2026-06-30
-
-- Expands test coverage for Field Address, Runtime capabilities, and hidden-field participation.
-- Stabilizes the 3.2 behavior boundary without adding public APIs.
-
-### 3.2.0 - 2026-06-30
-
-- Converts the repository into a private pnpm workspace root while `packages/dynamic-form/` was the npm package at that time.
-- Adds the Docusaurus docs-site workspace with separate zh-CN docs and English i18n content.
-- Clarifies that DynamicForm core does not support library-level async effects or async validation compilation.
-
 ### 3.1.0 - 2026-06-12
 
-- Adds the Field Address foundation, separating stable field `id` from Ant Design `NamePath`.
-- Supports nested values while Runtime, the effect graph, and meta updates keep using stable `id`.
-- Omitting `name` continues to use `id`, so existing single-level configurations require no migration.
+- Lets you set a field `name` separately so submitted values can be nested. If omitted, it still uses the field `id`, so existing flat forms need no changes.
 
 ### 3.0.0 - 2026-06-16
 
-- Adds Compiler, Module Registry, Adapter, Schema Adapter, and declarative Rule Engine capabilities on top of the 2.0 Runtime / State layering.
-- Adds `CompiledDynamicForm` for rendering compiler / adapter output with the generated component registry.
-- Existing `DynamicForm` and handwritten `FormConfig` usage remains compatible.
+- Adds field modules, config conversion, schema adapters, and synchronous rules.
+- Adds `CompiledDynamicForm` to display converted form config directly.
+- Existing `DynamicForm` and handwritten `FormConfig` usage remains available.
 
 ### 2.0.0 - 2026-06-02
 
-- Reorganizes Config, State, Runtime, Consumer, and Shared layers.
-- Clarifies that Ant Design Form owns values, validation, touched, and validating runtime state.
-- Adds the Runtime Layer for resolving field and group rendering, submission, disabled, readonly, and validation capabilities.
+- Adds unified rules for field visibility, submission, disabled, readonly, and validation behavior.
+- Hidden fields are excluded from submission by default; readonly fields can still be validated.
 
 ## Maintenance Rules
 

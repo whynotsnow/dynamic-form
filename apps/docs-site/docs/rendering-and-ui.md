@@ -1,6 +1,13 @@
 # 渲染与 UI 扩展
 
-`FormContent` 提供默认渲染流水线，并暴露分层扩展点。4.1 起默认 UI 由 `antdRenderer` 提供，业务侧可以继续使用 render hooks 局部扩展，也可以通过 `renderer` 替换默认外壳。
+DynamicForm 默认用 Ant Design 显示表单。大多数应用直接使用默认展示即可；需要改变外观、字段控件或整体布局时，再选择下方对应的扩展方式。只有接入另一套表单数据管理或 UI 框架时，才需要实现 `formAdapter` 或 `renderer`。
+
+| 你想调整什么 | 使用方式 |
+| --- | --- |
+| 间距、按钮或表单项属性 | `uiConfig` |
+| 某种业务字段的输入控件 | `componentRegistry` |
+| 字段外层、分组或整个表单布局 | render hooks |
+| 表单值/校验来源或默认 UI 外壳 | `formAdapter` / `renderer` |
 
 ## 默认渲染结构
 
@@ -8,40 +15,30 @@
 
 ```mermaid
 flowchart TD
-  form["Form"] --> row["Row"]
-  row --> col["Col"]
-  col --> renderer["FieldComponentRenderer"]
-  form --> submit["Submit Button"]
+  form["表单"] --> fields["字段区"]
+  fields --> controls["字段控件"]
+  form --> submit["提交按钮"]
 ```
 
 分组表单：
 
 ```mermaid
 flowchart TD
-  form["Form"] --> card["Card per group"]
-  card --> row["Row"]
-  row --> col["Col"]
-  col --> renderer["FieldComponentRenderer"]
-  form --> submit["Submit Button"]
+  form["表单"] --> group["信息分组"]
+  group --> fields["字段区"]
+  fields --> controls["字段控件"]
+  form --> submit["提交按钮"]
 ```
 
-默认 `antdRenderer` 使用：
-
-- `Form`
-- `Row`
-- `Col`
-- `Card`
-- `Button`
-
-`FieldComponentRenderer` 负责解析组件、应用 `Form.Item` props、应用 runtime disabled/readonly 状态，并在字段不可校验时移除 `Form.Item` rules。字段 `required: true` 会在默认 Ant Design renderer 中自动合并为 required rule；显式 `rules` 中的 required rule 优先。
+默认展示使用 Ant Design 的表单、栅格、分组卡片和提交按钮。字段 `required: true` 会自动加入必填校验；如果 `rules` 中已经写了必填规则，则以显式规则为准。被隐藏或禁用的字段会按 [Runtime 规则](./runtime-layer.md)调整提交和校验行为。
 
 ## 4.1 Form / Renderer Adapter
 
-4.1 新增两个可选扩展入口：
+这两个扩展入口都是可选的：
 
-- `formAdapter`：封装表单值读写和校验，包括 `getFieldValue`、`getFieldsValue`、`setFieldValue`、`setFieldsValue`、`validateFields`。
-- `renderer`：封装默认 UI 外壳，包括 form、字段项、字段集合布局、字段布局、分组容器、repeatable container 和提交按钮。
-- `assertFormAdapter` / `assertRendererAdapter`：在初始化阶段提前校验自定义 adapter 的必需方法。
+- `formAdapter`：告诉 DynamicForm 如何读取、更新和校验表单值。默认会把原有 Ant Design `form` 实例接入，因此已有用法无需变化。
+- `renderer`：决定表单、字段、分组、重复区块和提交按钮如何显示。默认使用 `antdRenderer`。
+- `assertFormAdapter` / `assertRendererAdapter`：检查自定义扩展是否提供了所需方法。
 
 未传 `formAdapter` 时，`DynamicForm` 会把旧的 AntD `form` 实例转换为 `createAntdFormAdapter(form)`。未传 `renderer` 时，默认使用 `antdRenderer`。因此 4.0 的 AntD 用法继续兼容：
 
@@ -49,7 +46,7 @@ flowchart TD
 <DynamicForm form={form} formConfig={formConfig} />
 ```
 
-自定义组件库 renderer 可以先复用核心 Runtime 和 render hooks，只替换默认 UI 外壳：
+只有在接入其他组件库或自有 UI 外壳时，才需要传入自定义实现：
 
 ```tsx
 <DynamicForm
@@ -59,12 +56,12 @@ flowchart TD
 />
 ```
 
-4.1.1 还提供两个无组件库依赖的 reference 实现：
+项目还提供两个用于示例、测试或预览的轻量实现：
 
-- `createMemoryFormAdapter(initialValues)`：维护一个内存 values store，提供 no-op `validateFields`，适合测试、自定义 renderer 示例和可视化预览态。
-- `headlessRenderer`：使用原生 `<form>`、`<label>`、`<div>`、`<fieldset>` 和 `<button>` 渲染最小 UI 外壳；它不是生产级组件库替代品。
+- `createMemoryFormAdapter(initialValues)`：把值保存在内存中；`validateFields` 不会执行规则校验，适合测试和预览，不适合作为需要真实表单校验的生产表单。
+- `headlessRenderer`：用浏览器原生的 `<form>`、`<label>` 和 `<button>` 等元素显示最小表单，便于理解 renderer 接口；它不提供完整的组件库体验。
 
-4.1 只提供 AntD 默认实现、headless reference implementation 和扩展接口，不内置 Arco、Semi 或其他组件库 renderer。
+注意：`@whynotsnow/dynamic-form` 当前仍声明 `antd` 为 peer dependency。即使传入 `headlessRenderer` 或自定义 renderer，也不会改变这个 package 安装要求。
 
 4.1.2 明确 adapter 最低契约：
 
@@ -74,16 +71,15 @@ flowchart TD
 - `renderer.renderFieldItem()` 必须负责字段项外壳，并接收 renderer 生成的 `defaultRender`；render hooks 会在它之后继续包装或替换。
 - 自定义 adapter 应先通过 `assertFormAdapter` / `assertRendererAdapter` 校验，再进入预览或生产渲染路径。
 
-## Nodes 与 container 渲染契约
+## 嵌套区块与重复列表
 
-4.0 的 `nodes` 入口会把 root nodes 按顺序渲染为“字段连续段”和“container 块”：
+`nodes` 可以按配置顺序混合放置字段和区块：
 
-- 连续字段段统一交给 `renderFields`，默认结构仍是 `Row -> Col -> FieldComponentRenderer`。
-- container 是块级边界，会切断前后的字段段；container 默认渲染为 `Card`，内部 children 继续按同一规则递归分段。
-- 普通 container 使用 `renderGroupItem` 时，`defaultRender` 包含完整 children 渲染，包括嵌套 container。
-- repeatable container 使用 `Form.List`，每个 list item 内部也按连续字段段渲染，并把字段 name 改写为 list item 相对路径。
+- 字段会按顺序排列；container 默认显示为一张分组卡片，内部可以继续放字段或其他区块。
+- repeatable container 使用 Ant Design `Form.List` 展示表单中已有的列表项，并为每一项生成相应的字段值路径。
+- 默认展示不提供新增或删除列表项的按钮；请通过自己的界面和表单集成提供列表增删操作。
 
-因此 `renderFields` 不只作用于旧的 flat fields 或 group 内字段，也会作用于顶层连续字段、混合 root nodes 中被 container 切开的字段段、嵌套 container 内字段段，以及 repeatable item 内字段段。
+如果使用 `renderFields` 自定义布局，它会同时影响顶层字段、嵌套区块内字段和重复列表中的字段。
 
 ## 组件注册
 
@@ -100,7 +96,7 @@ const componentRegistry = {
 <DynamicForm form={form} formConfig={formConfig} componentRegistry={componentRegistry} />;
 ```
 
-自定义组件接收：
+自定义组件会收到当前字段信息、字段值、变更回调和表单实例，也可以通过可选的 `formAdapter` 读写值：
 
 ```ts
 interface FieldComponentProps {
@@ -116,7 +112,7 @@ interface FieldComponentProps {
 
 ## Render Hooks
 
-render hooks 按作用范围从小到大排列：
+需要替换默认布局时，可以从局部开始使用 render hooks：
 
 | Hook              | 作用                             |
 | ----------------- | -------------------------------- |
@@ -126,11 +122,9 @@ render hooks 按作用范围从小到大排列：
 | `renderGroups`    | 自定义所有分组。                 |
 | `renderFormInner` | 自定义整个表单 body 和提交区域。 |
 
-每个 hook 都会收到下层 render 函数和 `defaultRender`，可以只包装需要扩展的部分。
+每个 hook 都会收到默认结果 `defaultRender` 和下层渲染函数。通常可以在保留默认字段行为的基础上包一层；只有需要完全自定义时才返回全新的节点。
 
-`renderer` 负责生成默认 UI，render hooks 仍然是更靠近业务侧的覆盖层。也就是说，`renderer` 先生成 `defaultRender`，再由 `renderFieldItem`、`renderFields`、`renderGroupItem`、`renderGroups` 或 `renderFormInner` 包装或替换它。
-
-这个优先级在 4.1.2 保持不变：自定义 renderer 只能决定默认 UI，不能屏蔽业务传入的 render hooks。业务侧如果通过 hook 返回全新的 React 节点，该返回值会覆盖对应层级的 renderer defaultRender。
+`renderer` 负责生成默认 UI，然后 render hooks 可以在对应层级包裹或替换它。自定义 renderer 不会关闭业务传入的 render hooks。
 
 ## 字段项扩展
 
@@ -191,6 +185,4 @@ render hooks 按作用范围从小到大排列：
 - 结构需要变化，例如 Tabs、特殊分组、自定义提交区：使用 render hooks。
 - 需要接入另一套 Form 或 UI 外壳：实现 `formAdapter` 和 `renderer`。
 
-默认渲染尊重 Runtime：不可渲染字段返回 `null`，分组隐藏时子字段不渲染，disabled/readonly 会传给组件，不可校验字段不会挂载 rules。
-
-自定义 render hooks 如果不使用提供的 render helper，可能绕过 Runtime 默认行为，应谨慎处理。
+默认渲染会自动处理字段的显示、禁用、只读和校验状态。若 hook 返回全新的 React 节点并绕过 `defaultRender`/下层渲染函数，业务代码需要自行保证相应行为仍然正确。

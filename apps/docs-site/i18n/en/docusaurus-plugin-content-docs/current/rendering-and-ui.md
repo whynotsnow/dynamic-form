@@ -1,6 +1,13 @@
 # Rendering and UI Extensions
 
-`FormContent` provides the default rendering pipeline and exposes layered extension points. Starting in 4.1, the default UI is provided by `antdRenderer`; applications can keep using render hooks for local changes or replace the default shell through `renderer`.
+DynamicForm uses Ant Design to display forms by default. Most applications can keep the default presentation. Choose one of the extension points below when you need to change appearance, field controls, or layout. Implement `formAdapter` or `renderer` only when connecting another form-state system or UI framework.
+
+| What you want to change | Use |
+| --- | --- |
+| Spacing, buttons, or form-item props | `uiConfig` |
+| The input control for a business field | `componentRegistry` |
+| A field wrapper, groups, or the overall form layout | Render hooks |
+| The source of form values/validation or the default UI shell | `formAdapter` / `renderer` |
 
 ## Default Rendering
 
@@ -8,34 +15,30 @@ Flat forms:
 
 ```mermaid
 flowchart TD
-  form["Form"] --> row["Row"]
-  row --> col["Col"]
-  col --> renderer["FieldComponentRenderer"]
-  form --> submit["Submit Button"]
+  form["Form"] --> fields["Fields"]
+  fields --> controls["Field controls"]
+  form --> submit["Submit button"]
 ```
 
 Grouped forms:
 
 ```mermaid
 flowchart TD
-  form["Form"] --> card["Card per group"]
-  card --> row["Row"]
-  row --> col["Col"]
-  col --> renderer["FieldComponentRenderer"]
-  form --> submit["Submit Button"]
+  form["Form"] --> group["Section"]
+  group --> fields["Fields"]
+  fields --> controls["Field controls"]
+  form --> submit["Submit button"]
 ```
 
-The default `antdRenderer` uses `Form`, `Row`, `Col`, `Card`, and `Button`.
-
-`FieldComponentRenderer` resolves the component, applies `Form.Item` props, maps runtime disabled/readonly state, and suppresses rules when a field is not runtime-validatable. Field-level `required: true` is automatically merged into a required rule by the default Ant Design renderer, while explicit required rules take precedence.
+The default presentation uses Ant Design forms, grid layout, group cards, and a submit button. A field with `required: true` automatically gets a required rule; an explicit required rule in `rules` takes precedence. Hidden and disabled fields follow the submission and validation rules described in [Runtime Layer](./runtime-layer.md).
 
 ## 4.1 Form / Renderer Adapter
 
-4.1 adds two optional extension points:
+Both extension points are optional:
 
-- `formAdapter`: wraps form value access and validation through `getFieldValue`, `getFieldsValue`, `setFieldValue`, `setFieldsValue`, and `validateFields`.
-- `renderer`: wraps the default UI shell, including the form, field item, field-list layout, field layout, group container, repeatable container, and submit button.
-- `assertFormAdapter` / `assertRendererAdapter`: validate required adapter methods during initialization.
+- `formAdapter`: tells DynamicForm how to read, update, and validate form values. The default adapter connects the existing Ant Design `form` instance, so current usage does not need to change.
+- `renderer`: controls how the form, fields, groups, repeated sections, and submit button are displayed. The default is `antdRenderer`.
+- `assertFormAdapter` / `assertRendererAdapter`: check that a custom extension provides the required methods.
 
 When `formAdapter` is omitted, `DynamicForm` converts the legacy AntD `form` instance with `createAntdFormAdapter(form)`. When `renderer` is omitted, it uses `antdRenderer`. Existing 4.0 AntD usage remains compatible:
 
@@ -43,7 +46,7 @@ When `formAdapter` is omitted, `DynamicForm` converts the legacy AntD `form` ins
 <DynamicForm form={form} formConfig={formConfig} />
 ```
 
-A custom component-library renderer can reuse the core Runtime and render hooks while replacing the default UI shell:
+Pass custom implementations only when connecting another component library or a UI shell of your own:
 
 ```tsx
 <DynamicForm
@@ -53,12 +56,12 @@ A custom component-library renderer can reuse the core Runtime and render hooks 
 />
 ```
 
-4.1.1 also provides two UI-library-free reference implementations:
+The project also provides two lightweight implementations for examples, tests, and previews:
 
-- `createMemoryFormAdapter(initialValues)`: maintains an in-memory values store and no-op `validateFields`; it is useful for tests, custom renderer examples, and visual-builder preview mode.
-- `headlessRenderer`: renders the smallest native shell with `<form>`, `<label>`, `<div>`, `<fieldset>`, and `<button>`. It is not intended to replace a production component library.
+- `createMemoryFormAdapter(initialValues)`: keeps values in memory. Its `validateFields` does not run validation rules, so use it for tests and previews rather than production forms that need real validation.
+- `headlessRenderer`: uses native browser elements such as `<form>`, `<label>`, and `<button>` to demonstrate the renderer interface. It does not provide a full component-library experience.
 
-4.1 provides the AntD default implementation, headless reference implementations, and extension interfaces. It does not include built-in Arco, Semi, or other component-library renderers.
+Note: `@whynotsnow/dynamic-form` currently declares `antd` as a peer dependency. Passing `headlessRenderer` or a custom renderer does not change that package installation requirement.
 
 4.1.2 clarifies the minimum adapter contract:
 
@@ -68,26 +71,25 @@ A custom component-library renderer can reuse the core Runtime and render hooks 
 - `renderer.renderFieldItem()` must own the field item shell and receive the renderer-generated `defaultRender`; render hooks may wrap or replace it afterward.
 - Custom adapters should pass `assertFormAdapter` / `assertRendererAdapter` before entering preview or production rendering paths.
 
-## Nodes and Container Rendering Contract
+## Nested Sections and Repeated Lists
 
-The 4.0 `nodes` entry renders root nodes in order as continuous field segments and container blocks:
+Use `nodes` to mix fields and sections in the order you want:
 
-- Continuous field segments are rendered through `renderFields`. The default structure remains `Row -> Col -> FieldComponentRenderer`.
-- A container is a block boundary and splits adjacent field segments. By default, a container renders as a `Card`, and its children are segmented recursively with the same rule.
-- When a normal container uses `renderGroupItem`, `defaultRender` includes the complete children rendering, including nested containers.
-- A repeatable container uses `Form.List`. Each list item also renders its children as continuous field segments and rewrites field names to list-item-relative paths.
+- Fields appear in order. A container appears as a section card by default and can contain fields or other sections.
+- A repeatable container uses Ant Design `Form.List` to display the list items already in the form and create the corresponding value path for each item.
+- The default presentation does not provide add or remove buttons. Add those operations through your own UI and form integration.
 
-As a result, `renderFields` applies not only to legacy flat fields or fields inside groups, but also to top-level continuous fields, field segments split by containers in mixed root nodes, nested container field segments, and repeatable item field segments.
+If you use `renderFields` to customize layout, it also applies to fields at the top level, inside nested sections, and inside repeated lists.
 
 ## Component Registry
 
-Use `componentRegistry` to register business-specific field components. Custom components receive `field`, `value`, `onChange`, `form`, and optional `formAdapter`.
+Use `componentRegistry` to register business-specific field components. A custom component receives the current field, its value, a change callback, and the form instance. It can also use the optional `formAdapter` to access values.
 
 By default, custom components do not replace built-ins. Set `allowOverride: true` only when replacement is intentional.
 
 ## Render Hooks
 
-Render hooks are layered from smallest to largest scope:
+Use render hooks when you need to replace a default layout, starting with the smallest area you need to change:
 
 - `renderFieldItem`: customize one field item.
 - `renderFields`: customize a field list.
@@ -95,14 +97,12 @@ Render hooks are layered from smallest to largest scope:
 - `renderGroups`: customize all groups.
 - `renderFormInner`: customize the full form body and submit area.
 
-Each hook receives lower-level render functions and `defaultRender`, so callers can wrap or replace only the part they need.
+Each hook receives `defaultRender` and lower-level render functions. Usually you can wrap the default field behavior; return a new node only when you need a complete replacement.
 
-The `renderer` creates the default UI, while render hooks remain the business-side override layer. In other words, `renderer` creates `defaultRender` first, then `renderFieldItem`, `renderFields`, `renderGroupItem`, `renderGroups`, or `renderFormInner` can wrap or replace it.
-
-This priority is unchanged in 4.1.2: a custom renderer decides the default UI, but it cannot suppress business-provided render hooks. If a hook returns a completely new React node, that return value replaces the renderer default for that layer.
+The `renderer` creates the default UI first. Render hooks can then wrap or replace it at the corresponding level. A custom renderer does not disable render hooks.
 
 ## Choosing an Extension Point
 
 Use `uiConfig` when the default structure is still correct and only Ant Design props need to change. Use `componentRegistry` when the field input itself is business-specific. Use render hooks when the layout structure needs to change. Implement `formAdapter` and `renderer` when another Form runtime or UI shell needs to be connected.
 
-Default rendering respects Runtime. Custom render hooks can bypass those defaults if they ignore the provided render helpers, so full replacement should be intentional.
+Default rendering handles field visibility, disabled/readonly state, and validation participation. If a hook returns a new React node and bypasses `defaultRender` and the lower-level render functions, application code must preserve the needed behavior itself.

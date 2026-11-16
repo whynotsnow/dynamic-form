@@ -1,51 +1,51 @@
-# Core Package
+# Core Package: Process Config Before Rendering
 
-Starting in 4.2.0, DynamicForm adds `@whynotsnow/dynamic-form-core` for pure core capabilities that do not depend on the React consumer, Ant Design renderer, or default field components.
+`@whynotsnow/dynamic-form-core` lets you work with form config before displaying a form. Use it to validate a config, convert a schema into DynamicForm config, or determine which fields will render and participate in submission.
 
-`@whynotsnow/dynamic-form` remains the compatible main entry. It continues to export `DynamicForm`, `CompiledDynamicForm`, Provider, hooks, component registry, the default AntD renderer, headless renderer, and form adapters, while re-exporting core public APIs. Existing imports do not need to migrate.
+If your application displays forms, continue using `@whynotsnow/dynamic-form`. It provides the React form component and the default Ant Design presentation, along with most config capabilities described here. You do not need to install core or change existing imports for a regular form.
 
-## When to Use Core Directly
+## When to Install Core Separately
 
-- Validate visual-builder configs before saving.
-- Convert schema or metadata into standard `FormConfig` at build time or on a server.
-- Run the Rule Engine or Compiler without rendering a React form.
-- Read Runtime inspection helpers in designer previews, debug panels, or tests.
-- Maintain domain field modules, schema adapters, or config diagnostics independently.
+| What you want to do | How core helps |
+| --- | --- |
+| Check config before saving it in a visual builder | Run `validateFormConfig` or read detailed diagnostics. |
+| Convert config on a server or during a build | Use a Schema Adapter and Compiler to create standard `FormConfig`. |
+| Evaluate rules or field state without displaying a form | Use the Rule Engine and Runtime query APIs. |
+| See which fields render, submit, or validate | Read the corresponding field sets for previews, debugging, or tests. |
 
-## APIs in Core
+Install it with:
 
-- Config processing: `processFormConfig`
-- Config diagnostics: `getFormConfigDiagnostics`, `validateFormConfig`
-- Compiler: `compileFormConfig`, `ModuleRegistryManager`, `defaultModuleRegistry`
-- Adapters: `AdapterRegistryManager`, `adaptModuleConfigs`, `compileAdaptedFormConfig`, JsonSchema/OpenAPI/metadata adapters
-- Rules: `RuleEngine`, `createRuleEngine`, `compileRulesToEffect`, `evaluateRule`
-- Runtime pure logic: `resolveRuntimeState`, `resolveFieldCapability`, `resolveGroupCapability`
-- Runtime inspection: `getFieldRuntimeSnapshot`, `getRenderedFieldIds`, `getSubmitableFieldIds`, `getValidatableFieldIds`
-- Shared pure types: `FormConfig`, `BaseFieldConfig`, `FieldNamePath`, `DesignerMetadata`, Field Address, and Runtime types
+```bash
+pnpm add @whynotsnow/dynamic-form-core
+```
 
-## APIs That Stay in dynamic-form
+## What Core Provides
 
-- React components: `DynamicForm`, `CompiledDynamicForm`
-- Provider / hooks: `DynamicFormProvider`, `useInitHandlers`, `useFormChainContext`, `useStoreInit`
-- Form adapters: `createAntdFormAdapter`, `createMemoryFormAdapter`, `assertFormAdapter`
-- Renderers: `antdRenderer`, `headlessRenderer`, `assertRendererAdapter`
-- Component registry: `ComponentRegistryManager`, `DefaultRegistryFieldComponents`
-- Default effect handler runtime and `getDefaultConfig`
+| Capability | Common APIs | Use |
+| --- | --- | --- |
+| Config checks | `validateFormConfig`, `getFormConfigDiagnostics` | Check config before saving and find the cause of a problem. |
+| Config processing | `processFormConfig` | Prepare field and dependency information needed by DynamicForm. |
+| Field-module compilation | `compileFormConfig`, `ModuleRegistryManager` | Turn reusable domain field modules into standard form config. |
+| External data conversion | `adaptModuleConfigs`, `compileAdaptedFormConfig`, schema adapters | Convert JsonSchema, OpenAPI, or metadata into form config. |
+| Field rules | `RuleEngine`, `compileRulesToEffect` | Define synchronous visibility, disabled, or value updates between fields. |
+| Field-state queries | `resolveRuntimeState`, `getRenderedFieldIds`, and others | Query render, submit, and validation participation. |
 
-## Imports
+## Use dynamic-form to Display a Form
 
-Existing imports remain valid:
+Core does not provide React form components, a Provider, an Ant Design renderer, field components, or default effect handlers. `@whynotsnow/dynamic-form` remains responsible for rendering and interactive forms.
+
+If you already import config APIs from the main package, your existing code can stay as it is:
 
 ```ts
 import { FormConfig, compileFormConfig } from '@whynotsnow/dynamic-form';
 ```
 
-Use core directly when only pure config capabilities are needed:
+In a visual builder, server, or build script that only needs config processing, import directly from core:
 
 ```ts
 import { FormConfig, validateFormConfig } from '@whynotsnow/dynamic-form-core';
 ```
 
-## Migration Boundary
+## Do You Need to Migrate?
 
-4.2.0 does not remove existing public exports from `@whynotsnow/dynamic-form` and does not force users to migrate. The core package is an additional entry for designers, schema pipelines, tests, and non-React environments.
+No migration is required. Core is an optional entry point: install and use it when you need to process config outside a rendered form. A regular React form can continue to depend only on `@whynotsnow/dynamic-form`.

@@ -2,114 +2,40 @@
 slug: /
 ---
 
-# DynamicForm Documentation
+# DynamicForm User Guide
 
-This is the entry point for DynamicForm 4.2 documentation. New users should start with Quick Start to run a minimal form, then use scenario docs for configuration, effects, validation, and extensions. Core Package, Architecture, Runtime, Compiler, Adapter, Renderer, and node tree topics are for deeper understanding and maintenance.
+This guide is for developers using DynamicForm in an application. Start with [Quick Start](./quick-start.md), then find the guidance you need for fields, effects, validation, or custom UI. Most applications can use `@whynotsnow/dynamic-form` directly.
+
+## Choose a Package
+
+| Your goal | Recommended package |
+| --- | --- |
+| Render forms in a React application | `@whynotsnow/dynamic-form`. It provides the form component and uses Ant Design by default. |
+| Check or transform form config without rendering a React form | `@whynotsnow/dynamic-form-core`. For example, validate config before saving it in a visual builder or convert a schema on a server. |
+
+If you already use `@whynotsnow/dynamic-form`, you do not need to rewrite existing imports to use core. Start with [Quick Start](./quick-start.md); read [Core Package](./core-package.md) only when you need to process config before showing a form.
 
 ## Recommended Path
 
-1. 🚀 [Quick Start](./quick-start.md): installation, minimal form, submit handling, and local demos.
-2. ⚙️ [Configuration Guide](./configuration.md): fields, groups, node trees, UI config, and built-in components.
-3. 🔗 [Effects and Handlers](./effects-and-handlers.md): field dependencies, default result keys, custom handlers, and initialization.
-4. 🎨 [Rendering and UI Extensions](./rendering-and-ui.md): default rendering, component registry, and layered render hooks.
-5. 🧭 [Component Usage Guide](./development.md): scenario-based demos, configuration combinations, custom components, and custom handlers.
-6. 🧩 [Advanced Configuration Pipeline](./core-package.md): read Core Package, Compiler, Rule, Adapter, and Schema Adapter topics when you need field modules, recursive containers, rules, external schema inputs, or the standalone core package.
-7. 🧠 [Deep Dive](./ARCHITECTURE.md): understand runtime boundaries and the 4.2 two-package structure through Architecture, Runtime Layer, Renderer Adapter, and Field Address.
-8. 🧾 [CHANGELOG](./changelog.md): reader-focused release summaries and related topic entry points.
-9. 🛠️ [Maintenance Guide](./maintenance.md): tests, builds, verification, and documentation maintenance.
+1. 🚀 [Quick Start](./quick-start.md): install the package, render your first form, and handle submitted values.
+2. ⚙️ [Configuration Guide](./configuration.md): set up fields, groups, nested sections, initial values, and validation.
+3. 🔗 [Effects and Handlers](./effects-and-handlers.md): show, hide, or update other fields in response to user input.
+4. 🎨 [Rendering and UI Extensions](./rendering-and-ui.md): customize field controls and form layout, or connect another UI shell.
+5. 🧭 [Component Usage Guide](./development.md): learn common configurations through examples and interactive demos.
+6. 🧩 [Core Package](./core-package.md): check or transform config before rendering a form.
+7. 🧠 [Deep Dive](./ARCHITECTURE.md): understand nested values, Runtime, and extension points.
+8. 🧾 [CHANGELOG](./changelog.md): review release summaries and related topics.
+9. 🛠️ [Maintenance Guide](./maintenance.md): read this only when working on the DynamicForm repository.
 
 ## Documentation Scope
 
-The docs describe the current implementation in `src`, not aspirational APIs. When implementation changes, update the closest topic file first, then update the root `README.md` summary or links if needed.
+These guides describe the released package behavior. When an implementation changes, update the closest topic first, then update the package README or links when needed.
 
-## Public Surface Summary
+## Choose a Configuration Style
 
-The package exports:
+- Start with `fields` for a straightforward form, and use `groups` to divide a larger form into sections.
+- Use `nodes` for nested submitted data or repeated sections. Existing configs do not need to be rewritten to use it.
+- A field's `id` identifies the field; `name` sets where its value appears in submitted data. If omitted, `name` continues to default to `id`.
+- Use the Adapter and Compiler guides when your input comes from JsonSchema, OpenAPI, or your own metadata format.
 
-- `DynamicForm`
-- `CompiledDynamicForm`
-- `DynamicFormProvider`
-- `FormChainEffectWrapper`
-- `useInitHandlers`
-- `useStoreInit`
-- `useFormChainContext`
-- `ComponentRegistryManager`
-- `DefaultRegistryFieldComponents`
-- `getDefaultConfig`
-- `processFormConfig`
-- `getFormConfigDiagnostics`
-- `validateFormConfig`
-- `compileFormConfig`
-- `ModuleRegistryManager`
-- `defaultModuleRegistry`
-- `AdapterRegistryManager`
-- `defaultAdapterRegistry`
-- `adaptModuleConfigs`
-- `compileAdaptedFormConfig`
-- `JsonSchemaAdapter`
-- `OpenApiAdapter`
-- `MetadataAdapter`
-- `ModuleConfigPassthroughAdapter`
-- `RuleEngine`
-- `createRuleEngine`
-- `compileRulesToEffect`
-- `evaluateRule`
-- `getFieldName`
-- `resolveFieldAddress`
-- `assertFormAdapter`
-- `createAntdFormAdapter`
-- `createMemoryFormAdapter`
-- `assertRendererAdapter`
-- `antdRenderer`
-- `headlessRenderer`
-- `getFieldRuntimeSnapshot`
-- `getRenderedFieldIds`
-- `getSubmitableFieldIds`
-- `getValidatableFieldIds`
-- Core public types from `packages/dynamic-form/src/shared/types.ts`.
-- Runtime types: `FieldCapability`, `GroupCapability`, and `RuntimeState`.
-
-## Design Summary
-
-DynamicForm combines optional preprocessing capabilities with a stable runtime pipeline:
-
-- Adapter / Compiler / Rules normalize external input and domain modules into standard `FormConfig`.
-- Config processing turns user config into field/group state, initial values, dependency maps, and registry metadata.
-- State stores structure and meta, not form runtime values, errors, touched state, or validating state.
-- Runtime resolves final field/group capabilities from state.
-- Form Adapter wraps value access and validation; the default `createAntdFormAdapter(form)` keeps AntD Form compatible.
-- Consumer rendering passes runtime-capable state to a renderer; the default `antdRenderer` renders Ant Design UI.
-- Effects and handlers translate dependency results into semantic form, meta, group, or UI updates.
-
-## 4.2 Core Package
-
-DynamicForm 4.2 adds the `@whynotsnow/dynamic-form-core` workspace/package for config processing, config diagnostics, Compiler, Adapters, Rule Engine, pure Runtime resolvers, Runtime inspection helpers, and shared pure types. `@whynotsnow/dynamic-form` remains the compatible main entry for React/AntD runtime APIs and re-exports core public APIs. See [Core Package](./core-package.md).
-
-## 4.1 Adapter Foundation
-
-DynamicForm 4.1 adds `formAdapter` and `renderer` extension points. Existing `<DynamicForm form={form} />` usage remains compatible; when adapters are omitted, the default AntD implementation is used. 4.1.1 adds adapter runtime guards, `createMemoryFormAdapter`, and `headlessRenderer` for tests, custom renderer examples, and visual-builder preview mode. 4.1.2 adds config diagnostics, designer metadata, and Runtime inspection helpers so visual builders can reuse the same config contract during save, preview, and debugging flows. 4.2 moves these UI-library agnostic capabilities into `@whynotsnow/dynamic-form-core`, while `@whynotsnow/dynamic-form` continues to re-export the core public APIs.
-
-## 4.0 Configuration Model
-
-DynamicForm 4.0 makes `FormConfig.nodes` and `ModuleFormConfig.nodes` part of the current capability baseline. `fields` and `groups` remain compatible, but internally they are normalized into a unified node tree:
-
-- `FieldNode`: a field node. It still uses `id` as the stable identity for Runtime, registries, and the effect graph.
-- `ContainerNode`: a container node that can nest fields or child containers. Its `name` can prefix descendant Ant Design `NamePath` values.
-- Repeatable container: rendered through Ant Design `Form.List`; it must declare `name`.
-- Runtime resolves final field and container rendering capabilities through parent container visibility.
-
-Existing `fields`, `groups`, and mixed configurations do not need to migrate; they are treated as top-level fields and top-level containers.
-
-## Configuration Pipeline
-
-DynamicForm provides an optional adapter/rule/compiler pipeline before the `FormConfig` runtime pipeline.
-
-- [Compiler Foundation](./compiler-foundation.md): field modules, module registry, config compiler, and compiler hooks.
-- [Rule Engine](./rule-engine.md): declarative synchronous rules, dependency inference, and field/group actions.
-- [Adapter Foundation](./adapter-foundation.md): adapter registry, structured `ModuleFormConfig`, and the mixed group pipeline.
-- [Schema Adapters](./schema-adapters.md): JsonSchema, OpenAPI, and metadata adapters built on Adapter Foundation.
-- Existing `FormConfig` and `DynamicForm` usage remains compatible.
-
-## Field Address
-
-DynamicForm separates stable field IDs from Ant Design `NamePath` values. Omitting `name` continues to use `id`, preserving existing configurations. Inside containers, field `name` is combined with the parent container `name` prefix. See [Field Address](./field-address.md).
+For exact exported names, use the [API reference](/api/). For working examples, see the [Component Usage Guide](./development.md).

@@ -86,9 +86,9 @@ const formConfig: FormConfig = {
 
 See the [Configuration Guide](./configuration.md) for all field and group options.
 
-## Use the 4.0 Node Tree
+## Organize Nested Sections
 
-Use `nodes` when you need nested sections, nested submitted values, or repeated items. A container in `nodes` renders as the default `Card`, and its `name` prefixes descendant Ant Design value paths:
+Use `nodes` when you need nested sections or nested objects in submitted data. A container in `nodes` renders as a section card by default; its `name` determines where child values appear in the submitted data:
 
 ```ts
 const formConfig: FormConfig = {
@@ -111,7 +111,9 @@ const formConfig: FormConfig = {
 };
 ```
 
-The submitted value shape is `{ profile: { profileName: string } }`. The `profileName` id is still used by Runtime, the effect graph, and meta updates.
+The submitted data looks like `{ profile: { profileName: string } }`. The field `id` identifies the field in config, while `name` sets the path used in submitted data.
+
+Set `repeatable: true` to make a container a list section. The default presentation renders list items that already exist in the form, but does not provide add or remove buttons. Provide your own UI when users need to change the number of items.
 
 ## Add a Simple Effect
 

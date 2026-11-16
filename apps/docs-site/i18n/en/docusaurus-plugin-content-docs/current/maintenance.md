@@ -18,7 +18,7 @@ The repository has `pnpm-lock.yaml`, so pnpm is the default package manager.
 
 ## Demos and Verification
 
-Vite demos live in `demos/` and are used for manual behavior checks. The current `DemoSelector` exposes `storeBoundary`, `customHandlers`, `customComponents`, `formValidation`, `uiConfig`, `renderExtension`, and `compilerFoundation`.
+Vite demos live in `demos/` and are used for manual behavior checks. The current `DemoSelector` exposes `storeBoundary`, `customHandlers`, `customComponents`, `formValidation`, `uiConfig`, `renderExtension`, `compilerFoundation`, `nodeModel4`, and `headlessRenderer`.
 
 Run demos with:
 
