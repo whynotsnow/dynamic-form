@@ -4,6 +4,10 @@ import type { RuntimeState } from '@whynotsnow/dynamic-form-core';
 import type { DynamicFormFormAdapter, FieldValue, FormState } from '../../shared/types';
 import { getFieldName } from '../../shared/utils';
 import { resolveFieldParticipationPolicy } from './fieldParticipationPolicy';
+import {
+  isInsideRepeatableContainer,
+  synchronizeRepeatableContainerParticipation
+} from './repeatableContainerParticipation';
 
 export function useFieldParticipation(
   formAdapter: DynamicFormFormAdapter,
@@ -13,11 +17,23 @@ export function useFieldParticipation(
   const previousSubmitableRef = useRef<Record<string, boolean>>({});
 
   const hiddenValueCacheRef = useRef<Record<string, FieldValue>>({});
+  const repeatablePreviousRenderedRef = useRef<Record<string, boolean>>({});
+  const repeatableHiddenValueCacheRef = useRef<Record<string, FieldValue>>({});
 
   useEffect(() => {
     if (!state.initialized) return;
 
+    synchronizeRepeatableContainerParticipation(
+      formAdapter,
+      state,
+      runtimeState,
+      repeatablePreviousRenderedRef.current,
+      repeatableHiddenValueCacheRef.current
+    );
+
     getAllFields(state).forEach((field) => {
+      if (isInsideRepeatableContainer(field.id, state)) return;
+
       const fieldName = getFieldName(field);
       const capability = runtimeState.fields[field.id];
 
