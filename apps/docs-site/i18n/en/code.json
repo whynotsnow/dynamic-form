@@ -3,19 +3,19 @@
     "message": "Store Boundary Validation"
   },
   "demos.items.storeBoundary.description": {
-    "message": "Verifies that field values are managed by Ant Design Form, while effects only update field values or DynamicForm meta."
+    "message": "Uses a fresh food supplier form to verify that Ant Design Form manages field values, while effects update field values or DynamicForm meta."
   },
   "demos.items.customHandlers.title": {
     "message": "Custom Handlers Demo"
   },
   "demos.items.customHandlers.description": {
-    "message": "Shows how custom EffectResultHandler implementations update values, field meta, and dynamic styles."
+    "message": "Uses independent field examples to show how custom EffectResultHandler implementations update values, field meta, and dynamic styles; it is not a single business workflow."
   },
   "demos.items.customComponents.title": {
     "message": "Custom Component Registry Demo"
   },
   "demos.items.customComponents.description": {
-    "message": "Shows how to register custom components and display the form in detail-view mode."
+    "message": "Uses custom component examples to show component registration and detail-view rendering; the fields demonstrate component capabilities rather than a single business workflow."
   },
   "demos.items.formValidation.title": {
     "message": "Form.Item Validation Integration Demo"
@@ -27,7 +27,7 @@
     "message": "UI Config Demo"
   },
   "demos.items.uiConfig.description": {
-    "message": "Shows how static uiConfig merges with dynamic UI config returned by effects."
+    "message": "Uses a ticket form to show how static uiConfig merges with dynamic UI config returned by effects."
   },
   "demos.items.renderExtension.title": {
     "message": "Render Extension Demo"
@@ -39,13 +39,13 @@
     "message": "Compiler Foundation Demo"
   },
   "demos.items.compilerFoundation.description": {
-    "message": "Shows how field modules compile into standard FormConfig before rendering with DynamicForm."
+    "message": "Uses an internal system request and engineering review to show how field modules compile into standard FormConfig before rendering with DynamicForm."
   },
   "demos.items.nodeModel4.title": {
     "message": "4.0 Node Model / Container Demo"
   },
   "demos.items.nodeModel4.description": {
-    "message": "Shows 4.0 nodes, standard containers, nested containers, repeatable containers, cascading field interactions, and cross-level effect graphs."
+    "message": "Shows 4.0 nodes, standard containers, nested containers, repeatable containers, cascading field interactions, and cross-level effect graphs; the business-customer switch controls company details and contacts."
   },
   "demos.items.headlessRenderer.title": {
     "message": "Headless Renderer / Memory Adapter Demo"
@@ -116,7 +116,7 @@
     "message": "Change the status and observe chained styling and data transformation."
   },
   "demos.guide.customComponents.viewMode": {
-    "message": "Switch between disabled controls and custom rendering modes."
+    "message": "Switch among interactive controls, disabled controls, and custom rendering."
   },
   "demos.guide.customComponents.visibility": {
     "message": "Toggle Show extra information to verify custom field visibility."
@@ -179,7 +179,7 @@
     "message": "Change the province and city to observe cascading city and district updates."
   },
   "demos.guide.nodeModel4.crossLevel": {
-    "message": "Change the city from Shanghai to hide the contact list, then switch back to restore it."
+    "message": "Toggle Company customer to hide or show company details and the contact list together."
   },
   "demos.guide.headlessRenderer.fields": {
     "message": "Change the nested name and email fields."

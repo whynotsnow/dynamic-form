@@ -60,12 +60,21 @@ test('node model 4 demo config exposes nested and repeatable containers', async 
     'address',
     'companyCity'
   ]);
-  assert.deepEqual(result.effectMap.isCompany.dependents, ['companyInfo']);
+  assert.deepEqual(result.effectMap.isCompany.dependents, ['companyInfo', 'contacts']);
   assert.deepEqual(result.effectMap.companyType.dependents, ['addressUsage']);
   assert.deepEqual(result.effectMap.companyProvince.dependents, ['companyCity']);
-  assert.deepEqual(result.effectMap.companyCity.dependents, ['contacts', 'companyDistrict']);
+  assert.deepEqual(result.effectMap.companyCity.dependents, ['companyDistrict']);
   assert.deepEqual(result.effectMap.companyDistrict.dependents, []);
   assert.deepEqual(result.effectMap.addressUsage.dependents, []);
+
+  assert.deepEqual(
+    result.effectMap.isCompany.effect(false, { isCompany: false }),
+    { groupsVisible: { companyInfo: false, contacts: false } }
+  );
+  assert.deepEqual(
+    result.effectMap.isCompany.effect(true, { isCompany: true }),
+    { groupsVisible: { companyInfo: true, contacts: true } }
+  );
 
   assert.deepEqual(
     result.effectMap.addressUsage.effect(undefined, {
@@ -99,9 +108,25 @@ test('node model 4 demo config exposes nested and repeatable containers', async 
     ),
     {
       value: 'Shenzhen',
-      groupsVisible: {
-        contacts: false
+      componentProps: {
+        options: [
+          { label: '深圳', value: 'Shenzhen' },
+          { label: '广州', value: 'Guangzhou' }
+        ]
+      }
+    }
+  );
+
+  assert.deepEqual(
+    result.effectMap.companyCity.effect(
+      'Guangzhou',
+      {
+        company: { address: { companyProvince: 'Guangdong', companyCity: 'Guangzhou' } }
       },
+      { path: ['companyCity'] }
+    ),
+    {
+      value: 'Guangzhou',
       componentProps: {
         options: [
           { label: '深圳', value: 'Shenzhen' },

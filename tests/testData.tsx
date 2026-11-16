@@ -9,14 +9,14 @@ export const supplierFormConfig: GroupedFormConfig = {
       fields: [
         {
           id: 'businessType',
-          label: '业务类型',
+          label: '供应商类型',
           component: 'SelectField',
           span: 8,
           componentProps: {
             options: [
-              { value: 'manufacturer', label: '生产制造商' },
-              { value: 'distributor', label: '分销商' },
-              { value: 'wholesaler', label: '批发商' }
+              { value: 'manufacturer', label: '生鲜生产商' },
+              { value: 'distributor', label: '生鲜经销商' },
+              { value: 'wholesaler', label: '生鲜批发商' }
             ]
           },
           initialValue: 'manufacturer',
@@ -73,22 +73,22 @@ export const supplierFormConfig: GroupedFormConfig = {
         },
         {
           id: 'industryType',
-          label: '行业类型',
+          label: '生产行业',
           component: 'SelectField',
           span: 24,
           componentProps: {
             options: [
-              { value: 'textileAndClothing', label: '纺织服装' },
-              { value: 'grainAndOilProcessing', label: '粮油加工' },
-              { value: 'dailyChemicals', label: '日用化学品' },
-              { value: 'householdAppliances', label: '家用电器' }
+              { value: 'agriculturalPlanting', label: '种植业' },
+              { value: 'aquaculture', label: '水产养殖' },
+              { value: 'cookedFoodProcessing', label: '熟食加工' },
+              { value: 'frozenFoodProcessing', label: '冷冻食品加工' }
             ]
           },
 
           initialValue: (allValues: Record<string, any>) => {
             const businessType = allValues.businessType;
             return {
-              value: 'textileAndClothing',
+              value: 'agriculturalPlanting',
               visible: businessType === 'manufacturer',
               disabled: businessType === 'distributor'
             };
@@ -101,7 +101,7 @@ export const supplierFormConfig: GroupedFormConfig = {
       ]
     },
     {
-      title: '经营信息',
+      title: '生产经营信息',
       id: 'businessInformation',
       effect: (_changedValue: any, allValues: Record<string, any>, _chain: Chain) => {
         const businessType = allValues.businessType;
@@ -110,7 +110,7 @@ export const supplierFormConfig: GroupedFormConfig = {
       fields: [
         {
           id: 'operatingIncome',
-          label: '企业营收',
+          label: '年营收（万元）',
           span: 12,
           component: 'NumberInput',
           initialValue: () => {
@@ -130,7 +130,7 @@ export const supplierFormConfig: GroupedFormConfig = {
         },
         {
           id: 'profitRate',
-          label: '营收利润率',
+          label: '营收完成率（%）',
           span: 12,
           component: 'NumberInput',
           initialValue: 100,
@@ -138,16 +138,16 @@ export const supplierFormConfig: GroupedFormConfig = {
         },
         {
           id: 'categories',
-          label: '主营品类',
+          label: '主营产品品类',
           component: 'SelectField',
           span: 12,
           dependents: ['operatingArea'],
           componentProps: {
             options: [
-              { value: 'fruitsAndVegetables', label: '水果生鲜' },
+              { value: 'fruitsAndVegetables', label: '果蔬' },
               { value: 'aquatic', label: '水产' },
-              { value: 'cookedFood', label: '熟食' },
-              { value: 'Icecream/frozenProducts', label: '冰淇淋/冻品' }
+              { value: 'cookedFood', label: '熟食加工' },
+              { value: 'Icecream/frozenProducts', label: '冷冻食品' }
             ]
           },
 

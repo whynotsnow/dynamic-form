@@ -71,12 +71,14 @@ const getStatusChainedEffect = (
 
 const options: SelectProps['options'] = [];
 
-for (let i = 10; i < 36; i++) {
-  options.push({
-    value: i.toString(36) + i,
-    label: i.toString(36) + i
-  });
-}
+options.push(
+  { value: 'email', label: '邮件通知' },
+  { value: 'sms', label: '短信通知' },
+  { value: 'inApp', label: '站内通知' },
+  { value: 'push', label: '移动推送' },
+  { value: 'enterpriseWeChat', label: '企业微信' },
+  { value: 'webhook', label: 'Webhook 通知' }
+);
 
 const getConfig = (initialValues: DemoFormValues): FlatFormConfig => {
   const demoFormConfig = {
@@ -149,21 +151,21 @@ const getConfig = (initialValues: DemoFormValues): FlatFormConfig => {
       },
       {
         id: 'fruit',
-        label: '水果',
+        label: '喜欢的水果',
         component: 'CheckboxGroup',
         span: 24,
         componentProps: {
           options: [
-            { label: 'Apple', value: 'Apple', className: 'label-1' },
-            { label: 'Pear', value: 'Pear', className: 'label-2' },
-            { label: 'Orange', value: 'Orange', className: 'label-3' }
+            { label: '苹果', value: 'Apple', className: 'label-1' },
+            { label: '梨', value: 'Pear', className: 'label-2' },
+            { label: '橙子', value: 'Orange', className: 'label-3' }
           ],
           style: { width: 800 }
         }
       },
       {
         id: 'multipleSelect',
-        label: '多选',
+        label: '通知渠道',
         component: 'Select',
         span: 24,
         componentProps: {
@@ -188,7 +190,7 @@ const mockFetchFormData = (): Promise<DemoFormValues> => {
         age: 10,
         email: 'whynotsnow@163.com',
         fruit: ['Apple', 'Orange'],
-        multipleSelect: ['a10', 'b11', 'h17']
+        multipleSelect: ['email', 'inApp']
       });
     }, 800);
   });

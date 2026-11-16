@@ -84,10 +84,11 @@ export const nodeModel4DemoConfig: FormConfig = {
       label: '企业客户',
       component: 'Switch',
       initialValue: true,
-      dependents: ['companyInfo'],
+      dependents: ['companyInfo', 'contacts'],
       effect: (_changedValue, allValues) => ({
         groupsVisible: {
-          companyInfo: allValues.isCompany === true
+          companyInfo: allValues.isCompany === true,
+          contacts: allValues.isCompany === true
         }
       }),
       span: 8
@@ -111,13 +112,13 @@ export const nodeModel4DemoConfig: FormConfig = {
         {
           nodeType: 'field',
           id: 'companyType',
-          label: '企业类型',
+          label: '主体类型',
           component: 'Select',
           initialValue: 'enterprise',
           dependents: ['addressUsage'],
           componentProps: {
             options: [
-              { label: '企业法人', value: 'enterprise' },
+              { label: '企业主体（法人）', value: 'enterprise' },
               { label: '分支机构', value: 'branch' },
               { label: '个人工作室', value: 'studio' }
             ]
@@ -152,7 +153,7 @@ export const nodeModel4DemoConfig: FormConfig = {
               label: '城市',
               component: 'Select',
               initialValue: 'Shanghai',
-              dependents: ['contacts', 'companyDistrict'],
+              dependents: ['companyDistrict'],
               effect: (_changedValue, allValues: NodeModel4Values, chain) => {
                 const province = allValues.company?.address?.companyProvince;
                 const cityFromProvince = province ? defaultCityByProvince[province] : undefined;
@@ -163,9 +164,6 @@ export const nodeModel4DemoConfig: FormConfig = {
 
                 return {
                   value: city,
-                  groupsVisible: {
-                    contacts: city === 'Shanghai'
-                  },
                   componentProps: {
                     options: province ? cityOptionsByProvince[province] : []
                   }

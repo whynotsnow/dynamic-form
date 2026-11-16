@@ -40,14 +40,14 @@ const departmentModule: FieldModule = {
     placeholder: '选择部门',
     style: { width: '100%' },
     options: [
-      { label: 'Engineering', value: 'engineering' },
-      { label: 'Finance', value: 'finance' },
-      { label: 'Operations', value: 'operations' }
+      { label: '工程部', value: 'engineering' },
+      { label: '财务部', value: 'finance' },
+      { label: '运营部', value: 'operations' }
     ]
   },
   createConfig: (options) => ({
     id: 'departmentId',
-    label: String(options?.label ?? 'Department'),
+    label: String(options?.label ?? '部门'),
     component: 'Select',
     required: toBoolean(options?.required, true),
     rules: [{ required: toBoolean(options?.required, true), message: '请选择部门' }]
@@ -130,7 +130,7 @@ const CompilerFoundationDemo: React.FC = () => {
             options: {
               label: '申请标题',
               required: true,
-              placeholder: '例如：新增审批流程字段'
+              placeholder: '例如：新增内部系统字段'
             }
           },
           {
@@ -195,7 +195,7 @@ const CompilerFoundationDemo: React.FC = () => {
         groups: [
           {
             id: 'reviewGroup',
-            title: '审核部门',
+            title: '工程部门技术审核',
             initialVisible: false,
             rules: [
               {

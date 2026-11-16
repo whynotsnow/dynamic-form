@@ -49,10 +49,19 @@ const ReadOnlyField: React.FC<{ field: FieldState; value: DemoFieldValue }> = ({
   field,
   value
 }) => {
+  const options = (
+    field.componentProps as { options?: { value: unknown; label: React.ReactNode }[] }
+  )?.options;
+  const displayValue = Array.isArray(value)
+    ? value
+        .map((item) => options?.find((option) => option.value === item)?.label ?? item)
+        .join('、')
+    : (options?.find((option) => option.value === value)?.label ?? value?.toString() ?? '-');
+
   return (
     <div style={{ padding: '4px 0' }}>
       <strong>{field.label}：</strong>
-      <span style={{ color: '#555' }}>{value?.toString() ?? '-'}</span>
+      <span style={{ color: '#555' }}>{displayValue}</span>
     </div>
   );
 };
@@ -93,7 +102,7 @@ const getConfig = (initialValues: DemoFormValues): GroupedFormConfig => {
           },
           {
             id: 'category',
-            label: '分类',
+            label: '分类示例',
             component: 'DynamicSelect',
             componentProps: {
               options: [
@@ -199,7 +208,7 @@ const CustomComponentsDemo: React.FC = () => {
         name: 'asdf',
         age: 18,
         password: 'sdfsasdf',
-        category: 'option_3',
+        category: 'tech',
         showExtra: true,
         quantity: 88,
         email: 'whynotsnow@163.com',
@@ -228,13 +237,21 @@ const CustomComponentsDemo: React.FC = () => {
     return defaultRender;
   };
 
-  const [viewMode, setViewMode] = useState<'customRender' | 'disabledFields'>('disabledFields');
+  const [viewMode, setViewMode] = useState<'customRender' | 'disabledFields' | 'editableFields'>(
+    'editableFields'
+  );
 
   // 有数据才渲染
   if (!initialValues) return <DemoLoading />;
   return (
     <div style={{ padding: 24, maxWidth: 1200, margin: '0 auto' }}>
       <Space style={{ marginBottom: 16 }}>
+        <Button
+          type={viewMode === 'editableFields' ? 'primary' : 'default'}
+          onClick={() => setViewMode('editableFields')}
+        >
+          可交互控件
+        </Button>
         <Button
           type={viewMode === 'disabledFields' ? 'primary' : 'default'}
           onClick={() => setViewMode('disabledFields')}

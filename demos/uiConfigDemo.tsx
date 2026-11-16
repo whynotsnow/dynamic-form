@@ -7,9 +7,9 @@ import { useDemoInitHandlers } from './useDemoInitHandlers';
 import { PriorityField, priorityEffect } from '../demos/customComponents/PriorityField';
 
 type DynamicUIFormValues = {
-  username?: string;
-  email?: string;
-  status?: 'active' | 'pending' | 'disabled';
+  title?: string;
+  requester?: string;
+  status?: 'open' | 'in_progress' | 'resolved';
   priority?: string;
   description?: string;
 };
@@ -23,18 +23,18 @@ const getStatusUIEffect = (
   // 新增：测试UIConfig动态配置
   const uiConfigUpdates: Partial<UIConfig> = {};
 
-  if (status === 'active') {
+  if (status === 'open') {
     uiConfigUpdates.formProps = {
-      style: { backgroundColor: '#f6ffed', border: '2px solid #52c41a' }
+      style: { backgroundColor: '#e6f4ff', border: '2px solid #1677ff' }
     };
     uiConfigUpdates.buttonProps = {
       type: 'primary',
-      style: { backgroundColor: '#52c41a', borderColor: '#52c41a' }
+      style: { backgroundColor: '#1677ff', borderColor: '#1677ff' }
     };
     uiConfigUpdates.cardProps = {
-      style: { borderColor: '#52c41a', backgroundColor: '#f6ffed' }
+      style: { borderColor: '#1677ff', backgroundColor: '#e6f4ff' }
     };
-  } else if (status === 'pending') {
+  } else if (status === 'in_progress') {
     uiConfigUpdates.formProps = {
       style: { backgroundColor: '#fffbe6', border: '2px solid #faad14' }
     };
@@ -45,16 +45,16 @@ const getStatusUIEffect = (
     uiConfigUpdates.cardProps = {
       style: { borderColor: '#faad14', backgroundColor: '#fffbe6' }
     };
-  } else if (status === 'disabled') {
+  } else if (status === 'resolved') {
     uiConfigUpdates.formProps = {
-      style: { backgroundColor: '#fff2f0', border: '2px solid #ff4d4f' }
+      style: { backgroundColor: '#f6ffed', border: '2px solid #52c41a' }
     };
     uiConfigUpdates.buttonProps = {
-      type: 'default',
-      style: { backgroundColor: '#ff4d4f', borderColor: '#ff4d4f', color: 'white' }
+      type: 'primary',
+      style: { backgroundColor: '#52c41a', borderColor: '#52c41a' }
     };
     uiConfigUpdates.cardProps = {
-      style: { borderColor: '#ff4d4f', backgroundColor: '#fff2f0' }
+      style: { borderColor: '#52c41a', backgroundColor: '#f6ffed' }
     };
   }
   return {
@@ -83,15 +83,15 @@ const UIConfigDemo: React.FC = () => {
   const dynamicFormConfig: FormConfig = {
     fields: [
       {
-        id: 'username',
+        id: 'title',
         component: 'TextInput',
-        label: '用户名',
+        label: '工单标题',
         required: true,
         formItemProps: {
           label: (
             <Space>
-              <span>👤</span>
-              <span style={{ fontWeight: 'bold', color: '#1890ff' }}>用户名</span>
+              <span>🎫</span>
+              <span style={{ fontWeight: 'bold', color: '#1890ff' }}>工单标题</span>
               <Tag color="blue">必填</Tag>
             </Space>
           ),
@@ -100,15 +100,15 @@ const UIConfigDemo: React.FC = () => {
         }
       },
       {
-        id: 'email',
+        id: 'requester',
         component: 'TextInput',
-        label: '邮箱',
+        label: '申请人',
         required: true,
         formItemProps: {
           label: (
             <Space>
-              <span>📧</span>
-              <span style={{ fontWeight: 'bold', color: '#52c41a' }}>邮箱地址</span>
+              <span>👤</span>
+              <span style={{ fontWeight: 'bold', color: '#52c41a' }}>申请人</span>
               <Tag color="green">必填</Tag>
             </Space>
           ),
@@ -119,19 +119,19 @@ const UIConfigDemo: React.FC = () => {
       {
         id: 'status',
         component: 'SelectField',
-        label: '状态',
+        label: '工单状态',
         componentProps: {
           options: [
-            { label: '活跃', value: 'active' },
-            { label: '待审核', value: 'pending' },
-            { label: '已禁用', value: 'disabled' }
+            { label: '待处理', value: 'open' },
+            { label: '处理中', value: 'in_progress' },
+            { label: '已解决', value: 'resolved' }
           ]
         },
         formItemProps: {
           label: (
             <Space>
               <CheckCircleOutlined style={{ color: '#52c41a' }} />
-              <span style={{ fontWeight: 'bold' }}>当前状态</span>
+              <span style={{ fontWeight: 'bold' }}>工单状态</span>
               <Tag color="orange">动态样式</Tag>
             </Space>
           ),
@@ -143,7 +143,7 @@ const UIConfigDemo: React.FC = () => {
       {
         id: 'priority',
         component: 'PriorityField',
-        label: '优先级',
+        label: '工单优先级',
         componentProps: {
           options: [
             { label: '高', value: 'high' },
@@ -154,7 +154,7 @@ const UIConfigDemo: React.FC = () => {
         formItemProps: {
           label: (
             <Space>
-              <span>😋 默认优先级</span>
+              <span>🎯 工单优先级</span>
               <Tag color="blue">默认</Tag>
             </Space>
           ),
@@ -165,7 +165,7 @@ const UIConfigDemo: React.FC = () => {
       {
         id: 'description',
         component: 'TextArea',
-        label: '描述',
+        label: '问题描述',
         formItemProps: {
           label: (
             <Space>

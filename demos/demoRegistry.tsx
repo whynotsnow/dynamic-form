@@ -21,19 +21,22 @@ export const DEMO_COMPONENTS = {
   storeBoundary: {
     name: 'StoreBoundaryDemo',
     title: 'Store 边界验证',
-    description: '验证字段值由 Ant Design Form 管理，effect 只更新字段值或 DynamicForm meta。',
+    description:
+      '用生鲜供应商资料验证字段值由 Ant Design Form 管理，effect 只更新字段值或 DynamicForm meta。',
     component: StoreBoundaryDemo
   },
   customHandlers: {
     name: 'CustomHandlersDemo',
     title: '自定义处理器演示',
-    description: '演示自定义 EffectResultHandler 如何更新 value、field meta 和动态样式。',
+    description:
+      '以独立字段练习场演示自定义 EffectResultHandler 如何更新 value、field meta 和动态样式；示例不对应单一业务流程。',
     component: CustomHandlersDemo
   },
   customComponents: {
     name: 'CustomComponentsDemo',
     title: '自定义组件注册演示',
-    description: '演示如何注册自定义组件，并展示表单的详情页显示模式。',
+    description:
+      '通过自定义组件示例演示组件注册和表单详情页显示模式；字段用于展示组件能力，不对应单一业务流程。',
     component: CustomComponentsDemo
   },
   formValidation: {
@@ -45,7 +48,7 @@ export const DEMO_COMPONENTS = {
   uiConfig: {
     name: 'UIConfigDemo',
     title: 'UI 配置演示',
-    description: '演示静态 uiConfig 与 effect 返回的动态 UI 配置如何合并。',
+    description: '以工单处理表单演示静态 uiConfig 与 effect 返回的动态 UI 配置如何合并。',
     component: UIConfigDemo
   },
   renderExtension: {
@@ -57,14 +60,15 @@ export const DEMO_COMPONENTS = {
   compilerFoundation: {
     name: 'CompilerFoundationDemo',
     title: '编译器基础演示',
-    description: '演示如何把字段模块编译为标准 FormConfig，再交给 DynamicForm 渲染。',
+    description:
+      '以内部系统申请和工程部门审核为例，演示如何把字段模块编译为标准 FormConfig，再交给 DynamicForm 渲染。',
     component: CompilerFoundationDemo
   },
   nodeModel4: {
     name: 'NodeModel4Demo',
     title: '4.0 Node Model / Container 演示',
     description:
-      '演示 4.0 nodes、普通 container、嵌套 container、repeatable container、级联字段联动和跨层级 effect graph。',
+      '演示 4.0 nodes、普通 container、嵌套 container、repeatable container、级联字段联动和跨层级 effect graph；企业客户开关控制企业资料与联系人。',
     component: NodeModel4Demo
   },
   headlessRenderer: {

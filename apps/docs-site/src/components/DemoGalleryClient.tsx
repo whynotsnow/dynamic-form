@@ -22,7 +22,8 @@ const DEMO_TEXT: Record<DemoType, { title: string; description: string }> = {
     }),
     description: translate({
       id: 'demos.items.storeBoundary.description',
-      message: '验证字段值由 Ant Design Form 管理，effect 只更新字段值或 DynamicForm meta。'
+      message:
+        '用生鲜供应商资料验证字段值由 Ant Design Form 管理，effect 只更新字段值或 DynamicForm meta。'
     })
   },
   customHandlers: {
@@ -32,7 +33,8 @@ const DEMO_TEXT: Record<DemoType, { title: string; description: string }> = {
     }),
     description: translate({
       id: 'demos.items.customHandlers.description',
-      message: '演示自定义 EffectResultHandler 如何更新 value、field meta 和动态样式。'
+      message:
+        '以独立字段练习场演示自定义 EffectResultHandler 如何更新 value、field meta 和动态样式；示例不对应单一业务流程。'
     })
   },
   customComponents: {
@@ -42,7 +44,8 @@ const DEMO_TEXT: Record<DemoType, { title: string; description: string }> = {
     }),
     description: translate({
       id: 'demos.items.customComponents.description',
-      message: '演示如何注册自定义组件，并展示表单的详情页显示模式。'
+      message:
+        '通过自定义组件示例演示组件注册和表单详情页显示模式；字段用于展示组件能力，不对应单一业务流程。'
     })
   },
   formValidation: {
@@ -62,7 +65,7 @@ const DEMO_TEXT: Record<DemoType, { title: string; description: string }> = {
     }),
     description: translate({
       id: 'demos.items.uiConfig.description',
-      message: '演示静态 uiConfig 与 effect 返回的动态 UI 配置如何合并。'
+      message: '以工单处理表单演示静态 uiConfig 与 effect 返回的动态 UI 配置如何合并。'
     })
   },
   renderExtension: {
@@ -82,7 +85,8 @@ const DEMO_TEXT: Record<DemoType, { title: string; description: string }> = {
     }),
     description: translate({
       id: 'demos.items.compilerFoundation.description',
-      message: '演示如何把字段模块编译为标准 FormConfig，再交给 DynamicForm 渲染。'
+      message:
+        '以内部系统申请和工程部门审核为例，演示如何把字段模块编译为标准 FormConfig，再交给 DynamicForm 渲染。'
     })
   },
   nodeModel4: {
@@ -93,7 +97,7 @@ const DEMO_TEXT: Record<DemoType, { title: string; description: string }> = {
     description: translate({
       id: 'demos.items.nodeModel4.description',
       message:
-        '演示 4.0 nodes、普通 container、嵌套 container、repeatable container、级联字段联动和跨层级 effect graph。'
+        '演示 4.0 nodes、普通 container、嵌套 container、repeatable container、级联字段联动和跨层级 effect graph；企业客户开关控制企业资料与联系人。'
     })
   },
   headlessRenderer: {
@@ -133,7 +137,10 @@ const DEMO_GUIDES: Record<DemoType, DemoGuideItem[]> = {
     guideItem('customHandlers.status', '切换状态，观察链式样式和数据转换处理。')
   ],
   customComponents: [
-    guideItem('customComponents.viewMode', '切换“控件禁用”和“自定义渲染”查看两种展示模式。'),
+    guideItem(
+      'customComponents.viewMode',
+      '切换“可交互控件”“控件禁用”和“自定义渲染”三种展示模式。'
+    ),
     guideItem('customComponents.visibility', '切换“显示额外信息”，验证自定义字段显隐联动。'),
     guideItem('customComponents.registry', '使用各个自定义字段并提交表单，查看注册组件的交互结果。')
   ],
@@ -179,7 +186,7 @@ const DEMO_GUIDES: Record<DemoType, DemoGuideItem[]> = {
     ),
     guideItem('nodeModel4.parentChild', '修改企业类型，观察嵌套地址用途的默认值和选项变化。'),
     guideItem('nodeModel4.cascade', '修改省份和城市，观察城市与区县的级联更新。'),
-    guideItem('nodeModel4.crossLevel', '将城市改为非上海值，观察联系人列表跨层级隐藏与恢复。')
+    guideItem('nodeModel4.crossLevel', '切换“企业客户”，观察企业资料与联系人列表同步显示或隐藏。')
   ],
   headlessRenderer: [
     guideItem('headlessRenderer.fields', '修改嵌套的姓名和邮箱字段。'),
