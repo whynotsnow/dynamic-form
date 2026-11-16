@@ -158,7 +158,7 @@ const FormValidationDemo: React.FC = () => {
     async function fetchData() {
       const testData = {
         name: 'gas递四方速递',
-        email: 'whynotsnow@163.com',
+        email: 'yourname@example.com',
         projects: [
           {
             name: '噶手动阀是的',
@@ -167,22 +167,22 @@ const FormValidationDemo: React.FC = () => {
               {
                 name: '三大发',
                 role: 'developer',
-                email: 'whynotsnow@163.com'
+                email: 'yourname@developer.com'
               },
               {
                 name: '3',
                 role: 'tester',
-                email: 'whynotsnow@163.com'
+                email: 'yourname@tester.com'
               },
               {
                 name: '是的',
                 role: 'product',
-                email: 'whynotsnow@163.com'
+                email: 'yourname@product.com'
               },
               {
                 name: '撒旦法',
                 role: 'designer',
-                email: 'whynotsnow@163.com'
+                email: 'yourname@designer.com'
               }
             ],
             tasks: [
@@ -221,7 +221,7 @@ const FormValidationDemo: React.FC = () => {
               {
                 name: '是打发打发是',
                 role: 'developer',
-                email: 'whynotsnow@163.com'
+                email: 'yourname@developer.com'
               }
             ],
             tasks: [
@@ -241,11 +241,11 @@ const FormValidationDemo: React.FC = () => {
         userTable: [
           {
             key: '1754668878601',
-            name: 'notsnow why',
+            name: 'name your',
             age: '18',
             address: '阿斯顿发大街1号',
-            email: 'whynotsnow@163.com',
-            phone: '13148978094',
+            email: 'yourname@example.com',
+            phone: '13888888888',
             status: 'active'
           }
         ]
