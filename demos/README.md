@@ -81,6 +81,8 @@ demos/
 
 - 新增 demo 时，优先添加到 `demoRegistry.tsx`；`DemoSelector` 会从该注册表渲染演示。
 - docs-site 的 Demo 源码展示由 `demoSources/index.json` 维护 Demo 文件清单和 GitHub 链接；源码快照以可直接编辑的纯文本保存在 `demoSources/files/<locale>/<文件名>.tsx.txt`，`index.ts` 将对应语言文件装配到 Demo 清单中。相同共享文件可以被多个 Demo 引用。JSON 只保存索引和展示元数据，不存转义后的代码正文。
+- docs-site 的表单控制台属于站点展示外壳：外层为 AntD Demo 提供共享 Form 实例，按 `demoRegistry.tsx` 配置显示实时 values 与适用操作。控制台组件不加入 `demoSources/index.json`，源码面板不展示控制台实现；Vite 单独运行 Demo 时仍由 Demo 自己创建 Form 实例。
+- Headless Renderer 使用 Memory Adapter，不接入 AntD Form 控制台操作；提交与结果观察继续使用该 Demo 自身的表单入口。
 - 源码快照是展示用静态副本，不会在站点构建时自动读取组件文件；修改 Demo 后应同步更新对应文件快照的两种语言，并检查对应 Demo 清单。
 - demo 级 effect handler 初始化统一使用 `useDemoInitHandlers`，保持默认配置一致。
 - 页面级 demo 文件名应与主要职责一致，并使用 `*Demo.tsx` 后缀。

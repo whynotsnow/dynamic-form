@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import 'antd/dist/reset.css';
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, Form } from 'antd';
+import type { FormInstance } from 'antd';
 import enUS from 'antd/locale/en_US';
 import zhCN from 'antd/locale/zh_CN';
 import dayjs from 'dayjs';
@@ -18,6 +19,7 @@ import {
   type DemoType
 } from '../../../../demos/demoRegistry';
 import DemoWrapper, { type DemoGuideItem } from './DemoWrapper';
+import DemoFormControlPanel from './DemoFormControlPanel';
 import { DemoSubmitResultContext } from '../../../../demos/useDemoSubmitResult';
 import { DemoI18nProvider } from '../../../../demos/demoI18n';
 import styles from './DemoGalleryClient.module.css';
@@ -191,7 +193,7 @@ const DEMO_GUIDES: Record<DemoType, DemoGuideItem[]> = {
     ),
     guideItem(
       'formValidation.actions',
-      '点击“填入校验错误示例”再校验查看错误；修正后可再次校验，或重置恢复初始数据。'
+      '点击“填入校验错误示例”再校验查看错误；修正后可再次校验，也可用控制台清空或恢复初始值。'
     )
   ],
   uiConfig: [
@@ -233,6 +235,21 @@ const DEMO_GUIDES: Record<DemoType, DemoGuideItem[]> = {
       '核对初始隐藏备注未出现在字段区和提交结果中，并查看自定义字段包装效果。'
     )
   ]
+};
+
+interface DemoFormSessionProps {
+  controls: (typeof DEMO_COMPONENTS)[DemoType]['formControls'];
+  locale: 'zh-CN' | 'en';
+  children: (form: FormInstance) => React.ReactNode;
+}
+
+const DemoFormSession: React.FC<DemoFormSessionProps> = ({ controls, locale, children }) => {
+  const [form] = Form.useForm();
+  return (
+    <DemoFormControlPanel controls={controls} form={form} locale={locale}>
+      {children(form)}
+    </DemoFormControlPanel>
+  );
 };
 
 const isDemoType = (value: string | null): value is DemoType => {
@@ -406,7 +423,19 @@ export default function DemoGalleryClient(): React.JSX.Element {
               <ConfigProvider locale={locale === 'en' ? enUS : zhCN}>
                 <DemoI18nProvider locale={locale}>
                   <DemoSubmitResultContext.Provider value={submitResultMessages}>
-                    <CurrentDemo />
+                    <DemoFormSession
+                      controls={currentDemoInfo.formControls}
+                      key={currentDemo}
+                      locale={locale}
+                    >
+                      {(form) =>
+                        currentDemoInfo.formControls.adapter === 'antd' ? (
+                          <CurrentDemo form={form} hideSubmitButton />
+                        ) : (
+                          <CurrentDemo />
+                        )
+                      }
+                    </DemoFormSession>
                   </DemoSubmitResultContext.Provider>
                 </DemoI18nProvider>
               </ConfigProvider>

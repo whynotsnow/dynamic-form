@@ -10,6 +10,7 @@ import DynamicForm from '@/index';
 import { exampleHandlers } from './customHandlers';
 import { customComponents } from './customComponents';
 import { Button, Form, message, Space } from 'antd';
+import type { FormInstance } from 'antd';
 import DemoLoading from './DemoLoading';
 import { useDemoSubmitResult } from './useDemoSubmitResult';
 import { mockFetchFormData } from '../packages/dynamic-form/src/shared/utils/utils';
@@ -192,7 +193,10 @@ const getConfig = (initialValues: DemoFormValues): GroupedFormConfig => {
   return formConfig;
 };
 
-const CustomComponentsDemo: React.FC = () => {
+const CustomComponentsDemo: React.FC<{ form?: FormInstance; hideSubmitButton?: boolean }> = ({
+  form: externalForm,
+  hideSubmitButton = false
+}) => {
   const handleSubmit = (values: DemoFormValues) => {
     console.log('表单提交:', values);
     message.success('表单提交成功！');
@@ -201,7 +205,8 @@ const CustomComponentsDemo: React.FC = () => {
   useDemoInitHandlers({ handlers: exampleHandlers });
 
   const [initialValues, setInitialValues] = useState<DemoFormValues>();
-  const [form] = Form.useForm();
+  const [localForm] = Form.useForm();
+  const form = externalForm ?? localForm;
   const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
 
   useEffect(() => {
@@ -274,7 +279,7 @@ const CustomComponentsDemo: React.FC = () => {
         renderFormInner={({ defaultRender }) => (
           <>
             {defaultRender.fieldsArea}
-            {viewMode === 'editableFields' ? defaultRender.submitArea : null}
+            {viewMode === 'editableFields' && !hideSubmitButton ? defaultRender.submitArea : null}
           </>
         )}
         renderFieldItem={renderFieldItem}

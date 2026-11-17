@@ -4,6 +4,7 @@ import DynamicForm from '@/index';
 import { exampleHandlers } from './customHandlers';
 import { customComponents } from './customComponents';
 import { Button, Form, message, Space } from 'antd';
+import type { FormInstance } from 'antd';
 import DemoLoading from './DemoLoading';
 import { useDemoSubmitResult } from './useDemoSubmitResult';
 import { mockFetchFormData } from '../packages/dynamic-form/src/shared/utils/utils';
@@ -175,14 +176,18 @@ const getConfig = (initialValues: DemoFormValues): GroupedFormConfig => {
     };
     return formConfig;
 };
-const CustomComponentsDemo: React.FC = () => {
+const CustomComponentsDemo: React.FC<{ form?: FormInstance; hideSubmitButton?: boolean }> = ({
+    form: externalForm,
+    hideSubmitButton = false
+}) => {
     const handleSubmit = (values: DemoFormValues) => {
         console.log("Form submitted:", values);
         message.success("Form submitted successfully!");
     };
     useDemoInitHandlers({ handlers: exampleHandlers });
     const [initialValues, setInitialValues] = useState<DemoFormValues>();
-    const [form] = Form.useForm();
+    const [localForm] = Form.useForm();
+    const form = externalForm ?? localForm;
     const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
     useEffect(() => {
         async function fetchData() {
@@ -235,7 +240,7 @@ const CustomComponentsDemo: React.FC = () => {
       </Space>
       <DynamicForm form={form} formConfig={memoConfig as GroupedFormConfig} uiConfig={{ formProps: { disabled: viewMode === 'disabledFields' } }} renderFormInner={({ defaultRender }) => (<>
             {defaultRender.fieldsArea}
-            {viewMode === 'editableFields' ? defaultRender.submitArea : null}
+            {viewMode === 'editableFields' && !hideSubmitButton ? defaultRender.submitArea : null}
           </>)} renderFieldItem={renderFieldItem} values={initialValues} onSubmit={(values) => {
             const nextValues = values as DemoFormValues;
             handleSubmit(nextValues);

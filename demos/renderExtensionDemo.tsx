@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Card, Tag, Tooltip, Typography, Input, Tabs, Button, Space } from 'antd';
+import type { FormInstance } from 'antd';
 import {
   InfoCircleOutlined,
   StarOutlined,
@@ -78,8 +79,12 @@ const CustomEmailField: React.FC<FieldComponentProps> & { wrapWithFormItem?: boo
 CustomUsernameField.wrapWithFormItem = false;
 CustomEmailField.wrapWithFormItem = false;
 
-const RenderExtensionDemo: React.FC = () => {
-  const [form] = Form.useForm();
+const RenderExtensionDemo: React.FC<{ form?: FormInstance; hideSubmitButton?: boolean }> = ({
+  form: externalForm,
+  hideSubmitButton = false
+}) => {
+  const [localForm] = Form.useForm();
+  const form = externalForm ?? localForm;
   const [showExtensions, setShowExtensions] = useState(true);
   const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
 
@@ -200,11 +205,13 @@ const RenderExtensionDemo: React.FC = () => {
   const renderFormInner = ({ defaultRender }: RenderFormParams) => (
     <>
       {defaultRender.fieldsArea}
-      <div style={{ textAlign: 'center', marginTop: 24 }}>
-        <Button type="primary" htmlType="submit">
-          🚀 提交表单
-        </Button>
-      </div>
+      {!hideSubmitButton ? (
+        <div style={{ textAlign: 'center', marginTop: 24 }}>
+          <Button type="primary" htmlType="submit">
+            🚀 提交表单
+          </Button>
+        </div>
+      ) : null}
     </>
   );
 
@@ -227,6 +234,9 @@ const RenderExtensionDemo: React.FC = () => {
       <DynamicForm
         formConfig={formConfig}
         form={form}
+        uiConfig={
+          hideSubmitButton ? { submitAreaProps: { style: { display: 'none' } } } : undefined
+        }
         onSubmit={(values) => handleSubmit(values as RenderExtensionFormValues)}
         componentRegistry={componentRegistry}
         renderFieldItem={showExtensions ? renderFieldItem : undefined}

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Card, Form } from 'antd';
+import { Form } from 'antd';
+import type { FormInstance } from 'antd';
 import { supplierFormConfig } from '../tests/testData';
 import { DynamicForm } from '@/exports';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
@@ -10,7 +11,10 @@ type StoreBoundaryFormValues = {
   [fieldName: string]: string | number | boolean | string[] | undefined;
 };
 
-const StoreBoundaryDemo: React.FC = () => {
+const StoreBoundaryDemo: React.FC<{ form?: FormInstance; hideSubmitButton?: boolean }> = ({
+  form: externalForm,
+  hideSubmitButton = false
+}) => {
   const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
 
   const handleSubmit = (values: StoreBoundaryFormValues) => {
@@ -21,23 +25,21 @@ const StoreBoundaryDemo: React.FC = () => {
   // 初始化处理器系统，确保所有演示组件都能正常工作
   useDemoInitHandlers();
 
-  const [form] = Form.useForm();
-  const currentValues = Form.useWatch([], { form, preserve: true }) ?? {};
+  const [localForm] = Form.useForm();
+  const form = externalForm ?? localForm;
 
   return (
     <div>
       <DynamicForm
         onSubmit={(values) => handleSubmit(values as StoreBoundaryFormValues)}
         form={form}
+        uiConfig={
+          hideSubmitButton ? { submitAreaProps: { style: { display: 'none' } } } : undefined
+        }
         submitButtonText="提交表单"
         formConfig={supplierFormConfig}
         componentRegistry={{ customComponents: { OperatingAreaField } }}
       />
-      <Card title="当前 AntD Form values" style={{ marginTop: 16 }}>
-        <pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>
-          {JSON.stringify(currentValues, null, 2)}
-        </pre>
-      </Card>
       {submitResultModal}
     </div>
   );

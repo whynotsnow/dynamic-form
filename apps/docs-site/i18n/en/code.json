@@ -65,6 +65,36 @@
   "demos.client.description": {
     "message": "Select a demo to inspect the interactive behavior."
   },
+  "demos.controlPanel.title": {
+    "message": "Form Controls"
+  },
+  "demos.controlPanel.fill": {
+    "message": "Fill sample data"
+  },
+  "demos.controlPanel.validate": {
+    "message": "Validate"
+  },
+  "demos.controlPanel.restore": {
+    "message": "Restore initial values"
+  },
+  "demos.controlPanel.reset": {
+    "message": "Reset form"
+  },
+  "demos.controlPanel.submit": {
+    "message": "Submit form"
+  },
+  "demos.controlPanel.validationSuccess": {
+    "message": "Validation passed"
+  },
+  "demos.controlPanel.validationFailure": {
+    "message": "Check the form errors"
+  },
+  "demos.controlPanel.values": {
+    "message": "Current AntD Form values"
+  },
+  "demos.controlPanel.headlessHint": {
+    "message": "This example uses a Memory Adapter. Use the form's own submit button to inspect its result."
+  },
   "demos.sourcePanel.open": {
     "message": "View demo source"
   },
@@ -81,7 +111,7 @@
     "message": "This example assumes App.tsx is at the repository root. It imports the current component from ./demos, renders it as a React component, and mounts it to #root."
   },
   "demos.sourcePanel.sharedContext": {
-    "message": "DemoWrapper presents the site demo; demos reuse DemoLoading and useDemoSubmitResult. The links below open this demo, related components, and the submit result helper.",
+    "message": "DemoWrapper and the form control panel belong to the site presentation layer and are not shown as demo source; demos reuse DemoLoading and useDemoSubmitResult. The links below open this demo, related components, and the submit result helper.",
     "description": "Context note above GitHub source links"
   },
   "demos.sourcePanel.githubLinks": {

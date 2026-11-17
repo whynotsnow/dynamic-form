@@ -15,17 +15,23 @@ export const DemoSubmitResultContext = createContext<DemoSubmitResultMessages>({
   cancel: '取消'
 });
 
+export const DemoSubmitResultHandlerContext = createContext<((values: unknown) => void) | null>(
+  null
+);
+
 export const useDemoSubmitResult = () => {
   const messages = useContext(DemoSubmitResultContext);
+  const externalShowSubmitResult = useContext(DemoSubmitResultHandlerContext);
   const [isOpen, setIsOpen] = useState(false);
   const [submittedValues, setSubmittedValues] = useState<unknown>();
 
-  const showSubmitResult = useCallback((values: unknown) => {
+  const showLocalSubmitResult = useCallback((values: unknown) => {
     setSubmittedValues(values);
     setIsOpen(true);
   }, []);
 
-  const submitResultModal = (
+  const showSubmitResult = externalShowSubmitResult ?? showLocalSubmitResult;
+  const submitResultModal = externalShowSubmitResult ? null : (
     <Modal
       title={messages.title}
       open={isOpen}

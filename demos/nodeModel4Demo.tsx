@@ -1,44 +1,21 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Button, Card, Form, Space } from 'antd';
+import React, { useMemo } from 'react';
+import { Button, Form, Space } from 'antd';
+import type { FormInstance } from 'antd';
 import DynamicForm from '@/index';
 import type { FormValues } from '@/exports';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
 import { useDemoSubmitResult } from './useDemoSubmitResult';
 import { nodeModel4DemoConfig, nodeModel4DemoValues } from './nodeModel4DemoConfig';
 
-function formatValues(values: FormValues) {
-  return JSON.stringify(values, null, 2);
-}
-
-interface FormValuesWatcherProps {
-  form: ReturnType<typeof Form.useForm>[0];
-  onChange: (values: FormValues) => void;
-}
-
-const FormValuesWatcher: React.FC<FormValuesWatcherProps> = ({ form, onChange }) => {
-  const watchedValues = Form.useWatch([], { form, preserve: true });
-  const lastSnapshotRef = useRef('');
-  void watchedValues;
-
-  useEffect(() => {
-    const nextValues = form.getFieldsValue(true);
-    const nextSnapshot = formatValues(nextValues);
-
-    if (nextSnapshot !== lastSnapshotRef.current) {
-      lastSnapshotRef.current = nextSnapshot;
-      onChange(nextValues);
-    }
-  });
-
-  return null;
-};
-
-const NodeModel4Demo: React.FC = () => {
+const NodeModel4Demo: React.FC<{ form?: FormInstance; hideSubmitButton?: boolean }> = ({
+  form: externalForm,
+  hideSubmitButton = false
+}) => {
   useDemoInitHandlers();
 
-  const [form] = Form.useForm();
+  const [localForm] = Form.useForm();
+  const form = externalForm ?? localForm;
   const isCompany = Form.useWatch('isCompany', form);
-  const [currentValues, setCurrentValues] = useState<FormValues>({});
   const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
 
   const initialDemoValues = useMemo(() => nodeModel4DemoValues, []);
@@ -80,17 +57,12 @@ const NodeModel4Demo: React.FC = () => {
         onSubmit={handleSubmit}
         renderFormInner={({ defaultRender }) => (
           <>
-            <FormValuesWatcher form={form} onChange={setCurrentValues} />
             {defaultRender.fieldsArea}
-            {defaultRender.submitArea}
+            {hideSubmitButton ? null : defaultRender.submitArea}
           </>
         )}
       />
       {submitResultModal}
-
-      <Card title="当前 AntD Form values" style={{ marginTop: 16 }}>
-        <pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{formatValues(currentValues)}</pre>
-      </Card>
     </div>
   );
 };

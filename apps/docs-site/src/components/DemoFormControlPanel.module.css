@@ -1,0 +1,25 @@
+.session {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.demo {
+  min-width: 0;
+}
+
+.values {
+  max-height: 360px;
+  margin: 0;
+  overflow: auto;
+  padding: 12px;
+  border-radius: 6px;
+  background: var(--ifm-code-background);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.headlessHint {
+  margin: 0;
+}

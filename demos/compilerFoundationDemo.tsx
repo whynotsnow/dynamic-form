@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { Form, Select } from 'antd';
+import type { FormInstance } from 'antd';
 import type { SelectProps } from 'antd';
 import {
   DynamicForm,
@@ -109,9 +110,13 @@ const textareaModule: FieldModule = {
   })
 };
 
-const CompilerFoundationDemo: React.FC = () => {
+const CompilerFoundationDemo: React.FC<{ form?: FormInstance; hideSubmitButton?: boolean }> = ({
+  form: externalForm,
+  hideSubmitButton = false
+}) => {
   useDemoInitHandlers();
-  const [form] = Form.useForm();
+  const [localForm] = Form.useForm();
+  const form = externalForm ?? localForm;
   const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
 
   const compiled = useMemo(() => {
@@ -227,6 +232,7 @@ const CompilerFoundationDemo: React.FC = () => {
   };
 
   const uiConfig: UIConfig = {
+    ...(hideSubmitButton ? { submitAreaProps: { style: { display: 'none' } } } : {}),
     formItemProps: {
       labelCol: { span: 8 },
       wrapperCol: { span: 16 }

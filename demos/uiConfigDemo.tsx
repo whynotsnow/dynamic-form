@@ -2,6 +2,7 @@ import React from 'react';
 import DynamicForm from '@/index';
 import type { ComponentRegistryConfig, FormConfig, FormValues, UIConfig } from '@/exports';
 import { Tag, Space, Form } from 'antd';
+import type { FormInstance } from 'antd';
 import { CheckCircleOutlined } from '@ant-design/icons';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
 import { PriorityField, priorityEffect } from '../demos/customComponents/PriorityField';
@@ -78,8 +79,12 @@ const getDescriptionUIEffect = (changedValue: DynamicUIFormValues['description']
   };
 };
 
-const UIConfigDemo: React.FC = () => {
-  const [dynamicForm] = Form.useForm();
+const UIConfigDemo: React.FC<{ form?: FormInstance; hideSubmitButton?: boolean }> = ({
+  form: externalForm,
+  hideSubmitButton = false
+}) => {
+  const [localForm] = Form.useForm();
+  const dynamicForm = externalForm ?? localForm;
   const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
   // 动态label表单配置 - 展示useInitHandlers处理effect返回值的功能
   const dynamicFormConfig: FormConfig = {
@@ -215,7 +220,11 @@ const UIConfigDemo: React.FC = () => {
     <>
       <DynamicForm
         formConfig={dynamicFormConfig}
-        uiConfig={dynamicUIConfig}
+        uiConfig={
+          hideSubmitButton
+            ? { ...dynamicUIConfig, submitAreaProps: { style: { display: 'none' } } }
+            : dynamicUIConfig
+        }
         componentRegistry={componentRegistryConfig}
         onSubmit={handleDynamicSubmit}
         form={dynamicForm}

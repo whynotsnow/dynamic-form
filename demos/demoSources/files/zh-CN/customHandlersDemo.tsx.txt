@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Alert, Form } from 'antd';
+import type { FormInstance } from 'antd';
 import { exampleHandlers } from './customHandlers';
 import { FlatFormConfig, FormValues } from '@/exports';
 import { DynamicForm } from '@/exports';
@@ -157,7 +158,10 @@ const mockFetchFormData = (): Promise<DemoFormValues> => {
   });
 };
 
-const CustomHandlersDemo: React.FC = () => {
+const CustomHandlersDemo: React.FC<{ form?: FormInstance; hideSubmitButton?: boolean }> = ({
+  form: externalForm,
+  hideSubmitButton = false
+}) => {
   const { registeredCount } = useDemoInitHandlers({ handlers: exampleHandlers });
   const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
 
@@ -166,7 +170,8 @@ const CustomHandlersDemo: React.FC = () => {
   };
 
   const [initialValues, setInitialValues] = useState<DemoFormValues>();
-  const [form] = Form.useForm();
+  const [localForm] = Form.useForm();
+  const form = externalForm ?? localForm;
 
   useEffect(() => {
     async function fetchData() {
@@ -199,6 +204,9 @@ const CustomHandlersDemo: React.FC = () => {
           formConfig={memoConfig as FlatFormConfig}
           values={initialValues}
           form={form}
+          uiConfig={
+            hideSubmitButton ? { submitAreaProps: { style: { display: 'none' } } } : undefined
+          }
           onSubmit={(values) => {
             const submittedValues = values as DemoFormValues;
             handleSubmit(submittedValues);

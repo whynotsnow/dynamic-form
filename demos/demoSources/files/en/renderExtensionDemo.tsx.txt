@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Card, Tag, Tooltip, Typography, Input, Tabs, Button, Space } from 'antd';
+import type { FormInstance } from 'antd';
 import { InfoCircleOutlined, StarOutlined, FireOutlined, FolderOpenOutlined } from '@ant-design/icons';
 import DynamicForm from '@/index';
 import { getFieldName } from '@/exports';
@@ -50,8 +51,12 @@ const CustomEmailField: React.FC<FieldComponentProps> & {
   </div>);
 CustomUsernameField.wrapWithFormItem = false;
 CustomEmailField.wrapWithFormItem = false;
-const RenderExtensionDemo: React.FC = () => {
-    const [form] = Form.useForm();
+const RenderExtensionDemo: React.FC<{ form?: FormInstance; hideSubmitButton?: boolean }> = ({
+    form: externalForm,
+    hideSubmitButton = false
+}) => {
+    const [localForm] = Form.useForm();
+    const form = externalForm ?? localForm;
     const [showExtensions, setShowExtensions] = useState(true);
     const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
     const formConfig: GroupedFormConfig = {
