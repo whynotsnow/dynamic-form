@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Avatar, Form, message, Select, Space } from 'antd';
+import { translate } from '@docusaurus/Translate';
 import { EditableProTable, type ProColumns } from '@ant-design/pro-components';
 import type {
   ComponentRegistryConfig,
@@ -25,7 +26,8 @@ const previewShellStyle: React.CSSProperties = {
 };
 
 type ToastPayload = {
-  content?: string;
+  content: string;
+  type?: 'info' | 'success' | 'warning' | 'error';
 };
 
 type FormWithSetFields = {
@@ -33,7 +35,16 @@ type FormWithSetFields = {
 };
 
 function isToastPayload(value: unknown): value is ToastPayload {
-  return typeof value === 'object' && value !== null && 'content' in value;
+  if (typeof value !== 'object' || value === null || !('content' in value)) return false;
+  const candidate = value as { content?: unknown; type?: unknown };
+  return (
+    typeof candidate.content === 'string' &&
+    (candidate.type === undefined ||
+      candidate.type === 'info' ||
+      candidate.type === 'success' ||
+      candidate.type === 'warning' ||
+      candidate.type === 'error')
+  );
 }
 
 function hasSetFields(value: unknown): value is FormWithSetFields {
@@ -74,7 +85,7 @@ function DynamicFormPreview({
         componentRegistry={componentRegistry}
         form={form}
         formConfig={formConfig}
-        submitButtonText="提交"
+        submitButtonText={translate({ id: 'marketplace.preview.submit', message: '提交' })}
         uiConfig={{ ...baseFormProps, ...uiConfig }}
         values={values}
       />
@@ -96,8 +107,14 @@ function createBuiltinComponentPreview(component: string): MarketplacePreviewCom
         return {
           ...baseField,
           options: [
-            { label: '待处理', value: 'pending' },
-            { label: '已完成', value: 'done' }
+            {
+              label: translate({ id: 'marketplace.code.optionPending', message: '待处理' }),
+              value: 'pending'
+            },
+            {
+              label: translate({ id: 'marketplace.preview.optionDone', message: '已完成' }),
+              value: 'done'
+            }
           ]
         };
       }
@@ -107,8 +124,14 @@ function createBuiltinComponentPreview(component: string): MarketplacePreviewCom
           ...baseField,
           componentProps: {
             options: [
-              { label: '华东区域', value: 'east' },
-              { label: '华北区域', value: 'north' }
+              {
+                label: translate({ id: 'marketplace.preview.regionEast', message: '华东区域' }),
+                value: 'east'
+              },
+              {
+                label: translate({ id: 'marketplace.preview.regionNorth', message: '华北区域' }),
+                value: 'north'
+              }
             ]
           }
         };
@@ -119,8 +142,14 @@ function createBuiltinComponentPreview(component: string): MarketplacePreviewCom
           ...baseField,
           componentProps: {
             options: [
-              { label: '读取', value: 'read' },
-              { label: '编辑', value: 'write' }
+              {
+                label: translate({ id: 'marketplace.code.optionRead', message: '读取' }),
+                value: 'read'
+              },
+              {
+                label: translate({ id: 'marketplace.preview.optionEdit', message: '编辑' }),
+                value: 'write'
+              }
             ]
           }
         };
@@ -129,7 +158,13 @@ function createBuiltinComponentPreview(component: string): MarketplacePreviewCom
       if (component === 'TextArea') {
         return {
           ...baseField,
-          componentProps: { rows: 3, placeholder: '请输入说明' }
+          componentProps: {
+            rows: 3,
+            placeholder: translate({
+              id: 'marketplace.preview.enterDescription',
+              message: '请输入说明'
+            })
+          }
         };
       }
 
@@ -139,7 +174,12 @@ function createBuiltinComponentPreview(component: string): MarketplacePreviewCom
     return (
       <DynamicFormPreview
         formConfig={{ fields: [field] } as FlatFormConfig}
-        values={{ previewField: component === 'TextDisplay' ? '系统计算结果' : undefined }}
+        values={{
+          previewField:
+            component === 'TextDisplay'
+              ? translate({ id: 'marketplace.preview.computedResult', message: '系统计算结果' })
+              : undefined
+        }}
       />
     );
   };
@@ -153,11 +193,14 @@ function createBuiltinHandlerPreview(handlerName: string): MarketplacePreviewCom
           groups: [
             {
               id: 'control',
-              title: '控制区',
+              title: translate({ id: 'marketplace.preview.controlGroup', message: '控制区' }),
               fields: [
                 {
                   id: 'enabled',
-                  label: '显示高级分组',
+                  label: translate({
+                    id: 'marketplace.preview.showAdvancedGroup',
+                    message: '显示高级分组'
+                  }),
                   component: 'Switch',
                   dependents: ['advancedNote']
                 }
@@ -165,13 +208,16 @@ function createBuiltinHandlerPreview(handlerName: string): MarketplacePreviewCom
             },
             {
               id: 'advanced',
-              title: '高级分组',
+              title: translate({ id: 'marketplace.preview.advancedGroup', message: '高级分组' }),
               fields: [
                 {
                   id: 'advancedNote',
-                  label: '高级说明',
+                  label: translate({ id: 'marketplace.preview.advancedNote', message: '高级说明' }),
                   component: 'TextInput',
-                  initialValue: '打开开关后显示',
+                  initialValue: translate({
+                    id: 'marketplace.preview.visibleAfterToggle',
+                    message: '打开开关后显示'
+                  }),
                   effect: (_value: unknown, allValues: Record<string, unknown>) => ({
                     groupsVisible: { advanced: allValues.enabled === true }
                   })
@@ -183,12 +229,25 @@ function createBuiltinHandlerPreview(handlerName: string): MarketplacePreviewCom
       }
 
       const resultByHandler: Record<string, unknown> = {
-        value: '已由 value handler 写入',
+        value: translate({
+          id: 'marketplace.preview.valueWritten',
+          message: '已由 value handler 写入'
+        }),
         visible: true,
         disabled: true,
         readonly: true,
-        formItemProps: { extra: 'formItemProps handler 写入的提示' },
-        componentProps: { placeholder: 'componentProps handler 写入的 placeholder' },
+        formItemProps: {
+          extra: translate({
+            id: 'marketplace.preview.formItemHint',
+            message: 'formItemProps handler 写入的提示'
+          })
+        },
+        componentProps: {
+          placeholder: translate({
+            id: 'marketplace.preview.componentPlaceholder',
+            message: 'componentProps handler 写入的 placeholder'
+          })
+        },
         formProps: { layout: 'horizontal', labelCol: { span: 6 }, wrapperCol: { span: 18 } },
         buttonProps: { type: 'dashed' },
         cardProps: { size: 'small' },
@@ -201,15 +260,22 @@ function createBuiltinHandlerPreview(handlerName: string): MarketplacePreviewCom
         fields: [
           {
             id: 'enabled',
-            label: '触发内置 handler',
+            label: translate({
+              id: 'marketplace.preview.triggerBuiltinHandler',
+              message: '触发内置 handler'
+            }),
             component: 'Switch',
             dependents: ['target']
           },
           {
             id: 'target',
-            label: '目标字段',
+            label: translate({ id: 'marketplace.preview.targetField', message: '目标字段' }),
             component: handlerName === 'readonly' ? 'TextArea' : 'TextInput',
-            initialValue: handlerName === 'visible' ? { visible: false } : '预览字段',
+            initialVisible: handlerName !== 'visible',
+            initialValue: translate({
+              id: 'marketplace.preview.sampleFieldValue',
+              message: '预览字段'
+            }),
             effect: (_value: unknown, allValues: Record<string, unknown>) => {
               if (allValues.enabled !== true) {
                 return handlerName === 'visible' ? { visible: false } : {};
@@ -229,9 +295,18 @@ function createBuiltinHandlerPreview(handlerName: string): MarketplacePreviewCom
 }
 
 const sampleOptions = [
-  { label: '北京研发中心', value: 'beijing-rd' },
-  { label: '上海交付中心', value: 'shanghai-delivery' },
-  { label: '杭州产品团队', value: 'hangzhou-product' }
+  {
+    label: translate({ id: 'marketplace.snippet.search.optionBeijing', message: '北京研发中心' }),
+    value: 'beijing-rd'
+  },
+  {
+    label: translate({ id: 'marketplace.snippet.search.optionShanghai', message: '上海交付中心' }),
+    value: 'shanghai-delivery'
+  },
+  {
+    label: translate({ id: 'marketplace.snippet.search.optionHangzhou', message: '杭州产品团队' }),
+    value: 'hangzhou-product'
+  }
 ];
 
 const SearchSelectField: React.FC<FieldComponentProps> = ({
@@ -243,7 +318,10 @@ const SearchSelectField: React.FC<FieldComponentProps> = ({
   ...restProps
 }) => {
   const [keyword, setKeyword] = useState('');
-  const options = sampleOptions.filter((option) => option.label.includes(keyword.trim()));
+  const normalizedKeyword = keyword.trim().toLocaleLowerCase();
+  const options = sampleOptions.filter((option) =>
+    option.label.toLocaleLowerCase().includes(normalizedKeyword)
+  );
 
   return (
     <Select
@@ -252,7 +330,7 @@ const SearchSelectField: React.FC<FieldComponentProps> = ({
       onChange={onChange}
       onSearch={setKeyword}
       options={options}
-      placeholder="搜索团队"
+      placeholder={translate({ id: 'marketplace.snippet.search.placeholder', message: '搜索团队' })}
       showSearch
       value={value}
       {...restProps}
@@ -261,9 +339,24 @@ const SearchSelectField: React.FC<FieldComponentProps> = ({
 };
 
 const users = [
-  { label: '陈静 / 产品负责人', value: 'chenjing', avatar: '陈' },
-  { label: '李雷 / 前端工程师', value: 'lilei', avatar: '李' },
-  { label: '王敏 / 测试负责人', value: 'wangmin', avatar: '王' }
+  {
+    label: translate({ id: 'marketplace.snippet.user.productOwner', message: '陈静 / 产品负责人' }),
+    value: 'chenjing',
+    avatar: translate({ id: 'marketplace.snippet.user.avatarChen', message: '陈' })
+  },
+  {
+    label: translate({
+      id: 'marketplace.snippet.user.frontendEngineer',
+      message: '李雷 / 前端工程师'
+    }),
+    value: 'lilei',
+    avatar: translate({ id: 'marketplace.snippet.user.avatarLi', message: '李' })
+  },
+  {
+    label: translate({ id: 'marketplace.snippet.user.qaOwner', message: '王敏 / 测试负责人' }),
+    value: 'wangmin',
+    avatar: translate({ id: 'marketplace.snippet.user.avatarWang', message: '王' })
+  }
 ];
 
 const UserPickerField: React.FC<FieldComponentProps> = ({
@@ -285,7 +378,7 @@ const UserPickerField: React.FC<FieldComponentProps> = ({
         </Space>
       )}
       options={users}
-      placeholder="选择负责人"
+      placeholder={translate({ id: 'marketplace.snippet.user.placeholder', message: '选择负责人' })}
       value={value}
       {...restProps}
     />
@@ -301,27 +394,33 @@ interface LineItem {
 
 const editableColumns: ProColumns<LineItem>[] = [
   {
-    title: '项目',
+    title: translate({ id: 'marketplace.snippet.table.project', message: '项目' }),
     dataIndex: 'name',
     width: 160,
     formItemProps: { rules: [{ required: true }] },
-    fieldProps: { placeholder: '项目名称' }
+    fieldProps: {
+      placeholder: translate({ id: 'marketplace.preview.projectName', message: '项目名称' })
+    }
   },
   {
-    title: '数量',
+    title: translate({ id: 'marketplace.snippet.table.quantity', message: '数量' }),
     dataIndex: 'quantity',
     valueType: 'digit',
     width: 92,
     fieldProps: { min: 1, precision: 0 }
   },
   {
-    title: '单价',
+    title: translate({ id: 'marketplace.snippet.table.unitPrice', message: '单价' }),
     dataIndex: 'price',
     valueType: 'money',
     width: 112,
     fieldProps: { min: 0 }
   },
-  { title: '操作', valueType: 'option', width: 72 }
+  {
+    title: translate({ id: 'marketplace.snippet.table.actions', message: '操作' }),
+    valueType: 'option',
+    width: 72
+  }
 ];
 
 const EditableTableField: React.FC<FieldComponentProps> = ({ value, onChange }) => {
@@ -337,7 +436,10 @@ const EditableTableField: React.FC<FieldComponentProps> = ({ value, onChange }) 
         options={false}
         pagination={false}
         recordCreatorProps={{
-          creatorButtonText: '添加明细',
+          creatorButtonText: translate({
+            id: 'marketplace.snippet.table.addRow',
+            message: '添加明细'
+          }),
           record: () => ({ id: String(Date.now()) })
         }}
         rowKey="id"
@@ -352,16 +454,26 @@ const EditableTableField: React.FC<FieldComponentProps> = ({ value, onChange }) 
 
 const toastHandler: CustomEffectResultHandler = {
   name: 'toast',
-  description: '展示轻量反馈消息',
+  description: translate({
+    id: 'marketplace.snippet.toast.description',
+    message: '展示轻量反馈消息'
+  }),
   canHandle: (key) => key === 'toast',
   handle: (_context, value) => {
-    message.info(typeof value === 'string' ? value : isToastPayload(value) ? value.content : '');
+    if (typeof value === 'string') {
+      message.info(value);
+    } else if (isToastPayload(value)) {
+      message[value.type ?? 'info'](value.content);
+    }
   }
 };
 
 const highlightHandler: CustomEffectResultHandler = {
   name: 'highlight',
-  description: '通过 componentProps 标记字段高亮状态',
+  description: translate({
+    id: 'marketplace.snippet.highlight.description',
+    message: '通过 componentProps 标记字段高亮状态'
+  }),
   canHandle: (key) => key === 'highlight',
   handle: (context, enabled) => {
     context.updateFieldMeta({
@@ -370,7 +482,12 @@ const highlightHandler: CustomEffectResultHandler = {
         style: enabled ? { backgroundColor: '#fffbe6' } : undefined
       },
       formItemProps: {
-        extra: enabled ? '当前字段已触发高亮提示' : undefined
+        extra: enabled
+          ? translate({
+              id: 'marketplace.snippet.highlight.extra',
+              message: '当前字段已触发高亮提示'
+            })
+          : undefined
       }
     });
   }
@@ -378,14 +495,17 @@ const highlightHandler: CustomEffectResultHandler = {
 
 const fieldErrorsHandler: CustomEffectResultHandler = {
   name: 'fieldErrors',
-  description: '把服务端字段错误写入 Ant Design Form',
+  description: translate({
+    id: 'marketplace.snippet.fieldErrors.description',
+    message: '把服务端字段错误写入 Ant Design Form'
+  }),
   canHandle: (key) => key === 'fieldErrors',
   handle: (context, errors) => {
     if (!hasSetFields(context.form) || !isFieldErrorMap(errors)) return;
     context.form.setFields(
       Object.entries(errors).map(([name, errorMessage]) => ({
         name,
-        errors: [String(errorMessage)]
+        errors: Array.isArray(errorMessage) ? errorMessage.map(String) : [String(errorMessage)]
       }))
     );
   }
@@ -405,13 +525,32 @@ function ComponentSnippetPreview({ component }: { component: string }) {
 
   const componentConfig: Record<string, FlatFormConfig> = {
     SearchSelectField: {
-      fields: [{ id: 'team', label: '团队', component: 'SearchSelectField' }]
+      fields: [
+        {
+          id: 'team',
+          label: translate({ id: 'marketplace.snippet.search.fieldLabel', message: '团队' }),
+          component: 'SearchSelectField'
+        }
+      ]
     },
     UserPickerField: {
-      fields: [{ id: 'owner', label: '负责人', component: 'UserPickerField' }]
+      fields: [
+        {
+          id: 'owner',
+          label: translate({ id: 'marketplace.snippet.user.fieldLabel', message: '负责人' }),
+          component: 'UserPickerField'
+        }
+      ]
     },
     EditableTableField: {
-      fields: [{ id: 'items', label: '明细', component: 'EditableTableField', span: 24 }]
+      fields: [
+        {
+          id: 'items',
+          label: translate({ id: 'marketplace.snippet.table.fieldLabel', message: '明细' }),
+          component: 'EditableTableField',
+          span: 24
+        }
+      ]
     }
   };
 
@@ -421,7 +560,14 @@ function ComponentSnippetPreview({ component }: { component: string }) {
       formConfig={componentConfig[component]}
       uiConfig={component === 'EditableTableField' ? { colProps: { span: 24 } } : undefined}
       values={{
-        items: [{ id: '1', name: '设计评审', quantity: 1, price: 800 }]
+        items: [
+          {
+            id: '1',
+            name: translate({ id: 'marketplace.preview.sampleProject', message: '设计评审' }),
+            quantity: 1,
+            price: 800
+          }
+        ]
       }}
     />
   );
@@ -433,16 +579,41 @@ function HandlerSnippetPreview({ handler }: { handler: string }) {
       fields: [
         {
           id: 'trigger',
-          label: '触发消息',
+          label: translate({ id: 'marketplace.preview.triggerMessage', message: '触发消息' }),
           component: 'Switch',
           dependents: ['note']
         },
         {
+          id: 'messageType',
+          label: translate({ id: 'marketplace.preview.messageType', message: '消息类型' }),
+          component: 'Select',
+          initialValue: 'success',
+          componentProps: {
+            options: [
+              { label: 'Info', value: 'info' },
+              { label: 'Success', value: 'success' },
+              { label: 'Warning', value: 'warning' },
+              { label: 'Error', value: 'error' }
+            ]
+          },
+          dependents: ['note']
+        },
+        {
           id: 'note',
-          label: '消息字段',
+          label: translate({ id: 'marketplace.preview.messageField', message: '消息字段' }),
           component: 'TextInput',
           effect: (_value, allValues) =>
-            allValues.trigger === true ? { toast: 'toast handler 已触发' } : {}
+            allValues.trigger === true
+              ? {
+                  toast: {
+                    type: allValues.messageType ?? 'info',
+                    content: translate({
+                      id: 'marketplace.preview.toastTriggered',
+                      message: 'toast handler 已触发'
+                    })
+                  }
+                }
+              : {}
         }
       ]
     },
@@ -450,13 +621,13 @@ function HandlerSnippetPreview({ handler }: { handler: string }) {
       fields: [
         {
           id: 'important',
-          label: '标记重要',
+          label: translate({ id: 'marketplace.preview.markImportant', message: '标记重要' }),
           component: 'Switch',
           dependents: ['summary']
         },
         {
           id: 'summary',
-          label: '摘要',
+          label: translate({ id: 'marketplace.preview.summary', message: '摘要' }),
           component: 'TextInput',
           effect: (_value, allValues) => ({ highlight: allValues.important === true })
         }
@@ -466,16 +637,34 @@ function HandlerSnippetPreview({ handler }: { handler: string }) {
       fields: [
         {
           id: 'validate',
-          label: '模拟服务端错误',
+          label: translate({
+            id: 'marketplace.preview.simulateServerError',
+            message: '模拟服务端错误'
+          }),
           component: 'Switch',
           dependents: ['email']
         },
         {
           id: 'email',
-          label: '邮箱',
+          label: translate({ id: 'marketplace.preview.email', message: '邮箱' }),
           component: 'TextInput',
           effect: (_value, allValues) =>
-            allValues.validate === true ? { fieldErrors: { email: '邮箱已被占用' } } : {}
+            allValues.validate === true
+              ? {
+                  fieldErrors: {
+                    email: [
+                      translate({
+                        id: 'marketplace.snippet.fieldErrors.example',
+                        message: '邮箱已被占用'
+                      }),
+                      translate({
+                        id: 'marketplace.preview.emailDomainHint',
+                        message: '请使用尚未注册的邮箱'
+                      })
+                    ]
+                  }
+                }
+              : {}
         }
       ]
     }

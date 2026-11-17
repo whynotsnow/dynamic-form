@@ -529,6 +529,189 @@
   "marketplace.filters.label": {
     "message": "Extension marketplace categories"
   },
+  "marketplace.card.openDetail": {
+    "message": "View details"
+  },
+  "marketplace.code.optionPending": {
+    "message": "Pending"
+  },
+  "marketplace.code.optionRead": {
+    "message": "Read"
+  },
+  "marketplace.code.sampleText": {
+    "message": "Sample text"
+  },
+  "marketplace.code.sampleValue": {
+    "message": "Sample value"
+  },
+  "marketplace.code.fieldHint": {
+    "message": "Field hint"
+  },
+  "marketplace.code.enterValue": {
+    "message": "Enter a value"
+  },
+  "marketplace.preview.submit": {
+    "message": "Submit"
+  },
+  "marketplace.preview.optionDone": {
+    "message": "Completed"
+  },
+  "marketplace.preview.regionEast": {
+    "message": "East China"
+  },
+  "marketplace.preview.regionNorth": {
+    "message": "North China"
+  },
+  "marketplace.preview.optionEdit": {
+    "message": "Edit"
+  },
+  "marketplace.preview.enterDescription": {
+    "message": "Enter a description"
+  },
+  "marketplace.preview.computedResult": {
+    "message": "Computed result"
+  },
+  "marketplace.preview.controlGroup": {
+    "message": "Controls"
+  },
+  "marketplace.preview.showAdvancedGroup": {
+    "message": "Show advanced group"
+  },
+  "marketplace.preview.advancedGroup": {
+    "message": "Advanced group"
+  },
+  "marketplace.preview.advancedNote": {
+    "message": "Advanced note"
+  },
+  "marketplace.preview.visibleAfterToggle": {
+    "message": "Visible after enabling the switch"
+  },
+  "marketplace.preview.valueWritten": {
+    "message": "Written by the value handler"
+  },
+  "marketplace.preview.formItemHint": {
+    "message": "Hint added by the formItemProps handler"
+  },
+  "marketplace.preview.componentPlaceholder": {
+    "message": "Placeholder added by the componentProps handler"
+  },
+  "marketplace.preview.triggerBuiltinHandler": {
+    "message": "Trigger built-in handler"
+  },
+  "marketplace.preview.targetField": {
+    "message": "Target field"
+  },
+  "marketplace.preview.sampleFieldValue": {
+    "message": "Preview value"
+  },
+  "marketplace.preview.projectName": {
+    "message": "Project name"
+  },
+  "marketplace.preview.triggerMessage": {
+    "message": "Trigger message"
+  },
+  "marketplace.preview.messageField": {
+    "message": "Message field"
+  },
+  "marketplace.preview.messageType": {
+    "message": "Message type"
+  },
+  "marketplace.preview.toastTriggered": {
+    "message": "Toast handler triggered"
+  },
+  "marketplace.preview.markImportant": {
+    "message": "Mark as important"
+  },
+  "marketplace.preview.summary": {
+    "message": "Summary"
+  },
+  "marketplace.preview.simulateServerError": {
+    "message": "Simulate server error"
+  },
+  "marketplace.preview.email": {
+    "message": "Email"
+  },
+  "marketplace.preview.emailDomainHint": {
+    "message": "Use an email address that is not already registered"
+  },
+  "marketplace.preview.sampleProject": {
+    "message": "Design review"
+  },
+  "marketplace.snippet.search.optionBeijing": {
+    "message": "Beijing R&D Center"
+  },
+  "marketplace.snippet.search.optionShanghai": {
+    "message": "Shanghai Delivery Center"
+  },
+  "marketplace.snippet.search.optionHangzhou": {
+    "message": "Hangzhou Product Team"
+  },
+  "marketplace.snippet.search.placeholder": {
+    "message": "Search teams"
+  },
+  "marketplace.snippet.search.fieldLabel": {
+    "message": "Team"
+  },
+  "marketplace.snippet.user.productOwner": {
+    "message": "Chen Jing / Product Owner"
+  },
+  "marketplace.snippet.user.frontendEngineer": {
+    "message": "Lei Li / Frontend Engineer"
+  },
+  "marketplace.snippet.user.qaOwner": {
+    "message": "Wang Min / QA Lead"
+  },
+  "marketplace.snippet.user.avatarChen": {
+    "message": "C"
+  },
+  "marketplace.snippet.user.avatarLi": {
+    "message": "L"
+  },
+  "marketplace.snippet.user.avatarWang": {
+    "message": "W"
+  },
+  "marketplace.snippet.user.placeholder": {
+    "message": "Select an owner"
+  },
+  "marketplace.snippet.user.fieldLabel": {
+    "message": "Owner"
+  },
+  "marketplace.snippet.table.project": {
+    "message": "Item"
+  },
+  "marketplace.snippet.table.quantity": {
+    "message": "Quantity"
+  },
+  "marketplace.snippet.table.unitPrice": {
+    "message": "Unit price"
+  },
+  "marketplace.snippet.table.actions": {
+    "message": "Actions"
+  },
+  "marketplace.snippet.table.addRow": {
+    "message": "Add item"
+  },
+  "marketplace.snippet.table.fieldLabel": {
+    "message": "Line items"
+  },
+  "marketplace.snippet.toast.description": {
+    "message": "Display lightweight feedback messages"
+  },
+  "marketplace.snippet.toast.example": {
+    "message": "Status updated"
+  },
+  "marketplace.snippet.highlight.description": {
+    "message": "Mark an important field through componentProps"
+  },
+  "marketplace.snippet.highlight.extra": {
+    "message": "This field was highlighted by its handler"
+  },
+  "marketplace.snippet.fieldErrors.description": {
+    "message": "Write server-side field errors into Ant Design Form"
+  },
+  "marketplace.snippet.fieldErrors.example": {
+    "message": "This email address is already in use"
+  },
   "marketplace.data.builtinComponent.description": {
     "message": "Built-in field component. Reference it directly in the component field of your form config."
   },

@@ -74,20 +74,20 @@ const builtinHandlerNames = [
 ];
 
 const builtinComponentFieldExtras: Record<string, string> = {
-  SelectField: ", options: [{ label: '待处理', value: 'pending' }]",
-  Select: ", componentProps: { options: [{ label: '待处理', value: 'pending' }] }",
-  CheckboxGroup: ", componentProps: { options: [{ label: '读取', value: 'read' }] }",
-  TextDisplay: ", initialValue: '示例文本'"
+  SelectField: `, options: [{ label: '${translate({ id: 'marketplace.code.optionPending', message: '待处理' })}', value: 'pending' }]`,
+  Select: `, componentProps: { options: [{ label: '${translate({ id: 'marketplace.code.optionPending', message: '待处理' })}', value: 'pending' }] }`,
+  CheckboxGroup: `, componentProps: { options: [{ label: '${translate({ id: 'marketplace.code.optionRead', message: '读取' })}', value: 'read' }] }`,
+  TextDisplay: `, initialValue: '${translate({ id: 'marketplace.code.sampleText', message: '示例文本' })}'`
 };
 
 const builtinHandlerResultExamples: Record<string, string> = {
-  value: "'示例值'",
+  value: `'${translate({ id: 'marketplace.code.sampleValue', message: '示例值' })}'`,
   visible: 'true',
   disabled: 'true',
   readonly: 'true',
   groupsVisible: '{ advanced: true }',
-  formItemProps: "{ extra: '字段提示' }",
-  componentProps: "{ placeholder: '请输入' }",
+  formItemProps: `{ extra: '${translate({ id: 'marketplace.code.fieldHint', message: '字段提示' })}' }`,
+  componentProps: `{ placeholder: '${translate({ id: 'marketplace.code.enterValue', message: '请输入' })}' }`,
   formProps: "{ layout: 'vertical' }",
   buttonProps: "{ type: 'primary' }",
   cardProps: "{ size: 'small' }",
@@ -210,7 +210,7 @@ const copyComponentItems: MarketplaceItem[] = [
       {
         title: translate({ id: 'marketplace.code.formConfigExample', message: 'FormConfig 示例' }),
         language: 'ts',
-        code: `{ id: 'team', label: '团队', component: 'SearchSelectField' }`
+        code: `{ id: 'team', label: '${translate({ id: 'marketplace.snippet.search.fieldLabel', message: '团队' })}', component: 'SearchSelectField' }`
       }
     ]
   },
@@ -241,7 +241,7 @@ const copyComponentItems: MarketplaceItem[] = [
       {
         title: translate({ id: 'marketplace.code.formConfigExample', message: 'FormConfig 示例' }),
         language: 'ts',
-        code: `{ id: 'owner', label: '负责人', component: 'UserPickerField' }`
+        code: `{ id: 'owner', label: '${translate({ id: 'marketplace.snippet.user.fieldLabel', message: '负责人' })}', component: 'UserPickerField' }`
       }
     ]
   },
@@ -272,7 +272,7 @@ const copyComponentItems: MarketplaceItem[] = [
       {
         title: translate({ id: 'marketplace.code.formConfigExample', message: 'FormConfig 示例' }),
         language: 'ts',
-        code: `{ id: 'items', label: '明细', component: 'EditableTableField' }`
+        code: `{ id: 'items', label: '${translate({ id: 'marketplace.snippet.table.fieldLabel', message: '明细' })}', component: 'EditableTableField' }`
       }
     ]
   }
@@ -306,7 +306,7 @@ const copyHandlerItems: MarketplaceItem[] = [
       {
         title: translate({ id: 'marketplace.code.effectResult', message: 'Effect result 示例' }),
         language: 'ts',
-        code: `effect: () => ({ toast: '状态已更新' })`
+        code: `effect: () => ({ toast: { type: 'success', content: '${translate({ id: 'marketplace.snippet.toast.example', message: '状态已更新' })}' } })`
       }
     ]
   },
@@ -366,7 +366,7 @@ const copyHandlerItems: MarketplaceItem[] = [
       {
         title: translate({ id: 'marketplace.code.effectResult', message: 'Effect result 示例' }),
         language: 'ts',
-        code: `effect: () => ({ fieldErrors: { email: '邮箱已被占用' } })`
+        code: `effect: () => ({ fieldErrors: { email: ['${translate({ id: 'marketplace.snippet.fieldErrors.example', message: '邮箱已被占用' })}', '${translate({ id: 'marketplace.preview.emailDomainHint', message: '请使用尚未注册的邮箱' })}'] } })`
       }
     ]
   }

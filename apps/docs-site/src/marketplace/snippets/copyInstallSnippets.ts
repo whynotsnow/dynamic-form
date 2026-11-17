@@ -1,3 +1,5 @@
+import { translate } from '@docusaurus/Translate';
+
 export const searchSelectFieldSource = `import React, { useMemo, useState } from 'react';
 import { Select } from 'antd';
 import type { FieldComponentProps } from '@whynotsnow/dynamic-form';
@@ -8,9 +10,9 @@ interface SearchOption {
 }
 
 const SAMPLE_OPTIONS: SearchOption[] = [
-  { label: '北京研发中心', value: 'beijing-rd' },
-  { label: '上海交付中心', value: 'shanghai-delivery' },
-  { label: '杭州产品团队', value: 'hangzhou-product' }
+  { label: '${translate({ id: 'marketplace.snippet.search.optionBeijing', message: '北京研发中心' })}', value: 'beijing-rd' },
+  { label: '${translate({ id: 'marketplace.snippet.search.optionShanghai', message: '上海交付中心' })}', value: 'shanghai-delivery' },
+  { label: '${translate({ id: 'marketplace.snippet.search.optionHangzhou', message: '杭州产品团队' })}', value: 'hangzhou-product' }
 ];
 
 export const SearchSelectField: React.FC<FieldComponentProps> = ({
@@ -40,7 +42,7 @@ export const SearchSelectField: React.FC<FieldComponentProps> = ({
       filterOption={false}
       onSearch={setKeyword}
       onChange={onChange}
-      placeholder="搜索团队"
+      placeholder="${translate({ id: 'marketplace.snippet.search.placeholder', message: '搜索团队' })}"
       {...restProps}
     />
   );
@@ -51,9 +53,9 @@ import { Avatar, Select, Space } from 'antd';
 import type { FieldComponentProps } from '@whynotsnow/dynamic-form';
 
 const users = [
-  { label: '陈静 / 产品负责人', value: 'chenjing', avatar: '陈' },
-  { label: '李雷 / 前端工程师', value: 'lilei', avatar: '李' },
-  { label: '王敏 / 测试负责人', value: 'wangmin', avatar: '王' }
+  { label: '${translate({ id: 'marketplace.snippet.user.productOwner', message: '陈静 / 产品负责人' })}', value: 'chenjing', avatar: '${translate({ id: 'marketplace.snippet.user.avatarChen', message: '陈' })}' },
+  { label: '${translate({ id: 'marketplace.snippet.user.frontendEngineer', message: '李雷 / 前端工程师' })}', value: 'lilei', avatar: '${translate({ id: 'marketplace.snippet.user.avatarLi', message: '李' })}' },
+  { label: '${translate({ id: 'marketplace.snippet.user.qaOwner', message: '王敏 / 测试负责人' })}', value: 'wangmin', avatar: '${translate({ id: 'marketplace.snippet.user.avatarWang', message: '王' })}' }
 ];
 
 export const UserPickerField: React.FC<FieldComponentProps> = ({
@@ -76,7 +78,7 @@ export const UserPickerField: React.FC<FieldComponentProps> = ({
         </Space>
       )}
       onChange={onChange}
-      placeholder="选择负责人"
+      placeholder="${translate({ id: 'marketplace.snippet.user.placeholder', message: '选择负责人' })}"
       {...restProps}
     />
   );
@@ -94,10 +96,10 @@ interface LineItem {
 }
 
 const columns: ProColumns<LineItem>[] = [
-  { title: '项目', dataIndex: 'name', formItemProps: { rules: [{ required: true }] } },
-  { title: '数量', dataIndex: 'quantity', valueType: 'digit' },
-  { title: '单价', dataIndex: 'price', valueType: 'money' },
-  { title: '操作', valueType: 'option' }
+  { title: '${translate({ id: 'marketplace.snippet.table.project', message: '项目' })}', dataIndex: 'name', formItemProps: { rules: [{ required: true }] } },
+  { title: '${translate({ id: 'marketplace.snippet.table.quantity', message: '数量' })}', dataIndex: 'quantity', valueType: 'digit' },
+  { title: '${translate({ id: 'marketplace.snippet.table.unitPrice', message: '单价' })}', dataIndex: 'price', valueType: 'money' },
+  { title: '${translate({ id: 'marketplace.snippet.table.actions', message: '操作' })}', valueType: 'option' }
 ];
 
 export const EditableTableField: React.FC<FieldComponentProps> = ({
@@ -110,7 +112,8 @@ export const EditableTableField: React.FC<FieldComponentProps> = ({
       value={Array.isArray(value) ? value : []}
       columns={columns}
       recordCreatorProps={{
-        record: () => ({ id: String(Date.now()) })
+      creatorButtonText: '${translate({ id: 'marketplace.snippet.table.addRow', message: '添加明细' })}',
+      record: () => ({ id: String(Date.now()) })
       }}
       editable={{
         type: 'multiple',
@@ -125,16 +128,19 @@ import { message } from 'antd';
 
 export const toastHandler: CustomEffectResultHandler = {
   name: 'toast',
-  description: '展示轻量反馈消息',
+  description: '${translate({ id: 'marketplace.snippet.toast.description', message: '展示轻量反馈消息' })}',
   canHandle: (key) => key === 'toast',
-  validate: (value) => typeof value === 'string' || typeof value?.content === 'string',
+  validate: (value) =>
+    typeof value === 'string' ||
+    (typeof value?.content === 'string' &&
+      (value.type === undefined || ['info', 'success', 'warning', 'error'].includes(value.type))),
   handle: (_context, value) => {
     if (typeof value === 'string') {
       message.info(value);
       return;
     }
 
-    const type = value.type ?? 'info';
+    const type = ['info', 'success', 'warning', 'error'].includes(value.type) ? value.type : 'info';
     message[type](value.content);
   }
 };`;
@@ -143,7 +149,7 @@ export const highlightHandlerSource = `import type { CustomEffectResultHandler }
 
 export const highlightHandler: CustomEffectResultHandler = {
   name: 'highlight',
-  description: '通过 componentProps 标记字段高亮状态',
+  description: '${translate({ id: 'marketplace.snippet.highlight.description', message: '通过 componentProps 标记字段高亮状态' })}',
   canHandle: (key) => key === 'highlight',
   validate: (value) => typeof value === 'boolean',
   handle: (context, enabled) => {
@@ -153,7 +159,7 @@ export const highlightHandler: CustomEffectResultHandler = {
         style: enabled ? { backgroundColor: '#fffbe6' } : undefined
       },
       formItemProps: {
-        extra: enabled ? '当前字段已触发高亮提示' : undefined
+          extra: enabled ? '${translate({ id: 'marketplace.snippet.highlight.extra', message: '当前字段已触发高亮提示' })}' : undefined
       }
     });
   }
@@ -163,7 +169,7 @@ export const fieldErrorsHandlerSource = `import type { CustomEffectResultHandler
 
 export const fieldErrorsHandler: CustomEffectResultHandler = {
   name: 'fieldErrors',
-  description: '把服务端字段错误写入 Ant Design Form',
+  description: '${translate({ id: 'marketplace.snippet.fieldErrors.description', message: '把服务端字段错误写入 Ant Design Form' })}',
   canHandle: (key) => key === 'fieldErrors',
   validate: (value) => value != null && typeof value === 'object',
   handle: (context, errors) => {
