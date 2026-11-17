@@ -1,8 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Space, Button, message, Form } from 'antd';
+import type { FormInstance } from 'antd';
 import type { RuleObject } from 'antd/es/form';
 import DynamicForm from '@/index';
 import { customComponents } from './customComponents';
+import { validateEditTableRows } from './customComponents/CustomEditTable';
 import { FormConfig } from '@/exports';
 import { exampleHandlers } from './customHandlers';
 import { mockFetchFormData } from '../packages/dynamic-form/src/shared/utils';
@@ -60,8 +62,12 @@ const futureDate = (daysFromToday: number) => {
 const cloneDemoValues = (values: DemoFormValues): DemoFormValues =>
   JSON.parse(JSON.stringify(values)) as DemoFormValues;
 
-const FormValidationDemo: React.FC = () => {
-  const [form] = Form.useForm();
+const FormValidationDemo: React.FC<{ form?: FormInstance; hideSubmitButton?: boolean }> = ({
+  form: externalForm,
+  hideSubmitButton = false
+}) => {
+  const [localForm] = Form.useForm();
+  const form = externalForm ?? localForm;
 
   const formConfig = useMemo<FormConfig>(
     () => ({
@@ -129,7 +135,10 @@ const FormValidationDemo: React.FC = () => {
               id: 'userTable',
               label: '用户信息表格',
               component: 'CustomEditTable',
-              rules: [{ required: true, message: '至少需要添加一行数据' }],
+              rules: [
+                { required: true, message: '至少需要添加一行数据' },
+                { validator: validateEditTableRows }
+              ],
               formItemProps: {
                 labelCol: { span: 24 },
                 wrapperCol: { span: 24 }
@@ -157,17 +166,6 @@ const FormValidationDemo: React.FC = () => {
   const handleSubmit = (values: DemoFormValues) => {
     console.log('表单数据:', values);
     message.success('表单提交成功！');
-  };
-
-  const handleValidate = async () => {
-    try {
-      const values = await form.validateFields();
-      console.log('校验通过:', values);
-      message.success('所有字段校验通过！');
-    } catch (error) {
-      console.log('校验失败:', error);
-      message.error('表单校验失败，请检查输入');
-    }
   };
 
   const loadInvalidExample = () => {
@@ -288,23 +286,15 @@ const FormValidationDemo: React.FC = () => {
     <div>
       <Space direction="vertical" size="large" style={{ width: '100%' }}>
         <Space>
-          <Button type="primary" onClick={handleValidate}>
-            校验所有字段
-          </Button>
           <Button onClick={loadInvalidExample}>填入校验错误示例</Button>
-          <Button
-            onClick={() => {
-              form.resetFields();
-              form.setFieldsValue(cloneDemoValues(initialValues));
-            }}
-          >
-            重置表单
-          </Button>
         </Space>
 
         <DynamicForm
           form={form}
           formConfig={formConfig}
+          uiConfig={
+            hideSubmitButton ? { submitAreaProps: { style: { display: 'none' } } } : undefined
+          }
           onSubmit={(values) => {
             const submittedValues = values as DemoFormValues;
             handleSubmit(submittedValues);

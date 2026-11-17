@@ -1,8 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Space, Button, message, Form } from 'antd';
+import type { FormInstance } from 'antd';
 import type { RuleObject } from 'antd/es/form';
 import DynamicForm from '@/index';
 import { customComponents } from './customComponents';
+import { validateEditTableRows } from './customComponents/CustomEditTable';
 import { FormConfig } from '@/exports';
 import { exampleHandlers } from './customHandlers';
 import { mockFetchFormData } from '../packages/dynamic-form/src/shared/utils';
@@ -60,8 +62,12 @@ const futureDate = (daysFromToday: number) => {
 const cloneDemoValues = (values: DemoFormValues): DemoFormValues =>
   JSON.parse(JSON.stringify(values)) as DemoFormValues;
 
-const FormValidationDemo: React.FC = () => {
-  const [form] = Form.useForm();
+const FormValidationDemo: React.FC<{ form?: FormInstance; hideSubmitButton?: boolean }> = ({
+  form: externalForm,
+  hideSubmitButton = false
+}) => {
+  const [localForm] = Form.useForm();
+  const form = externalForm ?? localForm;
 
   const formConfig = useMemo<FormConfig>(
     () => ({
@@ -129,7 +135,10 @@ const FormValidationDemo: React.FC = () => {
               id: 'userTable',
               label: '用户信息表格',
               component: 'CustomEditTable',
-              rules: [{ required: true, message: '至少需要添加一行数据' }],
+              rules: [
+                { required: true, message: '至少需要添加一行数据' },
+                { validator: validateEditTableRows }
+              ],
               formItemProps: {
                 labelCol: { span: 24 },
                 wrapperCol: { span: 24 }

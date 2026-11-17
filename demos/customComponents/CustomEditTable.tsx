@@ -25,21 +25,35 @@ const toEditTableRows = (input: unknown): EditTableRow[] => {
 
 const validateEditTableRow = (row: EditTableRow): EditErrors => {
   const errors: EditErrors = {};
+  const name = typeof row.name === 'string' ? row.name : '';
+  const age = typeof row.age === 'string' ? row.age : '';
+  const address = typeof row.address === 'string' ? row.address : '';
+  const email = typeof row.email === 'string' ? row.email : '';
+  const phone = typeof row.phone === 'string' ? row.phone : '';
+  const status = typeof row.status === 'string' ? row.status : '';
 
-  if (!row.name.trim()) errors.name = '请输入姓名';
-  if (!row.age.trim()) errors.age = '请输入年龄';
-  else if (!/^[0-9]+$/.test(row.age)) errors.age = '年龄必须是数字';
-  else if (Number(row.age) > 150) errors.age = '年龄必须在0-150之间';
-  if (!row.address.trim()) errors.address = '请输入地址';
-  if (!row.email.trim()) errors.email = '请输入邮箱';
-  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(row.email)) {
+  if (!name.trim()) errors.name = '请输入姓名';
+  if (!age.trim()) errors.age = '请输入年龄';
+  else if (!/^[0-9]+$/.test(age)) errors.age = '年龄必须是数字';
+  else if (Number(age) > 150) errors.age = '年龄必须在0-150之间';
+  if (!address.trim()) errors.address = '请输入地址';
+  if (!email.trim()) errors.email = '请输入邮箱';
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     errors.email = '邮箱格式不正确';
   }
-  if (!row.phone.trim()) errors.phone = '请输入电话';
-  else if (!/^1[3-9]\d{9}$/.test(row.phone)) errors.phone = '请输入有效的 11 位手机号';
-  if (!row.status) errors.status = '请选择状态';
+  if (!phone.trim()) errors.phone = '请输入电话';
+  else if (!/^1[3-9]\d{9}$/.test(phone)) errors.phone = '请输入有效的 11 位手机号';
+  if (!status) errors.status = '请选择状态';
 
   return errors;
+};
+
+export const validateEditTableRows = async (_rule: unknown, value: unknown): Promise<void> => {
+  const errors = toEditTableRows(value).flatMap((row) => Object.values(validateEditTableRow(row)));
+
+  if (errors.length > 0) {
+    throw new Error(errors[0]);
+  }
 };
 
 const CustomEditTable: React.FC<FieldComponentProps> = ({
@@ -76,8 +90,13 @@ const CustomEditTable: React.FC<FieldComponentProps> = ({
 
   // 监听表单值变化，保持 value/onChange 兼容性
   useEffect(() => {
-    if (value !== undefined) {
-      setDataSource(toEditTableRows(value));
+    const nextRows = toEditTableRows(value);
+    setDataSource(nextRows);
+
+    if (nextRows.length === 0) {
+      setEditableKeys([]);
+      setEditSnapshots({});
+      setEditErrors({});
     }
   }, [value]);
 
