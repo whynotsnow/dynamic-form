@@ -35,8 +35,6 @@ const createIsolatedSiteDirectory = async (locale) => {
   temporarySiteDirectories.push(directory);
 
   for (const entry of [
-    'docs',
-    'i18n',
     'node_modules',
     'package.json',
     'sidebars.ts',
@@ -77,7 +75,9 @@ const startLocale = async ({ locale, port }) => {
           ? {
               SITE_URL: localLocaleUrls[locale],
               SITE_URL_ZH_CN: localLocaleUrls['zh-CN'],
-              SITE_URL_EN: localLocaleUrls.en
+              SITE_URL_EN: localLocaleUrls.en,
+              SITE_DOCS_PATH: path.join(siteDirectory, 'docs'),
+              SITE_I18N_PATH: path.join(siteDirectory, 'i18n')
             }
           : {}),
         WATCHPACK_POLLING: 'true'

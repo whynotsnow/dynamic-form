@@ -25,6 +25,7 @@ const config: Config = {
   },
 
   i18n: {
+    path: process.env.SITE_I18N_PATH ?? 'i18n',
     defaultLocale: 'zh-CN',
     locales: ['zh-CN', 'en'],
     localeConfigs: {
@@ -44,7 +45,7 @@ const config: Config = {
       'classic',
       {
         docs: {
-          path: 'docs',
+          path: process.env.SITE_DOCS_PATH ?? 'docs',
           routeBasePath: 'docs',
           sidebarPath: './sidebars.ts'
         },
