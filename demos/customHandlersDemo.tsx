@@ -151,7 +151,7 @@ const mockFetchFormData = (): Promise<DemoFormValues> => {
         // status: 'ACTIVE',
         status: '',
         age: 10,
-        email: 'whynotsnow@163.com'
+        email: 'demo@example.com'
       });
     }, 800);
   });

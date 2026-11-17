@@ -213,7 +213,7 @@ const CustomComponentsDemo: React.FC = () => {
         category: 'tech',
         showExtra: true,
         quantity: 88,
-        email: 'whynotsnow@163.com',
+        email: 'demo@example.com',
         satisfaction: 4,
         themeColor: '#10adaa',
         description: '阿斯顿发阿斯顿发SA',
