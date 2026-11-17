@@ -445,6 +445,12 @@
   "marketplace.card.dependencies": {
     "message": "Dependencies"
   },
+  "marketplace.card.builtinSummary": {
+    "message": "Built-in Features"
+  },
+  "marketplace.card.codeSummary": {
+    "message": "Code snippets: {count}"
+  },
   "marketplace.card.preview": {
     "message": "Preview"
   },
