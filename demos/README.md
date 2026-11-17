@@ -38,9 +38,11 @@ const App = () => {
 
 ## docs-site 文案语言
 
-- docs-site 编译时会将启用的 Demo 展示文案匹配到 `demoI18n.catalog.json`，并注入 `useDemoT` 翻译调用；Vite 人工验证页面不经过这段转换。
-- 只为用户可见的标签、提示、按钮、选项和说明添加映射。字段 ID、提交 key、枚举存储值保持原样；示例表单里的业务数据也保持原值。
-- 转换配置位于 `apps/docs-site/docusaurus.config.ts`，AST loader 位于 `apps/docs-site/loaders/demoI18n.cjs`。源码展示使用 `demoSources.json` 的独立快照，不会显示编译器注入的 import 或翻译调用。
+- docs-site 编译时会将启用的 Demo 展示文案匹配到 `demoI18n/` 下的分组文案表，并注入 `useDemoT` 翻译调用；Vite 人工验证页面不经过这段转换。
+- 只为用户可见的标签、提示、按钮、选项和说明添加映射。字段 ID、提交 key、代码枚举值保持原样；明确列入样例数据映射的预填内容会按 locale 显示并参与对应语言的提交示例。
+- `demoI18n/shared.json` 维护跨 Demo 共用文案，`demoI18n/demos/` 按 Demo 维护页面文案，`demoI18n/data/` 维护会显示在表单中的样例数据。动态联动文案仍应加入对应 Demo 的文案表。
+- 转换配置位于 `apps/docs-site/docusaurus.config.ts`；AST loader 入口位于 `apps/docs-site/loaders/demoI18n.cjs`，AST 工具和各类转换器位于同名子目录。源码展示按 Demo 清单引用独立的逐文件快照，并提供中英文版本，不会显示编译器注入的 import 或翻译调用。
+- 英文站会将 catalog 明确列出的预填样例值转换为英文，因此 Demo 表单当前展示值和提交示例数据会随站点 locale 一致；选项展示 label 和中文存储值会配套转换，代码枚举值保持稳定。
 
 ## 文件结构
 
@@ -50,7 +52,13 @@ demos/
 ├── DemoLoading.tsx
 ├── DemoSelector.tsx
 ├── demoRegistry.tsx
-├── demoSources.json
+├── demoSources/
+│   ├── index.json
+│   ├── index.ts
+│   ├── raw-source.d.ts
+│   └── files/
+│       ├── zh-CN/
+│       └── en/
 ├── storeBoundaryDemo.tsx
 ├── customHandlers.ts
 ├── customHandlersDemo.tsx
@@ -72,8 +80,8 @@ demos/
 ## 维护规则
 
 - 新增 demo 时，优先添加到 `demoRegistry.tsx`；`DemoSelector` 会从该注册表渲染演示。
-- docs-site 的 Demo 源码展示由 `demoSources.json` 手动维护。`sourceFiles` 包含 demo 主入口和业务逻辑源码，用文件 tabs 切换；`githubDemoPath` 和 `relatedComponents` 提供当前 demo 与其自定义子组件的 GitHub 源码链接，不作为源码 tab。
-- `demoSources.json` 是展示用静态快照，不会在构建时自动读取组件文件；修改 demo 后应主动同步源码快照和 GitHub 路径信息，避免展示的代码与运行效果不一致。
+- docs-site 的 Demo 源码展示由 `demoSources/index.json` 维护 Demo 文件清单和 GitHub 链接；源码快照以可直接编辑的纯文本保存在 `demoSources/files/<locale>/<文件名>.tsx.txt`，`index.ts` 将对应语言文件装配到 Demo 清单中。相同共享文件可以被多个 Demo 引用。JSON 只保存索引和展示元数据，不存转义后的代码正文。
+- 源码快照是展示用静态副本，不会在站点构建时自动读取组件文件；修改 Demo 后应同步更新对应文件快照的两种语言，并检查对应 Demo 清单。
 - demo 级 effect handler 初始化统一使用 `useDemoInitHandlers`，保持默认配置一致。
 - 页面级 demo 文件名应与主要职责一致，并使用 `*Demo.tsx` 后缀。
 - 本 README 需要与 `DemoSelector` 实际暴露的文件和 key 保持同步。
