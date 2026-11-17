@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext } from 'react';
-import demoI18nCatalog from './demoI18n.catalog.json';
+import { demoMessages, demoSampleValues } from './demoI18n/index';
 
 export type DemoLocale = 'zh-CN' | 'en';
 export type DemoTranslator = (zh: string, en: string) => string;
@@ -32,7 +32,33 @@ const displayPropertyNames = new Set([
   'unit'
 ]);
 const translatedConfigCache = new WeakMap<object, WeakMap<DemoTranslator, unknown>>();
-const sharedMessages = demoI18nCatalog.sharedMessages as Record<string, string>;
+const translatedValuesCache = new WeakMap<object, WeakMap<DemoTranslator, unknown>>();
+const translateDisplayString = (value: string, translate: DemoTranslator): string => {
+  const english = demoMessages[value] ?? demoSampleValues[value];
+  return english ? translate(value, english) : value;
+};
+
+export const translateDemoValues = <T,>(value: T, translate: DemoTranslator): T => {
+  if (typeof value === 'string') return translateDisplayString(value, translate) as T;
+  if (Array.isArray(value)) return value.map((item) => translateDemoValues(item, translate)) as T;
+  if (!value || typeof value !== 'object') return value;
+
+  const existingTranslations = translatedValuesCache.get(value);
+  if (existingTranslations?.has(translate)) {
+    return existingTranslations.get(translate) as T;
+  }
+
+  const prototype = Object.getPrototypeOf(value);
+  if (prototype !== Object.prototype && prototype !== null) return value;
+
+  const translated = Object.fromEntries(
+    Object.entries(value).map(([key, entry]) => [key, translateDemoValues(entry, translate)])
+  ) as T;
+  const translations = existingTranslations ?? new WeakMap<DemoTranslator, unknown>();
+  translations.set(translate, translated);
+  if (!existingTranslations) translatedValuesCache.set(value, translations);
+  return translated;
+};
 
 export const translateDemoConfig = <T,>(value: T, translate: DemoTranslator): T => {
   if (!value || typeof value !== 'object') return value;
@@ -56,7 +82,16 @@ export const translateDemoConfig = <T,>(value: T, translate: DemoTranslator): T 
   const translated = Object.fromEntries(
     Object.entries(value).map(([key, entry]) => {
       if (displayPropertyNames.has(key) && typeof entry === 'string') {
-        return [key, sharedMessages[entry] ? translate(entry, sharedMessages[entry]) : entry];
+        return [key, translateDisplayString(entry, translate)];
+      }
+      if (key === 'value' && typeof entry === 'string' && demoSampleValues[entry]) {
+        return [key, translate(entry, demoSampleValues[entry])];
+      }
+      if (key === 'initialValue' && typeof entry === 'function') {
+        return [key, (...args: unknown[]) => translateDemoValues(entry(...args), translate)];
+      }
+      if (key === 'effect' && typeof entry === 'function') {
+        return [key, (...args: unknown[]) => translateDemoConfig(entry(...args), translate)];
       }
       return [key, translateDemoConfig(entry, translate)];
     })

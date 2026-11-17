@@ -1,0 +1,30 @@
+{
+  "messages": {
+    "工单标题": "Ticket title",
+    "必填": "Required",
+    "申请人": "Requester",
+    "工单状态": "Ticket status",
+    "待处理": "Open",
+    "处理中": "In progress",
+    "已解决": "Resolved",
+    "动态样式": "Dynamic styling",
+    "工单优先级": "Ticket priority",
+    "🎯 工单优先级": "🎯 Ticket priority",
+    "高": "High",
+    "中": "Medium",
+    "低": "Low",
+    "默认": "Default",
+    "问题描述": "Issue description",
+    "详细描述": "Details",
+    "可选": "Optional",
+    "提交表单": "Submit form"
+  },
+  "priorityMessages": {
+    "🔥 高优先级": "🔥 High priority",
+    "重要": "Important",
+    "🧊 低优先级": "🧊 Low priority",
+    "次要": "Minor",
+    "⭐ 中优先级": "⭐ Medium priority",
+    "一般": "Normal"
+  }
+}

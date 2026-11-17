@@ -1,0 +1,8 @@
+{
+  "处理器初始化成功": "Handlers initialized successfully",
+  "未激活": "Inactive",
+  "激活": "Active",
+  "请输入有效的邮箱地址": "Enter a valid email address",
+  "邮箱备注": "Email note",
+  "邮箱有效时显示；隐藏时不会提交旧值，再显示时会恢复。": "Shown when the email is valid; hidden values are omitted from submission and restored when shown again."
+}

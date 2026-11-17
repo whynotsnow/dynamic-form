@@ -52,6 +52,15 @@ const CustomEditTable: React.FC<FieldComponentProps> = ({
   const [editableKeys, setEditableKeys] = React.useState<React.Key[]>([]);
   const [editSnapshots, setEditSnapshots] = React.useState<Record<string, EditTableRow | null>>({});
   const [editErrors, setEditErrors] = React.useState<Record<string, EditErrors>>({});
+  const statusOptions = [
+    { label: '活跃', value: 'active' },
+    { label: '非活跃', value: 'inactive' },
+    { label: '暂停', value: 'paused' }
+  ];
+  const displayValue = (row: EditTableRow, fieldName: EditableField) => {
+    if (fieldName !== 'status') return row[fieldName] || '—';
+    return statusOptions.find((option) => option.value === row.status)?.label ?? row.status;
+  };
   const screens = Grid.useBreakpoint();
   const isNarrowScreen = !screens.lg;
   const previousLayout = useRef(isNarrowScreen);
@@ -196,18 +205,14 @@ const CustomEditTable: React.FC<FieldComponentProps> = ({
     const error = editErrors[String(row.key)]?.[fieldName];
     const isEditing = editableKeys.includes(row.key);
 
-    if (!isEditing) return row[fieldName] || '—';
+    if (!isEditing) return displayValue(row, fieldName);
 
     const control =
       fieldName === 'status' ? (
         <Select
           size="small"
           value={row.status}
-          options={[
-            { label: '活跃', value: 'active' },
-            { label: '非活跃', value: 'inactive' },
-            { label: '暂停', value: 'paused' }
-          ]}
+          options={statusOptions}
           onChange={(nextValue) => updateField(row.key, 'status', nextValue)}
         />
       ) : (
@@ -339,7 +344,7 @@ const CustomEditTable: React.FC<FieldComponentProps> = ({
                 ) : (
                   <div>
                     <div className={styles.mobileLabel}>{label}</div>
-                    <div className={styles.mobileValue}>{row[fieldName] || '—'}</div>
+                    <div className={styles.mobileValue}>{displayValue(row, fieldName)}</div>
                   </div>
                 )}
               </div>
@@ -423,11 +428,7 @@ const CustomEditTable: React.FC<FieldComponentProps> = ({
                     <Select
                       size="small"
                       value={row.status}
-                      options={[
-                        { label: '活跃', value: 'active' },
-                        { label: '非活跃', value: 'inactive' },
-                        { label: '暂停', value: 'paused' }
-                      ]}
+                      options={statusOptions}
                       onChange={(nextValue) => updateField(row.key, 'status', nextValue)}
                     />
                   )}

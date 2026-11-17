@@ -1,0 +1,20 @@
+{
+  "helperFunctions": [
+    "getConfig",
+    "getEmailNoteDisplayEffect"
+  ],
+  "messages": {
+    "姓名": "Name",
+    "年龄": "Age",
+    "邮箱": "Email",
+    "邮箱备注": "Email note",
+    "状态": "Status",
+    "邮箱有效时显示；隐藏时不会提交旧值，再显示时会恢复。": "Shown when email is valid; hidden fields are omitted from submission and restored when visible.",
+    "请输入有效的邮箱地址": "Enter a valid email address",
+    "激活": "Active",
+    "未激活": "Inactive",
+    "处理器初始化成功": "Handlers initialized successfully",
+    "成功注册了 {{registeredCount}} 个处理器": "Successfully registered {{registeredCount}} handlers",
+    "提交表单": "Submit form"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "请输入{{field.label}}": "Enter {{field.label}}",
+  "个人简介": "Personal profile",
+  "扩展示例": "Extension example",
+  "推荐": "Recommended",
+  "用户名": "Username",
+  "用户名将用于系统登录和显示": "The username is used for sign-in and display",
+  "请输入用户名": "Enter a username",
+  "🚀 提交表单": "🚀 Submit form"
+}
