@@ -1,5 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import 'antd/dist/reset.css';
+import { ConfigProvider } from 'antd';
+import enUS from 'antd/locale/en_US';
+import zhCN from 'antd/locale/zh_CN';
+import dayjs from 'dayjs';
+import 'dayjs/locale/en';
+import 'dayjs/locale/zh-cn';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { translate } from '@docusaurus/Translate';
 import Heading from '@theme/Heading';
 import {
@@ -12,6 +19,7 @@ import {
 } from '../../../../demos/demoRegistry';
 import DemoWrapper, { type DemoGuideItem } from './DemoWrapper';
 import { DemoSubmitResultContext } from '../../../../demos/useDemoSubmitResult';
+import { DemoI18nProvider } from '../../../../demos/demoI18n';
 import styles from './DemoGalleryClient.module.css';
 
 const DEFAULT_DEMO: DemoType = 'storeBoundary';
@@ -306,6 +314,9 @@ class DemoErrorBoundary extends React.Component<DemoErrorBoundaryProps, DemoErro
 }
 
 export default function DemoGalleryClient(): React.JSX.Element {
+  const { i18n } = useDocusaurusContext();
+  const locale = i18n.currentLocale === 'en' ? 'en' : 'zh-CN';
+  dayjs.locale(locale === 'en' ? 'en' : 'zh-cn');
   const [currentDemo, setCurrentDemo] = useState<DemoType>(() => readDemoFromUrl());
   const [reservedContentHeight, setReservedContentHeight] = useState(getInitialDemoContentHeight);
   const demoEntries = useMemo(
@@ -400,9 +411,13 @@ export default function DemoGalleryClient(): React.JSX.Element {
             title={currentDemoText.title}
           >
             <DemoErrorBoundary demoTitle={currentDemoText.title}>
-              <DemoSubmitResultContext.Provider value={submitResultMessages}>
-                <CurrentDemo />
-              </DemoSubmitResultContext.Provider>
+              <ConfigProvider locale={locale === 'en' ? enUS : zhCN}>
+                <DemoI18nProvider locale={locale}>
+                  <DemoSubmitResultContext.Provider value={submitResultMessages}>
+                    <CurrentDemo />
+                  </DemoSubmitResultContext.Provider>
+                </DemoI18nProvider>
+              </ConfigProvider>
             </DemoErrorBoundary>
           </DemoWrapper>
         </section>

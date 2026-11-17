@@ -24,7 +24,11 @@ const config: Config = {
 
   i18n: {
     defaultLocale: 'zh-CN',
-    locales: ['zh-CN', 'en']
+    locales: ['zh-CN', 'en'],
+    localeConfigs: {
+      'zh-CN': { label: '简体中文' },
+      en: { label: 'English' }
+    }
   },
 
   presets: [
@@ -65,6 +69,20 @@ const config: Config = {
             },
             watchOptions: {
               ignored: ['**/node_modules/**', '**/build/**', '**/.docusaurus/**', '**/dist/**']
+            },
+            module: {
+              rules: [
+                {
+                  test: /\.(tsx|ts)$/,
+                  include: [path.resolve(__dirname, '../../demos')],
+                  enforce: 'pre',
+                  use: [
+                    {
+                      loader: path.resolve(__dirname, './loaders/demoI18n.cjs')
+                    }
+                  ]
+                }
+              ]
             }
           };
         }

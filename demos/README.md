@@ -36,6 +36,12 @@ const App = () => {
 };
 ```
 
+## docs-site 文案语言
+
+- docs-site 编译时会将启用的 Demo 展示文案匹配到 `demoI18n.catalog.json`，并注入 `useDemoT` 翻译调用；Vite 人工验证页面不经过这段转换。
+- 只为用户可见的标签、提示、按钮、选项和说明添加映射。字段 ID、提交 key、枚举存储值保持原样；示例表单里的业务数据也保持原值。
+- 转换配置位于 `apps/docs-site/docusaurus.config.ts`，AST loader 位于 `apps/docs-site/loaders/demoI18n.cjs`。源码展示使用 `demoSources.json` 的独立快照，不会显示编译器注入的 import 或翻译调用。
+
 ## 文件结构
 
 ```text

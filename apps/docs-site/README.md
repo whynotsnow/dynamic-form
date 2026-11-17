@@ -18,6 +18,8 @@ pnpm run site:start:locales # 同时启动中英文站点，分别使用端口 3
 pnpm run site:build  # 从仓库根目录构建站点
 ```
 
+根目录的启动命令会为每个 locale 创建独立的临时站点目录和 Docusaurus 生成目录，因此可以并行运行且不会互相覆盖。
+
 也可以在 workspace 内运行：
 
 ```bash
