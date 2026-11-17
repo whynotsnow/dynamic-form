@@ -116,7 +116,7 @@ const paths = [
 ];
 
 export default function Home(): React.JSX.Element {
-  const workflowImage = useBaseUrl('/img/dynamic-form-workflow.png');
+  const workflowImage = useBaseUrl('/img/dynamic-form-workflow-optimized.png');
 
   return (
     <Layout
