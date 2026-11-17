@@ -39,8 +39,8 @@ function hasRepeatableAncestor(containerId: string, state: FormState): boolean {
 }
 
 /**
- * Form.List uses runtime row indices, so clearing its child field name paths cannot remove its values.
- * Clear and restore the list at its container path as one participation unit instead.
+ * Form.List 使用运行时行索引，逐个清理子字段的 name path 无法移除列表值。
+ * 应在 container 路径整体清空和恢复列表。
  */
 export function synchronizeRepeatableContainerParticipation(
   formAdapter: DynamicFormFormAdapter,

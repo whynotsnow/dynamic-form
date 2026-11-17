@@ -4,13 +4,21 @@ This page explains what changed for form users in each release and whether exist
 
 ## Current Version
 
-The current version is DynamicForm 4.2.2. Continue using `@whynotsnow/dynamic-form` for regular React forms. Install `@whynotsnow/dynamic-form-core` separately only when you need to validate or convert config before rendering a form.
+The current version is DynamicForm 4.2.3. Continue using `@whynotsnow/dynamic-form` for regular React forms. Install `@whynotsnow/dynamic-form-core` separately only when you need to validate or convert config before rendering a form.
 
 ## Release Timeline
 
-### 4.2.2
+### 4.2.3 - 2026-11-17
 
-- Improves types and input checks related to form effects.
+- Fixes source-field connections for compiled field, group, and container rules, including conditional group and container visibility.
+- Clears an entire repeatable container from submitted values while hidden and restores its rows when shown again.
+- Adds business context and submitted-data dialogs to demos while keeping the displayed source in sync.
+
+Related topics: [Rule Engine](./rule-engine.md), [Runtime Layer](./runtime-layer.md), [Component Usage Guide](./development.md).
+
+### 4.2.2 - 2026-11-16
+
+- Moves the form-effect runtime to `@whynotsnow/hooks` and improves related types and input checks.
 - Adds the recommended `FormChainEffectWrapper` name while keeping the older name available; existing code using it does not need an immediate change.
 - Keeps public types for field values, form instances, component props, and handler callbacks compatible. Existing form config does not need to migrate.
 

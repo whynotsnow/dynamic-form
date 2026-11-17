@@ -32,7 +32,7 @@ React/AntD 兼容包：
 调整版本时使用：
 
 ```bash
-pnpm run version:sync -- 4.2.1
+pnpm run version:sync -- <version>
 ```
 
 该脚本会同步根 `package.json`、两个发布包的 `package.json`、`@whynotsnow/dynamic-form` 对 core 的依赖版本和 `pnpm-lock.yaml` 中对应 specifier。
@@ -72,3 +72,7 @@ pnpm run release:publish
 ## Tag
 
 版本 tag 采用 `v` 前缀，例如 `v3.2.0`。
+
+## 与文档站同步发布
+
+若站点文档说明了本次新增或修复的包行为，先完成 core 和 React/AntD 包发布，再推送包含站点更新的 `main` 提交触发 Pages 部署。站点的构建和部署步骤见 [docs-site README](../apps/docs-site/README.md)。

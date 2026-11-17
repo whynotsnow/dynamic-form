@@ -146,6 +146,11 @@ test('compileFormConfig compiles module and instance rules into field effect and
   const registry = new ModuleRegistryManager();
 
   registry.register({
+    type: 'SourceField',
+    createConfig: () => ({ id: 'source', component: 'TextInput' })
+  });
+
+  registry.register({
     type: 'CompanyName',
     dependencies: ['legacyDependency'],
     effect: () => ({ visible: false, disabled: false }),
@@ -165,6 +170,8 @@ test('compileFormConfig compiles module and instance rules into field effect and
   const compiled = compileFormConfig(
     {
       fields: [
+        { type: 'SourceField', id: 'type' },
+        { type: 'SourceField', id: 'locked' },
         {
           type: 'CompanyName',
           id: 'companyName',
@@ -180,9 +187,11 @@ test('compileFormConfig compiles module and instance rules into field effect and
     { registry }
   );
 
-  const [field] = compiled.formConfig.fields;
+  const [typeField, lockedField, field] = compiled.formConfig.fields;
 
-  assert.deepEqual(field.dependents, ['legacyDependency', 'region', 'type', 'locked']);
+  assert.deepEqual(field.dependents, ['legacyDependency', 'region']);
+  assert.deepEqual(typeField.dependents, ['companyName']);
+  assert.deepEqual(lockedField.dependents, ['companyName']);
   assert.deepEqual(field.effect(undefined, { type: 'company', locked: true }), {
     visible: true,
     disabled: true
@@ -203,6 +212,7 @@ test('compileFormConfig models one source affecting multiple fields as multiple 
   const compiled = compileFormConfig(
     {
       fields: [
+        { type: 'TextRuleField', id: 'customerType' },
         {
           type: 'TextRuleField',
           id: 'companyName',
@@ -228,10 +238,11 @@ test('compileFormConfig models one source affecting multiple fields as multiple 
     { registry }
   );
 
-  const [companyName, taxNo] = compiled.formConfig.fields;
+  const [customerType, companyName, taxNo] = compiled.formConfig.fields;
 
-  assert.deepEqual(companyName.dependents, ['customerType']);
-  assert.deepEqual(taxNo.dependents, ['customerType']);
+  assert.deepEqual(customerType.dependents, ['companyName', 'taxNo']);
+  assert.deepEqual(companyName.dependents, []);
+  assert.deepEqual(taxNo.dependents, []);
   assert.deepEqual(companyName.effect(undefined, { customerType: 'company' }), { visible: true });
   assert.deepEqual(taxNo.effect(undefined, { customerType: 'company' }), { visible: true });
 });

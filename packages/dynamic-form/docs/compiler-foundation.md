@@ -126,6 +126,8 @@ import { CompiledDynamicForm } from '@whynotsnow/dynamic-form';
 
 Compiler 输入统一为 `ModuleFormConfig`。字段可以通过 flat `fields` 声明，并用 `groupId` 加入 legacy group；也可以通过 `nodes` 声明递归节点树。Group/container rules 只支持 `show` 和 `hide`，手工 `effect` 先执行，rules 后执行并覆盖同名结果键。
 
+Compiler 会把规则中的来源字段连接到规则所属的字段、group 或 container。group/container 的显隐规则结果会更新对应节点的可见性；来源字段可以位于 flat、group 或 `nodes` 结构中。
+
 ```ts
 compileFormConfig({
   fields: [

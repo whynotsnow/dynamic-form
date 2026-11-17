@@ -1,13 +1,33 @@
 # Changelog
 
-## 4.2.2
+## 4.2.3 - 2026-11-17
 
-### 版本概览
+### 修复
 
-- 将表单联动 effect 的执行与类型定义切换到 `@whynotsnow/hooks`，并在包根入口补充对应的 effect map、effect 函数和字段名类型导出。
-- 新增推荐使用的 `FormChainEffectWrapper` 导出；为兼容既有代码，保留 `FormChainEffectEngineWrapper` 作为弃用别名。
-- 在内部配置处理与 effect result 路径中增加类型收窄和运行时输入校验，同时保持既有公开字段值、form 实例、组件属性和 handler 回调的宽松类型契约。
-- 更新 demos、构建配置和中英文文档以匹配新的 hooks 类型与导出名称。
+- 修复 Compiler 中 legacy group 的声明式显隐规则：规则来源字段会触发所属 group，规则结果会更新 group 可见性。
+- 修复 Compiler 的规则依赖方向：字段、group 和递归 container 的规则把来源字段连接到受影响节点；container 的显隐规则结果会更新所属 container。
+- 修复隐藏 repeatable container 的提交值清理：按 `Form.List` 容器路径缓存并清空整个列表，重新显示时恢复列表值。
+
+### 文档与演示
+
+- 同步两个发布包、文档站中英文说明和 demo 指引；demo 提交结果统一在弹窗中展示。
+
+## 4.2.2 - 2026-11-16
+
+### 依赖与运行时
+
+- 用 `@whynotsnow/hooks` 替换 `form-chain-effect-engine`，core 和 React/AntD 包都使用新的依赖执行表单联动 effect。
+- 更新配置处理和 effect result 路径的类型收窄与输入检查，保持同步联动行为与现有表单配置兼容。
+
+### 公共 API 与兼容性
+
+- 从两个包的根入口补充 effect map、effect 函数、字段名等类型导出。
+- 新增推荐名称 `FormChainEffectWrapper`；旧名称 `FormChainEffectEngineWrapper` 保留为弃用别名。
+- 保持字段值、form 实例、组件属性和 handler 回调的公开宽松类型契约，避免既有消费者因内部类型收紧而出现迁移要求。
+
+### 文档与演示
+
+- 同步 demos、构建配置和中英文文档中的 hooks 类型与 wrapper 名称；修正站点构建时对 core package 的本地 alias，并补齐扩展市场详情页的英文翻译。
 
 ## 4.2.0 - 2026-07-02
 

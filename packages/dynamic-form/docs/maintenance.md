@@ -27,6 +27,8 @@ Vite demos 位于 `demos/`，用于人工验证组件行为。当前 `DemoSelect
 - `uiConfig`
 - `renderExtension`
 - `compilerFoundation`
+- `nodeModel4`
+- `headlessRenderer`
 
 运行 demos：
 

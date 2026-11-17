@@ -126,6 +126,8 @@ The compiler returns:
 
 Compiler input is unified as `ModuleFormConfig`. Fields may be declared through flat `fields` and join legacy groups through `groupId`; recursive structure can be declared through `nodes`. Group/container rules only support `show` and `hide`. Manual `effect` runs first, and rules run afterward with matching result keys taking precedence.
 
+The compiler connects each rule's source field to its owning field, group, or container. Group and container visibility rules update the corresponding node. Source fields may be declared in flat fields, groups, or `nodes`.
+
 ```ts
 compileFormConfig({
   fields: [

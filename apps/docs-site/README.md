@@ -51,6 +51,8 @@ Cloudflare Pages 的构建设置保存在 Cloudflare 项目配置中，不在仓
 
 ### 发布步骤
 
+同一批改动若同时更新 npm 包行为和站点版本说明，应先按 [发布流程](../../docs/release.md) 发布 core 与 React/AntD 包，再推送 `main` 触发站点部署。站点构建直接引用本仓库的 package source，因此本地构建通过不代表对应 npm 版本已经可安装。
+
 1. 在本地完成改动，并从仓库根目录运行 `pnpm run site:build` 确认站点构建通过。
 2. 将已审核的提交推送到 `main`。这一步会触发 Cloudflare Pages 的 Production 自动部署；仅在本地构建成功不会更新线上站点。
 3. 打开 Cloudflare Dashboard → **Workers 和 Pages** → **dynamic-form** → **Deployments**，等待本次 `main` 提交的 Production 部署成功。核对页面显示的 commit SHA 与预期提交一致。

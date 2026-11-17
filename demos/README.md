@@ -79,5 +79,5 @@ demos/
 - 定义 `FieldModule`；
 - 使用 `ModuleRegistryManager` 注册模块；
 - 使用 Metadata Adapter 将申请字段配置归一化为带分组的 `ModuleFormConfig`；
-- 使用 `groupOverrides` 注入 Schema 无法序列化的 group effect；
+- 使用 `groupOverrides` 注入外部 metadata 无法序列化的 group effect；
 - 将编译得到的 `FormConfig` 交给现有 `DynamicForm` runtime 渲染。

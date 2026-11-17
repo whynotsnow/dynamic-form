@@ -44,7 +44,9 @@ group/container 规则动作限定为显示和隐藏。
 
 ## 编译边界
 
-`compileRulesToEffect` 会把规则转换为标准 effect，并从 `when` 条件推导依赖字段。已有手写 effect 和规则 effect 会在 compiler 阶段合并。
+`compileRulesToEffect` 会把规则转换为标准 effect。`compileFormConfig` 从 `when` 条件推导来源字段，并将来源字段的 `dependents` 指向规则所属的目标字段、group 或 container；显式 `dependencies` 可覆盖条件推导的来源列表。来源字段必须存在于同一份编译配置中，才能建立自动触发连线。已有手写 effect 和规则 effect 会在 compiler 阶段合并。
+
+group/container 的 `show`、`hide` 规则结果会映射为所属节点的可见性更新。
 
 规则由被影响的字段、group 或 container 持有，不使用独立 `target`。一个 source 字段影响多个目标时，应在多个受影响节点上分别声明规则。
 

@@ -34,7 +34,7 @@ const rule = {
 };
 ```
 
-Compiler 默认从 `when` 条件推导 `dependents`。如果规则显式提供 `dependencies`，则使用显式列表。
+Compiler 默认从 `when` 条件推导来源字段，并将来源字段的 `dependents` 指向规则所属的目标字段、group 或 container。如果规则显式提供 `dependencies`，则使用显式来源列表。来源字段必须存在于同一份编译配置中，才能建立自动触发连线。
 
 ## 字段动作
 
@@ -48,6 +48,7 @@ Compiler 默认从 `when` 条件推导 `dependents`。如果规则显式提供 `
 ```ts
 compileFormConfig({
   fields: [
+    { type: 'CustomerType', id: 'customerType' },
     {
       type: 'CompanyName',
       id: 'companyName',
@@ -68,11 +69,14 @@ compileFormConfig({
 
 ## Group Rules
 
-Group rules 只支持 `show` 和 `hide`，并更新所属 group 的可见性。
+Group/container rules 只支持 `show` 和 `hide`，并更新所属 group 或 container 的可见性。
 
 ```ts
 compileFormConfig({
-  fields: [{ type: 'CompanyName', id: 'companyName', groupId: 'company' }],
+  fields: [
+    { type: 'CustomerType', id: 'customerType' },
+    { type: 'CompanyName', id: 'companyName', groupId: 'company' }
+  ],
   groups: [
     {
       id: 'company',
@@ -89,7 +93,7 @@ compileFormConfig({
 
 ## 所有权约束
 
-规则不支持 `target`。字段规则必须声明在被影响字段上，group rule 必须声明在被影响 group 上。一个源字段影响多个字段时，应在每个目标字段上分别声明规则；这些规则可以依赖同一个 source field。
+规则不支持 `target`。字段、group 和 container 规则必须分别声明在被影响的节点上。一个源字段影响多个节点时，应在每个目标节点上分别声明规则；这些规则可以依赖同一个 source field。
 
 ## 公共 API
 

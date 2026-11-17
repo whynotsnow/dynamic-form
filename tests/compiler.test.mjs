@@ -259,6 +259,52 @@ test('compileFormConfig assembles mixed fields and groups with group-owned rules
   assert.deepEqual(processed.effectMap.accountType.dependents, ['companyInfo']);
 });
 
+test('compiled rules connect sources across flat, group, and node structures', () => {
+  const registry = new ModuleRegistryManager([
+    {
+      type: 'TextField',
+      createConfig: () => ({ id: 'fromFactory', component: 'TextInput' })
+    }
+  ]);
+
+  const compiled = compileFormConfig(
+    {
+      fields: [
+        { type: 'TextField', id: 'flatSource' },
+        { type: 'TextField', id: 'groupMember', groupId: 'reviewGroup' }
+      ],
+      groups: [
+        {
+          id: 'reviewGroup',
+          initialVisible: false,
+          rules: [{ when: { field: 'nestedSource', equals: 'show' }, then: { action: 'show' } }]
+        }
+      ],
+      nodes: [
+        { nodeType: 'field', type: 'TextField', id: 'nestedSource' },
+        {
+          nodeType: 'container',
+          id: 'conditionalContainer',
+          initialVisible: false,
+          rules: [{ when: { field: 'flatSource', equals: 'show' }, then: { action: 'show' } }],
+          children: [{ nodeType: 'field', type: 'TextField', id: 'nestedTarget' }]
+        }
+      ]
+    },
+    { registry }
+  );
+
+  const processed = processFormConfig(compiled.formConfig);
+  assert.deepEqual(processed.effectMap.nestedSource.dependents, ['reviewGroup']);
+  assert.deepEqual(processed.effectMap.flatSource.dependents, ['conditionalContainer']);
+  assert.deepEqual(compiled.formConfig.groups[0].effect(undefined, { nestedSource: 'show' }), {
+    groupsVisible: { reviewGroup: true }
+  });
+  assert.deepEqual(compiled.formConfig.nodes[1].effect(undefined, { flatSource: 'show' }), {
+    groupsVisible: { conditionalContainer: true }
+  });
+});
+
 test('compileFormConfig rejects invalid group membership and ids', () => {
   const registry = new ModuleRegistryManager([
     {

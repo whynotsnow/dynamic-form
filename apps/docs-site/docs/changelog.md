@@ -4,13 +4,21 @@
 
 ## 当前版本
 
-当前版本是 DynamicForm 4.2.2。普通 React 表单继续使用 `@whynotsnow/dynamic-form`；只有在表单显示前需要检查或转换配置时，才需要单独使用 `@whynotsnow/dynamic-form-core`。
+当前版本是 DynamicForm 4.2.3。普通 React 表单继续使用 `@whynotsnow/dynamic-form`；只有在表单显示前需要检查或转换配置时，才需要单独使用 `@whynotsnow/dynamic-form-core`。
 
 ## 版本时间线
 
-### 4.2.2
+### 4.2.3 - 2026-11-17
 
-- 改进了表单联动相关类型和输入检查。
+- 修复 Compiler 中字段、分组和容器规则的来源字段联动；条件显隐会更新对应分组或容器。
+- 隐藏 repeatable container 时会从提交数据中清除整个列表，重新显示时恢复原值。
+- Demo 页补充业务场景说明和提交数据弹窗，源码展示与 demo 保持同步。
+
+相关专题：[Rule Engine](./rule-engine.md)、[Runtime Layer](./runtime-layer.md)、[组件使用指南](./development.md)。
+
+### 4.2.2 - 2026-11-16
+
+- 表单联动运行时改用 `@whynotsnow/hooks`，并改进相关类型和输入检查。
 - 新增推荐名称 `FormChainEffectWrapper`，旧名称仍可使用；使用它的现有代码不需要立即调整。
 - 保持字段值、表单实例、组件属性和 handler 回调的公开类型兼容，现有表单配置无需迁移。
 

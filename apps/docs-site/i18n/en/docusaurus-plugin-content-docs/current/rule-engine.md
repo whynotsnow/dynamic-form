@@ -19,7 +19,7 @@ Both field modules and `ModuleConfig` entries may declare `rules`. Module rules 
 
 Field conditions are `equals`, `notEquals`, `empty`, and `notEmpty`. Composite conditions are `all`, `any`, and `not`.
 
-The compiler normally infers `dependents` from `when`. When a rule declares `dependencies`, the explicit list is used instead.
+The compiler normally infers source fields from `when` and adds the rule's owning field, group, or container to each source field's `dependents`. An explicit `dependencies` list replaces the inferred sources. A source field must exist in the same compiled config for the trigger connection to be created.
 
 ## Field Actions
 
@@ -27,11 +27,11 @@ Field rules support `show`, `hide`, `enable`, `disable`, `readonly`, `editable`,
 
 ## Group Rules
 
-Group rules support only `show` and `hide`, updating the visibility of the owning group.
+Group and container rules support only `show` and `hide`, updating the visibility of the owning group or container.
 
 ## Ownership Constraint
 
-Rules do not support `target`. Declare a field rule on the affected field and a group rule on the affected group. When one source field affects multiple fields, declare a rule on each affected field; those rules may depend on the same source field.
+Rules do not support `target`. Declare field, group, and container rules on the affected nodes. When one source field affects multiple nodes, declare a rule on each affected node; those rules may depend on the same source field.
 
 ## Public API
 

@@ -15,6 +15,7 @@ import {
   compileRulesToEffect,
   inferRulesDependencies
 } from '../rules';
+import type { DeclarativeRule } from '../rules';
 import type {
   CompiledModuleConfig,
   CompileFormConfigOptions,
@@ -77,7 +78,7 @@ function mergeEffectResults(baseResult: unknown, ruleResult: unknown) {
   };
 }
 
-function normalizeGroupEffectResult(result: unknown, groupId: string) {
+function normalizeContainerVisibilityResult(result: unknown, containerId: string) {
   if (!result || typeof result !== 'object' || !('visible' in result)) {
     return result;
   }
@@ -92,7 +93,7 @@ function normalizeGroupEffectResult(result: unknown, groupId: string) {
     ...rest,
     groupsVisible: {
       ...(groupsVisible && typeof groupsVisible === 'object' ? groupsVisible : {}),
-      [groupId]: visible
+      [containerId]: visible
     }
   };
 }
@@ -115,7 +116,6 @@ function expandModule(
     component: moduleConfig.type
   };
   const rules = [...(module.rules || []), ...(moduleConfig.rules || [])];
-  const rulesDependents = inferRulesDependencies(rules);
   const baseEffect = baseConfig.effect || module.effect;
   const ruleEffect =
     rules.length > 0 ? compileRulesToEffect(rules, { fieldId: moduleConfig.id }) : undefined;
@@ -131,10 +131,7 @@ function expandModule(
       ...(module.defaultProps || {}),
       ...(baseConfig.componentProps || {})
     },
-    dependents: mergeDependents(
-      mergeDependents(module.dependencies, baseConfig.dependents),
-      rulesDependents
-    ),
+    dependents: mergeDependents(module.dependencies, baseConfig.dependents),
     // Existing effects still run first; rule results are merged last by design.
     effect:
       baseEffect && ruleEffect
@@ -207,8 +204,10 @@ function expandModuleNode(
     name: node.name,
     initialVisible: node.initialVisible,
     repeatable: node.repeatable,
-    dependents: mergeDependents(node.dependents, inferRulesDependencies(groupRules)),
-    effect: ruleEffect,
+    dependents: node.dependents,
+    effect: ruleEffect
+      ? (...args) => normalizeContainerVisibilityResult(ruleEffect(...args), node.id)
+      : undefined,
     children: node.children.map((child) =>
       expandModuleNode(child, options, componentRegistry, allIds)
     )
@@ -320,15 +319,6 @@ export function compileFormConfig(
   });
 
   groupConfigs.forEach((groupConfig) => {
-    inferRulesDependencies(groupConfig.rules || []).forEach((sourceId) => {
-      const source = compiledFields.find(({ field }) => field.id === sourceId)?.field;
-      if (source) {
-        source.dependents = mergeDependents(source.dependents, [groupConfig.id]);
-      }
-    });
-  });
-
-  groupConfigs.forEach((groupConfig) => {
     const groupFields = compiledFieldsByGroup.get(groupConfig.id) || [];
 
     if (groupFields.length === 0) {
@@ -354,7 +344,7 @@ export function compileFormConfig(
       initialVisible: groupConfig.initialVisible,
       dependents: groupConfig.dependents,
       effect: effect
-        ? (...args) => normalizeGroupEffectResult(effect(...args), groupConfig.id)
+        ? (...args) => normalizeContainerVisibilityResult(effect(...args), groupConfig.id)
         : undefined,
       fields: groupFields
     };
@@ -374,6 +364,43 @@ export function compileFormConfig(
     context.moduleFormConfig.nodes?.map((node) =>
       expandModuleNode(node, { ...options, registry }, componentRegistry, allIds)
     ) || [];
+
+  const compiledFieldById = new Map(compiledFields.map(({ field }) => [field.id, field]));
+  const indexNodeFields = (node: FormNode) => {
+    if (node.nodeType === 'field') {
+      compiledFieldById.set(node.id, node);
+    } else {
+      node.children.forEach(indexNodeFields);
+    }
+  };
+  nodes.forEach(indexNodeFields);
+
+  // dependents 指向被触发的目标节点；规则的 when 字段是 source，不是目标自身的依赖列表。
+  const connectRuleSources = (targetId: string, rules: DeclarativeRule[]) => {
+    inferRulesDependencies(rules).forEach((sourceId) => {
+      const source = compiledFieldById.get(sourceId);
+      if (source && sourceId !== targetId) {
+        source.dependents = mergeDependents(source.dependents, [targetId]);
+      }
+    });
+  };
+  const connectFieldRules = (moduleConfig: ModuleConfig) => {
+    const module = registry.get(moduleConfig.type);
+    connectRuleSources(moduleConfig.id, [...(module?.rules || []), ...(moduleConfig.rules || [])]);
+  };
+  const connectNodeRules = (moduleNode: ModuleFormNode) => {
+    if (moduleNode.nodeType === 'field') {
+      connectFieldRules(moduleNode);
+    } else {
+      connectRuleSources(moduleNode.id, moduleNode.rules || []);
+      moduleNode.children.forEach(connectNodeRules);
+    }
+  };
+  context.moduleFormConfig.fields?.forEach(connectFieldRules);
+  groupConfigs.forEach((groupConfig) =>
+    connectRuleSources(groupConfig.id, groupConfig.rules || [])
+  );
+  context.moduleFormConfig.nodes?.forEach(connectNodeRules);
 
   if (nodes.length > 0) {
     formConfig.nodes = nodes;
