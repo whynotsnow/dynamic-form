@@ -138,6 +138,38 @@ const transformActiveDemo = (sourceFile, messages, relativeImport) => {
       const visitor = (node) => {
         if (
           ts.isPropertyAssignment(node) &&
+          propertyName(node.name) === 'validator' &&
+          ts.isIdentifier(node.initializer) &&
+          node.initializer.text === 'validateEditTableRows'
+        ) {
+          changed = true;
+          return ts.factory.updatePropertyAssignment(
+            node,
+            node.name,
+            ts.factory.createArrowFunction(
+              undefined,
+              undefined,
+              [
+                ts.factory.createParameterDeclaration(undefined, undefined, 'rule'),
+                ts.factory.createParameterDeclaration(undefined, undefined, 'value')
+              ],
+              undefined,
+              ts.factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken),
+              ts.factory.createCallExpression(
+                ts.factory.createIdentifier('validateEditTableRows'),
+                undefined,
+                [
+                  ts.factory.createIdentifier('rule'),
+                  ts.factory.createIdentifier('value'),
+                  ts.factory.createIdentifier('t')
+                ]
+              )
+            )
+          );
+        }
+
+        if (
+          ts.isPropertyAssignment(node) &&
           localizedPropertyNames.has(propertyName(node.name)) &&
           ts.isStringLiteral(node.initializer) &&
           messages[node.initializer.text] !== undefined
@@ -335,6 +367,26 @@ const transformActiveDemo = (sourceFile, messages, relativeImport) => {
 
         if (
           ts.isCallExpression(node) &&
+          ts.isIdentifier(node.expression) &&
+          node.expression.text === 'renderDesktopField' &&
+          ts.isStringLiteral(node.arguments[2]) &&
+          messages[node.arguments[2].text] !== undefined
+        ) {
+          const visited = ts.visitEachChild(node, visitor, context);
+          const args = [...visited.arguments];
+          const { text: zh } = node.arguments[2];
+          args[2] = translatorCall(zh, messages[zh]);
+          changed = true;
+          return ts.factory.updateCallExpression(
+            visited,
+            visited.expression,
+            visited.typeArguments,
+            args
+          );
+        }
+
+        if (
+          ts.isCallExpression(node) &&
           node.arguments[0] &&
           (ts.isStringLiteral(node.arguments[0]) || ts.isTemplateExpression(node.arguments[0]))
         ) {
@@ -388,6 +440,33 @@ const transformActiveDemo = (sourceFile, messages, relativeImport) => {
     };
 
     const visitor = (node) => {
+      if (
+        ts.isVariableDeclaration(node) &&
+        ts.isIdentifier(node.name) &&
+        node.name.text === 'validateEditTableRows' &&
+        node.initializer &&
+        ts.isArrowFunction(node.initializer)
+      ) {
+        const arrow = node.initializer;
+        const body = transformComponent(arrow.body);
+        const updated = ts.factory.updateArrowFunction(
+          arrow,
+          arrow.modifiers,
+          arrow.typeParameters,
+          arrow.parameters,
+          arrow.type,
+          arrow.equalsGreaterThanToken,
+          body
+        );
+        return ts.factory.updateVariableDeclaration(
+          node,
+          node.name,
+          node.exclamationToken,
+          node.type,
+          updated
+        );
+      }
+
       if (
         ts.isVariableDeclaration(node) &&
         ts.isIdentifier(node.name) &&

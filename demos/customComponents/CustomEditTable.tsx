@@ -17,7 +17,19 @@ type EditTableRow = {
 };
 
 type EditableField = Exclude<keyof EditTableRow, 'key'>;
-type EditErrors = Partial<Record<EditableField, string>>;
+type EditErrorCode =
+  | 'nameRequired'
+  | 'ageRequired'
+  | 'ageInvalidNumber'
+  | 'ageOutOfRange'
+  | 'addressRequired'
+  | 'emailRequired'
+  | 'emailInvalidFormat'
+  | 'phoneRequired'
+  | 'phoneInvalidFormat'
+  | 'statusRequired';
+type EditErrorTranslator = (zh: string, en: string) => string;
+type EditErrors = Partial<Record<EditableField, EditErrorCode>>;
 
 const toEditTableRows = (input: unknown): EditTableRow[] => {
   return Array.isArray(input) ? (input as EditTableRow[]) : [];
@@ -32,27 +44,44 @@ const validateEditTableRow = (row: EditTableRow): EditErrors => {
   const phone = typeof row.phone === 'string' ? row.phone : '';
   const status = typeof row.status === 'string' ? row.status : '';
 
-  if (!name.trim()) errors.name = '请输入姓名';
-  if (!age.trim()) errors.age = '请输入年龄';
-  else if (!/^[0-9]+$/.test(age)) errors.age = '年龄必须是数字';
-  else if (Number(age) > 150) errors.age = '年龄必须在0-150之间';
-  if (!address.trim()) errors.address = '请输入地址';
-  if (!email.trim()) errors.email = '请输入邮箱';
+  if (!name.trim()) errors.name = 'nameRequired';
+  if (!age.trim()) errors.age = 'ageRequired';
+  else if (!/^[0-9]+$/.test(age)) errors.age = 'ageInvalidNumber';
+  else if (Number(age) > 150) errors.age = 'ageOutOfRange';
+  if (!address.trim()) errors.address = 'addressRequired';
+  if (!email.trim()) errors.email = 'emailRequired';
   else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    errors.email = '邮箱格式不正确';
+    errors.email = 'emailInvalidFormat';
   }
-  if (!phone.trim()) errors.phone = '请输入电话';
-  else if (!/^1[3-9]\d{9}$/.test(phone)) errors.phone = '请输入有效的 11 位手机号';
-  if (!status) errors.status = '请选择状态';
+  if (!phone.trim()) errors.phone = 'phoneRequired';
+  else if (!/^1[3-9]\d{9}$/.test(phone)) errors.phone = 'phoneInvalidFormat';
+  if (!status) errors.status = 'statusRequired';
 
   return errors;
 };
 
-export const validateEditTableRows = async (_rule: unknown, value: unknown): Promise<void> => {
+export const validateEditTableRows = async (
+  _rule: unknown,
+  value: unknown,
+  t: EditErrorTranslator = (zh) => zh
+): Promise<void> => {
   const errors = toEditTableRows(value).flatMap((row) => Object.values(validateEditTableRow(row)));
 
   if (errors.length > 0) {
-    throw new Error(errors[0]);
+    const messages: Record<EditErrorCode, { message: string }> = {
+      nameRequired: { message: '请输入姓名' },
+      ageRequired: { message: '请输入年龄' },
+      ageInvalidNumber: { message: '年龄必须是数字' },
+      ageOutOfRange: { message: '年龄必须在0-150之间' },
+      addressRequired: { message: '请输入地址' },
+      emailRequired: { message: '请输入邮箱' },
+      emailInvalidFormat: { message: '邮箱格式不正确' },
+      phoneRequired: { message: '请输入电话' },
+      phoneInvalidFormat: { message: '请输入有效的 11 位手机号' },
+      statusRequired: { message: '请选择状态' }
+    };
+    void t;
+    throw new Error(messages[errors[0]].message);
   }
 };
 
@@ -66,6 +95,18 @@ const CustomEditTable: React.FC<FieldComponentProps> = ({
   const [editableKeys, setEditableKeys] = React.useState<React.Key[]>([]);
   const [editSnapshots, setEditSnapshots] = React.useState<Record<string, EditTableRow | null>>({});
   const [editErrors, setEditErrors] = React.useState<Record<string, EditErrors>>({});
+  const editErrorMessages: Record<EditErrorCode, { message: string }> = {
+    nameRequired: { message: '请输入姓名' },
+    ageRequired: { message: '请输入年龄' },
+    ageInvalidNumber: { message: '年龄必须是数字' },
+    ageOutOfRange: { message: '年龄必须在0-150之间' },
+    addressRequired: { message: '请输入地址' },
+    emailRequired: { message: '请输入邮箱' },
+    emailInvalidFormat: { message: '邮箱格式不正确' },
+    phoneRequired: { message: '请输入电话' },
+    phoneInvalidFormat: { message: '请输入有效的 11 位手机号' },
+    statusRequired: { message: '请选择状态' }
+  };
   const statusOptions = [
     { label: '活跃', value: 'active' },
     { label: '非活跃', value: 'inactive' },
@@ -221,7 +262,8 @@ const CustomEditTable: React.FC<FieldComponentProps> = ({
   };
 
   const renderDesktopField = (row: EditTableRow, fieldName: EditableField, placeholder: string) => {
-    const error = editErrors[String(row.key)]?.[fieldName];
+    const errorCode = editErrors[String(row.key)]?.[fieldName];
+    const error = errorCode ? editErrorMessages[errorCode].message : undefined;
     const isEditing = editableKeys.includes(row.key);
 
     if (!isEditing) return displayValue(row, fieldName);
@@ -340,6 +382,8 @@ const CustomEditTable: React.FC<FieldComponentProps> = ({
             const rowKey = String(row.key);
             const isEditing = editableKeys.includes(row.key);
             const errors = editErrors[rowKey] ?? {};
+            const errorMessage = (code?: EditErrorCode) =>
+              code ? editErrorMessages[code].message : undefined;
 
             const field = (
               fieldName: EditableField,
@@ -356,7 +400,7 @@ const CustomEditTable: React.FC<FieldComponentProps> = ({
                     label={label}
                     required
                     validateStatus={errors[fieldName] ? 'error' : undefined}
-                    help={errors[fieldName]}
+                    help={errorMessage(errors[fieldName])}
                   >
                     {control}
                   </Form.Item>
