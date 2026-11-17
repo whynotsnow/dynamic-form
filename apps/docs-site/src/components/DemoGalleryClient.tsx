@@ -14,6 +14,22 @@ import styles from './DemoGalleryClient.module.css';
 
 const DEFAULT_DEMO: DemoType = 'storeBoundary';
 
+const getInitialDemoContentHeight = () => {
+  if (typeof window === 'undefined') return 954;
+
+  const isNarrowViewport = window.matchMedia('(max-width: 996px)').matches;
+  const minDemoHeight = isNarrowViewport ? 360 : 400;
+  const maxDemoHeight = isNarrowViewport ? 600 : 680;
+  const viewportRatio = isNarrowViewport ? 0.5 : 0.55;
+  const demoHeight = Math.min(
+    maxDemoHeight,
+    Math.max(minDemoHeight, window.innerHeight * viewportRatio)
+  );
+
+  // Match the BrowserOnly fallback's demo frame plus its source-panel placeholder.
+  return Math.ceil(demoHeight + 532);
+};
+
 const DEMO_TEXT: Record<DemoType, { title: string; description: string }> = {
   storeBoundary: {
     title: translate({
@@ -275,6 +291,7 @@ class DemoErrorBoundary extends React.Component<DemoErrorBoundaryProps, DemoErro
 
 export default function DemoGalleryClient(): React.JSX.Element {
   const [currentDemo, setCurrentDemo] = useState<DemoType>(() => readDemoFromUrl());
+  const [reservedContentHeight, setReservedContentHeight] = useState(getInitialDemoContentHeight);
   const demoEntries = useMemo(
     () => Object.entries(DEMO_COMPONENTS) as Array<[DemoType, (typeof DEMO_COMPONENTS)[DemoType]]>,
     []
@@ -351,6 +368,8 @@ export default function DemoGalleryClient(): React.JSX.Element {
             githubDemoPath={DEMO_GITHUB_SOURCE[currentDemo]}
             relatedComponentPaths={DEMO_RELATED_COMPONENTS[currentDemo] ?? []}
             sourceFiles={sourceFiles}
+            reservedContentHeight={reservedContentHeight}
+            onReadyHeightChange={setReservedContentHeight}
             title={currentDemoText.title}
           >
             <DemoErrorBoundary demoTitle={currentDemoText.title}>

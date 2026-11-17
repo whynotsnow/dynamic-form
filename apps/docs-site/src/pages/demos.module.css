@@ -1,3 +1,100 @@
 .page {
   padding: 48px 0 64px;
 }
+
+.browserFallback {
+  min-height: 100%;
+}
+
+.fallbackShell {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  align-items: start;
+  gap: 24px;
+}
+
+.fallbackSidebar,
+.fallbackPanel {
+  overflow: hidden;
+  border: 1px solid var(--df-border-subtle);
+  border-radius: 8px;
+  background: var(--df-background-panel);
+}
+
+.fallbackSidebar {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+}
+
+.fallbackSidebarLine,
+.fallbackHeadingLine,
+.fallbackGuideLine,
+.fallbackSourceLine {
+  border-radius: 5px;
+  background: var(--df-background-muted);
+}
+
+.fallbackSidebarLine {
+  height: 44px;
+}
+
+.fallbackHeadingLine {
+  width: 44%;
+  height: 28px;
+  margin-bottom: 12px;
+}
+
+.fallbackIntroLine {
+  width: 82%;
+  height: 22px;
+  margin-bottom: 18px;
+  border-radius: 5px;
+  background: var(--df-background-muted);
+}
+
+.fallbackGuide {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding: 16px 20px;
+  border: 1px solid var(--df-border-subtle);
+  border-radius: 8px;
+  background: var(--df-background-panel);
+}
+
+.fallbackGuideLine {
+  height: 18px;
+}
+
+.fallbackDemo {
+  display: grid;
+  min-height: clamp(400px, 55vh, 680px);
+  place-items: center;
+  padding: 24px;
+  border: 1px solid var(--df-border-subtle);
+  border-radius: 8px;
+  background: var(--df-background-panel);
+}
+
+.fallbackSource {
+  display: grid;
+  min-height: 420px;
+  gap: 14px;
+  margin-top: 16px;
+  padding: 22px;
+}
+
+.fallbackSourceLine {
+  height: 20px;
+}
+
+@media (max-width: 996px) {
+  .fallbackShell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .fallbackDemo {
+    min-height: clamp(360px, 50vh, 600px);
+  }
+}

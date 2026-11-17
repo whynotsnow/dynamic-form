@@ -52,6 +52,56 @@
   background: var(--df-background-panel);
 }
 
+.demoContent {
+  min-width: 0;
+  overflow: hidden;
+  transition: height 220ms ease;
+}
+
+.demoContentNatural {
+  min-width: 0;
+}
+
+.demoContentLoading {
+  display: flex;
+}
+
+.demoContentLoading .demoContentNatural {
+  display: flex;
+  width: 100%;
+  min-height: 0;
+  flex: 1;
+  box-sizing: border-box;
+  flex-direction: column;
+}
+
+.demoContentLoading .demoFrame {
+  display: flex;
+  width: 100%;
+  height: clamp(360px, 55vh, 680px);
+  min-height: 0;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  flex-direction: column;
+}
+
+.demoContentLoading .demoFrame > :global([role='status']) {
+  min-height: 0;
+  flex: 1;
+}
+
+@media (max-width: 996px) {
+  .demoContentLoading .demoFrame {
+    height: clamp(320px, 50vh, 600px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demoContent {
+    transition-duration: 0.01ms;
+  }
+}
+
 .demoSandbox {
   min-width: 0;
   width: 100%;

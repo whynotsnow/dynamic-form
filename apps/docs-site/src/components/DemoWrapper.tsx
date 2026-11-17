@@ -1,4 +1,12 @@
-import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import { translate } from '@docusaurus/Translate';
 import Heading from '@theme/Heading';
 import {
@@ -22,6 +30,8 @@ interface DemoWrapperProps {
   githubDemoPath: string;
   relatedComponentPaths: string[];
   sourceFiles: DemoSourceFile[];
+  reservedContentHeight: number;
+  onReadyHeightChange: (height: number) => void;
   children: React.ReactNode;
 }
 
@@ -33,6 +43,7 @@ interface DemoSourcePanelProps {
 }
 
 const MINIMUM_LOADING_DURATION = 180;
+const CONTENT_HEIGHT_TRANSITION_DURATION = 220;
 const GITHUB_SOURCE_BASE = 'https://github.com/whynotsnow/dynamic-form/blob/main/';
 
 function DemoSourcePanel({
@@ -227,11 +238,16 @@ export default function DemoWrapper({
   githubDemoPath,
   relatedComponentPaths,
   sourceFiles,
+  reservedContentHeight,
+  onReadyHeightChange,
   children
 }: DemoWrapperProps): React.JSX.Element {
   const [isLoading, setIsLoading] = useState(true);
+  const [contentHeight, setContentHeight] = useState<number | null>(reservedContentHeight);
   const pendingLoaders = useRef(0);
   const minimumLoadingElapsed = useRef(false);
+  const naturalContentRef = useRef<HTMLDivElement>(null);
+  const unlockTimer = useRef<number | null>(null);
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -265,6 +281,54 @@ export default function DemoWrapper({
     message: '正在加载 demo演示...'
   });
 
+  useLayoutEffect(() => {
+    if (isLoading) {
+      setContentHeight(reservedContentHeight);
+      return;
+    }
+
+    const nextHeight = naturalContentRef.current?.getBoundingClientRect().height;
+    if (nextHeight && Number.isFinite(nextHeight)) {
+      const roundedHeight = Math.ceil(nextHeight);
+      setContentHeight(roundedHeight);
+      onReadyHeightChange(roundedHeight);
+    }
+
+    unlockTimer.current = window.setTimeout(() => {
+      setContentHeight(null);
+      unlockTimer.current = null;
+    }, CONTENT_HEIGHT_TRANSITION_DURATION);
+
+    return () => {
+      if (unlockTimer.current !== null) {
+        window.clearTimeout(unlockTimer.current);
+        unlockTimer.current = null;
+      }
+    };
+  }, [isLoading, onReadyHeightChange]);
+
+  useEffect(() => {
+    if (isLoading || !naturalContentRef.current) return;
+
+    const observedContent = naturalContentRef.current;
+    const observer = new ResizeObserver(() => {
+      const nextHeight = Math.ceil(observedContent.getBoundingClientRect().height);
+      if (nextHeight > 0) onReadyHeightChange(nextHeight);
+    });
+    observer.observe(observedContent);
+    return () => observer.disconnect();
+  }, [isLoading, onReadyHeightChange]);
+
+  const handleHeightTransitionEnd = (event: React.TransitionEvent<HTMLDivElement>) => {
+    if (event.target === event.currentTarget && event.propertyName === 'height') {
+      if (unlockTimer.current !== null) {
+        window.clearTimeout(unlockTimer.current);
+        unlockTimer.current = null;
+      }
+      setContentHeight(null);
+    }
+  };
+
   return (
     <div className={styles.wrapper}>
       <header className={styles.intro}>
@@ -295,24 +359,34 @@ export default function DemoWrapper({
       ) : null}
 
       <DemoLoadingContext.Provider value={loadingContext}>
-        <div className={styles.demoFrame}>
-          {isLoading ? <DemoLoadingView message={loadingMessage} /> : null}
-          <div
-            aria-hidden={isLoading || undefined}
-            className={styles.demoSandbox}
-            hidden={isLoading}
-          >
-            {children}
+        <div
+          className={`${styles.demoContent} ${isLoading ? styles.demoContentLoading : ''}`}
+          onTransitionEnd={handleHeightTransitionEnd}
+          style={{
+            height: contentHeight === null ? undefined : `${contentHeight}px`
+          }}
+        >
+          <div className={styles.demoContentNatural} ref={naturalContentRef}>
+            <div className={styles.demoFrame}>
+              {isLoading ? <DemoLoadingView message={loadingMessage} /> : null}
+              <div
+                aria-hidden={isLoading || undefined}
+                className={styles.demoSandbox}
+                hidden={isLoading}
+              >
+                {children}
+              </div>
+            </div>
+            {!isLoading ? (
+              <DemoSourcePanel
+                componentName={componentName}
+                githubDemoPath={githubDemoPath}
+                relatedComponentPaths={relatedComponentPaths}
+                sourceFiles={sourceFiles}
+              />
+            ) : null}
           </div>
         </div>
-        {!isLoading ? (
-          <DemoSourcePanel
-            componentName={componentName}
-            githubDemoPath={githubDemoPath}
-            relatedComponentPaths={relatedComponentPaths}
-            sourceFiles={sourceFiles}
-          />
-        ) : null}
       </DemoLoadingContext.Provider>
     </div>
   );

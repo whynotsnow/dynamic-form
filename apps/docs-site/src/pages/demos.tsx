@@ -21,10 +21,38 @@ export default function Demos(): React.JSX.Element {
       <main className={styles.page}>
         <BrowserOnly
           fallback={
-            <div className="container">
-              <DemoLoading
-                message={translate({ id: 'demos.loading', message: '正在加载 demo演示...' })}
-              />
+            <div className={`container ${styles.browserFallback}`}>
+              <div className={styles.fallbackShell}>
+                <aside aria-hidden="true" className={styles.fallbackSidebar}>
+                  {Array.from({ length: 10 }, (_, index) => (
+                    <div className={styles.fallbackSidebarLine} key={index} />
+                  ))}
+                </aside>
+                <section>
+                  <div aria-hidden="true">
+                    <div className={styles.fallbackHeadingLine} />
+                    <div className={styles.fallbackIntroLine} />
+                  </div>
+                  <div aria-hidden="true" className={styles.fallbackGuide}>
+                    {Array.from({ length: 4 }, (_, index) => (
+                      <div className={styles.fallbackGuideLine} key={index} />
+                    ))}
+                  </div>
+                  <div className={styles.fallbackDemo}>
+                    <DemoLoading
+                      message={translate({ id: 'demos.loading', message: '正在加载 demo演示...' })}
+                    />
+                  </div>
+                  <div
+                    aria-hidden="true"
+                    className={`${styles.fallbackPanel} ${styles.fallbackSource}`}
+                  >
+                    {Array.from({ length: 12 }, (_, index) => (
+                      <div className={styles.fallbackSourceLine} key={index} />
+                    ))}
+                  </div>
+                </section>
+              </div>
             </div>
           }
         >
