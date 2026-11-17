@@ -353,22 +353,22 @@
     "message": "Related docs"
   },
   "examples.minimal.title": {
-    "message": "Minimal Form"
+    "message": "Store State Boundary"
   },
   "examples.minimal.description": {
-    "message": "Set up basic fields with fields. DynamicForm uses Ant Design to display the form by default."
+    "message": "Manage field values with an external Ant Design Form and register custom fields through componentRegistry."
   },
   "examples.grouped.title": {
-    "message": "Grouped Form"
+    "message": "UI Config and Field Effects"
   },
   "examples.grouped.description": {
-    "message": "Put related fields in one group. They appear in a section card by default; adjust the layout when needed."
+    "message": "The UI config demo updates form and button styles from a ticket status effect, and resizes an input based on its text."
   },
   "examples.effects.title": {
-    "message": "Field Effects"
+    "message": "Effect Result Handlers"
   },
   "examples.effects.description": {
-    "message": "Show or hide the company name field based on whether the user has a company."
+    "message": "The handler playground demonstrates data transforms, conditional display, and chaining; it does not model one business workflow."
   },
   "examples.customComponents.title": {
     "message": "Custom Components"
@@ -377,10 +377,10 @@
     "message": "Register a custom input in componentRegistry, then refer to it from the field config."
   },
   "examples.customHandlers.title": {
-    "message": "Custom Handlers"
+    "message": "Render Extensions"
   },
   "examples.customHandlers.description": {
-    "message": "Use a custom handler for business-specific interaction results; the field component still handles display and input."
+    "message": "Use render hooks to customize how fields, groups, and form content are displayed."
   },
   "examples.compilerAdapter.description": {
     "message": "Convert JSON Schema, OpenAPI, or your own data format into config that DynamicForm can display."

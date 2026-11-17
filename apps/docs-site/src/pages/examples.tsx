@@ -8,56 +8,52 @@ import styles from './examples.module.css';
 
 const examples = [
   {
-    title: translate({
-      id: 'examples.minimal.title',
-      message: '最小表单'
-    }),
+    title: translate({ id: 'examples.minimal.title', message: 'Store 状态边界' }),
     description: translate({
       id: 'examples.minimal.description',
-      message: '用 fields 配置一组基础字段，DynamicForm 默认使用 Ant Design 展示表单。'
+      message: '使用外部 Ant Design Form 管理字段值，并通过 componentRegistry 注册自定义字段组件。'
     }),
-    code: `const formConfig = {
-  fields: [
-    { id: 'name', label: 'Name', component: 'TextInput', required: true }
-  ]
-};`,
-    docs: '/docs/development',
+    code: `<DynamicForm
+  form={form}
+  formConfig={supplierFormConfig}
+  componentRegistry={{ customComponents: { OperatingAreaField } }}
+/>`,
+    docs: '/docs/configuration',
     demoUrl: '/demos?demo=storeBoundary'
   },
   {
     title: translate({
       id: 'examples.grouped.title',
-      message: '分组表单'
+      message: 'UI 配置与字段联动'
     }),
     description: translate({
       id: 'examples.grouped.description',
-      message: '把相关字段放进同一个分组。默认会按分组卡片显示，也可以按需要调整布局。'
+      message: 'UIConfig Demo 通过工单状态 effect 更新表单和按钮样式，并根据描述长度调整输入框。'
     }),
-    code: `const formConfig = {
-  groups: [
-    { id: 'basic', title: 'Basic', fields: [{ id: 'email', component: 'TextInput' }] }
-  ]
-};`,
+    code: `<DynamicForm
+  formConfig={formConfig}
+  uiConfig={{ formProps: { layout: 'vertical' } }}
+/>`,
     docs: '/docs/configuration',
     demoUrl: '/demos?demo=uiConfig'
   },
   {
     title: translate({
       id: 'examples.effects.title',
-      message: '字段联动'
+      message: '自定义 Effect 结果处理器'
     }),
     description: translate({
       id: 'examples.effects.description',
-      message: '根据“是否有公司”的选择，自动显示或隐藏公司名称字段。'
+      message: '自定义处理器练习场演示数据转换、条件显示和链式处理；它不代表单一业务流程。'
     }),
-    code: `const formConfig = {
-  fields: [
-    { id: 'hasCompany', label: '是否有公司', component: 'Switch', dependents: ['companyName'] },
-    {
-      id: 'companyName', label: '公司名称', component: 'TextInput', initialVisible: false,
-      effect: (_value, allValues) => ({ visible: allValues.hasCompany === true })
-    }
-  ]
+    code: `import type { CustomEffectResultHandler } from '@whynotsnow/dynamic-form';
+
+const effect = (value: number) => ({ dataTransform: value });
+
+const handler: CustomEffectResultHandler = {
+  name: 'dataTransform',
+  canHandle: (key) => key === 'dataTransform',
+  handle: (context, value) => context.setFieldValue(Number(value) * 2)
 };`,
     docs: '/docs/effects-and-handlers',
     demoUrl: '/demos?demo=customHandlers'
@@ -81,24 +77,19 @@ const examples = [
   {
     title: translate({
       id: 'examples.customHandlers.title',
-      message: '自定义 handlers'
+      message: '渲染扩展'
     }),
     description: translate({
       id: 'examples.customHandlers.description',
-      message: '用自定义 handler 处理业务专属的联动结果；字段组件仍负责显示和输入。'
+      message: '按需提供 render hooks，自定义字段、分组和表单内容的渲染方式。'
     }),
-    code: `const handler = {
-  name: 'highlight',
-  canHandle: (key) => key === 'highlight',
-  handle: (context, enabled) => context.updateFieldMeta({
-    componentProps: {
-      className: enabled ? 'field-highlight' : undefined,
-      style: enabled ? { backgroundColor: '#fffbe6' } : undefined
-    }
-  })
-};`,
-    docs: '/docs/effects-and-handlers',
-    demoUrl: '/demos?demo=customHandlers'
+    code: `<DynamicForm
+  formConfig={formConfig}
+  renderFieldItem={renderFieldItem}
+  renderGroups={renderGroups}
+/>`,
+    docs: '/docs/rendering-and-ui',
+    demoUrl: '/demos?demo=renderExtension'
   },
   {
     title: translate({ id: 'examples.compilerAdapter.title', message: '转换外部配置' }),
