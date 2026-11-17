@@ -11,7 +11,7 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'
 const transformDemoFile = async (relativePath) => {
   const resourcePath = path.join(repoRoot, 'demos', relativePath);
   const source = await readFile(resourcePath, 'utf8');
-  return demoI18nLoader.call({ resourcePath }, source);
+  return demoI18nLoader.call({ resourcePath, addDependency() {} }, source);
 };
 
 test('docs-site localizes prefilled values and dynamic demo output at compile time', async () => {
@@ -20,8 +20,9 @@ test('docs-site localizes prefilled values and dynamic demo output at compile ti
   const headlessRenderer = await transformDemoFile('headlessRendererDemo.tsx');
   const nodeModel4 = await transformDemoFile('nodeModel4Demo.tsx');
 
-  assert.match(customHandlers, /translateDemoValues\(initialValues, t\)/);
-  assert.match(customHandlers, /translateDemoConfig\(memoConfig as FlatFormConfig, t\)/);
+  assert.match(customHandlers, /t\.translateDemoValues\(initialValues\)/);
+  assert.match(customHandlers, /t\.translateDemoConfig\(memoConfig as FlatFormConfig\)/);
+  assert.match(customHandlers, /import \{ useDemoT \} from ["']\.\/demoI18n["'];/);
   assert.match(formValidation, /translateDemoValues\(cloneDemoValues\(initialValues\), t\)/);
   assert.match(headlessRenderer, /translateDemoValues\(/);
   assert.match(nodeModel4, /Contact \$\{contacts\.length \+ 1\}/);

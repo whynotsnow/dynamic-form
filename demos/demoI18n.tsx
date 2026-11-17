@@ -1,10 +1,16 @@
-import React, { createContext, useCallback, useContext } from 'react';
+import React, { createContext, useCallback, useContext, useMemo } from 'react';
 import { demoMessages, demoSampleValues } from './demoI18n/index';
 
 export type DemoLocale = 'zh-CN' | 'en';
-export type DemoTranslator = (zh: string, en: string) => string;
+export type DemoTranslator = ((zh: string, en: string) => string) & {
+  translateDemoConfig: <T>(value: T) => T;
+  translateDemoValues: <T>(value: T) => T;
+};
 
-const defaultTranslator: DemoTranslator = (zh) => zh;
+const defaultTranslator: DemoTranslator = Object.assign((zh: string) => zh, {
+  translateDemoConfig: <T,>(value: T) => value,
+  translateDemoValues: <T,>(value: T) => value
+});
 const demoI18nContextKey = Symbol.for('dynamic-form.docs-demo-i18n-context');
 const sharedContexts = globalThis as unknown as Record<symbol, React.Context<DemoTranslator>>;
 const DemoI18nContext =
@@ -15,8 +21,19 @@ export const DemoI18nProvider: React.FC<{
   locale: DemoLocale;
   children: React.ReactNode;
 }> = ({ locale, children }) => {
-  const translate = useCallback<DemoTranslator>((zh, en) => (locale === 'en' ? en : zh), [locale]);
-  return <DemoI18nContext.Provider value={translate}>{children}</DemoI18nContext.Provider>;
+  const translate = useCallback((zh: string, en: string) => (locale === 'en' ? en : zh), [locale]);
+  const localizedTranslator = useMemo<DemoTranslator>(() => {
+    const translator = Object.assign(translate, {
+      translateDemoConfig: <T,>(value: T) => value,
+      translateDemoValues: <T,>(value: T) => value
+    });
+    translator.translateDemoConfig = <T,>(value: T) => translateDemoConfig(value, translator);
+    translator.translateDemoValues = <T,>(value: T) => translateDemoValues(value, translator);
+    return translator;
+  }, [translate]);
+  return (
+    <DemoI18nContext.Provider value={localizedTranslator}>{children}</DemoI18nContext.Provider>
+  );
 };
 
 export const useDemoT = (): DemoTranslator => useContext(DemoI18nContext);

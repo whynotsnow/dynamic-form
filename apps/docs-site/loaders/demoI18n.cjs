@@ -31,6 +31,18 @@ const demoCatalogFiles = {
   'customComponents/OperatingAreaField.tsx': 'storeBoundary',
   'customComponents/index.tsx': 'customComponents'
 };
+const loaderDependencies = [
+  path.resolve(__dirname, 'demoI18n/ast-utils.cjs'),
+  path.resolve(__dirname, 'demoI18n/active-demo-transform.cjs'),
+  path.resolve(__dirname, 'demoI18n/special-transforms.cjs'),
+  path.resolve(catalogRoot, 'shared.json'),
+  path.resolve(catalogRoot, 'data/shared.json'),
+  path.resolve(catalogRoot, 'special/customHandlers.json'),
+  path.resolve(catalogRoot, 'special/uiConfig.json'),
+  ...[...new Set(Object.values(demoCatalogFiles))].map((demo) =>
+    path.resolve(catalogRoot, `demos/${demo}.json`)
+  )
+];
 const messagesForDemo = (demo) => ({
   ...sharedMessages,
   ...readCatalog(`demos/${demo}.json`),
@@ -39,6 +51,7 @@ const messagesForDemo = (demo) => ({
 const ts = loadDependency('typescript');
 
 module.exports = function demoI18nLoader(source) {
+  loaderDependencies.forEach((dependency) => this.addDependency?.(dependency));
   const sourceFile = ts.createSourceFile(
     this.resourcePath,
     source,

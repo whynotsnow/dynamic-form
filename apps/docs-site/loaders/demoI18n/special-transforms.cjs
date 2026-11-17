@@ -10,6 +10,13 @@ const {
   translatedTemplate
 } = loadDependency('./ast-utils.cjs');
 
+const translatorMethodCall = (method, expression) =>
+  ts.factory.createCallExpression(
+    ts.factory.createPropertyAccessExpression(ts.factory.createIdentifier('t'), method),
+    undefined,
+    [expression]
+  );
+
 const transformDemo = (sourceFile, options) => {
   const messages = options.messages;
   const matched = new Set();
@@ -69,10 +76,7 @@ const transformDemo = (sourceFile, options) => {
           node.name,
           ts.factory.createJsxExpression(
             undefined,
-            ts.factory.createCallExpression(ts.factory.createIdentifier(helper), undefined, [
-              ts.visitNode(node.initializer.expression, visitor),
-              ts.factory.createIdentifier('t')
-            ])
+            translatorMethodCall(helper, ts.visitNode(node.initializer.expression, visitor))
           )
         );
       }
