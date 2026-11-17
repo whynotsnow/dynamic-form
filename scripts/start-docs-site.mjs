@@ -9,6 +9,13 @@ const workspaceRoot = path.resolve(scriptDirectory, '..');
 const siteDirectory = path.join(workspaceRoot, 'apps/docs-site');
 const docusaurusBin = path.join(siteDirectory, 'node_modules/@docusaurus/core/bin/docusaurus.mjs');
 const configPath = path.join(siteDirectory, 'docusaurus.config.ts');
+const localLocaleUrls =
+  process.argv[2] === 'all'
+    ? {
+        'zh-CN': 'http://localhost:3001',
+        en: 'http://localhost:3002'
+      }
+    : undefined;
 const locales =
   process.argv[2] === 'all'
     ? [
@@ -64,7 +71,17 @@ const startLocale = async ({ locale, port }) => {
     [docusaurusBin, 'start', '--locale', locale, '--port', String(port), '--config', configPath],
     {
       cwd: isolatedSiteDirectory,
-      env: { ...process.env, WATCHPACK_POLLING: 'true' },
+      env: {
+        ...process.env,
+        ...(localLocaleUrls
+          ? {
+              SITE_URL: localLocaleUrls[locale],
+              SITE_URL_ZH_CN: localLocaleUrls['zh-CN'],
+              SITE_URL_EN: localLocaleUrls.en
+            }
+          : {}),
+        WATCHPACK_POLLING: 'true'
+      },
       stdio: 'inherit'
     }
   );

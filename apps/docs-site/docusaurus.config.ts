@@ -3,11 +3,13 @@ import type * as Preset from '@docusaurus/preset-classic';
 import { themes as prismThemes } from 'prism-react-renderer';
 import path from 'node:path';
 
+const siteUrl = process.env.SITE_URL ?? 'https://form.whynotsnow.com';
+
 const config: Config = {
   title: 'DynamicForm',
   tagline: '基于 Ant Design 的配置化 React 表单',
 
-  url: process.env.SITE_URL ?? 'https://form.whynotsnow.com',
+  url: siteUrl,
   baseUrl: process.env.SITE_BASE_URL ?? '/',
   trailingSlash: true,
 
@@ -26,8 +28,14 @@ const config: Config = {
     defaultLocale: 'zh-CN',
     locales: ['zh-CN', 'en'],
     localeConfigs: {
-      'zh-CN': { label: '简体中文' },
-      en: { label: 'English' }
+      'zh-CN': {
+        label: '简体中文',
+        url: process.env.SITE_URL_ZH_CN ?? siteUrl
+      },
+      en: {
+        label: 'English',
+        url: process.env.SITE_URL_EN ?? siteUrl
+      }
     }
   },
 
