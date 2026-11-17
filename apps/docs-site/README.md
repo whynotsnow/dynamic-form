@@ -12,7 +12,9 @@
 ## 开发命令
 
 ```bash
-pnpm run site:start  # 从仓库根目录启动站点
+pnpm run site:start:zh-CN   # 简体中文站点，端口 3001
+pnpm run site:start:en      # 英文站点，端口 3002
+pnpm run site:start:locales # 同时启动中英文站点，分别使用端口 3001 / 3002
 pnpm run site:build  # 从仓库根目录构建站点
 ```
 

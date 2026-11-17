@@ -36,7 +36,9 @@
 ## 常用命令
 
 - `pnpm run start`：启动 Vite demo server，端口 3000。
-- `pnpm run site:start`：启动 Docusaurus docs site，端口 3001。
+- `pnpm run site:start` 或 `pnpm run site:start:zh-CN`：启动简体中文 Docusaurus docs site，端口 3001。
+- `pnpm run site:start:en`：启动英文 Docusaurus docs site，端口 3002。
+- `pnpm run site:start:locales`：同时启动简体中文和英文 docs site，分别使用端口 3001 和 3002。
 - `pnpm run type-check`：执行 package 与 repo TypeScript 检查。
 - `pnpm run lint:check`：执行 ESLint 检查，不自动修复。
 - `pnpm run test`：执行 `tests/**/*.test.mjs`。

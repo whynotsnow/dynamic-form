@@ -13,6 +13,9 @@ docs-site 是名为 `@whynotsnow/dynamic-form-site` 的 Docusaurus workspace。�
 从仓库根目录运行：
 
 - `pnpm run site:start`：在端口 3001 启动 Docusaurus。
+- `pnpm run site:start:zh-CN`：在端口 3001 启动简体中文站点。
+- `pnpm run site:start:en`：在端口 3002 启动英文站点。
+- `pnpm run site:start:locales`：同时启动两种语言，简体中文使用端口 3001，英文使用端口 3002。
 - `pnpm run site:build`：构建 Docusaurus 站点。
 
 workspace 命令：

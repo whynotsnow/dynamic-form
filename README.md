@@ -29,7 +29,9 @@ docs/                    monorepo 级架构、维护、发布和站点规划文�
 
 ```bash
 pnpm run start       # 启动 Vite demos
-pnpm run site:start  # 启动 Docusaurus 文档站
+pnpm run site:start  # 启动简体中文 docs-site，端口 3001
+pnpm run site:start:en  # 启动英文 docs-site，端口 3002
+pnpm run site:start:locales  # 同时启动中英文 docs-site（3001 / 3002）
 pnpm run type-check  # TypeScript 检查
 pnpm run lint:check  # ESLint 检查，不自动修复
 pnpm run test        # Node test runner
