@@ -11,6 +11,7 @@ import {
   type UIConfig
 } from '@/exports';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
+import { useDemoSubmitResult } from './useDemoSubmitResult';
 
 const toText = (value: unknown, fallback: string) => {
   return typeof value === 'string' ? value : fallback;
@@ -111,6 +112,7 @@ const textareaModule: FieldModule = {
 const CompilerFoundationDemo: React.FC = () => {
   useDemoInitHandlers();
   const [form] = Form.useForm();
+  const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
 
   const compiled = useMemo(() => {
     const registry = new ModuleRegistryManager([
@@ -221,6 +223,7 @@ const CompilerFoundationDemo: React.FC = () => {
 
   const handleSubmit = (values: FormValues) => {
     console.log('[CompilerFoundationDemo] submit:', values);
+    showSubmitResult(values);
   };
 
   const uiConfig: UIConfig = {
@@ -241,6 +244,7 @@ const CompilerFoundationDemo: React.FC = () => {
         onSubmit={handleSubmit}
         uiConfig={uiConfig}
       />
+      {submitResultModal}
     </div>
   );
 };

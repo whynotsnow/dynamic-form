@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Alert, SelectProps, Form } from 'antd';
+import { Alert, Form } from 'antd';
 import { exampleHandlers } from './customHandlers';
 import { FlatFormConfig, FormValues } from '@/exports';
 import { DynamicForm } from '@/exports';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
+import { useDemoSubmitResult } from './useDemoSubmitResult';
 import DemoLoading from './DemoLoading';
 
 type DemoFormValues = {
@@ -12,8 +13,6 @@ type DemoFormValues = {
   age: number | string;
   email: string;
   emailNote?: string;
-  fruit: string[];
-  multipleSelect: string[];
 };
 
 const getNameStyleEffect = (changedValue: DemoFormValues['name'], _allValues: DemoFormValues) => {
@@ -68,17 +67,6 @@ const getStatusChainedEffect = (
     ]
   };
 };
-
-const options: SelectProps['options'] = [];
-
-options.push(
-  { value: 'email', label: '邮件通知' },
-  { value: 'sms', label: '短信通知' },
-  { value: 'inApp', label: '站内通知' },
-  { value: 'push', label: '移动推送' },
-  { value: 'enterpriseWeChat', label: '企业微信' },
-  { value: 'webhook', label: 'Webhook 通知' }
-);
 
 const getConfig = (initialValues: DemoFormValues): FlatFormConfig => {
   const demoFormConfig = {
@@ -148,31 +136,6 @@ const getConfig = (initialValues: DemoFormValues): FlatFormConfig => {
         },
         effect: (changedValue: DemoFormValues['status'], allValues: FormValues) =>
           getStatusChainedEffect(changedValue, allValues as DemoFormValues)
-      },
-      {
-        id: 'fruit',
-        label: '喜欢的水果',
-        component: 'CheckboxGroup',
-        span: 24,
-        componentProps: {
-          options: [
-            { label: '苹果', value: 'Apple', className: 'label-1' },
-            { label: '梨', value: 'Pear', className: 'label-2' },
-            { label: '橙子', value: 'Orange', className: 'label-3' }
-          ],
-          style: { width: 800 }
-        }
-      },
-      {
-        id: 'multipleSelect',
-        label: '通知渠道',
-        component: 'Select',
-        span: 24,
-        componentProps: {
-          options,
-          mode: 'multiple'
-          // style: { width: 800 }
-        }
       }
     ]
   };
@@ -184,13 +147,11 @@ const mockFetchFormData = (): Promise<DemoFormValues> => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve({
-        name: 'admin',
+        name: '普通用户',
         // status: 'ACTIVE',
         status: '',
         age: 10,
-        email: 'whynotsnow@163.com',
-        fruit: ['Apple', 'Orange'],
-        multipleSelect: ['email', 'inApp']
+        email: 'whynotsnow@163.com'
       });
     }, 800);
   });
@@ -198,6 +159,7 @@ const mockFetchFormData = (): Promise<DemoFormValues> => {
 
 const CustomHandlersDemo: React.FC = () => {
   const { registeredCount } = useDemoInitHandlers({ handlers: exampleHandlers });
+  const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
 
   const handleSubmit = (values: DemoFormValues) => {
     console.log('表单提交:', values);
@@ -237,10 +199,15 @@ const CustomHandlersDemo: React.FC = () => {
           formConfig={memoConfig as FlatFormConfig}
           values={initialValues}
           form={form}
-          onSubmit={(values) => handleSubmit(values as DemoFormValues)}
+          onSubmit={(values) => {
+            const submittedValues = values as DemoFormValues;
+            handleSubmit(submittedValues);
+            showSubmitResult(submittedValues);
+          }}
           submitButtonText="提交表单"
         />
       </div>
+      {submitResultModal}
     </div>
   );
 };

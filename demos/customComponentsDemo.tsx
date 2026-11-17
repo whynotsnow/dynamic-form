@@ -11,6 +11,7 @@ import { exampleHandlers } from './customHandlers';
 import { customComponents } from './customComponents';
 import { Button, Form, message, Space } from 'antd';
 import DemoLoading from './DemoLoading';
+import { useDemoSubmitResult } from './useDemoSubmitResult';
 import { mockFetchFormData } from '../packages/dynamic-form/src/shared/utils/utils';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
 
@@ -201,6 +202,7 @@ const CustomComponentsDemo: React.FC = () => {
 
   const [initialValues, setInitialValues] = useState<DemoFormValues>();
   const [form] = Form.useForm();
+  const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
 
   useEffect(() => {
     async function fetchData() {
@@ -272,16 +274,20 @@ const CustomComponentsDemo: React.FC = () => {
         renderFormInner={({ defaultRender }) => (
           <>
             {defaultRender.fieldsArea}
-            {/* 只渲染字段区域，不渲染 submitArea */}
-            {/* {defaultRender.submitArea} */}
+            {viewMode === 'editableFields' ? defaultRender.submitArea : null}
           </>
         )}
         renderFieldItem={renderFieldItem}
         values={initialValues}
-        onSubmit={(values) => handleSubmit(values as DemoFormValues)}
+        onSubmit={(values) => {
+          const nextValues = values as DemoFormValues;
+          handleSubmit(nextValues);
+          showSubmitResult(nextValues);
+        }}
         componentRegistry={componentRegistryConfig}
         submitButtonText="提交表单"
       />
+      {submitResultModal}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Card, Tag, Tooltip, Typography, Input, Tabs, Button } from 'antd';
+import { Form, Card, Tag, Tooltip, Typography, Input, Tabs, Button, Space } from 'antd';
 import {
   InfoCircleOutlined,
   StarOutlined,
@@ -18,6 +18,7 @@ import type {
   RenderFieldsParams
 } from '@/exports';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
+import { useDemoSubmitResult } from './useDemoSubmitResult';
 
 const { Text } = Typography;
 
@@ -79,7 +80,8 @@ CustomEmailField.wrapWithFormItem = false;
 
 const RenderExtensionDemo: React.FC = () => {
   const [form] = Form.useForm();
-  const [formValues, setFormValues] = useState<RenderExtensionFormValues>({});
+  const [showExtensions, setShowExtensions] = useState(true);
+  const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
 
   const formConfig: GroupedFormConfig = {
     groups: [
@@ -145,8 +147,8 @@ const RenderExtensionDemo: React.FC = () => {
   useDemoInitHandlers();
 
   const handleSubmit = (values: RenderExtensionFormValues) => {
-    console.log('表单提交值:', JSON.stringify(values, null, 2), form.getFieldsValue(true));
-    setFormValues(values);
+    console.log('表单提交值:', values);
+    showSubmitResult(values);
   };
 
   /** 单字段覆盖 */
@@ -208,25 +210,32 @@ const RenderExtensionDemo: React.FC = () => {
 
   return (
     <div>
+      <Space style={{ marginBottom: 16 }}>
+        <Button
+          type={showExtensions ? 'primary' : 'default'}
+          onClick={() => setShowExtensions(true)}
+        >
+          扩展示例
+        </Button>
+        <Button
+          type={!showExtensions ? 'primary' : 'default'}
+          onClick={() => setShowExtensions(false)}
+        >
+          默认渲染
+        </Button>
+      </Space>
       <DynamicForm
         formConfig={formConfig}
         form={form}
         onSubmit={(values) => handleSubmit(values as RenderExtensionFormValues)}
         componentRegistry={componentRegistry}
-        renderFieldItem={renderFieldItem}
-        renderFields={renderFields}
-        renderGroupItem={renderGroupItem}
-        renderGroups={renderGroups}
-        renderFormInner={renderFormInner}
+        renderFieldItem={showExtensions ? renderFieldItem : undefined}
+        renderFields={showExtensions ? renderFields : undefined}
+        renderGroupItem={showExtensions ? renderGroupItem : undefined}
+        renderGroups={showExtensions ? renderGroups : undefined}
+        renderFormInner={showExtensions ? renderFormInner : undefined}
       />
-
-      {Object.keys(formValues).length > 0 && (
-        <Card title="📊 提交结果" style={{ marginTop: 24 }}>
-          <pre style={{ background: '#f6f8fa', padding: 16, borderRadius: 6 }}>
-            {JSON.stringify(formValues, null, 2)}
-          </pre>
-        </Card>
-      )}
+      {submitResultModal}
     </div>
   );
 };

@@ -1,11 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Button, Card, Form, Space, Typography } from 'antd';
+import { Button, Card, Form, Space } from 'antd';
 import DynamicForm from '@/index';
 import type { FormValues } from '@/exports';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
+import { useDemoSubmitResult } from './useDemoSubmitResult';
 import { nodeModel4DemoConfig, nodeModel4DemoValues } from './nodeModel4DemoConfig';
-
-const { Text } = Typography;
 
 function formatValues(values: FormValues) {
   return JSON.stringify(values, null, 2);
@@ -38,8 +37,9 @@ const NodeModel4Demo: React.FC = () => {
   useDemoInitHandlers();
 
   const [form] = Form.useForm();
+  const isCompany = Form.useWatch('isCompany', form);
   const [currentValues, setCurrentValues] = useState<FormValues>({});
-  const [submittedValues, setSubmittedValues] = useState<FormValues>({});
+  const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
 
   const initialDemoValues = useMemo(() => nodeModel4DemoValues, []);
 
@@ -60,15 +60,17 @@ const NodeModel4Demo: React.FC = () => {
   };
 
   const handleSubmit = (values: FormValues) => {
-    setSubmittedValues(values);
+    showSubmitResult(values);
   };
 
   return (
     <div>
-      <Space>
-        <Button onClick={addContact}>添加联系人</Button>
-        <Button onClick={removeLastContact}>移除最后一个联系人</Button>
-      </Space>
+      {isCompany !== false && (
+        <Space>
+          <Button onClick={addContact}>添加联系人</Button>
+          <Button onClick={removeLastContact}>移除最后一个联系人</Button>
+        </Space>
+      )}
 
       <DynamicForm
         form={form}
@@ -84,16 +86,10 @@ const NodeModel4Demo: React.FC = () => {
           </>
         )}
       />
+      {submitResultModal}
 
       <Card title="当前 AntD Form values" style={{ marginTop: 16 }}>
         <pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>{formatValues(currentValues)}</pre>
-      </Card>
-
-      <Card title="最近一次提交值" style={{ marginTop: 16 }}>
-        <Text type="secondary">
-          隐藏 container 的字段会按 Runtime participation 策略从提交值中移除。
-        </Text>
-        <pre style={{ marginTop: 12, whiteSpace: 'pre-wrap' }}>{formatValues(submittedValues)}</pre>
       </Card>
     </div>
   );

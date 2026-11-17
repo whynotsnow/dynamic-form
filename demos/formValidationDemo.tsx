@@ -8,6 +8,7 @@ import { exampleHandlers } from './customHandlers';
 import { mockFetchFormData } from '../packages/dynamic-form/src/shared/utils';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
 import DemoLoading from './DemoLoading';
+import { useDemoSubmitResult } from './useDemoSubmitResult';
 
 type ProjectMemberValue = {
   name: string;
@@ -142,6 +143,7 @@ const FormValidationDemo: React.FC = () => {
   };
 
   useDemoInitHandlers({ handlers: exampleHandlers });
+  const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
 
   const handleSubmit = (values: DemoFormValues) => {
     console.log('表单数据:', values);
@@ -159,7 +161,27 @@ const FormValidationDemo: React.FC = () => {
     }
   };
 
+  const loadInvalidExample = () => {
+    setInvalidExampleValues({
+      ...initialValues,
+      name: 'A',
+      email: 'invalid-email',
+      projects: [
+        {
+          name: '',
+          description: '',
+          members: [],
+          tasks: [],
+          targetPlatforms: [],
+          techStack: []
+        }
+      ],
+      userTable: []
+    });
+  };
+
   const [initialValues, setInitialValues] = useState<DemoFormValues>();
+  const [invalidExampleValues, setInvalidExampleValues] = useState<DemoFormValues>();
   useEffect(() => {
     async function fetchData() {
       const testData = {
@@ -253,18 +275,31 @@ const FormValidationDemo: React.FC = () => {
           <Button type="primary" onClick={handleValidate}>
             校验所有字段
           </Button>
-          <Button onClick={() => form.resetFields()}>重置表单</Button>
+          <Button onClick={loadInvalidExample}>填入校验错误示例</Button>
+          <Button
+            onClick={() => {
+              setInvalidExampleValues(undefined);
+              form.resetFields();
+            }}
+          >
+            重置表单
+          </Button>
         </Space>
 
         <DynamicForm
           form={form}
-          values={initialValues}
+          values={invalidExampleValues ?? initialValues}
           formConfig={formConfig}
-          onSubmit={(values) => handleSubmit(values as DemoFormValues)}
+          onSubmit={(values) => {
+            const submittedValues = values as DemoFormValues;
+            handleSubmit(submittedValues);
+            showSubmitResult(submittedValues);
+          }}
           componentRegistry={componentRegistryConfig}
           submitButtonText="提交表单"
         />
       </Space>
+      {submitResultModal}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Space, Typography } from 'antd';
+import { Space } from 'antd';
 import {
   createMemoryFormAdapter,
   DynamicForm,
@@ -7,16 +7,7 @@ import {
   type FormConfig,
   headlessRenderer
 } from '../packages/dynamic-form/src/exports';
-
-const { Text } = Typography;
-
-type HeadlessFormValues = {
-  profile?: {
-    name?: string;
-    email?: string;
-  };
-  internalNote?: string;
-};
+import { useDemoSubmitResult } from './useDemoSubmitResult';
 
 const HeadlessInput: React.FC<FieldComponentProps> & { wrapWithFormItem?: boolean } = ({
   field,
@@ -89,7 +80,7 @@ const HeadlessRendererDemo: React.FC = () => {
       }),
     []
   );
-  const [submittedValues, setSubmittedValues] = useState<HeadlessFormValues | null>(null);
+  const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
 
   return (
     <Space direction="vertical" size="middle" style={{ width: '100%' }}>
@@ -109,11 +100,9 @@ const HeadlessRendererDemo: React.FC = () => {
           </div>
         )}
         submitButtonText="提交 Headless 表单"
-        onSubmit={(values) => setSubmittedValues({ ...values })}
+        onSubmit={(values) => showSubmitResult({ ...values })}
       />
-
-      <Text strong>提交结果</Text>
-      <pre>{JSON.stringify(submittedValues, null, 2)}</pre>
+      {submitResultModal}
     </Space>
   );
 };

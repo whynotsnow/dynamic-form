@@ -5,6 +5,7 @@ import { Tag, Space, Form } from 'antd';
 import { CheckCircleOutlined } from '@ant-design/icons';
 import { useDemoInitHandlers } from './useDemoInitHandlers';
 import { PriorityField, priorityEffect } from '../demos/customComponents/PriorityField';
+import { useDemoSubmitResult } from './useDemoSubmitResult';
 
 type DynamicUIFormValues = {
   title?: string;
@@ -79,6 +80,7 @@ const getDescriptionUIEffect = (changedValue: DynamicUIFormValues['description']
 
 const UIConfigDemo: React.FC = () => {
   const [dynamicForm] = Form.useForm();
+  const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
   // 动态label表单配置 - 展示useInitHandlers处理effect返回值的功能
   const dynamicFormConfig: FormConfig = {
     fields: [
@@ -199,6 +201,7 @@ const UIConfigDemo: React.FC = () => {
   // 动态表单提交处理
   const handleDynamicSubmit = (values: FormValues) => {
     console.log('动态表单提交:', values);
+    showSubmitResult(values);
   };
 
   // 使用useInitHandlers处理effect函数返回值
@@ -209,13 +212,16 @@ const UIConfigDemo: React.FC = () => {
   };
 
   return (
-    <DynamicForm
-      formConfig={dynamicFormConfig}
-      uiConfig={dynamicUIConfig}
-      componentRegistry={componentRegistryConfig}
-      onSubmit={handleDynamicSubmit}
-      form={dynamicForm}
-    />
+    <>
+      <DynamicForm
+        formConfig={dynamicFormConfig}
+        uiConfig={dynamicUIConfig}
+        componentRegistry={componentRegistryConfig}
+        onSubmit={handleDynamicSubmit}
+        form={dynamicForm}
+      />
+      {submitResultModal}
+    </>
   );
 };
 
