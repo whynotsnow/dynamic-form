@@ -3,6 +3,7 @@ import Heading from '@theme/Heading';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import Translate, { translate } from '@docusaurus/Translate';
+import SiteContentErrorBoundary from '../components/SiteContentErrorBoundary';
 import SiteCodeBlock from '../components/SiteCodeBlock';
 import styles from './examples.module.css';
 
@@ -135,24 +136,29 @@ export default function Examples(): React.JSX.Element {
 
           <section className={styles.grid}>
             {examples.map((example) => (
-              <article className={styles.card} key={example.title}>
-                <Heading as="h2">{example.title}</Heading>
-                <p>{example.description}</p>
-                <SiteCodeBlock
-                  className={styles.code}
-                  code={example.code}
-                  language="tsx"
-                  showCopy={false}
-                />
-                <div className={styles.links}>
-                  <Link className="button button--primary button--sm" to={example.docs}>
-                    <Translate id="examples.card.docsLink">文档</Translate>
-                  </Link>
-                  <Link className="button button--secondary button--sm" to={example.demoUrl}>
-                    <Translate id="examples.card.demosLink">demo演示</Translate>
-                  </Link>
-                </div>
-              </article>
+              <SiteContentErrorBoundary
+                context={`example card: ${example.demoUrl}`}
+                key={example.title}
+              >
+                <article className={styles.card}>
+                  <Heading as="h2">{example.title}</Heading>
+                  <p>{example.description}</p>
+                  <SiteCodeBlock
+                    className={styles.code}
+                    code={example.code}
+                    language="tsx"
+                    showCopy={false}
+                  />
+                  <div className={styles.links}>
+                    <Link className="button button--primary button--sm" to={example.docs}>
+                      <Translate id="examples.card.docsLink">文档</Translate>
+                    </Link>
+                    <Link className="button button--secondary button--sm" to={example.demoUrl}>
+                      <Translate id="examples.card.demosLink">demo演示</Translate>
+                    </Link>
+                  </div>
+                </article>
+              </SiteContentErrorBoundary>
             ))}
           </section>
         </div>

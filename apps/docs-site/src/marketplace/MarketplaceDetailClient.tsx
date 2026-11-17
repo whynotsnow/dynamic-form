@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import Link from '@docusaurus/Link';
 import Translate, { translate } from '@docusaurus/Translate';
+import SiteContentErrorBoundary from '../components/SiteContentErrorBoundary';
 import Heading from '@theme/Heading';
 import SiteCodeBlock from '../components/SiteCodeBlock';
 import { marketplaceFilters, marketplaceItems } from './marketplaceData';
@@ -154,7 +155,9 @@ export default function MarketplaceDetailClient(): React.JSX.Element {
             </div>
             <div className={styles.previewBody}>
               {ActivePreview ? (
-                <ActivePreview key={`${item.previewId}-${previewKey}`} />
+                <SiteContentErrorBoundary context={`marketplace preview: ${item.previewId}`}>
+                  <ActivePreview key={`${item.previewId}-${previewKey}`} />
+                </SiteContentErrorBoundary>
               ) : (
                 <p>
                   <Translate id="marketplace.detail.previewMissing">
@@ -195,12 +198,17 @@ export default function MarketplaceDetailClient(): React.JSX.Element {
               ))}
             </div>
             {activeCodeBlock ? (
-              <SiteCodeBlock
-                code={activeCodeBlock.code}
-                copyCode={activeCodeBlock.code}
-                language={activeCodeBlock.language}
-                title={activeCodeBlock.title}
-              />
+              <SiteContentErrorBoundary
+                context={`marketplace code: ${item.id}:${activeCodeBlock.title}`}
+                key={`${item.id}-${activeCodeIndex}`}
+              >
+                <SiteCodeBlock
+                  code={activeCodeBlock.code}
+                  copyCode={activeCodeBlock.code}
+                  language={activeCodeBlock.language}
+                  title={activeCodeBlock.title}
+                />
+              </SiteContentErrorBoundary>
             ) : null}
           </section>
         </div>

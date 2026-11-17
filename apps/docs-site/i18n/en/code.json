@@ -406,6 +406,15 @@
   "examples.card.demosLink": {
     "message": "Demo Showcase"
   },
+  "site.errorBoundary.title": {
+    "message": "This content is temporarily unavailable"
+  },
+  "site.errorBoundary.description": {
+    "message": "This section encountered a rendering error. The rest of the page is still available."
+  },
+  "site.errorBoundary.retry": {
+    "message": "Try again"
+  },
   "marketplace.loading": {
     "message": "Loading extension marketplace..."
   },

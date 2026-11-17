@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import Link from '@docusaurus/Link';
 import Translate, { translate } from '@docusaurus/Translate';
 import Heading from '@theme/Heading';
+import SiteContentErrorBoundary from '../components/SiteContentErrorBoundary';
 import { marketplaceFilters, marketplaceItems } from './marketplaceData';
 import type { MarketplaceItem, MarketplaceKind } from './marketplaceData';
 import styles from '../pages/marketplace.module.css';
@@ -123,7 +124,9 @@ export default function MarketplaceClient(): React.JSX.Element {
 
       <section className={styles.grid}>
         {filteredItems.map((item) => (
-          <MarketplaceCard item={item} key={item.id} />
+          <SiteContentErrorBoundary context={`marketplace card: ${item.id}`} key={item.id}>
+            <MarketplaceCard item={item} />
+          </SiteContentErrorBoundary>
         ))}
       </section>
     </div>

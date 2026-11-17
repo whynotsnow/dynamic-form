@@ -1,0 +1,19 @@
+.fallback {
+  padding: 16px;
+  border: 1px solid var(--df-border-subtle);
+  border-radius: 8px;
+  background: var(--df-background-muted);
+  color: var(--df-text-main);
+}
+
+.fallback h3 {
+  margin: 0 0 8px;
+  color: var(--df-text-strong);
+  font-size: 1rem;
+}
+
+.fallback p {
+  margin: 0 0 12px;
+  color: var(--df-text-muted);
+  line-height: 1.6;
+}
