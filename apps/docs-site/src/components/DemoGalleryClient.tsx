@@ -11,9 +11,20 @@ import {
   type DemoType
 } from '../../../../demos/demoRegistry';
 import DemoWrapper, { type DemoGuideItem } from './DemoWrapper';
+import { DemoSubmitResultContext } from '../../../../demos/useDemoSubmitResult';
 import styles from './DemoGalleryClient.module.css';
 
 const DEFAULT_DEMO: DemoType = 'storeBoundary';
+
+const submitResultMessages = {
+  title: translate({ id: 'demos.submitResult.title', message: '本次提交数据' }),
+  description: translate({
+    id: 'demos.submitResult.description',
+    message: '以下为本次传入 onSubmit 的数据：'
+  }),
+  confirm: translate({ id: 'demos.submitResult.confirm', message: '确认' }),
+  cancel: translate({ id: 'demos.submitResult.cancel', message: '取消' })
+};
 
 const getInitialDemoContentHeight = () => {
   if (typeof window === 'undefined') return 954;
@@ -389,7 +400,9 @@ export default function DemoGalleryClient(): React.JSX.Element {
             title={currentDemoText.title}
           >
             <DemoErrorBoundary demoTitle={currentDemoText.title}>
-              <CurrentDemo />
+              <DemoSubmitResultContext.Provider value={submitResultMessages}>
+                <CurrentDemo />
+              </DemoSubmitResultContext.Provider>
             </DemoErrorBoundary>
           </DemoWrapper>
         </section>

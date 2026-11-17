@@ -14,6 +14,7 @@
 | `renderExtension`    | `renderExtensionDemo.tsx`    | 演示 `renderFieldItem`、`renderFields`、`renderGroupItem`、`renderGroups`、`renderFormInner` 等渲染扩展点。 |
 | `compilerFoundation` | `compilerFoundationDemo.tsx` | 演示字段模块如何编译为标准 `FormConfig` 后再交给 `DynamicForm` 渲染。                                       |
 | `nodeModel4`         | `nodeModel4Demo.tsx`         | 演示 4.0 `nodes`、普通 container、嵌套 container、repeatable container、级联字段联动和跨层级 effect graph。 |
+| `headlessRenderer`   | `headlessRendererDemo.tsx`   | 演示 Memory Adapter、Headless Renderer、嵌套字段路径和隐藏字段。                                           |
 
 ## 入口用法
 
@@ -40,6 +41,7 @@ const App = () => {
 ```text
 demos/
 ├── App.tsx
+├── DemoLoading.tsx
 ├── DemoSelector.tsx
 ├── demoRegistry.tsx
 ├── demoSources.json
@@ -49,12 +51,14 @@ demos/
 ├── customComponents/
 ├── customComponentsDemo.tsx
 ├── formValidationDemo.tsx
+├── headlessRendererDemo.tsx
 ├── compilerFoundationDemo.tsx
 ├── nodeModel4Demo.tsx
 ├── nodeModel4DemoConfig.ts
 ├── renderExtensionDemo.tsx
 ├── uiConfigDemo.tsx
 ├── useDemoInitHandlers.ts
+├── useDemoSubmitResult.tsx
 ├── index.ts
 └── README.md
 ```
@@ -74,6 +78,6 @@ demos/
 
 - 定义 `FieldModule`；
 - 使用 `ModuleRegistryManager` 注册模块；
-- 将 JsonSchema 转换为 mixed `ModuleFormConfig`；
+- 使用 Metadata Adapter 将申请字段配置归一化为带分组的 `ModuleFormConfig`；
 - 使用 `groupOverrides` 注入 Schema 无法序列化的 group effect；
 - 将编译得到的 `FormConfig` 交给现有 `DynamicForm` runtime 渲染。

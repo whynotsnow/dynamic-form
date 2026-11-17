@@ -107,7 +107,9 @@ form.validateFields(Object.keys(changedValues));
 
 这样默认能避免隐藏字段进入提交数据，同时给需要保留值的业务场景留出配置能力。
 
-该策略同样适用于因 group 或 container 隐藏而离开 submit participation 的字段。`preserveValueOnHide` 和 `restoreValueOnShow` 都是字段级配置，不会被父级 container 自动覆盖。
+该策略同样适用于因普通 group 或 container 隐藏而离开 submit participation 的字段。`preserveValueOnHide` 和 `restoreValueOnShow` 都是字段级配置，不会被普通父级 container 自动覆盖。
+
+repeatable container 是例外：它的 `Form.List` 使用运行时行索引。容器隐藏时，`useFieldParticipation` 会在容器的 `name` 路径一次清空并缓存整个列表；重新显示时恢复列表。列表内字段不单独执行字段级的隐藏值策略，因此其 `preserveValueOnHide` 和 `restoreValueOnShow` 不控制这次整表清理。
 
 ## 扩展建议
 

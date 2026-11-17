@@ -20,6 +20,9 @@ pnpm run start
 | Ant Design Form 校验集成 | [`demos/formValidationDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/formValidationDemo.tsx) |
 | 静态和动态 UI 配置 | [`demos/uiConfigDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/uiConfigDemo.tsx) |
 | render hooks 渲染扩展 | [`demos/renderExtensionDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/renderExtensionDemo.tsx) |
+| Metadata Adapter 与 Compiler | [`demos/compilerFoundationDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/compilerFoundationDemo.tsx) |
+| 嵌套与可重复容器 | [`demos/nodeModel4Demo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/nodeModel4Demo.tsx)、[`demos/nodeModel4DemoConfig.ts`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/nodeModel4DemoConfig.ts) |
+| Headless Renderer 与 Memory Adapter | [`demos/headlessRendererDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/headlessRendererDemo.tsx) |
 
 ## 最小使用
 

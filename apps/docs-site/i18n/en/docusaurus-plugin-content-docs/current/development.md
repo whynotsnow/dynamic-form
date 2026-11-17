@@ -20,6 +20,9 @@ The demo selector is [`demos/DemoSelector.tsx`](https://github.com/whynotsnow/dy
 | Ant Design Form validation integration     | [`demos/formValidationDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/formValidationDemo.tsx)                                                                                                            |
 | Static and dynamic UI config               | [`demos/uiConfigDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/uiConfigDemo.tsx)                                                                                                                        |
 | Render hook extensions                     | [`demos/renderExtensionDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/renderExtensionDemo.tsx)                                                                                                          |
+| Metadata Adapter and Compiler              | [`demos/compilerFoundationDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/compilerFoundationDemo.tsx)                                                                                                    |
+| Nested and repeatable containers           | [`demos/nodeModel4Demo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/nodeModel4Demo.tsx), [`demos/nodeModel4DemoConfig.ts`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/nodeModel4DemoConfig.ts) |
+| Headless Renderer and Memory Adapter       | [`demos/headlessRendererDemo.tsx`](https://github.com/whynotsnow/dynamic-form/blob/main/demos/headlessRendererDemo.tsx)                                                                                          |
 
 ## Minimal Usage
 

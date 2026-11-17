@@ -59,7 +59,9 @@ These helpers only consume an already resolved `runtimeState`. They do not recom
 
 `useFieldParticipation` clears a field value when it leaves submit participation unless `preserveValueOnHide` is true. If `restoreValueOnShow` is not false, the old value is cached and restored when the field becomes submitable again.
 
-The same policy applies when a field leaves submit participation because its group or container is hidden. `preserveValueOnHide` and `restoreValueOnShow` are field-level options and are not automatically overridden by parent containers.
+The same policy applies when a field leaves submit participation because an ordinary group or container is hidden. `preserveValueOnHide` and `restoreValueOnShow` remain field-level options for these fields.
+
+A repeatable container is an exception because its `Form.List` uses runtime row indices. When the container is hidden, `useFieldParticipation` clears and caches the entire list at the container's `name` path; it restores the list when the container becomes visible again. Child fields do not apply their own hidden-value policy inside that list, so their `preserveValueOnHide` and `restoreValueOnShow` options do not control this whole-list cleanup.
 
 ## Extension Guidance
 

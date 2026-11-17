@@ -81,7 +81,7 @@
     "message": "This example assumes App.tsx is at the repository root. It imports the current component from ./demos, renders it as a React component, and mounts it to #root."
   },
   "demos.sourcePanel.sharedContext": {
-    "message": "DemoWrapper, DemoLoading, and useDemoSubmitResult are shared demo components. The links below open this demo, its custom components, and the submit result helper.",
+    "message": "DemoWrapper presents the site demo; demos reuse DemoLoading and useDemoSubmitResult. The links below open this demo, related components, and the submit result helper.",
     "description": "Context note above GitHub source links"
   },
   "demos.sourcePanel.githubLinks": {
@@ -186,6 +186,18 @@
   },
   "demos.guide.headlessRenderer.hidden": {
     "message": "Confirm the initially hidden note is absent from the fields and submit result, and inspect the custom field wrapper."
+  },
+  "demos.submitResult.title": {
+    "message": "Submitted form data"
+  },
+  "demos.submitResult.description": {
+    "message": "The following data was passed to onSubmit:"
+  },
+  "demos.submitResult.confirm": {
+    "message": "Confirm"
+  },
+  "demos.submitResult.cancel": {
+    "message": "Cancel"
   },
   "demos.error.title": {
     "message": "Current demo failed to render"
