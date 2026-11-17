@@ -325,9 +325,9 @@ export default function DemoGalleryClient(): React.JSX.Element {
   );
   const currentDemoInfo = DEMO_COMPONENTS[currentDemo];
   const currentDemoText = DEMO_TEXT[currentDemo];
-  const presentationDescription = DEMO_PRESENTATION_DESCRIPTIONS[currentDemo];
+  const presentationDescription = DEMO_PRESENTATION_DESCRIPTIONS[currentDemo]?.[locale];
   const CurrentDemo = currentDemoInfo.component;
-  const sourceFiles = DEMO_SOURCE_FILES[currentDemo] ?? [];
+  const sourceFiles = DEMO_SOURCE_FILES[currentDemo]?.[locale] ?? [];
 
   useEffect(() => {
     const handlePopState = () => {
@@ -390,15 +390,7 @@ export default function DemoGalleryClient(): React.JSX.Element {
         <section className={styles.content}>
           <DemoWrapper
             componentName={currentDemoInfo.name}
-            description={[
-              currentDemoText.description,
-              presentationDescription
-                ? translate({
-                    id: `demos.items.${currentDemo}.presentationDescription`,
-                    message: presentationDescription
-                  })
-                : null
-            ]
+            description={[currentDemoText.description, presentationDescription ?? null]
               .filter(Boolean)
               .join(' ')}
             guide={DEMO_GUIDES[currentDemo]}

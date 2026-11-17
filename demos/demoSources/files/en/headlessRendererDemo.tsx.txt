@@ -1,0 +1,75 @@
+import React, { useMemo, useState } from 'react';
+import { Space } from 'antd';
+import { createMemoryFormAdapter, DynamicForm, type FieldComponentProps, type FormConfig, headlessRenderer } from '../packages/dynamic-form/src/exports';
+import { useDemoSubmitResult } from './useDemoSubmitResult';
+const HeadlessInput: React.FC<FieldComponentProps> & {
+    wrapWithFormItem?: boolean;
+} = ({ field, formAdapter }) => {
+    const name = field.name ?? field.id;
+    const [value, setValue] = useState(() => String(formAdapter?.getFieldValue(name) ?? ''));
+    return (<input name={field.id} value={value} onChange={(event) => {
+            setValue(event.target.value);
+            formAdapter?.setFieldValue(name, event.target.value);
+        }}/>);
+};
+const formConfig: FormConfig = {
+    fields: [
+        {
+            id: 'name',
+            name: ['profile', 'name'],
+            label: "Name",
+            component: 'HeadlessInput',
+            required: true,
+            initialValue: 'Ada'
+        },
+        {
+            id: 'internalNote',
+            label: "Hidden note",
+            component: 'HeadlessInput',
+            initialVisible: false,
+            initialValue: "Excluded from default rendering"
+        }
+    ],
+    nodes: [
+        {
+            nodeType: 'container',
+            id: 'contact',
+            title: "Contact details",
+            designer: {
+                title: "Contact details section",
+                category: 'preview'
+            },
+            children: [
+                {
+                    nodeType: 'field',
+                    id: 'email',
+                    name: ['profile', 'email'],
+                    label: "Email",
+                    component: 'HeadlessInput',
+                    initialValue: 'ada@example.com'
+                }
+            ]
+        }
+    ]
+};
+const HeadlessRendererDemo: React.FC = () => {
+    const formAdapter = useMemo(() => createMemoryFormAdapter({
+        profile: {
+            name: 'Ada',
+            email: 'ada@example.com'
+        }
+    }), []);
+    const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
+    return (<Space direction="vertical" size="middle" style={{ width: '100%' }}>
+      <DynamicForm formAdapter={formAdapter} renderer={headlessRenderer} formConfig={formConfig} componentRegistry={{
+            customComponents: {
+                HeadlessInput
+            },
+            allowOverride: true
+        }} renderFieldItem={({ field, defaultRender }) => (<div data-demo-field={field.id} style={{ marginBottom: 12 }}>
+            {defaultRender}
+          </div>)} submitButtonText="Submit headless form" onSubmit={(values) => showSubmitResult({ ...values })}/>
+      {submitResultModal}
+    </Space>);
+};
+export default HeadlessRendererDemo;

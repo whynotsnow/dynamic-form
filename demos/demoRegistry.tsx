@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react';
-import demoSources from './demoSources.json';
+import { demoSourceEntries } from './demoSources/index';
 import StoreBoundaryDemo from './storeBoundaryDemo';
 import CustomHandlersDemo from './customHandlersDemo';
 import CustomComponentsDemo from './customComponentsDemo';
@@ -87,29 +87,46 @@ export interface DemoSourceFile {
   content: string;
 }
 
-export interface DemoSourceEntry {
-  sourceFiles: DemoSourceFile[];
-  githubDemoPath: string;
-  relatedComponents: string[];
-  presentationDescription?: string;
+export interface LocalizedDemoSourceFile {
+  path: string;
+  content: Record<'zh-CN' | 'en', string>;
 }
 
-const demoSourceEntries = demoSources as Record<DemoType, DemoSourceEntry>;
+export interface DemoSourceEntry {
+  sourceFiles: LocalizedDemoSourceFile[];
+  githubDemoPath: string;
+  relatedComponents: string[];
+  presentationDescription?: Record<'zh-CN' | 'en', string>;
+}
+
+const typedDemoSourceEntries = demoSourceEntries as Record<DemoType, DemoSourceEntry>;
 
 export const DEMO_SOURCE_FILES = Object.fromEntries(
-  Object.entries(demoSourceEntries).map(([demoType, entry]) => [demoType, entry.sourceFiles])
-) as Record<DemoType, DemoSourceFile[]>;
+  Object.entries(typedDemoSourceEntries).map(([demoType, entry]) => [
+    demoType,
+    {
+      'zh-CN': entry.sourceFiles.map(({ path, content }) => ({ path, content: content['zh-CN'] })),
+      en: entry.sourceFiles.map(({ path, content }) => ({ path, content: content.en }))
+    }
+  ])
+) as Record<DemoType, Record<'zh-CN' | 'en', DemoSourceFile[]>>;
 
 export const DEMO_RELATED_COMPONENTS = Object.fromEntries(
-  Object.entries(demoSourceEntries).map(([demoType, entry]) => [demoType, entry.relatedComponents])
+  Object.entries(typedDemoSourceEntries).map(([demoType, entry]) => [
+    demoType,
+    entry.relatedComponents
+  ])
 ) as Record<DemoType, string[]>;
 
 export const DEMO_GITHUB_SOURCE = Object.fromEntries(
-  Object.entries(demoSourceEntries).map(([demoType, entry]) => [demoType, entry.githubDemoPath])
+  Object.entries(typedDemoSourceEntries).map(([demoType, entry]) => [
+    demoType,
+    entry.githubDemoPath
+  ])
 ) as Record<DemoType, string>;
 
 export const DEMO_PRESENTATION_DESCRIPTIONS = Object.fromEntries(
-  Object.entries(demoSourceEntries)
+  Object.entries(typedDemoSourceEntries)
     .filter(([, entry]) => entry.presentationDescription)
     .map(([demoType, entry]) => [demoType, entry.presentationDescription])
-) as Partial<Record<DemoType, string>>;
+) as Partial<Record<DemoType, Record<'zh-CN' | 'en', string>>>;

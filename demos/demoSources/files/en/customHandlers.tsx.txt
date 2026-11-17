@@ -1,0 +1,94 @@
+import type { CustomEffectResultHandler } from '@/consumer/effects';
+import type { CSSProperties } from 'react';
+type ChainedEffectItem = {
+    type: string;
+    value: CSSProperties | string | number | boolean | null | undefined;
+};
+type ConditionalDisplayValue = {
+    condition: boolean | (() => boolean);
+    fieldId?: string;
+};
+function isConditionalDisplayValue(value: unknown): value is ConditionalDisplayValue {
+    return (typeof value === 'object' &&
+        value !== null &&
+        'condition' in value &&
+        (typeof value.condition === 'boolean' || typeof value.condition === 'function'));
+}
+// Example 2: conditional display handler
+export const conditionalDisplayHandler: CustomEffectResultHandler = {
+    name: 'conditionalDisplay',
+    description: 'Control field visibility based on a condition',
+    canHandle: (key) => key === 'conditionalDisplay',
+    validate: isConditionalDisplayValue,
+    handle: (context, value) => {
+        if (!isConditionalDisplayValue(value))
+            return;
+        const { condition, fieldId } = value;
+        const shouldShow = typeof condition === 'function' ? condition() : condition;
+        const meta = { visible: shouldShow };
+        if (fieldId) {
+            context.updateFieldMetaById(fieldId, meta);
+            return;
+        }
+        context.updateFieldMeta(meta);
+    }
+};
+// Example 3: data transformation handler
+export const dataTransformHandler: CustomEffectResultHandler = {
+    name: 'dataTransform',
+    description: 'Transform data by doubling the age entered by the user',
+    canHandle: (key) => key === 'dataTransform',
+    validate: (value) => value !== null && value !== undefined,
+    handle: (context, value) => {
+        // Data transformation: multiply the entered age by 2
+        let transformedValue = value;
+        if (typeof value === 'number') {
+            // If the value is a number, multiply it by 2
+            transformedValue = value * 2;
+        }
+        else if (typeof value === 'string') {
+            // If the value is a string, parse it as a number and multiply it by 2
+            const numValue = parseFloat(value);
+            if (!isNaN(numValue)) {
+                transformedValue = numValue * 2;
+            }
+            else {
+                // If it cannot be parsed as a number, keep the original value
+                transformedValue = value;
+            }
+        }
+        // Use the batch update API so changes take effect immediately
+        context.setFieldValue(transformedValue);
+        // console.log(`Data transformation complete: ${context.fieldName}`, {
+        //   original: value,
+        //   transformed: transformedValue,
+        //   operation: 'multiply by 2'
+        // });
+    }
+};
+// Example 4: chained handler
+export const chainedHandler: CustomEffectResultHandler = {
+    name: 'chained',
+    description: 'Chain multiple effects',
+    canHandle: (key) => key === 'chained',
+    validate: (value) => Array.isArray(value) && value.length > 0,
+    handle: (context, value) => {
+        // Run multiple handlers
+        (value as ChainedEffectItem[]).forEach((item) => {
+            // Apply different logic based on the item type
+            if (item.type === 'style') {
+                context.updateFieldMeta({
+                    formItemProps: {
+                        style: item.value,
+                        className: 'chained-styled-field'
+                    }
+                });
+            }
+            else if (item.type === 'transform') {
+                context.setFieldValue(item.value);
+            }
+        });
+    }
+};
+// Export all example handlers
+export const exampleHandlers = [conditionalDisplayHandler, dataTransformHandler, chainedHandler];

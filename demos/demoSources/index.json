@@ -1,0 +1,109 @@
+{
+  "storeBoundary": {
+    "sourceFiles": [
+      "storeBoundaryDemo",
+      "useDemoInitHandlers",
+      "testData"
+    ],
+    "githubDemoPath": "demos/storeBoundaryDemo.tsx",
+    "relatedComponents": [
+      "demos/customComponents/OperatingAreaField.tsx",
+      "demos/useDemoSubmitResult.tsx"
+    ]
+  },
+  "customHandlers": {
+    "sourceFiles": [
+      "customHandlersDemo",
+      "customHandlers",
+      "useDemoInitHandlers"
+    ],
+    "githubDemoPath": "demos/customHandlersDemo.tsx",
+    "relatedComponents": [
+      "demos/useDemoSubmitResult.tsx"
+    ]
+  },
+  "customComponents": {
+    "sourceFiles": [
+      "customComponentsDemo",
+      "customHandlers",
+      "useDemoInitHandlers"
+    ],
+    "githubDemoPath": "demos/customComponentsDemo.tsx",
+    "relatedComponents": [
+      "demos/customComponents/CustomProjectList.tsx",
+      "demos/customComponents/CustomEditTable.tsx",
+      "demos/customComponents/OperatingAreaField.tsx",
+      "demos/useDemoSubmitResult.tsx"
+    ]
+  },
+  "formValidation": {
+    "sourceFiles": [
+      "formValidationDemo",
+      "customHandlers",
+      "useDemoInitHandlers"
+    ],
+    "githubDemoPath": "demos/formValidationDemo.tsx",
+    "relatedComponents": [
+      "demos/customComponents/CustomProjectList.tsx",
+      "demos/customComponents/CustomEditTable.tsx",
+      "demos/customComponents/OperatingAreaField.tsx",
+      "demos/customComponents/CustomEditTable.module.css",
+      "demos/useDemoSubmitResult.tsx"
+    ]
+  },
+  "uiConfig": {
+    "sourceFiles": [
+      "uiConfigDemo",
+      "useDemoInitHandlers"
+    ],
+    "githubDemoPath": "demos/uiConfigDemo.tsx",
+    "relatedComponents": [
+      "demos/customComponents/PriorityField.tsx",
+      "demos/useDemoSubmitResult.tsx"
+    ]
+  },
+  "renderExtension": {
+    "sourceFiles": [
+      "renderExtensionDemo",
+      "useDemoInitHandlers"
+    ],
+    "githubDemoPath": "demos/renderExtensionDemo.tsx",
+    "relatedComponents": [
+      "demos/useDemoSubmitResult.tsx"
+    ]
+  },
+  "compilerFoundation": {
+    "sourceFiles": [
+      "compilerFoundationDemo",
+      "useDemoInitHandlers"
+    ],
+    "githubDemoPath": "demos/compilerFoundationDemo.tsx",
+    "relatedComponents": [
+      "demos/useDemoSubmitResult.tsx"
+    ],
+    "presentationDescription": {
+      "zh-CN": "编译后的申请表单包含申请标题、归属部门、优先级和预算字段；选择工程部时会显示条件审核分组。",
+      "en": "The compiled application form includes a title, department, priority, and budget. Selecting Engineering reveals the conditional review group."
+    }
+  },
+  "nodeModel4": {
+    "sourceFiles": [
+      "nodeModel4Demo",
+      "nodeModel4DemoConfig",
+      "useDemoInitHandlers"
+    ],
+    "githubDemoPath": "demos/nodeModel4Demo.tsx",
+    "relatedComponents": [
+      "demos/useDemoSubmitResult.tsx"
+    ]
+  },
+  "headlessRenderer": {
+    "sourceFiles": [
+      "headlessRendererDemo"
+    ],
+    "githubDemoPath": "demos/headlessRendererDemo.tsx",
+    "relatedComponents": [
+      "demos/useDemoSubmitResult.tsx"
+    ]
+  }
+}

@@ -7,6 +7,7 @@ import React, {
   useRef,
   useState
 } from 'react';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { translate } from '@docusaurus/Translate';
 import Heading from '@theme/Heading';
 import {
@@ -55,13 +56,15 @@ function DemoSourcePanel({
   const [activeFileIndex, setActiveFileIndex] = useState(0);
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const idPrefix = useId().replace(/:/g, '');
+  const { i18n } = useDocusaurusContext();
 
   if (sourceFiles.length === 0) {
     return null;
   }
 
   const activeFile = sourceFiles[activeFileIndex] ?? sourceFiles[0];
-  const activeSource = `// 文件路径: ${activeFile.path}\n${activeFile.content.trim()}`;
+  const sourcePathLabel = i18n.currentLocale === 'en' ? 'File path' : '文件路径';
+  const activeSource = `// ${sourcePathLabel}: ${activeFile.path}\n${activeFile.content.trim()}`;
   const referenceMountSource = [
     "import React from 'react';",
     "import { createRoot } from 'react-dom/client';",

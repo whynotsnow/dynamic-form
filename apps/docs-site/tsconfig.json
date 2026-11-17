@@ -8,6 +8,13 @@
       "@whynotsnow/dynamic-form-core": ["../../packages/dynamic-form-core/src/exports.ts"]
     }
   },
-  "include": ["src", "docs", "i18n", "docusaurus.config.ts", "sidebars.ts"],
+  "include": [
+    "src",
+    "docs",
+    "i18n",
+    "docusaurus.config.ts",
+    "sidebars.ts",
+    "../../demos/demoSources/raw-source.d.ts"
+  ],
   "exclude": ["build", ".docusaurus", "node_modules"]
 }

@@ -1,0 +1,31 @@
+import React from 'react';
+import { Card, Form } from 'antd';
+import { supplierFormConfig } from '../tests/testData';
+import { DynamicForm } from '@/exports';
+import { useDemoInitHandlers } from './useDemoInitHandlers';
+import { useDemoSubmitResult } from './useDemoSubmitResult';
+import OperatingAreaField from '../demos/customComponents/OperatingAreaField';
+type StoreBoundaryFormValues = {
+    [fieldName: string]: string | number | boolean | string[] | undefined;
+};
+const StoreBoundaryDemo: React.FC = () => {
+    const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
+    const handleSubmit = (values: StoreBoundaryFormValues) => {
+        console.log('[StoreBoundaryDemo] Form submitted:', values);
+        showSubmitResult(values);
+    };
+    // Initialize the handler system so all demo components work correctly
+    useDemoInitHandlers();
+    const [form] = Form.useForm();
+    const currentValues = Form.useWatch([], { form, preserve: true }) ?? {};
+    return (<div>
+      <DynamicForm onSubmit={(values) => handleSubmit(values as StoreBoundaryFormValues)} form={form} submitButtonText="Submit form" formConfig={supplierFormConfig} componentRegistry={{ customComponents: { OperatingAreaField } }}/>
+      <Card title="Current Ant Design Form values" style={{ marginTop: 16 }}>
+        <pre style={{ margin: 0, whiteSpace: 'pre-wrap' }}>
+          {JSON.stringify(currentValues, null, 2)}
+        </pre>
+      </Card>
+      {submitResultModal}
+    </div>);
+};
+export default StoreBoundaryDemo;

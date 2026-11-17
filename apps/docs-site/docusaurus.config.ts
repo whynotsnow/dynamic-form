@@ -73,6 +73,11 @@ const config: Config = {
             module: {
               rules: [
                 {
+                  test: /\.tsx\.txt$/,
+                  include: [path.resolve(__dirname, '../../demos/demoSources/files')],
+                  type: 'asset/source'
+                },
+                {
                   test: /\.(tsx|ts)$/,
                   include: [path.resolve(__dirname, '../../demos')],
                   enforce: 'pre',

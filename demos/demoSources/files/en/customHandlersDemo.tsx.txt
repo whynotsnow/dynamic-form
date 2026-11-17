@@ -1,0 +1,176 @@
+import React, { useEffect, useMemo, useState } from 'react';
+import { Alert, Form } from 'antd';
+import { exampleHandlers } from './customHandlers';
+import { FlatFormConfig, FormValues } from '@/exports';
+import { DynamicForm } from '@/exports';
+import { useDemoInitHandlers } from './useDemoInitHandlers';
+import { useDemoSubmitResult } from './useDemoSubmitResult';
+import DemoLoading from './DemoLoading';
+type DemoFormValues = {
+    name: string;
+    status: string;
+    age: number | string;
+    email: string;
+    emailNote?: string;
+};
+const getNameStyleEffect = (changedValue: DemoFormValues['name'], _allValues: DemoFormValues) => {
+    // Use the custom style handler
+    return {
+        formItemProps: {
+            style: {
+                backgroundColor: changedValue === 'admin' ? '#ff4d4f' : '#52c41a',
+                color: changedValue === 'admin' ? '#ff4d4f' : '#52c41a',
+                fontSize: '16px'
+            }
+        }
+    };
+};
+const getAgeTransformEffect = (changedValue: DemoFormValues['age'], _allValues: DemoFormValues) => {
+    // Use the data transformation handler
+    return {
+        dataTransform: changedValue
+    };
+};
+const getEmailNoteDisplayEffect = (_changedValue: DemoFormValues['email'], allValues: DemoFormValues) => ({
+    conditionalDisplay: {
+        condition: !allValues.email || allValues.email.includes('@'),
+        message: "Enter a valid email address"
+    }
+});
+const getStatusChainedEffect = (changedValue: DemoFormValues['status'], _allValues: DemoFormValues) => {
+    // Use the chained handler
+    return {
+        chained: [
+            {
+                type: 'style',
+                value: {
+                    backgroundColor: changedValue === 'active' ? '#52c41a' : '#ff4d4f',
+                    textColor: 'white',
+                    fontSize: '14px'
+                }
+            },
+            {
+                type: 'transform',
+                value: changedValue.toUpperCase()
+            }
+        ]
+    };
+};
+const getConfig = (initialValues: DemoFormValues): FlatFormConfig => {
+    const demoFormConfig = {
+        fields: [
+            {
+                id: 'name',
+                label: "Name",
+                component: 'TextInput',
+                span: 24,
+                initialValue: () => {
+                    return {
+                        value: initialValues.name,
+                        formItemProps: {
+                            style: {
+                                backgroundColor: initialValues.name === 'admin' ? '#ff4d4f' : '#52c41a',
+                                color: initialValues.name === 'admin' ? '#ff4d4f' : '#52c41a',
+                                fontSize: '16px'
+                            }
+                        }
+                    };
+                },
+                effect: (changedValue: DemoFormValues['name'], allValues: FormValues) => getNameStyleEffect(changedValue, allValues as DemoFormValues)
+            },
+            {
+                id: 'age',
+                label: "Age",
+                component: 'TextInput',
+                span: 24,
+                effect: (changedValue: DemoFormValues['age'], allValues: FormValues) => getAgeTransformEffect(changedValue, allValues as DemoFormValues)
+            },
+            {
+                id: 'email',
+                label: "Email",
+                component: 'TextInput',
+                span: 24,
+                dependents: ['emailNote']
+            },
+            {
+                id: 'emailNote',
+                label: "Email note",
+                component: 'TextInput',
+                span: 24,
+                initialValue: "Shown when email is valid; hidden fields are omitted from submission and restored when visible.",
+                effect: (changedValue: DemoFormValues['email'], allValues: FormValues) => getEmailNoteDisplayEffect(changedValue, allValues as DemoFormValues)
+            },
+            {
+                id: 'status',
+                label: "Status",
+                component: 'SelectField',
+                span: 24,
+                options: [
+                    { value: 'active', label: "Active" },
+                    { value: 'inactive', label: "Inactive" }
+                ],
+                initialValue: () => {
+                    const color = initialValues.status === 'active' ? '#52c41a' : '#ff4d4f';
+                    return {
+                        formItemProps: {
+                            style: {
+                                backgroundColor: initialValues.status ? color : '#7FFFAA'
+                            }
+                        }
+                    };
+                },
+                effect: (changedValue: DemoFormValues['status'], allValues: FormValues) => getStatusChainedEffect(changedValue, allValues as DemoFormValues)
+            }
+        ]
+    };
+    return demoFormConfig;
+};
+const mockFetchFormData = (): Promise<DemoFormValues> => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve({
+                name: "Standard user",
+                // status: 'ACTIVE',
+                status: '',
+                age: 10,
+                email: 'whynotsnow@163.com'
+            });
+        }, 800);
+    });
+};
+const CustomHandlersDemo: React.FC = () => {
+    const { registeredCount } = useDemoInitHandlers({ handlers: exampleHandlers });
+    const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
+    const handleSubmit = (values: DemoFormValues) => {
+        console.log("Form submitted:", values);
+    };
+    const [initialValues, setInitialValues] = useState<DemoFormValues>();
+    const [form] = Form.useForm();
+    useEffect(() => {
+        async function fetchData() {
+            const data = await mockFetchFormData();
+            setInitialValues(data);
+        }
+        fetchData();
+    }, []);
+    const memoConfig = useMemo(() => {
+        if (initialValues) {
+            return getConfig(initialValues);
+        }
+    }, [initialValues]);
+    // Render only after data loads
+    if (!initialValues)
+        return <DemoLoading />;
+    return (<div>
+      <Alert message="Handlers initialized successfully" description={`Successfully registered ${registeredCount} handlers`} type="success" showIcon style={{ marginBottom: 16 }}/>
+      <div style={{ maxWidth: 720, width: '100%' }}>
+        <DynamicForm formConfig={memoConfig as FlatFormConfig} values={initialValues} form={form} onSubmit={(values) => {
+            const submittedValues = values as DemoFormValues;
+            handleSubmit(submittedValues);
+            showSubmitResult(submittedValues);
+        }} submitButtonText="Submit form"/>
+      </div>
+      {submitResultModal}
+    </div>);
+};
+export default CustomHandlersDemo;

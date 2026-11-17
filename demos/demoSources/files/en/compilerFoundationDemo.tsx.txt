@@ -1,0 +1,210 @@
+import React, { useMemo } from 'react';
+import { Form, Select } from 'antd';
+import type { SelectProps } from 'antd';
+import { DynamicForm, ModuleRegistryManager, compileAdaptedFormConfig, type FieldComponentProps, type FieldModule, type FormValues, type UIConfig } from '@/exports';
+import { useDemoInitHandlers } from './useDemoInitHandlers';
+import { useDemoSubmitResult } from './useDemoSubmitResult';
+const toText = (value: unknown, fallback: string) => {
+    return typeof value === 'string' ? value : fallback;
+};
+const toBoolean = (value: unknown, fallback = false) => {
+    return typeof value === 'boolean' ? value : fallback;
+};
+const DepartmentPicker: React.FC<FieldComponentProps> = ({ value, onChange, field }) => {
+    const componentProps = field.componentProps as SelectProps | undefined;
+    return (<Select value={value as SelectProps['value']} onChange={onChange} {...componentProps} style={{ width: '100%', ...componentProps?.style }}/>);
+};
+const departmentModule: FieldModule = {
+    type: 'DepartmentPicker',
+    component: DepartmentPicker,
+    defaultProps: {
+        allowClear: true,
+        placeholder: "Select department",
+        style: { width: '100%' },
+        options: [
+            { label: "Engineering", value: 'engineering' },
+            { label: "Finance", value: 'finance' },
+            { label: "Operations", value: 'operations' }
+        ]
+    },
+    createConfig: (options) => ({
+        id: 'departmentId',
+        label: String(options?.label ?? "Department"),
+        component: 'Select',
+        required: toBoolean(options?.required, true),
+        rules: [{ required: toBoolean(options?.required, true), message: "Select a department" }]
+    })
+};
+const textModule: FieldModule = {
+    type: 'TextField',
+    createConfig: (options) => ({
+        id: 'textField',
+        label: toText(options?.label, 'Text'),
+        component: 'TextInput',
+        required: toBoolean(options?.required),
+        componentProps: {
+            placeholder: toText(options?.placeholder, "Enter a value")
+        }
+    })
+};
+const selectModule: FieldModule = {
+    type: 'SelectFieldModule',
+    createConfig: (options) => ({
+        id: 'selectField',
+        label: toText(options?.label, 'Select'),
+        component: 'SelectField',
+        required: toBoolean(options?.required),
+        componentProps: {
+            placeholder: toText(options?.placeholder, "Select a value"),
+            options: Array.isArray(options?.options) ? options.options : []
+        }
+    })
+};
+const numberModule: FieldModule = {
+    type: 'NumberField',
+    createConfig: (options) => ({
+        id: 'numberField',
+        label: toText(options?.label, 'Number'),
+        component: 'NumberInput',
+        componentProps: {
+            min: typeof options?.min === 'number' ? options.min : 0,
+            max: typeof options?.max === 'number' ? options.max : undefined,
+            placeholder: toText(options?.placeholder, "Enter a number")
+        }
+    })
+};
+const textareaModule: FieldModule = {
+    type: 'TextareaField',
+    createConfig: (options) => ({
+        id: 'textareaField',
+        label: toText(options?.label, 'Textarea'),
+        component: 'TextArea',
+        componentProps: {
+            rows: typeof options?.rows === 'number' ? options.rows : 3,
+            placeholder: toText(options?.placeholder, "Enter a description")
+        }
+    })
+};
+const CompilerFoundationDemo: React.FC = () => {
+    useDemoInitHandlers();
+    const [form] = Form.useForm();
+    const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
+    const compiled = useMemo(() => {
+        const registry = new ModuleRegistryManager([
+            departmentModule,
+            textModule,
+            selectModule,
+            numberModule,
+            textareaModule
+        ]);
+        return compileAdaptedFormConfig({
+            fields: [
+                {
+                    id: 'requestTitle',
+                    type: 'TextField',
+                    options: {
+                        label: "Request title",
+                        required: true,
+                        placeholder: "e.g. Add an internal system field"
+                    }
+                },
+                {
+                    id: 'ownerDepartment',
+                    type: 'DepartmentPicker',
+                    options: { label: "Owning department" }
+                },
+                {
+                    id: 'priority',
+                    type: 'SelectFieldModule',
+                    options: {
+                        label: "Priority",
+                        placeholder: "Select priority",
+                        options: [
+                            { label: "High", value: 'high' },
+                            { label: "Medium", value: 'medium' },
+                            { label: "Low", value: 'low' }
+                        ]
+                    }
+                },
+                {
+                    id: 'budget',
+                    type: 'NumberField',
+                    options: {
+                        label: "Budget",
+                        min: 0,
+                        max: 100000,
+                        placeholder: "Enter a budget amount"
+                    }
+                },
+                {
+                    id: 'reviewDepartment',
+                    type: 'DepartmentPicker',
+                    groupId: 'reviewGroup',
+                    options: { label: "Review department" }
+                },
+                {
+                    id: 'riskLevel',
+                    type: 'SelectFieldModule',
+                    groupId: 'reviewGroup',
+                    options: {
+                        label: "Risk level",
+                        placeholder: "Select a risk level",
+                        options: [
+                            { label: "High", value: 'high' },
+                            { label: "Medium", value: 'medium' },
+                            { label: "Low", value: 'low' }
+                        ]
+                    }
+                },
+                {
+                    id: 'reviewNote',
+                    type: 'TextareaField',
+                    groupId: 'reviewGroup',
+                    options: {
+                        label: "Review notes",
+                        rows: 4,
+                        placeholder: "Enter review notes"
+                    }
+                }
+            ],
+            groups: [
+                {
+                    id: 'reviewGroup',
+                    title: "Engineering technical review",
+                    initialVisible: false,
+                    rules: [
+                        {
+                            when: { field: 'ownerDepartment', equals: 'engineering' },
+                            then: { action: 'show' }
+                        }
+                    ]
+                }
+            ]
+        }, {
+            adapterType: 'metadata',
+            moduleRegistry: registry,
+            groupOverrides: {
+                reviewGroup: {
+                    // External metadata does not carry functions; business effects are added after the adapter and before the compiler.
+                    effect: () => ({ visible: false })
+                }
+            }
+        });
+    }, []);
+    const handleSubmit = (values: FormValues) => {
+        console.log('[CompilerFoundationDemo] submit:', values);
+        showSubmitResult(values);
+    };
+    const uiConfig: UIConfig = {
+        formItemProps: {
+            labelCol: { span: 8 },
+            wrapperCol: { span: 16 }
+        },
+        colProps: { span: 24 }
+    };
+    return (<div>
+      <DynamicForm form={form} formConfig={compiled.formConfig} componentRegistry={{ customComponents: compiled.componentRegistry }} submitButtonText="Submit compiled form" onSubmit={handleSubmit} uiConfig={uiConfig}/>
+      {submitResultModal}
+    </div>);
+};
+export default CompilerFoundationDemo;

@@ -1,0 +1,247 @@
+import React, { useEffect, useMemo, useState } from 'react';
+import type { ComponentRegistryConfig, FieldState, FormValues, GroupedFormConfig, RenderFieldItemParams } from '@/exports';
+import DynamicForm from '@/index';
+import { exampleHandlers } from './customHandlers';
+import { customComponents } from './customComponents';
+import { Button, Form, message, Space } from 'antd';
+import DemoLoading from './DemoLoading';
+import { useDemoSubmitResult } from './useDemoSubmitResult';
+import { mockFetchFormData } from '../packages/dynamic-form/src/shared/utils/utils';
+import { useDemoInitHandlers } from './useDemoInitHandlers';
+type DemoFieldValue = string | number | boolean | undefined;
+type DemoFormValues = {
+    name: string;
+    age: number;
+    password: string;
+    category: string;
+    showExtra: boolean;
+    extraInfo?: string;
+    quantity: number;
+    email: string;
+    satisfaction: number;
+    themeColor: string;
+    avatar?: string;
+    description: string;
+};
+const getExtraInfoVisibilityEffect = (_changedValue: DemoFormValues['showExtra'], allValues: DemoFormValues) => {
+    const showExtra = allValues.showExtra;
+    return { visible: showExtra === true };
+};
+// Component registry configuration
+const componentRegistryConfig: ComponentRegistryConfig = {
+    customComponents,
+    allowOverride: false // Do not allow overriding default components
+};
+const ReadOnlyField: React.FC<{
+    field: FieldState;
+    value: DemoFieldValue;
+}> = ({ field, value }) => {
+    const options = (field.componentProps as {
+        options?: {
+            value: unknown;
+            label: React.ReactNode;
+        }[];
+    })?.options;
+    const displayValue = Array.isArray(value)
+        ? value
+            .map((item) => options?.find((option) => option.value === item)?.label ?? item)
+            .join('、')
+        : (options?.find((option) => option.value === value)?.label ?? value?.toString() ?? '-');
+    return (<div style={{ padding: '4px 0' }}>
+      <strong>{field.label}：</strong>
+      <span style={{ color: '#555' }}>{displayValue}</span>
+    </div>);
+};
+const getConfig = (initialValues: DemoFormValues): GroupedFormConfig => {
+    const formConfig = {
+        groups: [
+            {
+                id: 'baseInfo',
+                title: "Basic information",
+                fields: [
+                    {
+                        id: 'name',
+                        label: "Name",
+                        component: 'TextInput',
+                        span: 12
+                    },
+                    {
+                        id: 'age',
+                        label: "Age",
+                        component: 'NumberInput',
+                        span: 12
+                    }
+                ]
+            },
+            {
+                id: 'customComponent',
+                title: "Custom components",
+                fields: [
+                    {
+                        id: 'password',
+                        label: "Password",
+                        component: 'EnhancedTextInput', // Override the default TextInput
+                        componentProps: {
+                            placeholder: "Enter a password"
+                        },
+                        span: 12
+                    },
+                    {
+                        id: 'category',
+                        label: "Category example",
+                        component: 'DynamicSelect',
+                        componentProps: {
+                            options: [
+                                { value: 'tech', label: "Technology" },
+                                { value: 'design', label: "Design" }
+                            ]
+                        },
+                        span: 12
+                    },
+                    {
+                        id: 'showExtra',
+                        label: "Show additional information",
+                        component: 'Switch',
+                        dependents: ['extraInfo'],
+                        span: 12
+                    },
+                    {
+                        id: 'extraInfo',
+                        label: "Additional information",
+                        component: 'TextInput',
+                        componentProps: {
+                            placeholder: "Enter additional information"
+                        },
+                        initialValue: () => {
+                            return {
+                                visible: initialValues.showExtra === true
+                            };
+                        },
+                        effect: (changedValue: DemoFormValues['showExtra'], allValues: FormValues) => getExtraInfoVisibilityEffect(changedValue, allValues as DemoFormValues),
+                        span: 12
+                    },
+                    {
+                        id: 'quantity',
+                        label: "Quantity",
+                        component: 'UnitNumberInput',
+                        componentProps: {
+                            unit: "items",
+                            min: 1,
+                            max: 100
+                        },
+                        span: 12
+                    },
+                    {
+                        id: 'email',
+                        label: "Email",
+                        component: 'EmailInput', // Use a custom component
+                        span: 12
+                    },
+                    {
+                        id: 'satisfaction',
+                        label: "Satisfaction rating",
+                        component: 'CustomSlider',
+                        componentProps: {
+                            min: 0,
+                            max: 10
+                        },
+                        span: 12
+                    },
+                    {
+                        id: 'themeColor',
+                        label: "Theme color",
+                        component: 'CustomColorPicker',
+                        span: 12
+                    },
+                    {
+                        id: 'avatar',
+                        label: "Avatar upload",
+                        component: 'CustomUpload',
+                        span: 12
+                    },
+                    {
+                        id: 'description',
+                        label: "Details",
+                        component: 'CustomTextArea',
+                        componentProps: {
+                            rows: 6,
+                            placeholder: "Describe your request in detail..."
+                        },
+                        span: 24
+                    }
+                ]
+            }
+        ]
+    };
+    return formConfig;
+};
+const CustomComponentsDemo: React.FC = () => {
+    const handleSubmit = (values: DemoFormValues) => {
+        console.log("Form submitted:", values);
+        message.success("Form submitted successfully!");
+    };
+    useDemoInitHandlers({ handlers: exampleHandlers });
+    const [initialValues, setInitialValues] = useState<DemoFormValues>();
+    const [form] = Form.useForm();
+    const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
+    useEffect(() => {
+        async function fetchData() {
+            const data = (await mockFetchFormData({
+                name: 'asdf',
+                age: 18,
+                password: 'sdfsasdf',
+                category: 'tech',
+                showExtra: true,
+                quantity: 88,
+                email: 'whynotsnow@163.com',
+                satisfaction: 4,
+                themeColor: '#10adaa',
+                description: "Sample description",
+                extraInfo: "Information"
+            })) as DemoFormValues;
+            setInitialValues(data);
+        }
+        fetchData();
+    }, []);
+    const memoConfig = useMemo(() => {
+        if (initialValues) {
+            return getConfig(initialValues);
+        }
+    }, [initialValues]);
+    const renderFieldItem = ({ field, fieldValue, defaultRender }: RenderFieldItemParams) => {
+        // Render custom read-only content for your component here
+        if (viewMode === 'customRender') {
+            if (field.component === 'CustomUpload')
+                return defaultRender;
+            return <ReadOnlyField field={field} value={fieldValue as DemoFieldValue}/>;
+        }
+        return defaultRender;
+    };
+    const [viewMode, setViewMode] = useState<'customRender' | 'disabledFields' | 'editableFields'>('editableFields');
+    // Render only after data loads
+    if (!initialValues)
+        return <DemoLoading />;
+    return (<div style={{ padding: 24, maxWidth: 1200, margin: '0 auto' }}>
+      <Space style={{ marginBottom: 16 }}>
+        <Button type={viewMode === 'editableFields' ? 'primary' : 'default'} onClick={() => setViewMode('editableFields')}>
+          Interactive controls
+        </Button>
+        <Button type={viewMode === 'disabledFields' ? 'primary' : 'default'} onClick={() => setViewMode('disabledFields')}>
+          Disable control
+        </Button>
+        <Button type={viewMode === 'customRender' ? 'primary' : 'default'} onClick={() => setViewMode('customRender')}>
+          Custom rendering
+        </Button>
+      </Space>
+      <DynamicForm form={form} formConfig={memoConfig as GroupedFormConfig} uiConfig={{ formProps: { disabled: viewMode === 'disabledFields' } }} renderFormInner={({ defaultRender }) => (<>
+            {defaultRender.fieldsArea}
+            {viewMode === 'editableFields' ? defaultRender.submitArea : null}
+          </>)} renderFieldItem={renderFieldItem} values={initialValues} onSubmit={(values) => {
+            const nextValues = values as DemoFormValues;
+            handleSubmit(nextValues);
+            showSubmitResult(nextValues);
+        }} componentRegistry={componentRegistryConfig} submitButtonText="Submit form"/>
+      {submitResultModal}
+    </div>);
+};
+export default CustomComponentsDemo;

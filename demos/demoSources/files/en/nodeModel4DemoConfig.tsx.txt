@@ -1,0 +1,241 @@
+import type { FormConfig, FormValues } from '../packages/dynamic-form/src/exports';
+const cityOptionsByProvince = {
+    Shanghai: [{ label: "Shanghai", value: 'Shanghai' }],
+    Beijing: [{ label: "Beijing", value: 'Beijing' }],
+    Guangdong: [
+        { label: "Shenzhen", value: 'Shenzhen' },
+        { label: "Guangzhou", value: 'Guangzhou' }
+    ]
+};
+const defaultCityByProvince = {
+    Shanghai: 'Shanghai',
+    Beijing: 'Beijing',
+    Guangdong: 'Shenzhen'
+};
+const districtOptionsByCity = {
+    Shanghai: [
+        { label: "Pudong New Area", value: "Pudong New Area" },
+        { label: "Huangpu District", value: "Huangpu District" },
+        { label: "Xuhui District", value: "Xuhui District" }
+    ],
+    Beijing: [
+        { label: "Chaoyang District", value: "Chaoyang District" },
+        { label: "Haidian District", value: "Haidian District" },
+        { label: "Dongcheng District", value: "Dongcheng District" }
+    ],
+    Shenzhen: [
+        { label: "Nanshan District", value: "Nanshan District" },
+        { label: "Futian District", value: "Futian District" },
+        { label: "Luohu District", value: "Luohu District" }
+    ],
+    Guangzhou: [
+        { label: "Tianhe District", value: "Tianhe District" },
+        { label: "Yuexiu District", value: "Yuexiu District" },
+        { label: "Haizhu District", value: "Haizhu District" }
+    ]
+};
+const defaultDistrictByCity = {
+    Shanghai: "Pudong New Area",
+    Beijing: "Chaoyang District",
+    Shenzhen: "Nanshan District",
+    Guangzhou: "Tianhe District"
+};
+const addressUsageOptionsByCompanyType = {
+    enterprise: [
+        { label: "Registered business address", value: "Registered business address" },
+        { label: "Operating address", value: "Operating address" }
+    ],
+    branch: [
+        { label: "Branch address", value: "Branch address" },
+        { label: "Office address", value: "Office address" }
+    ],
+    studio: [
+        { label: "Studio address", value: "Studio address" },
+        { label: "Contact address", value: "Contact address" }
+    ]
+};
+const defaultAddressUsageByCompanyType = {
+    enterprise: "Registered business address",
+    branch: "Branch address",
+    studio: "Studio address"
+};
+type NodeModel4Values = FormValues & {
+    company?: {
+        companyType?: keyof typeof addressUsageOptionsByCompanyType;
+        address?: {
+            companyProvince?: keyof typeof cityOptionsByProvince;
+            companyCity?: keyof typeof districtOptionsByCity;
+        };
+    };
+};
+export const nodeModel4DemoConfig: FormConfig = {
+    nodes: [
+        {
+            nodeType: 'field',
+            id: 'isCompany',
+            label: "Business customer",
+            component: 'Switch',
+            initialValue: true,
+            dependents: ['companyInfo', 'contacts'],
+            effect: (_changedValue, allValues) => ({
+                groupsVisible: {
+                    companyInfo: allValues.isCompany === true,
+                    contacts: allValues.isCompany === true
+                }
+            }),
+            span: 8
+        },
+        {
+            nodeType: 'container',
+            id: 'companyInfo',
+            title: "Company information / Container",
+            name: 'company',
+            initialVisible: true,
+            children: [
+                {
+                    nodeType: 'field',
+                    id: 'companyName',
+                    label: "Company name",
+                    component: 'TextInput',
+                    initialValue: 'Snow Tech',
+                    span: 12,
+                    required: true
+                },
+                {
+                    nodeType: 'field',
+                    id: 'companyType',
+                    label: "Entity type",
+                    component: 'Select',
+                    initialValue: 'enterprise',
+                    dependents: ['addressUsage'],
+                    componentProps: {
+                        options: [
+                            { label: "Business entity (legal representative)", value: 'enterprise' },
+                            { label: "Branch office", value: 'branch' },
+                            { label: "Sole proprietorship", value: 'studio' }
+                        ]
+                    },
+                    span: 12
+                },
+                {
+                    nodeType: 'container',
+                    id: 'companyAddress',
+                    title: "Registered address / Nested container",
+                    name: 'address',
+                    children: [
+                        {
+                            nodeType: 'field',
+                            id: 'companyProvince',
+                            label: "Province",
+                            component: 'Select',
+                            initialValue: 'Shanghai',
+                            dependents: ['companyCity'],
+                            componentProps: {
+                                options: [
+                                    { label: "Shanghai", value: 'Shanghai' },
+                                    { label: "Beijing", value: 'Beijing' },
+                                    { label: "Guangdong", value: 'Guangdong' }
+                                ]
+                            },
+                            span: 8
+                        },
+                        {
+                            nodeType: 'field',
+                            id: 'companyCity',
+                            label: "City",
+                            component: 'Select',
+                            initialValue: 'Shanghai',
+                            dependents: ['companyDistrict'],
+                            effect: (_changedValue, allValues: NodeModel4Values, chain) => {
+                                const province = allValues.company?.address?.companyProvince;
+                                const cityFromProvince = province ? defaultCityByProvince[province] : undefined;
+                                const city = chain.path.includes('companyProvince') || !allValues.company?.address?.companyCity
+                                    ? cityFromProvince
+                                    : allValues.company.address.companyCity;
+                                return {
+                                    value: city,
+                                    componentProps: {
+                                        options: province ? cityOptionsByProvince[province] : []
+                                    }
+                                };
+                            },
+                            componentProps: {
+                                options: cityOptionsByProvince.Shanghai
+                            },
+                            span: 8
+                        },
+                        {
+                            nodeType: 'field',
+                            id: 'companyDistrict',
+                            label: "District",
+                            component: 'Select',
+                            initialValue: "Pudong New Area",
+                            effect: (_changedValue, allValues: NodeModel4Values) => {
+                                const city = allValues.company?.address?.companyCity;
+                                return {
+                                    value: city ? defaultDistrictByCity[city] : undefined,
+                                    componentProps: {
+                                        options: city ? districtOptionsByCity[city] : []
+                                    }
+                                };
+                            },
+                            componentProps: {
+                                options: districtOptionsByCity.Shanghai
+                            },
+                            span: 8
+                        },
+                        {
+                            nodeType: 'field',
+                            id: 'addressUsage',
+                            label: "Address purpose",
+                            component: 'Select',
+                            initialValue: "Registered business address",
+                            effect: (_changedValue, allValues: NodeModel4Values) => {
+                                const companyType = allValues.company?.companyType;
+                                return {
+                                    value: companyType ? defaultAddressUsageByCompanyType[companyType] : undefined,
+                                    componentProps: {
+                                        options: companyType ? addressUsageOptionsByCompanyType[companyType] : []
+                                    }
+                                };
+                            },
+                            componentProps: {
+                                options: addressUsageOptionsByCompanyType.enterprise
+                            },
+                            span: 8
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            nodeType: 'container',
+            id: 'contacts',
+            title: "Contacts / Repeatable container",
+            name: 'contacts',
+            repeatable: true,
+            children: [
+                {
+                    nodeType: 'field',
+                    id: 'contactName',
+                    label: "Contact name",
+                    component: 'TextInput',
+                    span: 12
+                },
+                {
+                    nodeType: 'field',
+                    id: 'contactPhone',
+                    label: "Phone number",
+                    component: 'TextInput',
+                    span: 12
+                }
+            ]
+        }
+    ]
+};
+export const nodeModel4DemoValues: FormValues = {
+    contacts: [
+        { contactName: 'Ada', contactPhone: '13800000001' },
+        { contactName: 'Grace', contactPhone: '13800000002' }
+    ]
+};

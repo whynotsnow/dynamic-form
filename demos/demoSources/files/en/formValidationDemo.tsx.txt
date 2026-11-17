@@ -1,0 +1,287 @@
+import React, { useEffect, useMemo, useState } from 'react';
+import { Space, Button, message, Form } from 'antd';
+import type { RuleObject } from 'antd/es/form';
+import DynamicForm from '@/index';
+import { customComponents } from './customComponents';
+import { FormConfig } from '@/exports';
+import { exampleHandlers } from './customHandlers';
+import { mockFetchFormData } from '../packages/dynamic-form/src/shared/utils';
+import { useDemoInitHandlers } from './useDemoInitHandlers';
+import DemoLoading from './DemoLoading';
+import { useDemoSubmitResult } from './useDemoSubmitResult';
+type ProjectMemberValue = {
+    name: string;
+    role: string;
+    email: string;
+};
+type ProjectTaskValue = {
+    title: string;
+    description: string;
+    assignee: string;
+    status: string;
+    priority: string;
+    dueDate: string;
+};
+type ProjectValue = {
+    name: string;
+    description: string;
+    members: ProjectMemberValue[];
+    tasks: ProjectTaskValue[];
+    targetPlatforms: string[];
+    techStack: string[];
+};
+type UserTableRowValue = {
+    key: string;
+    name: string;
+    age: string;
+    address: string;
+    email: string;
+    phone: string;
+    status: string;
+};
+type DemoFormValues = {
+    name: string;
+    email: string;
+    projects: ProjectValue[];
+    userTable: UserTableRowValue[];
+};
+const futureDate = (daysFromToday: number) => {
+    const date = new Date();
+    date.setDate(date.getDate() + daysFromToday);
+    return date.toISOString();
+};
+const cloneDemoValues = (values: DemoFormValues): DemoFormValues => JSON.parse(JSON.stringify(values)) as DemoFormValues;
+const FormValidationDemo: React.FC = () => {
+    const [form] = Form.useForm();
+    const formConfig = useMemo<FormConfig>(() => ({
+        groups: [
+            {
+                id: 'baseInfo',
+                title: "Basic information",
+                fields: [
+                    {
+                        id: 'name',
+                        label: "Name",
+                        component: 'TextInput',
+                        rules: [
+                            { required: true, message: "Enter a name" },
+                            { min: 2, max: 20, message: "Name must be between 2 and 20 characters" }
+                        ],
+                        span: 12
+                    },
+                    {
+                        id: 'email',
+                        label: "Email",
+                        component: 'TextInput',
+                        rules: [
+                            { required: true, message: "Enter an email address" },
+                            { type: 'email', message: "Enter a valid email address" }
+                        ],
+                        span: 12
+                    }
+                ]
+            },
+            {
+                id: 'complexComponent',
+                title: "Complex component validation demo",
+                fields: [
+                    {
+                        id: 'projects',
+                        label: "Project information",
+                        component: 'CustomProjectList',
+                        rules: [
+                            { required: true, message: "Add at least one project" },
+                            {
+                                validator: async (_rule: RuleObject, value: ProjectValue[] | undefined) => {
+                                    // Add more complex validation logic here
+                                    const errors: string[] = [];
+                                    const projects = value ?? [];
+                                    projects.forEach((project, index) => {
+                                        if (!project.name?.trim()) {
+                                            errors.push(`Project ${index + 1} name is required`);
+                                        }
+                                        if (!project.members?.length) {
+                                            errors.push(`Project ${index + 1} must have at least one member`);
+                                        }
+                                    });
+                                    if (errors.length > 0) {
+                                        return Promise.reject(errors.join('\n')); // Newlines make the errors easier to read
+                                    }
+                                    return Promise.resolve();
+                                }
+                            }
+                        ],
+                        span: 24
+                    },
+                    {
+                        id: 'userTable',
+                        label: "User information table",
+                        component: 'CustomEditTable',
+                        rules: [{ required: true, message: "Add at least one row" }],
+                        formItemProps: {
+                            labelCol: { span: 24 },
+                            wrapperCol: { span: 24 }
+                        },
+                        span: 24
+                    }
+                ]
+            }
+        ]
+    }), []);
+    const componentRegistryConfig = useMemo(() => ({
+        customComponents,
+        allowOverride: false
+    }), []);
+    useDemoInitHandlers({ handlers: exampleHandlers });
+    const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
+    const handleSubmit = (values: DemoFormValues) => {
+        console.log("Form data:", values);
+        message.success("Form submitted successfully!");
+    };
+    const handleValidate = async () => {
+        try {
+            const values = await form.validateFields();
+            console.log("Validation passed:", values);
+            message.success("All fields passed validation!");
+        }
+        catch (error) {
+            console.log("Validation failed:", error);
+            message.error("Form validation failed. Please check your entries.");
+        }
+    };
+    const loadInvalidExample = () => {
+        if (!initialValues)
+            return;
+        form.setFieldsValue({
+            ...cloneDemoValues(initialValues),
+            name: 'A',
+            email: 'invalid-email',
+            projects: [
+                {
+                    name: '',
+                    description: '',
+                    members: [],
+                    tasks: [],
+                    targetPlatforms: [],
+                    techStack: []
+                }
+            ],
+            userTable: []
+        });
+    };
+    const [initialValues, setInitialValues] = useState<DemoFormValues>();
+    useEffect(() => {
+        async function fetchData() {
+            const testData = {
+                name: "Demo user",
+                email: 'demo@example.com',
+                projects: [
+                    {
+                        name: "Customer portal redesign",
+                        description: "Upgrade account management and ticket lookup in the customer self-service portal.",
+                        members: [
+                            {
+                                name: "Member A",
+                                role: 'developer',
+                                email: 'member-a@example.com'
+                            },
+                            {
+                                name: "Member B",
+                                role: 'tester',
+                                email: 'member-b@example.com'
+                            }
+                        ],
+                        tasks: [
+                            {
+                                title: "Design the navigation structure",
+                                description: "Organize common entry points and page hierarchy",
+                                assignee: "Member A",
+                                status: 'pending',
+                                priority: 'high',
+                                dueDate: futureDate(14)
+                            },
+                            {
+                                title: "Verify ticket lookup",
+                                description: "Cover filtering and detail views",
+                                assignee: "Member B",
+                                status: 'in_progress',
+                                priority: 'medium',
+                                dueDate: futureDate(21)
+                            }
+                        ],
+                        targetPlatforms: ['web', 'miniProgram'],
+                        techStack: ['react', 'typescript', 'nodejs']
+                    },
+                    {
+                        name: "Operations dashboard",
+                        description: "Build a cross-channel operations dashboard and key metric monitoring page.",
+                        members: [
+                            {
+                                name: "Member C",
+                                role: 'developer',
+                                email: 'member-c@example.com'
+                            }
+                        ],
+                        tasks: [
+                            {
+                                title: "Build metric cards",
+                                description: "Display traffic and conversion data",
+                                assignee: "Member C",
+                                status: 'pending',
+                                priority: 'high',
+                                dueDate: futureDate(28)
+                            }
+                        ],
+                        targetPlatforms: ['web', 'mobileApp', 'desktop'],
+                        techStack: ['vue', 'typescript', 'java', 'postgresql']
+                    }
+                ],
+                userTable: [
+                    {
+                        key: 'demo-user',
+                        name: "Demo user",
+                        age: '28',
+                        address: "1 Sample Road",
+                        email: 'demo@example.com',
+                        phone: '13800000000',
+                        status: 'active'
+                    }
+                ]
+            };
+            const data = (await mockFetchFormData(testData)) as DemoFormValues;
+            setInitialValues(data);
+        }
+        fetchData();
+    }, []);
+    useEffect(() => {
+        if (initialValues) {
+            form.setFieldsValue(cloneDemoValues(initialValues));
+        }
+    }, [form, initialValues]);
+    if (!initialValues)
+        return <DemoLoading />;
+    return (<div>
+      <Space direction="vertical" size="large" style={{ width: '100%' }}>
+        <Space>
+          <Button type="primary" onClick={handleValidate}>
+            Validate all fields
+          </Button>
+          <Button onClick={loadInvalidExample}>Fill validation error example</Button>
+          <Button onClick={() => {
+            form.resetFields();
+            form.setFieldsValue(cloneDemoValues(initialValues));
+        }}>
+            Reset form
+          </Button>
+        </Space>
+
+        <DynamicForm form={form} formConfig={formConfig} onSubmit={(values) => {
+            const submittedValues = values as DemoFormValues;
+            handleSubmit(submittedValues);
+            showSubmitResult(submittedValues);
+        }} componentRegistry={componentRegistryConfig} submitButtonText="Submit form"/>
+      </Space>
+      {submitResultModal}
+    </div>);
+};
+export default FormValidationDemo;

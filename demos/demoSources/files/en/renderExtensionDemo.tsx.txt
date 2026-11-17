@@ -1,0 +1,169 @@
+import React, { useState } from 'react';
+import { Form, Card, Tag, Tooltip, Typography, Input, Tabs, Button, Space } from 'antd';
+import { InfoCircleOutlined, StarOutlined, FireOutlined, FolderOpenOutlined } from '@ant-design/icons';
+import DynamicForm from '@/index';
+import { getFieldName } from '@/exports';
+import type { RenderFieldItemParams, RenderFormParams, FieldComponentProps, RenderGroupItemParams, GroupedFormConfig, RenderGroupsParams, RenderFieldsParams } from '@/exports';
+import { useDemoInitHandlers } from './useDemoInitHandlers';
+import { useDemoSubmitResult } from './useDemoSubmitResult';
+const { Text } = Typography;
+type RenderExtensionFormValues = {
+    username?: string;
+    email?: string;
+    age?: number;
+    city?: string;
+    bio?: string;
+};
+/**
+ * Custom username field
+ */
+const CustomUsernameField: React.FC<FieldComponentProps> & {
+    wrapWithFormItem?: boolean;
+} = ({ field }) => (<div>
+    <Text strong>{field.label}</Text>
+    <Tag color="blue" style={{ marginLeft: 8 }}>
+      <StarOutlined /> Recommended
+    </Tag>
+    <Form.Item name={getFieldName(field)} rules={[{ required: field.required, message: `Enter ${field.label}` }]}>
+      <Input placeholder="Enter a username"/>
+    </Form.Item>
+    <Tooltip title="The username is used for sign-in and display">
+      <InfoCircleOutlined style={{ marginLeft: 8, color: '#1890ff' }}/>
+    </Tooltip>
+  </div>);
+/**
+ * Custom email field
+ */
+const CustomEmailField: React.FC<FieldComponentProps> & {
+    wrapWithFormItem?: boolean;
+} = ({ field }) => (<div>
+    <Text strong>{field.label}</Text>
+    <Tag color="green" style={{ marginLeft: 8 }}>
+      <FireOutlined /> Required
+    </Tag>
+    <Form.Item name={getFieldName(field)} rules={[
+        { required: field.required, message: `Enter ${field.label}` },
+        { type: 'email', message: "Enter a valid email address" }
+    ]}>
+      <Input type="email" placeholder="Enter an email address"/>
+    </Form.Item>
+  </div>);
+CustomUsernameField.wrapWithFormItem = false;
+CustomEmailField.wrapWithFormItem = false;
+const RenderExtensionDemo: React.FC = () => {
+    const [form] = Form.useForm();
+    const [showExtensions, setShowExtensions] = useState(true);
+    const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
+    const formConfig: GroupedFormConfig = {
+        groups: [
+            {
+                id: 'userInfo',
+                title: "User information",
+                fields: [
+                    {
+                        id: 'username',
+                        label: "Username",
+                        component: 'CustomUsername',
+                        required: true,
+                        span: 12
+                    },
+                    { id: 'email', label: "Email", component: 'CustomEmail', required: true, span: 12 }
+                ]
+            },
+            {
+                id: 'extraInfo',
+                title: "Additional information",
+                fields: [
+                    {
+                        id: 'age',
+                        label: "Age",
+                        component: 'NumberInput',
+                        span: 12,
+                        componentProps: { min: 0, max: 150 }
+                    },
+                    {
+                        id: 'city',
+                        label: "City",
+                        component: 'SelectField',
+                        span: 12,
+                        componentProps: {
+                            options: [
+                                { value: 'beijing', label: "Beijing" },
+                                { value: 'shanghai', label: "Shanghai" },
+                                { value: 'guangzhou', label: "Guangzhou" },
+                                { value: 'shenzhen', label: "Shenzhen" }
+                            ]
+                        }
+                    },
+                    {
+                        id: 'bio',
+                        label: "Personal profile",
+                        component: 'TextArea',
+                        span: 24,
+                        componentProps: { rows: 3 }
+                    }
+                ]
+            }
+        ]
+    };
+    // Custom component registry configuration
+    const componentRegistry = {
+        customComponents: {
+            CustomUsername: CustomUsernameField,
+            CustomEmail: CustomEmailField
+        }
+    };
+    // Initialize handlers
+    useDemoInitHandlers();
+    const handleSubmit = (values: RenderExtensionFormValues) => {
+        console.log("Submitted form values:", values);
+        showSubmitResult(values);
+    };
+    /** Override one field */
+    const renderFieldItem = ({ defaultRender }: RenderFieldItemParams) => (<div style={{ border: '1px dashed red', padding: 8, marginBottom: 8, borderRadius: 4 }}>
+      <span style={{ color: 'red', fontSize: 12 }}>FieldItem</span>
+      {defaultRender}
+    </div>);
+    /** Override a group of fields */
+    const renderFields = ({ defaultRender }: RenderFieldsParams) => (<div style={{ background: '#e6f7ff', padding: 12, borderRadius: 6 }}>
+      <span style={{ color: '#1890ff', fontSize: 12 }}>Fields</span>
+      {defaultRender}
+    </div>);
+    /** Override one group */
+    const renderGroupItem = ({ group, defaultRender }: RenderGroupItemParams) => (<Card key={group.id} title={<>
+          <FolderOpenOutlined /> {group.title}
+        </>} style={{ marginBottom: 16, border: '1px solid green' }}>
+      {defaultRender}
+    </Card>);
+    /** Override the group collection */
+    const renderGroups = ({ groupFields, renderFields: _renderFields, renderGroupItem }: RenderGroupsParams) => {
+        const items = Object.values(groupFields).map((group) => ({
+            key: group.id,
+            label: group.title,
+            children: renderGroupItem(group)
+        }));
+        return <Tabs defaultActiveKey={items[0]?.key} items={items}/>;
+    };
+    /** Form override: keep fieldsArea and customize the submit button */
+    const renderFormInner = ({ defaultRender }: RenderFormParams) => (<>
+      {defaultRender.fieldsArea}
+      <div style={{ textAlign: 'center', marginTop: 24 }}>
+        <Button type="primary" htmlType="submit">
+          🚀 Submit form
+        </Button>
+      </div>
+    </>);
+    return (<div>
+      <Space style={{ marginBottom: 16 }}>
+        <Button type={showExtensions ? 'primary' : 'default'} onClick={() => setShowExtensions(true)}>
+          Extension example
+        </Button>
+        <Button type={!showExtensions ? 'primary' : 'default'} onClick={() => setShowExtensions(false)}>
+          Default rendering
+        </Button>
+      </Space>
+      <DynamicForm formConfig={formConfig} form={form} onSubmit={(values) => handleSubmit(values as RenderExtensionFormValues)} componentRegistry={componentRegistry} renderFieldItem={showExtensions ? renderFieldItem : undefined} renderFields={showExtensions ? renderFields : undefined} renderGroupItem={showExtensions ? renderGroupItem : undefined} renderGroups={showExtensions ? renderGroups : undefined} renderFormInner={showExtensions ? renderFormInner : undefined}/>
+      {submitResultModal}
+    </div>);
+};
+export default RenderExtensionDemo;

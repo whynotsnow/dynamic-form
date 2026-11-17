@@ -1,0 +1,521 @@
+import type { Chain } from '@whynotsnow/hooks';
+import { GroupedFormConfig, FlatFormConfig } from '@/exports';
+import { operatingAreaEffect } from '../demos/customComponents/OperatingAreaField';
+export const supplierFormConfig: GroupedFormConfig = {
+    groups: [
+        {
+            title: "Company information",
+            id: 'enterpriseInformation',
+            fields: [
+                {
+                    id: 'businessType',
+                    label: "Supplier type",
+                    component: 'SelectField',
+                    span: 8,
+                    componentProps: {
+                        options: [
+                            { value: 'manufacturer', label: "Fresh food producer" },
+                            { value: 'distributor', label: "Fresh food distributor" },
+                            { value: 'wholesaler', label: "Fresh food wholesaler" }
+                        ]
+                    },
+                    initialValue: 'manufacturer',
+                    dependents: ['industryType'],
+                    effect: (_changedValue: any, allValues: Record<string, any>, _chain: Chain) => {
+                        const businessType = allValues.businessType;
+                        const result = {
+                            groupsVisible: {
+                                businessInformation: businessType === 'manufacturer'
+                            }
+                        };
+                        return result;
+                    }
+                },
+                {
+                    id: 'employeeCount',
+                    label: "Employee count",
+                    component: 'NumberInput',
+                    span: 8,
+                    initialValue: 50,
+                    dependents: ['companySize']
+                },
+                {
+                    id: 'companySize',
+                    label: "Company size",
+                    component: 'TextDisplay',
+                    span: 8,
+                    initialValue: (allValues: Record<string, any>) => {
+                        const employeeCount = allValues.employeeCount;
+                        if (employeeCount <= 50) {
+                            return "Small business";
+                        }
+                        else if (employeeCount < 200) {
+                            return "Medium-sized business";
+                        }
+                        else {
+                            return "Large business";
+                        }
+                    },
+                    effect: (_changedValue: any, allValues: Record<string, any>, _chain: Chain) => {
+                        const employeeCount = allValues.employeeCount;
+                        let companySizeText = '';
+                        if (employeeCount <= 50) {
+                            companySizeText = "Small business";
+                        }
+                        else if (employeeCount < 200) {
+                            companySizeText = "Medium-sized business";
+                        }
+                        else {
+                            companySizeText = "Large business";
+                        }
+                        return {
+                            value: companySizeText
+                        };
+                    }
+                },
+                {
+                    id: 'industryType',
+                    label: "Industry",
+                    component: 'SelectField',
+                    span: 24,
+                    componentProps: {
+                        options: [
+                            { value: 'agriculturalPlanting', label: "Crop farming" },
+                            { value: 'aquaculture', label: "Aquaculture" },
+                            { value: 'cookedFoodProcessing', label: "Prepared food processing" },
+                            { value: 'frozenFoodProcessing', label: "Frozen food processing" }
+                        ]
+                    },
+                    initialValue: (allValues: Record<string, any>) => {
+                        const businessType = allValues.businessType;
+                        return {
+                            value: 'agriculturalPlanting',
+                            visible: businessType === 'manufacturer',
+                            disabled: businessType === 'distributor'
+                        };
+                    },
+                    effect: (_changedValue: any, allValues: Record<string, any>, _chain: Chain) => {
+                        const businessType = allValues.businessType;
+                        return { visible: businessType === 'manufacturer' };
+                    }
+                }
+            ]
+        },
+        {
+            title: "Business operations information",
+            id: 'businessInformation',
+            effect: (_changedValue: any, allValues: Record<string, any>, _chain: Chain) => {
+                const businessType = allValues.businessType;
+                return { visible: businessType === 'manufacturer' };
+            },
+            fields: [
+                {
+                    id: 'operatingIncome',
+                    label: "Annual revenue (10,000 CNY)",
+                    span: 12,
+                    component: 'NumberInput',
+                    initialValue: () => {
+                        return {
+                            disabled: true,
+                            value: 3000
+                        };
+                    },
+                    effect: (val: any, allValues: Record<string, any>, _chain: Chain) => {
+                        const { profitRate } = allValues;
+                        const newValue = (profitRate * 3000) / 100;
+                        return {
+                            value: newValue,
+                            disabled: newValue > 5000
+                        };
+                    }
+                },
+                {
+                    id: 'profitRate',
+                    label: "Revenue attainment (%)",
+                    span: 12,
+                    component: 'NumberInput',
+                    initialValue: 100,
+                    dependents: ['operatingIncome']
+                },
+                {
+                    id: 'categories',
+                    label: "Main product categories",
+                    component: 'SelectField',
+                    span: 12,
+                    dependents: ['operatingArea'],
+                    componentProps: {
+                        options: [
+                            { value: 'fruitsAndVegetables', label: "Fruit and vegetables" },
+                            { value: 'aquatic', label: "Aquatic products" },
+                            { value: 'cookedFood', label: "Prepared food processing" },
+                            { value: 'Icecream/frozenProducts', label: "Frozen food" }
+                        ]
+                    },
+                    initialValue: 'fruitsAndVegetables'
+                },
+                {
+                    id: 'operatingArea',
+                    label: "Operating region",
+                    component: 'OperatingAreaField',
+                    effect: operatingAreaEffect,
+                    span: 12,
+                    componentProps: {
+                        options: [
+                            { value: 'guangzhou', label: "Guangzhou" },
+                            { value: 'shenzhen', label: "Shenzhen" },
+                            { value: 'shanghai', label: "Shanghai" },
+                            { value: 'beijing', label: "Beijing" }
+                        ]
+                    },
+                    initialValue: (allValues: {
+                        categories: string;
+                    }) => {
+                        const { categories } = allValues;
+                        let value = undefined;
+                        if (categories === 'fruitsAndVegetables') {
+                            value = 'guangzhou';
+                        }
+                        return {
+                            value
+                        };
+                    }
+                }
+            ]
+        }
+    ]
+};
+export const testFields: FlatFormConfig = {
+    fields: [
+        {
+            id: 'username',
+            label: "Username",
+            component: 'TextInput',
+            span: 24,
+            initialValue: undefined,
+            rules: [
+                { required: true, message: "Enter a username" },
+                { min: 3, message: "Username must contain at least 3 characters" }
+            ]
+        },
+        {
+            id: 'password',
+            label: "Password",
+            component: 'Password',
+            span: 24,
+            initialValue: undefined,
+            dependents: ['confirmPassword'],
+            rules: [{ required: true, message: "Enter a password" }]
+        },
+        {
+            id: 'confirmPassword',
+            label: "Confirm password",
+            component: 'ConfirmPassword',
+            span: 24,
+            initialValue: undefined
+        },
+        {
+            id: 'email',
+            label: "Email",
+            component: 'TextInput',
+            span: 24,
+            initialValue: undefined,
+            rules: [
+                { required: true, message: "Enter an email address" },
+                { type: 'email', message: "Invalid email format" }
+            ]
+        },
+        {
+            id: 'age',
+            label: "Age",
+            component: 'NumberInput',
+            span: 24,
+            initialValue: undefined,
+            rules: [
+                { required: true, message: "Enter an age" },
+                {
+                    type: 'number',
+                    min: 18,
+                    max: 100,
+                    message: "Age must be between 18 and 100"
+                }
+            ]
+        },
+        {
+            id: 'rate',
+            label: "Rating component",
+            component: 'Rate',
+            span: 24
+        }
+    ]
+};
+// 1. Three-node cycle: A->C->B->A
+const cyclicTestConfig1: GroupedFormConfig = {
+    groups: [
+        {
+            title: "Circular dependency test 1",
+            id: 'cyclic1',
+            fields: [
+                { id: 'fieldA', label: "Field A", component: 'TextInput', dependents: ['fieldC'] },
+                { id: 'fieldB', label: "Field B", component: 'TextInput', dependents: ['fieldA'] },
+                { id: 'fieldC', label: "Field C", component: 'TextInput', dependents: ['fieldB'] }
+            ]
+        }
+    ]
+};
+// 2. Simple two-node cycle: X->Y->X
+const cyclicTestConfig2: GroupedFormConfig = {
+    groups: [
+        {
+            id: 'group1',
+            title: "Circular dependency test 2",
+            fields: [
+                { id: 'fieldX', label: "Field X", component: 'TextInput', dependents: ['fieldY'] },
+                { id: 'fieldY', label: "Field Y", component: 'TextInput', dependents: ['fieldX'] }
+            ]
+        }
+    ]
+};
+// 3. Self-dependency: Z depends on itself
+const cyclicTestConfig3: GroupedFormConfig = {
+    groups: [
+        {
+            id: 'group1',
+            title: "Circular dependency test 3",
+            fields: [{ id: 'fieldZ', label: "Field Z", component: 'TextInput', dependents: ['fieldZ'] }]
+        }
+    ]
+};
+// 4. Cross-group cycle across multiple groups: A1->B1->A1
+const cyclicTestConfig4: GroupedFormConfig = {
+    groups: [
+        {
+            id: 'group1',
+            title: "Group A",
+            fields: [{ id: 'fieldA1', label: "Field A1", component: 'TextInput', dependents: ['fieldB1'] }]
+        },
+        {
+            id: 'group2',
+            title: "Group B",
+            fields: [{ id: 'fieldB1', label: "Field B1", component: 'TextInput', dependents: ['fieldA1'] }]
+        }
+    ]
+};
+// 5. No circular dependency (for comparison)
+const nonCyclicConfig: GroupedFormConfig = {
+    groups: [
+        {
+            id: 'group1',
+            title: "No circular dependency test",
+            fields: [
+                { id: 'fieldM', label: "Field M", component: 'TextInput' },
+                { id: 'fieldN', label: "Field N", component: 'TextInput', dependents: ['fieldM'] },
+                { id: 'fieldO', label: "Field O", component: 'TextInput', dependents: ['fieldN'] }
+            ]
+        }
+    ]
+};
+const flatTestConfig1: FlatFormConfig = {
+    fields: [
+        {
+            id: 'username',
+            label: "Username",
+            span: 24,
+            component: 'TextInput',
+            dependents: ['confirmPassword'],
+            rules: [{ required: true, message: "Enter a username" }],
+            initialValue: ''
+        },
+        {
+            id: 'password',
+            label: "Password",
+            span: 24,
+            component: 'Password',
+            dependents: ['username'],
+            rules: [{ required: true, message: "Enter a password" }],
+            initialValue: ''
+        },
+        {
+            id: 'confirmPassword',
+            label: "Confirm password",
+            span: 24,
+            component: 'Password'
+        }
+    ]
+};
+// Restore the circularDependencyConfig definition
+const circularDependencyConfig: GroupedFormConfig = {
+    groups: [
+        {
+            id: 'group1',
+            title: "Circular dependency test group",
+            fields: [
+                {
+                    id: 'fieldA',
+                    label: "Field A",
+                    component: 'TextInput',
+                    dependents: ['fieldC'] // Dependent on field C
+                },
+                {
+                    id: 'fieldB',
+                    label: "Field B",
+                    component: 'TextInput',
+                    dependents: ['fieldA'] // Dependent on field A
+                },
+                {
+                    id: 'fieldC',
+                    label: "Field C",
+                    component: 'TextInput',
+                    dependents: ['fieldB'] // Dependent on field B, forming a cycle: A -> C -> B -> A
+                },
+                {
+                    id: 'fieldD',
+                    label: "Field D",
+                    component: 'TextInput',
+                    dependents: ['fieldF']
+                }
+            ]
+        }
+    ]
+};
+// Form config based on the useFormChainEffect example
+export const simpleChainTestConfig: FlatFormConfig = {
+    fields: [
+        {
+            id: 'A',
+            label: "Field A",
+            component: 'TextInput',
+            initialValue: '',
+            dependents: ['B'],
+            effect: (val, all, chain) => {
+                console.log('A changed:', val);
+            }
+        },
+        {
+            id: 'B',
+            label: "Field B",
+            component: 'TextInput',
+            initialValue: '',
+            dependents: ['C'],
+            effect: (val, all, chain) => {
+                console.log('B changed:', val);
+            }
+        },
+        {
+            id: 'C',
+            label: "Field C",
+            component: 'TextInput',
+            initialValue: '',
+            effect: (val, all, chain) => {
+                console.log('C changed:', val);
+            }
+        }
+    ]
+};
+// Grouped form config based on the useFormChainEffect example
+export const simpleChainGroupedTestConfig: GroupedFormConfig = {
+    groups: [
+        {
+            id: '1',
+            title: "Group one",
+            fields: [
+                {
+                    id: 'A',
+                    label: "Field A",
+                    component: 'TextInput',
+                    initialValue: '',
+                    dependents: ['B'],
+                    effect: (val, all, chain) => {
+                        console.log('A changed:', val);
+                    }
+                },
+                {
+                    id: 'B',
+                    label: "Field B",
+                    component: 'TextInput',
+                    initialValue: '',
+                    dependents: ['C'],
+                    effect: (val, all, chain) => {
+                        console.log('B changed:', val);
+                    }
+                }
+            ]
+        },
+        {
+            id: '2',
+            title: "Group two",
+            fields: [
+                {
+                    id: 'C',
+                    label: "Field C",
+                    component: 'TextInput',
+                    initialValue: '',
+                    effect: (val, all, chain) => {
+                        console.log('C changed:', val);
+                    }
+                }
+            ]
+        }
+    ]
+};
+export { cyclicTestConfig1, cyclicTestConfig2, cyclicTestConfig3, cyclicTestConfig4, nonCyclicConfig, flatTestConfig1, circularDependencyConfig };
+// Simple config for testing group logic
+export const groupTestConfig: GroupedFormConfig = {
+    groups: [
+        {
+            id: 'testGroup',
+            title: "Test group",
+            dependents: ['triggerField'],
+            effect: (_changedValue: any, allValues: Record<string, any>, _chain: Chain) => {
+                return { visible: allValues.triggerField === 'show' };
+            },
+            fields: [
+                {
+                    id: 'testField',
+                    label: "Test field",
+                    component: 'TextInput',
+                    initialValue: ''
+                }
+            ]
+        }
+    ]
+};
+// Simple config for testing data synchronization
+export const syncTestConfig: FlatFormConfig = {
+    fields: [
+        {
+            id: 'fieldA',
+            label: "Field A",
+            component: 'TextInput',
+            span: 24,
+            initialValue: '',
+            dependents: ['fieldB'],
+            effect: (value: any, allValues: any) => {
+                console.log('[syncTestConfig] fieldA effect triggered:', value);
+                return { value: `Value triggered by A: ${value}` };
+            }
+        },
+        {
+            id: 'fieldB',
+            label: "Field B",
+            component: 'TextInput',
+            span: 24,
+            initialValue: '',
+            dependents: ['fieldC'],
+            effect: (value: any, allValues: any) => {
+                console.log('[syncTestConfig] fieldB effect triggered:', value);
+                return { value: `Value triggered by B: ${value}` };
+            }
+        },
+        {
+            id: 'fieldC',
+            label: "Field C",
+            component: 'TextInput',
+            span: 24,
+            initialValue: '',
+            effect: (value: any, allValues: any) => {
+                console.log('[syncTestConfig] fieldC effect triggered:', value);
+                return { value: `Value triggered by C: ${value}` };
+            }
+        }
+    ]
+};
