@@ -61,7 +61,7 @@ export const DEMO_COMPONENTS = {
     name: 'CompilerFoundationDemo',
     title: '编译器基础演示',
     description:
-      '以内部系统申请和工程部门审核为例，演示如何把字段模块编译为标准 FormConfig，再交给 DynamicForm 渲染。',
+      '演示 metadata adapter 如何把申请字段模块转换为标准 FormConfig，再由 DynamicForm 渲染。',
     component: CompilerFoundationDemo
   },
   nodeModel4: {
@@ -91,6 +91,7 @@ export interface DemoSourceEntry {
   sourceFiles: DemoSourceFile[];
   githubDemoPath: string;
   relatedComponents: string[];
+  presentationDescription?: string;
 }
 
 const demoSourceEntries = demoSources as Record<DemoType, DemoSourceEntry>;
@@ -106,3 +107,9 @@ export const DEMO_RELATED_COMPONENTS = Object.fromEntries(
 export const DEMO_GITHUB_SOURCE = Object.fromEntries(
   Object.entries(demoSourceEntries).map(([demoType, entry]) => [demoType, entry.githubDemoPath])
 ) as Record<DemoType, string>;
+
+export const DEMO_PRESENTATION_DESCRIPTIONS = Object.fromEntries(
+  Object.entries(demoSourceEntries)
+    .filter(([, entry]) => entry.presentationDescription)
+    .map(([demoType, entry]) => [demoType, entry.presentationDescription])
+) as Partial<Record<DemoType, string>>;

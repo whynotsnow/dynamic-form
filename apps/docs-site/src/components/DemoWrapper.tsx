@@ -108,7 +108,7 @@ function DemoSourcePanel({
             {translate({
               id: 'demos.sourcePanel.sharedContext',
               message:
-                'DemoWrapper 和 DemoLoading 是共享展示组件；下方链接指向当前 demo 和它使用的自定义组件。'
+                'DemoWrapper、DemoLoading 和 useDemoSubmitResult 是共享 demo 组件；下方链接指向当前 demo 及其自定义组件和提交结果助手。'
             })}
           </p>
           <div className={styles.mountReference}>

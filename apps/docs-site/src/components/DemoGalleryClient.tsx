@@ -5,6 +5,7 @@ import Heading from '@theme/Heading';
 import {
   DEMO_COMPONENTS,
   DEMO_GITHUB_SOURCE,
+  DEMO_PRESENTATION_DESCRIPTIONS,
   DEMO_RELATED_COMPONENTS,
   DEMO_SOURCE_FILES,
   type DemoType
@@ -102,7 +103,7 @@ const DEMO_TEXT: Record<DemoType, { title: string; description: string }> = {
     description: translate({
       id: 'demos.items.compilerFoundation.description',
       message:
-        '以内部系统申请和工程部门审核为例，演示如何把字段模块编译为标准 FormConfig，再交给 DynamicForm 渲染。'
+        '演示 metadata adapter 如何把申请字段模块转换为标准 FormConfig，再由 DynamicForm 渲染。'
     })
   },
   nodeModel4: {
@@ -135,30 +136,33 @@ const guideItem = (id: string, message: string): DemoGuideItem => ({
 
 const DEMO_GUIDES: Record<DemoType, DemoGuideItem[]> = {
   storeBoundary: [
-    guideItem('storeBoundary.employeeCount', '修改员工数量，观察控制台日志。'),
+    guideItem('storeBoundary.employeeCount', '修改员工数量，观察下方 Form values 中的值变化。'),
     guideItem(
       'storeBoundary.formValue',
-      '检查字段值由 Ant Design Form 管理，effect 返回的 value 会写入 Form。'
+      '观察下方实时 Form values，确认字段值由 Ant Design Form 管理。'
     ),
     guideItem(
       'storeBoundary.meta',
-      '观察 visible、disabled 等 effect meta 是否更新到 DynamicForm Store。'
+      '切换供应商类型，观察行业、生产经营信息和禁用营收字段的显隐状态。'
     ),
     guideItem('storeBoundary.groupVisibility', '切换字段，验证分组显隐和地区选项联动。')
   ],
   customHandlers: [
-    guideItem('customHandlers.name', '将姓名改为 admin，观察字段背景颜色变化。'),
-    guideItem('customHandlers.age', '修改年龄，观察自定义数据转换处理器的结果。'),
+    guideItem('customHandlers.name', '将普通姓名改为 admin，再改回其他值，观察背景颜色变化。'),
+    guideItem('customHandlers.age', '输入年龄，观察数据转换处理器将数值翻倍。'),
     guideItem('customHandlers.email', '输入无效邮箱，观察邮箱备注字段隐藏和提交值清理。'),
     guideItem('customHandlers.status', '切换状态，观察链式样式和数据转换处理。')
   ],
   customComponents: [
     guideItem(
       'customComponents.viewMode',
-      '切换“可交互控件”“控件禁用”和“自定义渲染”三种展示模式。'
+      '切换三种展示模式；“自定义渲染”下的头像上传仍保留原组件，以便说明自定义只读展示的例外。'
     ),
     guideItem('customComponents.visibility', '切换“显示额外信息”，验证自定义字段显隐联动。'),
-    guideItem('customComponents.registry', '使用各个自定义字段并提交表单，查看注册组件的交互结果。')
+    guideItem(
+      'customComponents.registry',
+      '在“可交互控件”模式使用字段并提交，在弹窗中查看提交到表单的数据。'
+    )
   ],
   formValidation: [
     guideItem('formValidation.standard', '检查标准字段的必填、长度和邮箱格式校验。'),
@@ -166,15 +170,21 @@ const DEMO_GUIDES: Record<DemoType, DemoGuideItem[]> = {
       'formValidation.custom',
       '在项目中选择交付平台和技术栈，并增删成员与任务，验证 Form.List 复杂组件规则。'
     ),
-    guideItem('formValidation.actions', '点击“校验所有字段”查看错误提示，或重置表单恢复初始数据。')
+    guideItem(
+      'formValidation.actions',
+      '点击“填入校验错误示例”再校验查看错误；修正后可再次校验，或重置恢复初始数据。'
+    )
   ],
   uiConfig: [
     guideItem('uiConfig.global', '切换状态字段，观察动态全局 UIConfig 的变化。'),
-    guideItem('uiConfig.field', '修改优先级字段，观察字段级 UI 配置和校验规则。'),
+    guideItem('uiConfig.field', '修改优先级字段，观察字段级标签和 UI 配置变化。'),
     guideItem('uiConfig.priority', '对比字段级、动态全局和静态全局配置的合并优先级。')
   ],
   renderExtension: [
-    guideItem('renderExtension.field', 'renderFieldItem 为单字段添加自定义外观。'),
+    guideItem(
+      'renderExtension.field',
+      '切换默认渲染和扩展示例，对比各个 render hook 添加的区域标记。'
+    ),
     guideItem('renderExtension.fields', 'renderFields 为字段集合添加自定义容器。'),
     guideItem('renderExtension.group', 'renderGroupItem 自定义分组展示。'),
     guideItem('renderExtension.groups', 'renderGroups 将分组展示切换为 Tabs。'),
@@ -182,32 +192,27 @@ const DEMO_GUIDES: Record<DemoType, DemoGuideItem[]> = {
   ],
   compilerFoundation: [
     guideItem(
-      'compilerFoundation.adapter',
-      '查看 metadata adapter 如何转换为 mixed module config。'
-    ),
-    guideItem(
       'compilerFoundation.modules',
       '观察 TextField、DepartmentPicker 等模块如何编译为标准字段。'
     ),
-    guideItem(
-      'compilerFoundation.override',
-      '选择 Engineering 显示审核分组，切换部门后观察分组显隐。'
-    ),
-    guideItem('compilerFoundation.submit', '提交表单后查看控制台中的编译结果。')
+    guideItem('compilerFoundation.override', '选择“工程部”显示审核分组，切换部门后观察分组显隐。'),
+    guideItem('compilerFoundation.submit', '提交表单后在弹窗中查看传入 onSubmit 的数据。')
   ],
   nodeModel4: [
     guideItem(
       'nodeModel4.container',
-      '关闭“企业客户”，验证企业信息整体隐藏且隐藏字段不进入提交值。'
+      '切换“企业客户”，观察企业资料和联系人列表同步显隐；关闭后联系人操作也会隐藏。'
     ),
-    guideItem('nodeModel4.parentChild', '修改企业类型，观察嵌套地址用途的默认值和选项变化。'),
-    guideItem('nodeModel4.cascade', '修改省份和城市，观察城市与区县的级联更新。'),
-    guideItem('nodeModel4.crossLevel', '切换“企业客户”，观察企业资料与联系人列表同步显示或隐藏。')
+    guideItem('nodeModel4.parentChild', '修改主体类型，观察嵌套地址用途的默认值和选项变化。'),
+    guideItem('nodeModel4.cascade', '修改省份和城市，观察城市与区县的级联更新。')
   ],
   headlessRenderer: [
     guideItem('headlessRenderer.fields', '修改嵌套的姓名和邮箱字段。'),
     guideItem('headlessRenderer.submit', '提交表单，查看 Memory Adapter 返回的提交值。'),
-    guideItem('headlessRenderer.hidden', '检查隐藏字段和自定义 render hook 的渲染结果。')
+    guideItem(
+      'headlessRenderer.hidden',
+      '核对初始隐藏备注未出现在字段区和提交结果中，并查看自定义字段包装效果。'
+    )
   ]
 };
 
@@ -298,6 +303,7 @@ export default function DemoGalleryClient(): React.JSX.Element {
   );
   const currentDemoInfo = DEMO_COMPONENTS[currentDemo];
   const currentDemoText = DEMO_TEXT[currentDemo];
+  const presentationDescription = DEMO_PRESENTATION_DESCRIPTIONS[currentDemo];
   const CurrentDemo = currentDemoInfo.component;
   const sourceFiles = DEMO_SOURCE_FILES[currentDemo] ?? [];
 
@@ -362,7 +368,17 @@ export default function DemoGalleryClient(): React.JSX.Element {
         <section className={styles.content}>
           <DemoWrapper
             componentName={currentDemoInfo.name}
-            description={currentDemoText.description}
+            description={[
+              currentDemoText.description,
+              presentationDescription
+                ? translate({
+                    id: `demos.items.${currentDemo}.presentationDescription`,
+                    message: presentationDescription
+                  })
+                : null
+            ]
+              .filter(Boolean)
+              .join(' ')}
             guide={DEMO_GUIDES[currentDemo]}
             key={currentDemo}
             githubDemoPath={DEMO_GITHUB_SOURCE[currentDemo]}
