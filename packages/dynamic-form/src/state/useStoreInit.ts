@@ -12,6 +12,21 @@ interface useStoreInitParams {
   uiConfig?: UIConfig;
 }
 
+const defaultUIConfig: UIConfig = {
+  formProps: {},
+  buttonProps: {},
+  cardProps: {},
+  rowProps: { gutter: [16, 0] },
+  colProps: { span: 8 },
+  submitAreaProps: {},
+  formItemProps: {}
+};
+
+const normalizeUIConfig = (uiConfig?: UIConfig): UIConfig => ({
+  ...defaultUIConfig,
+  ...(uiConfig || {})
+});
+
 /**
  * 表单初始化 Hook
  * 负责配置的预处理和表单状态的初始化
@@ -53,22 +68,7 @@ export const useStoreInit = ({ formConfig, formAdapter, values, uiConfig }: useS
     return configProcessInfo.initialValues || {};
   }, [configProcessInfo.initialValues, values]);
 
-  const defaultUIConfig: UIConfig = {
-    formProps: {},
-    buttonProps: {},
-    cardProps: {},
-    rowProps: { gutter: [16, 0] },
-    colProps: { span: 8 },
-    submitAreaProps: {},
-    formItemProps: {}
-  };
-
-  const initDynamicUIConfig = (uiConfig?: UIConfig): UIConfig => {
-    return {
-      ...defaultUIConfig,
-      ...(uiConfig || {}) // 外部传入的字段覆盖默认值
-    };
-  };
+  const staticUIConfig = useMemo(() => normalizeUIConfig(uiConfig), [uiConfig]);
 
   // 2. 静态数据初始化 reducer 状态 ，动态数据初始化 reducer 交给 INIT 处理
   const [state, dispatch] = useReducer(formReducer, {
@@ -79,7 +79,7 @@ export const useStoreInit = ({ formConfig, formAdapter, values, uiConfig }: useS
     containerFields: configProcessInfo.initializedContainerFields,
     configProcessInfo,
     initialized: false,
-    staticUIConfig: initDynamicUIConfig(uiConfig),
+    staticUIConfig,
     dynamicUIConfig: {}
   });
 
@@ -92,6 +92,13 @@ export const useStoreInit = ({ formConfig, formAdapter, values, uiConfig }: useS
       });
     }
   }, [configProcessInfo, state.initialized]);
+
+  useLayoutEffect(() => {
+    dispatch({
+      type: 'SET_STATIC_UICONFIG',
+      payload: { config: staticUIConfig }
+    });
+  }, [staticUIConfig]);
 
   useLayoutEffect(() => {
     formAdapter.setFieldsValue(mergedInitialValues);

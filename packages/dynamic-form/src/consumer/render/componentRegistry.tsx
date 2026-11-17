@@ -16,7 +16,14 @@ type CheckboxGroupValue = React.ComponentProps<typeof Checkbox.Group>['value'];
 
 // 测试组件：直接使用 Ant Design 组件
 const TestInput: React.FC<FieldComponentProps> = (props) => {
-  const { field: _field, value, onChange, form: _form, ...restProps } = props;
+  const {
+    field: _field,
+    value,
+    onChange,
+    form: _form,
+    formAdapter: _formAdapter,
+    ...restProps
+  } = props;
   return <Input value={value as InputValue} onChange={onChange} {...restProps} />;
 };
 
@@ -32,19 +39,47 @@ const TextDisplay: React.FC<FieldComponentProps> = ({ value }) => {
 // 默认组件注册表
 export const DefaultRegistryFieldComponents = {
   Password: (props) => {
-    const { field: _field, value, onChange, form: _form, ...restProps } = props;
+    const {
+      field: _field,
+      value,
+      onChange,
+      form: _form,
+      formAdapter: _formAdapter,
+      ...restProps
+    } = props;
     return <Input.Password value={value as InputValue} onChange={onChange} {...restProps} />;
   },
   ConfirmPassword: (props) => {
-    const { field: _field, value, onChange, form: _form, ...restProps } = props;
+    const {
+      field: _field,
+      value,
+      onChange,
+      form: _form,
+      formAdapter: _formAdapter,
+      ...restProps
+    } = props;
     return <Input.Password value={value as InputValue} onChange={onChange} {...restProps} />;
   },
   TextInput: (props) => {
-    const { field: _field, value, onChange, form: _form, ...restProps } = props;
+    const {
+      field: _field,
+      value,
+      onChange,
+      form: _form,
+      formAdapter: _formAdapter,
+      ...restProps
+    } = props;
     return <Input value={value as InputValue} onChange={onChange} {...restProps} />;
   },
   NumberInput: (props) => {
-    const { field: _field, value, onChange, form: _form, ...restProps } = props;
+    const {
+      field: _field,
+      value,
+      onChange,
+      form: _form,
+      formAdapter: _formAdapter,
+      ...restProps
+    } = props;
     return (
       <InputNumber
         style={{ width: '100%' }}
@@ -55,7 +90,7 @@ export const DefaultRegistryFieldComponents = {
     );
   },
   SelectField: (props) => {
-    const { field, value, onChange, form: _form, ...restProps } = props;
+    const { field, value, onChange, form: _form, formAdapter: _formAdapter, ...restProps } = props;
     return (
       <Select
         options={field.options as SelectProps['options']}
@@ -66,7 +101,14 @@ export const DefaultRegistryFieldComponents = {
     );
   },
   DatePicker: (props) => {
-    const { field: _field, value, onChange, form: _form, ...restProps } = props;
+    const {
+      field: _field,
+      value,
+      onChange,
+      form: _form,
+      formAdapter: _formAdapter,
+      ...restProps
+    } = props;
     return (
       <DatePicker
         style={{ width: '100%' }}
@@ -77,26 +119,61 @@ export const DefaultRegistryFieldComponents = {
     );
   },
   Switch: (props) => {
-    const { field: _field, value, onChange, form: _form, ...restProps } = props;
+    const {
+      field: _field,
+      value,
+      onChange,
+      form: _form,
+      formAdapter: _formAdapter,
+      ...restProps
+    } = props;
     return <Switch checked={!!value} onChange={onChange} {...restProps} />;
   },
   Rate: (props) => {
-    const { field: _field, value, onChange, form: _form, ...restProps } = props;
+    const {
+      field: _field,
+      value,
+      onChange,
+      form: _form,
+      formAdapter: _formAdapter,
+      ...restProps
+    } = props;
     return <Rate value={value as RateValue} onChange={onChange} {...restProps} />;
   },
   TextDisplay,
   CheckboxGroup: (props) => {
-    const { field: _field, value, onChange, form: _form, ...restProps } = props;
+    const {
+      field: _field,
+      value,
+      onChange,
+      form: _form,
+      formAdapter: _formAdapter,
+      ...restProps
+    } = props;
     return (
       <Checkbox.Group value={value as CheckboxGroupValue} onChange={onChange} {...restProps} />
     );
   },
   Select: (props) => {
-    const { field: _field, value, onChange, form: _form, ...restProps } = props;
+    const {
+      field: _field,
+      value,
+      onChange,
+      form: _form,
+      formAdapter: _formAdapter,
+      ...restProps
+    } = props;
     return <Select value={value as SelectProps['value']} onChange={onChange} {...restProps} />;
   },
   TextArea: (props) => {
-    const { field: _field, value, onChange, form: _form, ...restProps } = props;
+    const {
+      field: _field,
+      value,
+      onChange,
+      form: _form,
+      formAdapter: _formAdapter,
+      ...restProps
+    } = props;
     return <Input.TextArea value={value as InputValue} onChange={onChange} {...restProps} />;
   }
 } as const satisfies Record<string, React.FC<FieldComponentProps>>;

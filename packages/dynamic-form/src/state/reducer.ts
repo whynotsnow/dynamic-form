@@ -179,6 +179,16 @@ function formReducer(state: FormState, action: FormAction): FormState {
       };
     }
 
+    case 'SET_STATIC_UICONFIG': {
+      const { config } = action.payload;
+      if (state.staticUIConfig === config) return state;
+
+      return {
+        ...state,
+        staticUIConfig: config
+      };
+    }
+
     case 'UPDATE_DYNAMIC_UICONFIG': {
       const { config } = action.payload;
       if (!config) return state;

@@ -220,6 +220,7 @@ export type FormAction =
     }
   | { type: 'SET_GROUP_META'; payload: { groupId: string; meta: GroupMeta } }
   | { type: 'SET_CONTAINER_META'; payload: { containerId: string; meta: NodeMeta } }
+  | { type: 'SET_STATIC_UICONFIG'; payload: { config: UIConfig } }
   | { type: 'UPDATE_DYNAMIC_UICONFIG'; payload: { config: Partial<UIConfig> & object } };
 
 /** 非分组模式下的表单配置 */

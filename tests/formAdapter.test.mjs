@@ -18,6 +18,7 @@ const modulePromise = build({
       } from './packages/dynamic-form/src/consumer/formAdapter';
       import { headlessRenderer } from './packages/dynamic-form/src/consumer/render/headlessRenderer';
       import { assertRendererAdapter } from './packages/dynamic-form/src/consumer/render/rendererAdapter';
+      import { DefaultRegistryFieldComponents } from './packages/dynamic-form/src/consumer/render/componentRegistry';
       import { FormChainContext } from './packages/dynamic-form/src/shared/context/FormChainContext';
       import { processFormConfig } from './packages/dynamic-form-core/src/config/processor/configParser';
 
@@ -221,6 +222,18 @@ const modulePromise = build({
           )
         );
       }
+
+      export function renderDefaultTextInput() {
+        return renderToStaticMarkup(
+          React.createElement(DefaultRegistryFieldComponents.TextInput, {
+            field: { id: 'name', component: 'TextInput' },
+            form: {},
+            formAdapter: { internal: true },
+            value: 'Ada',
+            'data-probe': 'default-input'
+          })
+        );
+      }
     `,
     resolveDir: process.cwd(),
     sourcefile: 'formAdapterBoundaryTestEntry.tsx',
@@ -293,4 +306,12 @@ test('headlessRenderer renders a native form shell without AntD components', asy
   assert.match(html, /data-field-layout="name"/);
   assert.match(html, /data-field-name="&quot;name&quot;"/);
   assert.match(html, /<button type="submit">提交<\/button>/);
+});
+
+test('default field components do not forward internal formAdapter props to DOM nodes', async () => {
+  const { renderDefaultTextInput } = await modulePromise;
+  const html = renderDefaultTextInput();
+
+  assert.match(html, /data-probe="default-input"/);
+  assert.doesNotMatch(html, /formAdapter|formadapter/);
 });

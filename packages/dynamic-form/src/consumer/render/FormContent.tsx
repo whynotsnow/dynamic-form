@@ -202,7 +202,9 @@ const FormContent: React.FC<FormContentProps> = (props) => {
 
   /** 分组集合渲染（提供 renderGroupItem / renderFields / renderFieldItem 能力） */
   const internalRenderGroups = (groups: Record<string, GroupFieldState>) => {
-    const defaultRender = Object.values(groups).map(internalRenderGroupItem);
+    const defaultRender = Object.values(groups).map((group) => (
+      <React.Fragment key={group.id}>{internalRenderGroupItem(group)}</React.Fragment>
+    ));
 
     return renderGroups
       ? renderGroups({
@@ -331,6 +333,32 @@ const FormContent: React.FC<FormContentProps> = (props) => {
 
   const renderRootNodes = () => {
     if (rootNodeIds.length === 0) return null;
+
+    const canRenderAsGroupCollection = rootNodeIds.every((nodeId) => {
+      const entry = configProcessInfo.nodeRegistry[nodeId];
+      const node = nodes[nodeId];
+
+      return (
+        entry?.nodeType === 'container' &&
+        node &&
+        'children' in node &&
+        !node.repeatable &&
+        node.children.every(
+          (childId) => configProcessInfo.nodeRegistry[childId]?.nodeType === 'field'
+        ) &&
+        !!groupFields[nodeId]
+      );
+    });
+
+    if (canRenderAsGroupCollection) {
+      const rootGroups = rootNodeIds.reduce<Record<string, GroupFieldState>>((result, nodeId) => {
+        result[nodeId] = groupFields[nodeId];
+        return result;
+      }, {});
+
+      return internalRenderGroups(rootGroups);
+    }
+
     return renderNodeChildren(rootNodeIds);
   };
 

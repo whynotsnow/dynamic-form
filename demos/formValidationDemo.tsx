@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Space, Button, message, Form } from 'antd';
 import type { RuleObject } from 'antd/es/form';
 import DynamicForm from '@/index';
@@ -57,90 +57,99 @@ const futureDate = (daysFromToday: number) => {
   return date.toISOString();
 };
 
+const cloneDemoValues = (values: DemoFormValues): DemoFormValues =>
+  JSON.parse(JSON.stringify(values)) as DemoFormValues;
+
 const FormValidationDemo: React.FC = () => {
   const [form] = Form.useForm();
 
-  const formConfig: FormConfig = {
-    groups: [
-      {
-        id: 'baseInfo',
-        title: '基础信息',
-        fields: [
-          {
-            id: 'name',
-            label: '姓名',
-            component: 'TextInput',
-            rules: [
-              { required: true, message: '请输入姓名' },
-              { min: 2, max: 20, message: '姓名长度必须在2-20个字符之间' }
-            ],
-            span: 12
-          },
-          {
-            id: 'email',
-            label: '邮箱',
-            component: 'TextInput',
-            rules: [
-              { required: true, message: '请输入邮箱' },
-              { type: 'email', message: '请输入正确的邮箱格式' }
-            ],
-            span: 12
-          }
-        ]
-      },
-      {
-        id: 'complexComponent',
-        title: '复杂组件校验演示',
-        fields: [
-          {
-            id: 'projects',
-            label: '项目信息管理',
-            component: 'CustomProjectList',
-            rules: [
-              { required: true, message: '至少需要添加一个项目' },
-              {
-                validator: async (_rule: RuleObject, value: ProjectValue[] | undefined) => {
-                  // 这里可以添加更复杂的校验逻辑
-                  const errors: string[] = [];
-                  const projects = value ?? [];
-                  projects.forEach((project, index) => {
-                    if (!project.name?.trim()) {
-                      errors.push(`项目${index + 1}名称不能为空`);
-                    }
-                    if (!project.members?.length) {
-                      errors.push(`项目${index + 1}至少需要一个成员`);
-                    }
-                  });
-
-                  if (errors.length > 0) {
-                    return Promise.reject(errors.join('\n')); // 换行分隔更清晰
-                  }
-                  return Promise.resolve();
-                }
-              }
-            ],
-            span: 24
-          },
-          {
-            id: 'userTable',
-            label: '用户信息表格',
-            component: 'CustomEditTable',
-            rules: [{ required: true, message: '至少需要添加一行数据' }],
-            formItemProps: {
-              labelCol: { span: 24 },
-              wrapperCol: { span: 24 }
+  const formConfig = useMemo<FormConfig>(
+    () => ({
+      groups: [
+        {
+          id: 'baseInfo',
+          title: '基础信息',
+          fields: [
+            {
+              id: 'name',
+              label: '姓名',
+              component: 'TextInput',
+              rules: [
+                { required: true, message: '请输入姓名' },
+                { min: 2, max: 20, message: '姓名长度必须在2-20个字符之间' }
+              ],
+              span: 12
             },
-            span: 24
-          }
-        ]
-      }
-    ]
-  };
+            {
+              id: 'email',
+              label: '邮箱',
+              component: 'TextInput',
+              rules: [
+                { required: true, message: '请输入邮箱' },
+                { type: 'email', message: '请输入正确的邮箱格式' }
+              ],
+              span: 12
+            }
+          ]
+        },
+        {
+          id: 'complexComponent',
+          title: '复杂组件校验演示',
+          fields: [
+            {
+              id: 'projects',
+              label: '项目信息管理',
+              component: 'CustomProjectList',
+              rules: [
+                { required: true, message: '至少需要添加一个项目' },
+                {
+                  validator: async (_rule: RuleObject, value: ProjectValue[] | undefined) => {
+                    // 这里可以添加更复杂的校验逻辑
+                    const errors: string[] = [];
+                    const projects = value ?? [];
+                    projects.forEach((project, index) => {
+                      if (!project.name?.trim()) {
+                        errors.push(`项目${index + 1}名称不能为空`);
+                      }
+                      if (!project.members?.length) {
+                        errors.push(`项目${index + 1}至少需要一个成员`);
+                      }
+                    });
 
-  const componentRegistryConfig = {
-    customComponents,
-    allowOverride: false
-  };
+                    if (errors.length > 0) {
+                      return Promise.reject(errors.join('\n')); // 换行分隔更清晰
+                    }
+                    return Promise.resolve();
+                  }
+                }
+              ],
+              span: 24
+            },
+            {
+              id: 'userTable',
+              label: '用户信息表格',
+              component: 'CustomEditTable',
+              rules: [{ required: true, message: '至少需要添加一行数据' }],
+              formItemProps: {
+                labelCol: { span: 24 },
+                wrapperCol: { span: 24 }
+              },
+              span: 24
+            }
+          ]
+        }
+      ]
+    }),
+    []
+  );
+
+  const componentRegistryConfig = useMemo(
+    () => ({
+      customComponents,
+      allowOverride: false
+    }),
+    []
+  );
 
   useDemoInitHandlers({ handlers: exampleHandlers });
   const { showSubmitResult, submitResultModal } = useDemoSubmitResult();
@@ -162,8 +171,10 @@ const FormValidationDemo: React.FC = () => {
   };
 
   const loadInvalidExample = () => {
-    setInvalidExampleValues({
-      ...initialValues,
+    if (!initialValues) return;
+
+    form.setFieldsValue({
+      ...cloneDemoValues(initialValues),
       name: 'A',
       email: 'invalid-email',
       projects: [
@@ -181,7 +192,6 @@ const FormValidationDemo: React.FC = () => {
   };
 
   const [initialValues, setInitialValues] = useState<DemoFormValues>();
-  const [invalidExampleValues, setInvalidExampleValues] = useState<DemoFormValues>();
   useEffect(() => {
     async function fetchData() {
       const testData = {
@@ -255,7 +265,7 @@ const FormValidationDemo: React.FC = () => {
             age: '28',
             address: '示例路 1 号',
             email: 'demo@example.com',
-            phone: '00000000000',
+            phone: '13800000000',
             status: 'active'
           }
         ]
@@ -265,6 +275,12 @@ const FormValidationDemo: React.FC = () => {
     }
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (initialValues) {
+      form.setFieldsValue(cloneDemoValues(initialValues));
+    }
+  }, [form, initialValues]);
 
   if (!initialValues) return <DemoLoading />;
 
@@ -278,8 +294,8 @@ const FormValidationDemo: React.FC = () => {
           <Button onClick={loadInvalidExample}>填入校验错误示例</Button>
           <Button
             onClick={() => {
-              setInvalidExampleValues(undefined);
               form.resetFields();
+              form.setFieldsValue(cloneDemoValues(initialValues));
             }}
           >
             重置表单
@@ -288,7 +304,6 @@ const FormValidationDemo: React.FC = () => {
 
         <DynamicForm
           form={form}
-          values={invalidExampleValues ?? initialValues}
           formConfig={formConfig}
           onSubmit={(values) => {
             const submittedValues = values as DemoFormValues;

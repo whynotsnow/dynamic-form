@@ -179,6 +179,29 @@ test('UPDATE_DYNAMIC_UICONFIG shallow-merges each config section without mutatio
   assert.deepEqual(state.dynamicUIConfig, {});
 });
 
+test('SET_STATIC_UICONFIG replaces the prop-derived config without touching dynamic config', async () => {
+  const reducer = await getReducer();
+  const state = createState();
+  const config = {
+    formProps: { disabled: true },
+    rowProps: { gutter: 24 }
+  };
+
+  const next = reducer(state, {
+    type: 'SET_STATIC_UICONFIG',
+    payload: { config }
+  });
+
+  assert.notStrictEqual(next, state);
+  assert.strictEqual(next.staticUIConfig, config);
+  assert.strictEqual(next.dynamicUIConfig, state.dynamicUIConfig);
+  assert.deepEqual(state.staticUIConfig, {
+    rowProps: { gutter: 16, align: 'top' },
+    buttonProps: { type: 'primary' }
+  });
+  assert.strictEqual(reducer(next, { type: 'SET_STATIC_UICONFIG', payload: { config } }), next);
+});
+
 test('invalid or empty updates return the original state reference', async (t) => {
   const reducer = await getReducer();
   const state = createState();

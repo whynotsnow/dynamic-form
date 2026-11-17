@@ -56,6 +56,7 @@ const modulePromise = build({
       export function renderFormContent(formConfig, initialValues) {
         const renderFieldsCalls = [];
         const renderGroupItemCalls = [];
+        const renderGroupsCalls = [];
 
         function App() {
           const [form] = Form.useForm();
@@ -93,6 +94,15 @@ const modulePromise = build({
                   { 'data-render-group': group.id },
                   defaultRender
                 );
+              },
+              renderGroups: ({ groupFields, defaultRender }) => {
+                const ids = Object.keys(groupFields).join(',');
+                renderGroupsCalls.push(ids);
+                return React.createElement(
+                  'div',
+                  { 'data-render-groups': ids },
+                  defaultRender
+                );
               }
             })
           );
@@ -101,7 +111,8 @@ const modulePromise = build({
         return {
           html: renderToStaticMarkup(React.createElement(App)),
           renderFieldsCalls,
-          renderGroupItemCalls
+          renderGroupItemCalls,
+          renderGroupsCalls
         };
       }
     `,
@@ -168,6 +179,22 @@ test('mixed root nodes keep field segments split by container blocks', async () 
     'rootD'
   ]);
   assert.deepEqual(result.renderGroupItemCalls, ['profile', 'settings']);
+  assert.deepEqual(result.renderGroupsCalls, []);
+});
+
+test('legacy grouped configs render their ordered top-level collection through renderGroups', async () => {
+  const { renderFormContent } = await modulePromise;
+  const result = renderFormContent({
+    groups: [
+      { id: 'profile', title: 'Profile', fields: [field('name')] },
+      { id: 'settings', title: 'Settings', fields: [field('theme')] }
+    ]
+  });
+
+  assert.deepEqual(result.renderGroupsCalls, ['profile,settings']);
+  assert.deepEqual(result.renderGroupItemCalls, ['profile', 'settings']);
+  assert.match(result.html, /data-render-groups="profile,settings"/);
+  assert.match(result.html, /data-render-group="profile"/);
 });
 
 test('nested containers render each direct field segment through renderFields', async () => {
@@ -196,6 +223,7 @@ test('nested containers render each direct field segment through renderFields', 
 
   assert.deepEqual(result.renderFieldsCalls, ['firstName', 'city,zip', 'note']);
   assert.deepEqual(new Set(result.renderGroupItemCalls), new Set(['profile', 'address']));
+  assert.deepEqual(result.renderGroupsCalls, []);
   assert.match(result.html, /data-render-group="profile"/);
   assert.match(result.html, /data-render-group="address"/);
 });
@@ -223,7 +251,11 @@ test('repeatable containers render item field segments with Form.List-relative n
     }
   );
 
-  assert.deepEqual(result.renderFieldsCalls, ['contactName,contactPhone', 'contactName,contactPhone']);
+  assert.deepEqual(result.renderFieldsCalls, [
+    'contactName,contactPhone',
+    'contactName,contactPhone'
+  ]);
+  assert.deepEqual(result.renderGroupsCalls, []);
   assert.match(result.html, /data-name="\[0,&quot;contactName&quot;\]"/);
   assert.match(result.html, /data-name="\[1,&quot;contactPhone&quot;\]"/);
 });
